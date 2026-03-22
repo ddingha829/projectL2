@@ -64,8 +64,10 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
         <button className={styles.hamburgerBtn} onClick={onMobileToggle}>
           <span className={styles.hamburgerIcon}>≡</span>
         </button>
-        <div className={styles.logo}>
-          <Link href="/">ReviewSite<span className={styles.dot}>.</span><span className={styles.accent}>DESIGN</span></Link>
+        <div className={styles.mobileLogo}>
+          <Link href="/">
+            우가우가<span className={styles.accent}>.WoogaWooga</span>
+          </Link>
         </div>
       </div>
       

@@ -68,10 +68,11 @@ function SidebarContent({ isOpen, onClose }: { isOpen?: boolean, onClose?: () =>
                 onClick={() => handleFilter("author", author.id)}
                 className={`${styles.userBtn} ${currentAuthor === author.id ? styles.active : ""}`}
               >
-                <div className={styles.userInfo}>
-                  <span className={styles.avatar}>{author.avatar}</span>
-                  <span className={styles.name}>{author.name}</span>
-                </div>
+                <div className={styles.logo}>
+          <Link href="/">
+            우가우가<span className={styles.accent}>.WoogaWooga</span>
+          </Link>
+        </div><span className={styles.name}>{author.name}</span>
                 <div className={styles.colorIndicator} style={{ backgroundColor: author.color }}></div>
               </button>
             </li>
