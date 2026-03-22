@@ -66,7 +66,10 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
         </button>
         <div className={styles.mobileLogo}>
           <Link href="/">
-            <img src="/logo.png" alt="WoogaWooga Logo" style={{ height: '28px', width: 'auto' }} />
+            <picture>
+              <source srcSet="/logo2.png" media="(prefers-color-scheme: dark)" />
+              <img src="/logo.png" alt="WoogaWooga Logo" style={{ height: '28px', width: 'auto' }} />
+            </picture>
           </Link>
         </div>
       </div>
