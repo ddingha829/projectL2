@@ -53,14 +53,14 @@
 .divider {
   flex: 1;
   height: 4px;
-  background-color: #ff3333;
+  background-color: #0a467d;
   border-radius: 2px;
   opacity: 0.8;
 }
 
 .gridList {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 24px;
   margin-bottom: 60px;
 }

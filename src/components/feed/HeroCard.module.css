@@ -3,7 +3,7 @@
   width: 100%;
   border-radius: 24px;
   overflow: hidden;
-  min-height: 480px;
+  aspect-ratio: 21 / 9;
   display: flex;
   align-items: flex-end;
   margin-bottom: 40px;
@@ -105,7 +105,7 @@
 }
 
 .readBtn {
-  background-color: #ff3333;
+  background-color: #0a467d;
   color: #fff;
   padding: 16px 36px;
   border-radius: 40px;
@@ -113,10 +113,10 @@
   font-size: 1.1rem;
   text-decoration: none;
   transition: transform 0.2s, background-color 0.2s;
-  box-shadow: 0 4px 12px rgba(255, 51, 51, 0.4);
+  box-shadow: 0 4px 12px rgba(10, 70, 125, 0.4);
 }
 
 .readBtn:hover {
   transform: translateY(-2px);
-  background-color: #e62e2e;
+  background-color: #083863;
 }

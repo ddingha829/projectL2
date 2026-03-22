@@ -14,7 +14,7 @@ const MOCK_POSTS = [
   {
     id: "1",
     categoryId: "movie",
-    category: "Movie",
+    category: "영화",
     title: "듄: 파트 2 (Dune: Part Two) - 압도적인 시각적 경험",
     content: "전작보다 훨씬 더 방대해진 스케일과 탄탄한 스토리텔링이 돋보입니다. 한스 짐머의 음악은 여전히 영화의 몰입도를 극대화합니다. 반드시 아이맥스에서 관람해야 하는 영화.",
     author: MOCK_AUTHORS.chulsoo,
@@ -26,7 +26,7 @@ const MOCK_POSTS = [
   {
     id: "2",
     categoryId: "book",
-    category: "Book",
+    category: "책",
     title: "사피엔스 - 인류의 기원을 추적하다",
     content: "유발 하라리의 통찰력이 돋보이는 명저. 역사, 과학, 철학을 넘나들며 인류가 어떻게 현재의 모습이 되었는지 설득력 있게 풀어냅니다. 생각할 거리를 많이 던져주는 책.",
     author: MOCK_AUTHORS.younghee,
@@ -38,7 +38,7 @@ const MOCK_POSTS = [
   {
     id: "3",
     categoryId: "restaurant",
-    category: "Restaurant",
+    category: "맛집",
     title: "뉴욕 전통 스테이크 하우스 방문기",
     content: "완벽한 시어링, 육즙이 가득한 티본 스테이크. 거기에 클래식한 매쉬드 포테이토와 아스파라거스가 곁들여져 환상적인 저녁 식사였습니다. 특별한 기념일에 강력 추천합니다.",
     author: MOCK_AUTHORS.chulsoo,
@@ -50,7 +50,7 @@ const MOCK_POSTS = [
   {
     id: "4",
     categoryId: "game",
-    category: "Game",
+    category: "게임",
     title: "젤다의 전설: 왕국의 눈물 리뷰",
     content: "전작의 훌륭한 시스템을 기반으로 상상력을 자극하는 '스크래빌드'가 추가되어 플레이 내내 지루할 틈이 없었습니다. 게임 역사에 남을 다시 없을 마스터피스.",
     author: MOCK_AUTHORS.minsoo,
@@ -62,7 +62,7 @@ const MOCK_POSTS = [
   {
     id: "5",
     categoryId: "other",
-    category: "Other",
+    category: "기타",
     title: "M3 맥북 프로 14인치 언박싱 및 1주일 사용기",
     content: "압도적인 성능 향상과 더 길어진 배터리 타임이 인상적입니다. 특히 영상 편집 렌더링 속도에서 체감이 아주 큽니다. 스페이스 블랙 느낌이 대박입니다.",
     author: MOCK_AUTHORS.jieun,
@@ -74,7 +74,7 @@ const MOCK_POSTS = [
   {
     id: "6",
     categoryId: "movie",
-    category: "Movie",
+    category: "영화",
     title: "오펜하이머 - 크리스토퍼 놀란의 걸작",
     content: "숨막히는 3시간이었습니다. 킬리언 머피의 연기와 사운드 트랙이 완벽하게 어우러졌습니다. 도덕적 딜레마를 심도있게 다룬 명작입니다.",
     author: MOCK_AUTHORS.donghyun,
@@ -106,7 +106,15 @@ export default async function Home({
 
   const animationKey = `${categoryFilter || 'all'}-${authorFilter || 'all'}`;
 
-  const categoryName = categoryFilter ? categoryFilter.charAt(0).toUpperCase() + categoryFilter.slice(1) : "";
+  const CATEGORY_MAP: Record<string, string> = {
+    movie: "영화",
+    book: "책",
+    game: "게임",
+    restaurant: "맛집",
+    other: "기타"
+  };
+
+  const categoryName = categoryFilter ? CATEGORY_MAP[categoryFilter as string] || categoryFilter : "";
   const authorObj = MOCK_AUTHORS[authorFilter as keyof typeof MOCK_AUTHORS];
   const authorName = authorObj ? authorObj.name : "";
 

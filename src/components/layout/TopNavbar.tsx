@@ -13,8 +13,8 @@ export default function TopNavbar() {
       <div className={styles.centerSection}>
         <div className={styles.searchBar}>
           <span className={styles.searchIcon}>🔍</span>
-          <input type="text" placeholder="Search everything..." className={styles.searchInput} />
-          <span className={styles.filterIcon}>⚙️</span>
+          <input type="text" placeholder="게시물 검색" className={styles.searchInput} />
+          <span className={styles.filterIcon}>⚲</span>
         </div>
       </div>
 

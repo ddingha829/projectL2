@@ -30,7 +30,7 @@ export default function HeroCard({ id, category, title, author, likes, imageUrl 
 
           <div className={styles.actions}>
             <Link href={`/post/${id}`} className={styles.readBtn}>
-              Read Review
+              리뷰 읽기
             </Link>
           </div>
         </div>
