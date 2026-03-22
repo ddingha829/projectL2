@@ -51,8 +51,8 @@
 }
 
 .menuBtn.active, .userBtn.active {
-  background-color: var(--bg-active);
-  color: var(--text-main);
+  background-color: var(--text-main);
+  color: var(--background);
   font-weight: 700;
 }
 

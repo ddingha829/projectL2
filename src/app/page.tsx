@@ -106,16 +106,23 @@ export default async function Home({
 
   const animationKey = `${categoryFilter || 'all'}-${authorFilter || 'all'}`;
 
+  const categoryName = categoryFilter ? categoryFilter.charAt(0).toUpperCase() + categoryFilter.slice(1) : "";
+  const authorObj = MOCK_AUTHORS[authorFilter as keyof typeof MOCK_AUTHORS];
+  const authorName = authorObj ? authorObj.name : "";
+
+  let displayTitle = "Home";
+  if (categoryFilter && authorFilter) {
+    displayTitle = `${authorName}님이 작성한 ${categoryName}`;
+  } else if (categoryFilter) {
+    displayTitle = categoryName;
+  } else if (authorFilter) {
+    displayTitle = `${authorName}님의 리뷰`;
+  }
+
   return (
     <div className={styles.container}>
       <header className={styles.feedHeader}>
-        <h1 className={styles.pageTitle}>
-          {categoryFilter || authorFilter ? 'Filtered Results' : 'News Feed'}
-        </h1>
-        <div className={styles.filterTags}>
-          {categoryFilter && <span className={styles.tag}>Category: {categoryFilter}</span>}
-          {authorFilter && <span className={styles.tag}>Author: {authorFilter}</span>}
-        </div>
+        <h1 className={styles.pageTitle}>{displayTitle}</h1>
       </header>
       
       <div key={animationKey} className={styles.feedAnimator}>
