@@ -14,11 +14,11 @@ const CATEGORIES = [
 ];
 
 const AUTHORS = [
-  { id: "chulsoo", name: "철수", color: "#FF3333", avatar: "👨" },
-  { id: "younghee", name: "영희", color: "#33CCFF", avatar: "👩" },
-  { id: "minsoo", name: "민수", color: "#33FF99", avatar: "👦" },
-  { id: "jieun", name: "지은", color: "#FF9933", avatar: "👧" },
-  { id: "donghyun", name: "동현", color: "#B833FF", avatar: "👱" },
+  { id: "chulsoo", name: "철수", color: "#FF3333", avatar: "/avatars/chulsoo.png" },
+  { id: "younghee", name: "영희", color: "#33CCFF", avatar: "/avatars/younghee.png" },
+  { id: "minsoo", name: "민수", color: "#33FF99", avatar: "/avatars/minsoo.png" },
+  { id: "jieun", name: "지은", color: "#FF9933", avatar: "/avatars/jieun.png" },
+  { id: "donghyun", name: "동현", color: "#B833FF", avatar: "/avatars/donghyun.png" },
 ];
 
 function SidebarContent({ isOpen, onClose }: { isOpen?: boolean, onClose?: () => void }) {
@@ -68,11 +68,10 @@ function SidebarContent({ isOpen, onClose }: { isOpen?: boolean, onClose?: () =>
                 onClick={() => handleFilter("author", author.id)}
                 className={`${styles.userBtn} ${currentAuthor === author.id ? styles.active : ""}`}
               >
-                <div className={styles.logo}>
-          <Link href="/">
-            우가우가<span className={styles.accent}>.WoogaWooga</span>
-          </Link>
-        </div><span className={styles.name}>{author.name}</span>
+                <div className={styles.userInfo}>
+                  <img src={author.avatar} alt={author.name} style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover' }} />
+                  <span className={styles.name}>{author.name}</span>
+                </div>
                 <div className={styles.colorIndicator} style={{ backgroundColor: author.color }}></div>
               </button>
             </li>
