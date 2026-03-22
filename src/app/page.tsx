@@ -93,6 +93,7 @@ export default async function Home({
   const resolvedParams = await searchParams;
   const categoryFilter = resolvedParams?.category as string;
   const authorFilter = resolvedParams?.author as string;
+  const searchFilter = resolvedParams?.search as string;
 
   let filteredPosts = MOCK_POSTS;
   
@@ -104,7 +105,15 @@ export default async function Home({
     filteredPosts = filteredPosts.filter(p => p.author.id === authorFilter);
   }
 
-  const animationKey = `${categoryFilter || 'all'}-${authorFilter || 'all'}`;
+  if (searchFilter) {
+    const lowerQuery = searchFilter.toLowerCase();
+    filteredPosts = filteredPosts.filter(p => 
+      p.title.toLowerCase().includes(lowerQuery) || 
+      p.content.toLowerCase().includes(lowerQuery)
+    );
+  }
+
+  const animationKey = `${categoryFilter || 'all'}-${authorFilter || 'all'}-${searchFilter || 'all'}`;
 
   const CATEGORY_MAP: Record<string, string> = {
     movie: "영화",
@@ -119,7 +128,9 @@ export default async function Home({
   const authorName = authorObj ? authorObj.name : "";
 
   let displayTitle = "Home";
-  if (categoryFilter && authorFilter) {
+  if (searchFilter) {
+    displayTitle = `'${searchFilter}' 검색 결과`;
+  } else if (categoryFilter && authorFilter) {
     displayTitle = `${authorName}님이 작성한 ${categoryName}`;
   } else if (categoryFilter) {
     displayTitle = categoryName;
