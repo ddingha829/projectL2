@@ -1,7 +1,10 @@
 .container {
-  max-width: 800px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 70px);
 }
 
 .header {
@@ -20,12 +23,21 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+  flex-grow: 1;
 }
 
 .inputGroup {
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.editorGroup {
+  flex-grow: 1;
+}
+
+.editorGroup > div {
+  flex-grow: 1;
 }
 
 .inputGroup label {

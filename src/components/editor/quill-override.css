@@ -1,0 +1,68 @@
+/* Global Quill CSS Overrides for Dark/Light Mode Adaptability */
+
+.quill-wrapper {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background-color: var(--bg-hover);
+}
+
+.quill-wrapper .ql-toolbar.ql-snow {
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background-color: var(--background);
+  padding: 12px;
+  font-family: inherit;
+}
+
+.quill-wrapper .ql-container.ql-snow {
+  border: none;
+  background-color: var(--background);
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 1.05rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.quill-wrapper .ql-editor {
+  min-height: 500px;
+  padding: 24px;
+}
+
+/* Fix SVG colors in dark mode */
+.quill-wrapper .ql-snow .ql-stroke {
+  stroke: var(--text-main);
+}
+
+.quill-wrapper .ql-snow .ql-fill, 
+.quill-wrapper .ql-snow .ql-stroke.ql-fill {
+  fill: var(--text-main);
+}
+
+.quill-wrapper .ql-snow .ql-picker {
+  color: var(--text-main);
+}
+
+.quill-wrapper .ql-snow .ql-picker-options {
+  background-color: var(--background);
+  border-color: var(--border);
+}
+
+.quill-wrapper .ql-snow .ql-tooltip {
+  background-color: var(--bg-hover);
+  color: var(--text-main);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.quill-wrapper .ql-snow .ql-tooltip input[type="text"] {
+  background-color: var(--background);
+  color: var(--text-main);
+  border: 1px solid var(--border);
+}
+
+.quill-wrapper .ql-snow .ql-tooltip a {
+  color: #0a467d;
+}

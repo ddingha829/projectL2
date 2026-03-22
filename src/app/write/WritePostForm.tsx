@@ -2,9 +2,14 @@
 
 import { useState } from "react";
 import { createPost } from "./actions";
-import RichTextEditor from "@/components/editor/RichTextEditor";
 import styles from "./page.module.css";
 import { useFormStatus } from "react-dom";
+import dynamic from "next/dynamic";
+
+const RichTextEditor = dynamic(() => import("@/components/editor/RichTextEditor"), { 
+  ssr: false, 
+  loading: () => <div style={{ height: '600px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border)', borderRadius: '12px' }}>에디터 로딩중...</div> 
+});
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -41,7 +46,7 @@ export default function WritePostForm() {
         <input type="url" id="imageUrl" name="imageUrl" required placeholder="https://..." className={styles.input} />
       </div>
 
-      <div className={styles.inputGroup}>
+      <div className={`${styles.inputGroup} ${styles.editorGroup}`}>
         <label>내용</label>
         <RichTextEditor content={content} onChange={setContent} />
         <input type="hidden" name="content" value={content} />
