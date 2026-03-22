@@ -11,7 +11,7 @@ export const MOCK_AUTHORS = {
   donghyun: { id: "donghyun", name: "동현", color: "#B833FF", avatar: "👱" },
 };
 
-const MOCK_POSTS = [
+export const MOCK_POSTS = [
   {
     id: "1",
     categoryId: "movie",
