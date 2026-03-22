@@ -48,28 +48,23 @@
 .searchBar {
   display: flex;
   align-items: center;
-  background-color: var(--bg-hover);
-  border-radius: 20px;
-  padding: 8px 16px;
-  width: 100%;
-  max-width: 500px;
-  gap: 12px;
+  justify-content: center;
 }
 
-.searchIcon, .filterIcon {
-  font-size: 1rem;
-  color: var(--text-muted);
-  cursor: pointer;
-}
-
-.searchInput {
-  flex: 1;
+.searchBtn {
+  background: none;
   border: none;
-  background: transparent;
-  outline: none;
-  font-family: inherit;
-  font-size: 0.95rem;
   color: var(--text-main);
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.searchBtn:hover {
+  opacity: 1;
 }
 
 .iconBtn {

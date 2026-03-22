@@ -15,9 +15,12 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
       
       <div className={styles.centerSection}>
         <div className={styles.searchBar}>
-          <span className={styles.searchIcon}>🔍</span>
-          <input type="text" placeholder="게시물 검색" className={styles.searchInput} />
-          <span className={styles.filterIcon}>⚲</span>
+          <button className={styles.searchBtn}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </button>
         </div>
       </div>
 

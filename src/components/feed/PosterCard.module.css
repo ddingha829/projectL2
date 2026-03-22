@@ -100,3 +100,18 @@
   justify-content: center;
   font-size: 0.7rem;
 }
+
+@media (max-width: 768px) {
+  .card {
+    min-width: 160px;
+    width: 160px;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+  }
+  .imageWrapper {
+    margin-bottom: 8px;
+  }
+  .title {
+    font-size: 0.95rem;
+  }
+}
