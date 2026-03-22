@@ -21,7 +21,7 @@ const AUTHORS = [
   { id: "donghyun", name: "동현", color: "#B833FF", avatar: "👱" },
 ];
 
-function SidebarContent({ isOpen }: { isOpen?: boolean }) {
+function SidebarContent({ isOpen, onClose }: { isOpen?: boolean, onClose?: () => void }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const currentCategory = searchParams.get("category");
@@ -37,6 +37,7 @@ function SidebarContent({ isOpen }: { isOpen?: boolean }) {
     }
     
     router.push(`/?${params.toString()}`);
+    if (onClose) onClose();
   };
 
   return (
@@ -81,10 +82,10 @@ function SidebarContent({ isOpen }: { isOpen?: boolean }) {
   );
 }
 
-export default function LeftSidebar({ isOpen }: { isOpen?: boolean }) {
+export default function LeftSidebar({ isOpen, onClose }: { isOpen?: boolean, onClose?: () => void }) {
   return (
     <Suspense fallback={<aside className={styles.sidebar}></aside>}>
-      <SidebarContent isOpen={isOpen} />
+      <SidebarContent isOpen={isOpen} onClose={onClose} />
     </Suspense>
   );
 }
