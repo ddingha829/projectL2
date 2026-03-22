@@ -1,7 +1,4 @@
 import Link from "next/link";
-import styles from "./page.module.css";
-
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { MOCK_POSTS } from "@/app/page";
