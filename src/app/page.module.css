@@ -47,11 +47,37 @@
   }
 }
 
-.postList {
+.gridSection {
+  margin-top: 40px;
+}
+
+.sectionHeader {
   display: flex;
-  flex-direction: column;
-  max-width: 1000px;
-  margin: 0 auto;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.sectionTitle {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text-main);
+  white-space: nowrap;
+}
+
+.divider {
+  flex: 1;
+  height: 4px;
+  background-color: #ff3333;
+  border-radius: 2px;
+  opacity: 0.8;
+}
+
+.gridList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 24px;
+  margin-bottom: 60px;
 }
 
 .emptyState {

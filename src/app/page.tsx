@@ -1,4 +1,5 @@
-import PostCard from "@/components/feed/PostCard";
+import HeroCard from "@/components/feed/HeroCard";
+import PosterCard from "@/components/feed/PosterCard";
 import styles from "./page.module.css";
 
 export const MOCK_AUTHORS = {
@@ -119,11 +120,23 @@ export default async function Home({
       
       <div key={animationKey} className={styles.feedAnimator}>
         {filteredPosts.length > 0 ? (
-          <div className={styles.postList}>
-            {filteredPosts.map(post => (
-              <PostCard key={post.id} {...post} />
-            ))}
-          </div>
+          <>
+            <HeroCard {...filteredPosts[0]} />
+            
+            {filteredPosts.length > 1 && (
+              <div className={styles.gridSection}>
+                <div className={styles.sectionHeader}>
+                  <h3 className={styles.sectionTitle}>More Reviews</h3>
+                  <div className={styles.divider}></div>
+                </div>
+                <div className={styles.gridList}>
+                  {filteredPosts.slice(1).map(post => (
+                    <PosterCard key={post.id} {...post} />
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
         ) : (
           <div className={styles.emptyState}>
             <span className={styles.emptyIcon}>📭</span>
