@@ -3,13 +3,26 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+import { logout } from "@/app/login/actions";
 import styles from "./TopNavbar.module.css";
 
 export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => void }) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [user, setUser] = useState<any>(null);
+
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
+  const supabase = createClient();
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
+    });
+    return () => authListener.subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     if (isSearchOpen && inputRef.current) {
@@ -74,7 +87,16 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
         <button className={styles.iconBtn}>📄</button>
         <button className={styles.iconBtn}>🔔</button>
         <div className={styles.profile}>
-          <div className={styles.avatar}>👦</div>
+          {user ? (
+            <div className={styles.authContainer}>
+              <div className={styles.avatar}>{user.email?.charAt(0).toUpperCase() || "👦"}</div>
+              <form action={logout}>
+                <button type="submit" className={styles.logoutBtn}>Logout</button>
+              </form>
+            </div>
+          ) : (
+            <Link href="/login" className={styles.loginLink}>Login</Link>
+          )}
         </div>
       </div>
     </header>
