@@ -1,0 +1,52 @@
+.sidebar {
+  width: 240px;
+  border-right: 1px solid var(--border);
+  background-color: var(--background);
+  height: calc(100vh - 60px);
+  position: sticky;
+  top: 60px;
+  overflow-y: auto;
+  padding: 40px 0;
+}
+
+.nav {
+  padding: 0 40px;
+}
+
+.menuList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.menuLink {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: color 0.2s ease;
+  display: inline-block;
+  padding: 4px 0;
+}
+
+.menuLink:hover {
+  color: var(--text-main);
+}
+
+.menuLink.active {
+  color: var(--text-main);
+  font-weight: 700;
+  position: relative;
+}
+
+.menuLink.active::before {
+  content: "";
+  position: absolute;
+  left: -16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 4px;
+  background-color: var(--text-main);
+  border-radius: 50%;
+}
