@@ -1,5 +1,6 @@
 import HeroCard from "@/components/feed/HeroCard";
 import PosterCard from "@/components/feed/PosterCard";
+import { createClient } from "@/lib/supabase/server";
 import styles from "./page.module.css";
 
 export const MOCK_AUTHORS = {
@@ -95,7 +96,39 @@ export default async function Home({
   const authorFilter = resolvedParams?.author as string;
   const searchFilter = resolvedParams?.search as string;
 
-  let filteredPosts = MOCK_POSTS;
+  const CATEGORY_MAP: Record<string, string> = {
+    movie: "영화",
+    book: "책",
+    game: "게임",
+    restaurant: "맛집",
+    other: "기타"
+  };
+
+  const supabase = await createClient();
+  const { data: dbPosts } = await supabase
+    .from('posts')
+    .select('*, author:profiles(id, name:display_name, avatar:avatar_url)')
+    .order('created_at', { ascending: false });
+
+  const livePosts = dbPosts?.map((p: any) => ({
+    id: p.id,
+    categoryId: p.category,
+    category: CATEGORY_MAP[p.category] || p.category,
+    title: p.title,
+    content: p.content,
+    author: {
+       id: p.author.id,
+       name: p.author.name || 'Anonymous',
+       avatar: p.author.avatar || '👦',
+       color: '#0a467d'
+    },
+    date: new Date(p.created_at).toISOString().split('T')[0],
+    likes: p.likes_count,
+    comments: 0,
+    imageUrl: p.image_url
+  })) || [];
+
+  let filteredPosts = livePosts.length > 0 ? livePosts : MOCK_POSTS;
   
   if (categoryFilter) {
     filteredPosts = filteredPosts.filter(p => p.categoryId === categoryFilter);
@@ -114,14 +147,6 @@ export default async function Home({
   }
 
   const animationKey = `${categoryFilter || 'all'}-${authorFilter || 'all'}-${searchFilter || 'all'}`;
-
-  const CATEGORY_MAP: Record<string, string> = {
-    movie: "영화",
-    book: "책",
-    game: "게임",
-    restaurant: "맛집",
-    other: "기타"
-  };
 
   const categoryName = categoryFilter ? CATEGORY_MAP[categoryFilter as string] || categoryFilter : "";
   const authorObj = MOCK_AUTHORS[authorFilter as keyof typeof MOCK_AUTHORS];

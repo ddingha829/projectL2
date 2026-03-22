@@ -11,18 +11,33 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [user, setUser] = useState<any>(null);
+  const [role, setRole] = useState<string>("user");
 
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const supabase = createClient();
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) {
+        setUser(data.user);
+        supabase.from('profiles').select('role').eq('id', data.user.id).single()
+          .then(({ data: profile }) => {
+            if (profile) setRole(profile.role);
+          });
+      }
+    });
+
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
+      if (!session?.user) setRole("user");
+      else {
+        supabase.from('profiles').select('role').eq('id', session.user.id).single()
+          .then(({ data: profile }) => setRole(profile?.role || "user"));
+      }
     });
     return () => authListener.subscription.unsubscribe();
-  }, []);
+  }, [supabase]);
 
   useEffect(() => {
     if (isSearchOpen && inputRef.current) {
@@ -89,6 +104,9 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
         <div className={styles.profile}>
           {user ? (
             <div className={styles.authContainer}>
+              {role === 'admin' && (
+                <Link href="/write" className={styles.writeBtn}>✍️ 글쓰기</Link>
+              )}
               <div className={styles.avatar}>{user.email?.charAt(0).toUpperCase() || "👦"}</div>
               <form action={logout}>
                 <button type="submit" className={styles.logoutBtn}>Logout</button>

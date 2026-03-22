@@ -170,6 +170,22 @@
   color: var(--text-main);
 }
 
+.writeBtn {
+  text-decoration: none;
+  background-color: transparent;
+  color: var(--text-main);
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.writeBtn:hover {
+  background-color: var(--bg-hover);
+}
+
 .hamburgerBtn {
   display: none;
   background: none;

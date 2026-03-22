@@ -1,0 +1,94 @@
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.header {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inputGroup label {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.input {
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background-color: var(--bg-hover);
+  color: var(--text-main);
+  font-size: 1rem;
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.textarea {
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background-color: var(--bg-hover);
+  color: var(--text-main);
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.input:focus, .textarea:focus {
+  border-color: #0a467d;
+}
+
+.submitBtn {
+  margin-top: 20px;
+  padding: 16px;
+  background-color: #0a467d;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.submitBtn:hover {
+  background-color: #083863;
+  transform: translateY(-2px);
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 0;
+  text-align: center;
+}
+
+.emptyIcon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+}
