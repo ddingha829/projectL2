@@ -21,7 +21,7 @@ const AUTHORS = [
   { id: "donghyun", name: "동현", color: "#B833FF", avatar: "👱" },
 ];
 
-function SidebarContent() {
+function SidebarContent({ isOpen }: { isOpen?: boolean }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const currentCategory = searchParams.get("category");
@@ -84,7 +84,7 @@ function SidebarContent() {
 export default function LeftSidebar({ isOpen }: { isOpen?: boolean }) {
   return (
     <Suspense fallback={<aside className={styles.sidebar}></aside>}>
-      <SidebarContent />
+      <SidebarContent isOpen={isOpen} />
     </Suspense>
   );
 }
