@@ -88,9 +88,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
           </div>
         )}
         
-        <div className={styles.content}>
-          <p style={{ whiteSpace: 'pre-wrap' }}>{post.content}</p>
-        </div>
+        <div className={styles.content} dangerouslySetInnerHTML={{ __html: post.content }} />
 
         <PostInteractions 
           postId={post.id} 

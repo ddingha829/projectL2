@@ -110,23 +110,28 @@ export default async function Home({
     .select('*, author:profiles(id, name:display_name, avatar:avatar_url)')
     .order('created_at', { ascending: false });
 
-  const livePosts = dbPosts?.map((p: any) => ({
-    id: p.id,
-    categoryId: p.category,
-    category: CATEGORY_MAP[p.category] || p.category,
-    title: p.title,
-    content: p.content,
-    author: {
-       id: p.author.id,
-       name: p.author.name || 'Anonymous',
-       avatar: p.author.avatar || '👦',
-       color: '#0a467d'
-    },
-    date: new Date(p.created_at).toISOString().split('T')[0],
-    likes: p.likes_count,
-    comments: 0,
-    imageUrl: p.image_url
-  })) || [];
+  const livePosts = dbPosts?.map((p: any) => {
+    // Basic regex to strip HTML tags for summary feed preview
+    const strippedContent = p.content ? p.content.replace(/<[^>]+>/g, '') : "내용이 없습니다.";
+    
+    return {
+      id: p.id,
+      categoryId: p.category,
+      category: CATEGORY_MAP[p.category] || p.category,
+      title: p.title,
+      content: strippedContent.substring(0, 150) + (strippedContent.length > 150 ? '...' : ''),
+      author: {
+         id: p.author.id,
+         name: p.author.name || 'Anonymous',
+         avatar: p.author.avatar || '👦',
+         color: '#0a467d'
+      },
+      date: new Date(p.created_at).toISOString().split('T')[0],
+      likes: p.likes_count,
+      comments: 0,
+      imageUrl: p.image_url
+    };
+  }) || [];
 
   let filteredPosts = livePosts.length > 0 ? livePosts : MOCK_POSTS;
   

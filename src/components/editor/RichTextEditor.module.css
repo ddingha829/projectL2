@@ -1,0 +1,89 @@
+.editorContainer {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: var(--bg-hover);
+  display: flex;
+  flex-direction: column;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background-color: var(--background);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.toolbar button {
+  background: none;
+  border: 1px solid transparent;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--text-main);
+  font-size: 0.95rem;
+  transition: all 0.2s;
+}
+
+.toolbar button:hover {
+  background-color: var(--bg-hover);
+  border-color: var(--border);
+}
+
+.toolbar button.active {
+  background-color: #0a467d;
+  color: white;
+  border-color: #0a467d;
+}
+
+.divider {
+  width: 1px;
+  height: 24px;
+  background-color: var(--border);
+  margin: 0 4px;
+}
+
+.imageBtn {
+  font-weight: 600;
+}
+
+.editorContent {
+  padding: 16px;
+  min-height: 400px;
+  cursor: text;
+  background-color: var(--background);
+  color: var(--text-main);
+}
+
+.editorContent :global(.ProseMirror) {
+  outline: none;
+  min-height: 400px;
+}
+
+.editorContent :global(.ProseMirror p) {
+  margin-bottom: 1em;
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.editorContent :global(.ProseMirror h2) {
+  font-size: 1.6rem;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.editorContent :global(.ProseMirror img) {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1.5em 0;
+  display: block;
+}
+
+.editorContent :global(.ProseMirror ul) {
+  padding-left: 20px;
+  margin-bottom: 1em;
+}
