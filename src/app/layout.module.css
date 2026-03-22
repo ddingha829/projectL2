@@ -15,8 +15,25 @@
 
 .contentInner {
   width: 100%;
-  max-width: 1600px;
+  max-width: 1300px;
   padding: 0 40px;
   display: flex;
   flex-direction: column;
+}
+
+.mobileOverlay {
+  position: fixed;
+  top: 70px;
+  left: 0;
+  width: 100vw;
+  height: calc(100vh - 70px);
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
+  z-index: 100;
+}
+
+@media (max-width: 768px) {
+  .contentInner {
+    padding: 0 20px;
+  }
 }

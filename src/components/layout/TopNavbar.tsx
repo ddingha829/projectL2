@@ -1,10 +1,13 @@
 import Link from "next/link";
 import styles from "./TopNavbar.module.css";
 
-export default function TopNavbar() {
+export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => void }) {
   return (
     <header className={styles.header}>
       <div className={styles.leftSection}>
+        <button className={styles.hamburgerBtn} onClick={onMobileToggle}>
+          <span className={styles.hamburgerIcon}>≡</span>
+        </button>
         <div className={styles.logo}>
           <Link href="/">ReviewSite<span className={styles.dot}>.</span><span className={styles.accent}>DESIGN</span></Link>
         </div>

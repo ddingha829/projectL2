@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Noto_Sans_KR } from "next/font/google";
 import "./globals.css";
 import gridStyles from "./layout.module.css";
-import TopNavbar from "@/components/layout/TopNavbar";
-import LeftSidebar from "@/components/layout/LeftSidebar";
+import AppShell from "@/components/layout/AppShell";
 
 const notoSans = Noto_Sans_KR({
   variable: "--font-noto-sans",
@@ -24,15 +23,9 @@ export default function RootLayout({
   return (
     <html lang="ko" className={`${notoSans.variable}`}>
       <body>
-        <TopNavbar />
-        <div className={gridStyles.mainContainer}>
-          <LeftSidebar />
-          <main className={gridStyles.contentWrapper}>
-            <div className={gridStyles.contentInner}>
-              {children}
-            </div>
-          </main>
-        </div>
+        <AppShell>
+          {children}
+        </AppShell>
       </body>
     </html>
   );

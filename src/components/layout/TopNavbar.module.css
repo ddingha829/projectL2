@@ -96,3 +96,20 @@
   justify-content: center;
   font-size: 1.2rem;
 }
+
+.hamburgerBtn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: var(--text-main);
+  cursor: pointer;
+  margin-right: 16px;
+  padding: 0;
+}
+
+@media (max-width: 768px) {
+  .hamburgerBtn {
+    display: block;
+  }
+}

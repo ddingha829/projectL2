@@ -40,7 +40,7 @@ function SidebarContent() {
   };
 
   return (
-    <aside className={styles.sidebar}>
+    <aside className={`${styles.sidebar} ${isOpen ? styles.open : ""}`}>
       <div className={styles.section}>
         <h3 className={styles.sectionTitle}>Categories</h3>
         <ul className={styles.menuList}>
@@ -81,7 +81,7 @@ function SidebarContent() {
   );
 }
 
-export default function LeftSidebar() {
+export default function LeftSidebar({ isOpen }: { isOpen?: boolean }) {
   return (
     <Suspense fallback={<aside className={styles.sidebar}></aside>}>
       <SidebarContent />
