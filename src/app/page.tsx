@@ -104,10 +104,22 @@ export default async function Home({
   };
 
   const supabase = await createClient();
-  const { data: dbPosts } = await supabase
+  let query = supabase
     .from('posts')
     .select('*, author:profiles(id, name:display_name, avatar:avatar_url)')
     .order('created_at', { ascending: false });
+
+  if (categoryFilter) {
+    query = query.eq('category', categoryFilter);
+  }
+  if (authorFilter) {
+    query = query.eq('author_id', authorFilter);
+  }
+  if (searchFilter) {
+    query = query.ilike('title', `%${searchFilter}%`);
+  }
+
+  const { data: dbPosts } = await query;
 
   const livePosts = dbPosts?.map((p: any) => {
     const strippedContent = p.content ? p.content.replace(/<[^>]+>/g, '') : "내용이 없습니다.";
@@ -132,20 +144,21 @@ export default async function Home({
 
   let filteredPosts = livePosts.length > 0 ? livePosts : MOCK_POSTS;
   
-  if (categoryFilter) {
-    filteredPosts = filteredPosts.filter(p => p.categoryId === categoryFilter);
-  }
-  
-  if (authorFilter) {
-    filteredPosts = filteredPosts.filter(p => p.author.id === authorFilter);
-  }
-
-  if (searchFilter) {
-    const lowerQuery = searchFilter.toLowerCase();
-    filteredPosts = filteredPosts.filter(p => 
-      p.title.toLowerCase().includes(lowerQuery) || 
-      p.content.toLowerCase().includes(lowerQuery)
-    );
+  // Apply filtering to MOCK_POSTS if live data is empty
+  if (livePosts.length === 0) {
+    if (categoryFilter) {
+      filteredPosts = filteredPosts.filter(p => p.categoryId === categoryFilter);
+    }
+    if (authorFilter) {
+      filteredPosts = filteredPosts.filter(p => p.author.id === authorFilter);
+    }
+    if (searchFilter) {
+      const lowerQuery = (searchFilter as string).toLowerCase();
+      filteredPosts = filteredPosts.filter(p => 
+        p.title.toLowerCase().includes(lowerQuery) || 
+        p.content.toLowerCase().includes(lowerQuery)
+      );
+    }
   }
 
   const animationKey = `${categoryFilter || 'all'}-${authorFilter || 'all'}-${searchFilter || 'all'}`;
