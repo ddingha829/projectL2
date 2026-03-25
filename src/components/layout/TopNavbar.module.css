@@ -174,11 +174,13 @@
   background-color: transparent;
   color: var(--text-main);
   border: 1px solid var(--border);
-  padding: 6px 12px;
+  padding: 6px 20px;
   border-radius: 20px;
   font-size: 0.85rem;
+  font-weight: 500;
   transition: all 0.2s;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .writeBtn:hover {
