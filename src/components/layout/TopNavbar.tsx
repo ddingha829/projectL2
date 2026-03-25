@@ -44,7 +44,6 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
       inputRef.current.focus();
     }
   }, [isSearchOpen]);
-
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -57,7 +56,6 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
   const handleToggle = () => {
     setIsSearchOpen(!isSearchOpen);
   };
-
   return (
     <header className={styles.header}>
       <div className={styles.leftSection}>
@@ -75,6 +73,10 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
       </div>
       
       <div className={styles.centerSection}>
+        {/* Center section cleared as search moved to right */}
+      </div>
+
+      <div className={styles.rightSection}>
         <div className={`${styles.searchContainer} ${isSearchOpen ? styles.open : ""}`}>
           <form 
             onSubmit={handleSearch} 
@@ -93,17 +95,14 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
+            <button className={styles.searchBtn} type="button" onClick={handleToggle}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </button>
           </form>
-          <button className={styles.searchBtn} type="button" onClick={handleToggle}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-          </button>
         </div>
-      </div>
-
-      <div className={styles.rightSection}>
         <button className={styles.iconBtn}>📄</button>
         <button className={styles.iconBtn}>🔔</button>
         <div className={styles.profile}>

@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 40px;
+  padding: 0 20px;
   border-bottom: 1px solid var(--border);
   background-color: var(--background);
   position: sticky;
@@ -11,21 +11,33 @@
   z-index: 100;
 }
 
-.leftSection, .rightSection {
-  flex: 1;
+.leftSection {
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
+  margin-left: -4px;
+}
+
+.centerSection {
+  flex: 1;
 }
 
 .rightSection {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
   justify-content: flex-end;
   gap: 16px;
 }
 
-.centerSection {
-  flex: 2;
+.mobileLogo {
   display: flex;
-  justify-content: center;
+  align-items: center;
+  padding-top: 4px;
+}
+
+.mobileLogo img {
+  display: block;
 }
 
 .logo a {
@@ -48,33 +60,19 @@
 .searchContainer {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
   border-radius: 20px;
-  background-color: transparent;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  overflow: hidden;
-  width: 40px; 
-  height: 40px;
-}
-
-.searchContainer.open {
   background-color: var(--bg-hover);
-  width: 100%;
-  max-width: 400px;
   padding-left: 16px;
+  width: 100%;
+  max-width: 280px;
+  height: 40px;
+  transition: all 0.3s ease;
 }
 
 .searchForm {
   flex: 1;
   display: flex;
-  opacity: 0;
-  transition: opacity 0.2s;
-  pointer-events: none;
-}
-
-.searchContainer.open .searchForm {
-  opacity: 1;
-  pointer-events: auto;
+  align-items: center;
 }
 
 .searchInput {
@@ -91,19 +89,20 @@
 .searchBtn {
   background: none;
   border: none;
-  color: var(--text-main);
+  color: var(--text-muted);
   cursor: pointer;
   padding: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0.8;
+  opacity: 0.6;
   transition: opacity 0.2s;
   flex-shrink: 0;
 }
 
 .searchBtn:hover {
   opacity: 1;
+  color: var(--text-main);
 }
 
 .iconBtn {
@@ -197,8 +196,72 @@
   padding: 0;
 }
 
+@media (max-width: 1100px) {
+  .header {
+    padding: 0 16px;
+  }
+}
+
+@media (max-width: 900px) {
+  .searchContainer {
+    max-width: 200px;
+  }
+}
+
 @media (max-width: 768px) {
   .hamburgerBtn {
     display: block;
+    margin-right: 8px;
+  }
+  
+  .leftSection {
+    margin-left: 0;
+  }
+
+  .searchContainer {
+    max-width: 40px;
+    background-color: transparent;
+    padding-left: 0;
+    overflow: hidden;
+    position: relative;
+    z-index: 5;
+  }
+  
+  .searchContainer.open {
+    max-width: 220px;
+    background-color: var(--bg-hover);
+    padding-left: 12px;
+    position: absolute;
+    right: 170px; /* Adjust based on icons width */
+  }
+
+  /* When search is open on small mobile, hide other icons OR move them */
+  .searchContainer.open ~ .iconBtn {
+    display: none;
+  }
+}
+
+@media (max-width: 580px) {
+  .searchContainer.open {
+    right: 60px;
+    max-width: calc(100% - 130px);
+  }
+  
+  /* On very small screens, keep icons minimal */
+  .iconBtn {
+    font-size: 1rem;
+  }
+  
+  .rightSection {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 400px) {
+  .mobileLogo img {
+    height: 24px !important;
+  }
+  .hamburgerBtn {
+    font-size: 1.5rem;
   }
 }
