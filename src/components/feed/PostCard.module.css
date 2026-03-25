@@ -93,9 +93,18 @@
   background-color: var(--bg-hover);
 }
 
+.avatarEmoji {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+}
+
 .authorLine {
   width: 18px;
-  height: 3px;
+  height: 4.5px;
   border-radius: 2px;
   margin-left: 4px;
 }

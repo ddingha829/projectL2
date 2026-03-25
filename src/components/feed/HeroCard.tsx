@@ -23,11 +23,15 @@ export default function HeroCard({ id, category, title, author, likes, imageUrl 
             <div className={styles.meta}>
                <span className={styles.icon}>👍</span> {likes}
                <span className={styles.dot}>•</span>
-               <div className={styles.authorBadge}>
-                 <img src={author.avatar} alt={author.name} className={styles.avatarImg} />
-                 {author.name}
-                 <div className={styles.authorLine} style={{ backgroundColor: author.color }}></div>
-               </div>
+                <div className={styles.authorBadge}>
+                  {author.avatar.startsWith('/') || author.avatar.startsWith('http') ? (
+                    <img src={author.avatar} alt={author.name} className={styles.avatarImg} />
+                  ) : (
+                    <span className={styles.avatarEmoji}>{author.avatar}</span>
+                  )}
+                  {author.name}
+                  <div className={styles.authorLine} style={{ backgroundColor: author.color }}></div>
+                </div>
             </div>
 
             <div className={styles.actions}>

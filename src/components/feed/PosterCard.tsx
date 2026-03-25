@@ -24,7 +24,11 @@ export default function PosterCard({ id, category, title, author, imageUrl }: Po
               <span className={styles.author}>{author.name}</span>
               <div className={styles.authorLine} style={{ backgroundColor: author.color }}></div>
             </div>
-            <img src={author.avatar} alt={author.name} className={styles.avatarImg} />
+            {author.avatar.startsWith('/') || author.avatar.startsWith('http') ? (
+              <img src={author.avatar} alt={author.name} className={styles.avatarImg} />
+            ) : (
+              <span className={styles.avatarEmoji}>{author.avatar}</span>
+            )}
           </div>
         </div>
       </Link>

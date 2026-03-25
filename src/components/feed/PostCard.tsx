@@ -38,7 +38,11 @@ export default function PostCard({
       <div className={styles.contentArea}>
         <div className={styles.header}>
           <div className={styles.authorBadge} style={{ borderColor: author.color }}>
-            <img src={author.avatar} alt={author.name} className={styles.avatarImg} />
+            {author.avatar.startsWith('/') || author.avatar.startsWith('http') ? (
+               <img src={author.avatar} alt={author.name} className={styles.avatarImg} />
+            ) : (
+               <span className={styles.avatarEmoji}>{author.avatar}</span>
+            )}
             <span className={styles.authorName}>{author.name}</span>
             <div className={styles.authorLine} style={{ backgroundColor: author.color }}></div>
           </div>
