@@ -24,8 +24,9 @@ export default function HeroCard({ id, category, title, author, likes, imageUrl 
                <span className={styles.icon}>👍</span> {likes}
                <span className={styles.dot}>•</span>
                <div className={styles.authorBadge}>
-                 <span className={styles.avatar}>{author.avatar}</span>
+                 <img src={author.avatar} alt={author.name} className={styles.avatarImg} />
                  {author.name}
+                 <div className={styles.authorLine} style={{ backgroundColor: author.color }}></div>
                </div>
             </div>
 

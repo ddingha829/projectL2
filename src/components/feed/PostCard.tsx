@@ -38,8 +38,9 @@ export default function PostCard({
       <div className={styles.contentArea}>
         <div className={styles.header}>
           <div className={styles.authorBadge} style={{ borderColor: author.color }}>
-            <span className={styles.avatar}>{author.avatar}</span>
+            <img src={author.avatar} alt={author.name} className={styles.avatarImg} />
             <span className={styles.authorName}>{author.name}</span>
+            <div className={styles.authorLine} style={{ backgroundColor: author.color }}></div>
           </div>
           <span className={styles.date}>{date}</span>
         </div>

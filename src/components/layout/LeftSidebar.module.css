@@ -66,21 +66,90 @@
   gap: 12px;
 }
 
-.avatar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  background-color: var(--border);
-  border-radius: 50%;
-  font-size: 1rem;
+.userContainer {
+  position: relative;
+  width: 100%;
 }
 
-.colorIndicator {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
+.colorLine {
+  width: 40px;
+  height: 4px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  transition: width 0.3s ease;
+}
+
+.userBtn:hover .colorLine {
+  width: 50px;
+}
+
+.authorTooltip {
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%) translateX(0px);
+  background: var(--background);
+  border: 1px solid var(--border);
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+  width: 280px;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.userContainer:hover .authorTooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-50%) translateX(15px);
+}
+
+.authorTooltip::before {
+  content: '';
+  position: absolute;
+  left: -6px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+  width: 10px;
+  height: 10px;
+  background: var(--background);
+  border-left: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.tooltipBio {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.tooltipBullets {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tooltipBullets li {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  position: relative;
+  padding-left: 14px;
+  line-height: 1.4;
+}
+
+.tooltipBullets li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
 }
 
 @media (max-width: 768px) {

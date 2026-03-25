@@ -20,8 +20,11 @@ export default function PosterCard({ id, category, title, author, imageUrl }: Po
         <div className={styles.content}>
           <h3 className={styles.title}>{title}</h3>
           <div className={styles.footer}>
-            <span className={styles.author}>{author.name}</span>
-            <div className={styles.avatar}>{author.avatar}</div>
+            <div className={styles.authorGroup}>
+              <span className={styles.author}>{author.name}</span>
+              <div className={styles.authorLine} style={{ backgroundColor: author.color }}></div>
+            </div>
+            <img src={author.avatar} alt={author.name} className={styles.avatarImg} />
           </div>
         </div>
       </Link>
