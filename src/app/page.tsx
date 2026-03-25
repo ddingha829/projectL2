@@ -1,7 +1,5 @@
-import HeroCard from "@/components/feed/HeroCard";
-import PosterCard from "@/components/feed/PosterCard";
 import { createClient } from "@/lib/supabase/server";
-import styles from "./page.module.css";
+import HomeContent from "./HomeContent";
 
 export const MOCK_AUTHORS = {
   chulsoo: { id: "chulsoo", name: "철수", color: "#FF3333", avatar: "👨" },
@@ -12,6 +10,7 @@ export const MOCK_AUTHORS = {
 };
 
 export const MOCK_POSTS = [
+  // ... MOCK_POSTS stay the same, skipping for brevity in thought but including in output
   {
     id: "1",
     categoryId: "movie",
@@ -111,9 +110,7 @@ export default async function Home({
     .order('created_at', { ascending: false });
 
   const livePosts = dbPosts?.map((p: any) => {
-    // Basic regex to strip HTML tags for summary feed preview
     const strippedContent = p.content ? p.content.replace(/<[^>]+>/g, '') : "내용이 없습니다.";
-    
     return {
       id: p.id,
       categoryId: p.category,
@@ -152,6 +149,7 @@ export default async function Home({
   }
 
   const animationKey = `${categoryFilter || 'all'}-${authorFilter || 'all'}-${searchFilter || 'all'}`;
+  const isInitialVisit = !categoryFilter && !authorFilter && !searchFilter;
 
   const categoryName = categoryFilter ? CATEGORY_MAP[categoryFilter as string] || categoryFilter : "";
   const authorObj = MOCK_AUTHORS[authorFilter as keyof typeof MOCK_AUTHORS];
@@ -169,37 +167,11 @@ export default async function Home({
   }
 
   return (
-    <div className={styles.container}>
-      <header className={styles.feedHeader}>
-        <h1 className={styles.pageTitle}>{displayTitle}</h1>
-      </header>
-      
-      <div key={animationKey} className={styles.feedAnimator}>
-        {filteredPosts.length > 0 ? (
-          <>
-            <HeroCard {...filteredPosts[0]} />
-            
-            {filteredPosts.length > 1 && (
-              <div className={styles.gridSection}>
-                <div className={styles.sectionHeader}>
-                  <h3 className={styles.sectionTitle}>More Reviews</h3>
-                  <div className={styles.divider}></div>
-                </div>
-                <div className={styles.gridList}>
-                  {filteredPosts.slice(1).map(post => (
-                    <PosterCard key={post.id} {...post} />
-                  ))}
-                </div>
-              </div>
-            )}
-          </>
-        ) : (
-          <div className={styles.emptyState}>
-            <span className={styles.emptyIcon}>📭</span>
-            <p>조건에 맞는 검색 결과가 없습니다.</p>
-          </div>
-        )}
-      </div>
-    </div>
+    <HomeContent 
+      filteredPosts={filteredPosts} 
+      displayTitle={displayTitle} 
+      animationKey={animationKey}
+      isInitialVisit={isInitialVisit}
+    />
   );
 }
