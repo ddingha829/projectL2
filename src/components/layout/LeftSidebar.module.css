@@ -44,6 +44,69 @@
   display: none;
 }
 
+.mobileActions {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  margin-bottom: 24px;
+}
+
+.actionRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.iconBtn {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+.loginBtnSmall {
+  background: #1a77ce;
+  color: white;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.mobileSearch {
+  display: flex;
+  background: white;
+  border: 1px solid var(--border-light);
+  border-radius: 20px;
+  padding: 4px 12px;
+  align-items: center;
+}
+
+.mobileInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 0.9rem;
+  padding: 4px;
+}
+
+.mobileSearchBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .mobileActions {
+    display: flex;
+  }
+}
+
 .noticeContainer {
   width: 100%;
   border-radius: 12px; /* More rectangular R value to match categories */
@@ -53,6 +116,7 @@
   -webkit-mask-image: -webkit-radial-gradient(white, black);
   mask-image: radial-gradient(white, black);
   transform: translateZ(0); /* Hardware acceleration */
+  min-height: 56px; /* Ensure height on mobile */
 }
 
 .sectionTitle {

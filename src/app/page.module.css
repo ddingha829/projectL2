@@ -262,11 +262,21 @@
 
 @media (max-width: 768px) {
   .sectionHeader {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
     margin-bottom: 20px;
     gap: 16px;
   }
   .sectionTitle {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
+    white-space: nowrap;
+    text-align: left;
+  }
+  .divider {
+    flex: 1;
+    display: block;
   }
   .gridSection {
     margin-top: 40px;
@@ -274,6 +284,53 @@
   .gridList {
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .heroTrack {
+    height: 380px !important;
+  }
+  
+  .gridList {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 16px;
+    padding: 10px 4px 20px 4px;
+    scrollbar-width: none; /* Hide scrollbar for clean look */
+    -ms-overflow-style: none;
+    scroll-snap-type: x mandatory;
+    width: 100vw;
+    margin-left: -16px; /* Offset parent padding to touch edges */
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  
+  .gridList::-webkit-scrollbar {
+    display: none;
+  }
+
+  .gridList > * {
+    flex: 0 0 75vw; /* Each card takes 75% width */
+    scroll-snap-align: start;
+  }
+
+  /* When filtered or in full view, use vertical grid instead of swiping */
+  .feedAnimator .gridList {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    width: 100%;
+    margin-left: 0;
+    padding-left: 0;
+    padding-right: 0;
+    overflow: visible;
+  }
+  
+  .feedAnimator .gridList > * {
+    flex: none;
+    width: 100%;
   }
 }
 

@@ -35,10 +35,22 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
   const [hoveredAuthor, setHoveredAuthor] = useState<any>(null);
   const [coords, setCoords] = useState({ top: 0, left: 0 });
   const [mounted, setMounted] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("search", searchQuery);
+      router.push(`/?${params.toString()}`);
+      if (onClose) onClose();
+      setSearchQuery("");
+    }
+  };
 
   const handleAuthorEnter = (author: any, e: React.MouseEvent) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -76,6 +88,25 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
   return (
     <>
       <aside className={`${styles.sidebar} ${isOpen ? styles.open : ""}`}>
+        {/* Mobile Only: Icons at top */}
+        <div className={styles.mobileActions}>
+          <div className={styles.actionRow}>
+            <button className={styles.iconBtn}>📄</button>
+            <button className={styles.iconBtn}>🔔</button>
+            <Link href="/login" className={styles.loginBtnSmall}>Login</Link>
+          </div>
+          <form className={styles.mobileSearch} onSubmit={handleSearch}>
+            <input 
+              type="text" 
+              placeholder="검색..." 
+              className={styles.mobileInput} 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <button type="submit" className={styles.mobileSearchBtn}>🔍</button>
+          </form>
+        </div>
+
         <div className={styles.section}>
           <header className={styles.sidebarHeader}>
             <h3 className={styles.sectionTitle}>Notice</h3>
