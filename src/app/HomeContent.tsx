@@ -1,10 +1,12 @@
 "use client";
-
+ 
 import { useState, useEffect } from "react";
 import IntroAnimation from "@/components/common/IntroAnimation";
 import styles from "./page.module.css";
 import HeroCard from "@/components/feed/HeroCard";
 import PosterCard from "@/components/feed/PosterCard";
+import { AUTHORS } from "@/lib/constants/authors";
+import { useSearchParams } from "next/navigation";
 
 interface HomeContentProps {
   filteredPosts: any[];
@@ -19,58 +21,231 @@ export default function HomeContent({
   animationKey,
   isInitialVisit 
 }: HomeContentProps) {
+  const searchParams = useSearchParams();
+  const currentAuthorId = searchParams.get("author");
+  const authorData = AUTHORS.find(a => a.id === currentAuthorId);
+
   const [showIntro, setShowIntro] = useState(false);
+  const [heroIndex, setHeroIndex] = useState(0);
+  const [slideDir, setSlideDir] = useState<'next' | 'prev'>('next');
+  const [isViewMore, setIsViewMore] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+
+  const POSTS_PER_PAGE = 8;
+  
+  // ... Rest stays same, but I'll insert the Profile JSX in the return
 
   useEffect(() => {
-    // Show intro only on initial visit to the main home page (no filters)
     if (isInitialVisit) {
       const visited = sessionStorage.getItem("introVisited");
-      if (!visited) {
-        setShowIntro(true);
-      }
+      if (!visited) setShowIntro(true);
     }
   }, [isInitialVisit]);
+
+  // Reset pagination when filter changes
+  useEffect(() => {
+    setCurrentPage(0);
+    setIsViewMore(false);
+  }, [animationKey]);
+
+  // Scroll to top when view or page changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [isViewMore, currentPage]);
 
   const handleIntroComplete = () => {
     setShowIntro(false);
     sessionStorage.setItem("introVisited", "true");
   };
 
+  const nextHero = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setSlideDir('next');
+    setHeroIndex((prev) => (prev + 1) % 3);
+  };
+
+  const prevHero = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setSlideDir('prev');
+    setHeroIndex((prev) => (prev - 1 + 3) % 3);
+  };
+
+  // Split posts
+  const heroPosts = filteredPosts.slice(0, 3);
+  const otherPosts = filteredPosts.slice(3);
+
+  // If we have filters, just show the grid with the title
+  const isFiltered = displayTitle !== "Home";
+
+  const MOCK_NOTICE = {
+    id: "notice-1",
+    category: "공지",
+    title: "우가우가 블로그 개편 안내 - 새로운 디자인으로 인사드립니다!",
+    author: { id: "admin", name: "관리자", color: "#666666", avatar: "📢" },
+    likes: 99,
+    imageUrl: "https://images.unsplash.com/photo-1432821596592-e2c18b78144f?auto=format&fit=crop&w=1600&q=80"
+  };
+
+  // Grid posts logic
+  const showFullGrid = isFiltered || isViewMore;
+  const displayPosts = showFullGrid 
+    ? otherPosts.slice(currentPage * POSTS_PER_PAGE, (currentPage + 1) * POSTS_PER_PAGE)
+    : otherPosts.slice(0, 4);
+
+  const totalPages = Math.ceil(otherPosts.length / POSTS_PER_PAGE);
+
   return (
     <>
       {showIntro && <IntroAnimation onComplete={handleIntroComplete} />}
       
       <div className={styles.container}>
-        <header className={styles.feedHeader}>
-          <h1 className={styles.pageTitle}>{displayTitle}</h1>
-        </header>
-        
-        <div key={animationKey} className={styles.feedAnimator}>
-          {filteredPosts.length > 0 ? (
-            <>
-              <HeroCard {...filteredPosts[0]} />
-              
-              {filteredPosts.length > 1 && (
-                <div className={styles.gridSection}>
-                  <div className={styles.sectionHeader}>
-                    <h3 className={styles.sectionTitle}>More Reviews</h3>
-                    <div className={styles.divider}></div>
+        {!showFullGrid ? (
+          <>
+            <div className={styles.noticeWrapper} style={{ marginTop: '8px' }}>
+              <HeroCard {...MOCK_NOTICE} heightRatio="compact" />
+            </div>
+
+            <header className={styles.sectionHeader} style={{ marginTop: '24px' }}>
+              <div className={styles.divider}></div>
+              <h1 className={styles.sectionTitle}>떠오르는 글</h1>
+              <div className={styles.divider}></div>
+            </header>
+            <div className={styles.heroWrapper}>
+              <div className={styles.desktopOnly}>
+                <div 
+                  className={styles.heroTrack} 
+                  style={{ transform: `translateX(-${heroIndex * 100}%)` }}
+                >
+                  {heroPosts.map((post) => (
+                    <div key={post.id} className={styles.heroSlideItem}>
+                      <HeroCard 
+                        {...post} 
+                        heightRatio="2/3" 
+                        showNav={false} // Nav handled by parent Wrapper to stay fixed
+                      />
+                    </div>
+                  ))}
+                </div>
+                
+                {heroPosts.length > 1 && (
+                  <div className={styles.fixedHeroNav}>
+                    <button className={styles.slideNavBtn} onClick={prevHero}>
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                      </svg>
+                    </button>
+                    <div className={styles.heroDotsView}>
+                      {heroPosts.map((_, idx) => (
+                        <span 
+                          key={idx} 
+                          className={idx === heroIndex ? styles.activeHeroDot : styles.inactiveHeroDot}
+                        ></span>
+                      ))}
+                    </div>
+                    <button className={styles.slideNavBtn} onClick={nextHero}>
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                      </svg>
+                    </button>
                   </div>
-                  <div className={styles.gridList}>
-                    {filteredPosts.slice(1).map(post => (
-                      <PosterCard key={post.id} {...post} />
-                    ))}
+                )}
+              </div>
+              <div className={styles.mobileOnly}>
+                {heroPosts.map((post) => (
+                  <div key={post.id} className={styles.mobileHeroItem}>
+                    <HeroCard {...post} heightRatio="2/3" />
                   </div>
+                ))}
+              </div>
+            </div>
+
+            <div className={styles.gridSection}>
+              <header className={styles.sectionHeader}>
+                <div className={styles.divider}></div>
+                <h3 className={styles.sectionTitle}>다른 참신하고 재밌는 글들</h3>
+                <div className={styles.divider}></div>
+              </header>
+              <div className={styles.gridList}>
+                {displayPosts.map(post => (
+                  <PosterCard key={post.id} {...post} />
+                ))}
+              </div>
+
+              {otherPosts.length > 4 && (
+                <div className={styles.viewMoreContainer}>
+                  <button className={styles.viewMoreBtn} onClick={() => setIsViewMore(true)}>
+                    더 보기 <span className={styles.btnIcon}>+</span>
+                  </button>
                 </div>
               )}
-            </>
-          ) : (
-            <div className={styles.emptyState}>
-              <span className={styles.emptyIcon}>📭</span>
-              <p>조건에 맞는 검색 결과가 없습니다.</p>
             </div>
-          )}
-        </div>
+          </>
+        ) : (
+          <div key={animationKey} className={styles.feedAnimator}>
+            {authorData && (
+              <div className={styles.authorProfileCard} style={{ '--author-color': authorData.color } as any}>
+                <div className={styles.profileHeader}>
+                  <img src={authorData.avatar} alt={authorData.name} className={styles.profileAvatar} />
+                  <div className={styles.profileInfo}>
+                    <h2 className={styles.profileName}>{authorData.name} <span>Writer</span></h2>
+                    <p className={styles.profileBio}>{authorData.description.bio}</p>
+                  </div>
+                </div>
+                <ul className={styles.profileBullets}>
+                  {authorData.description.bullets.map((bullet, idx) => (
+                    <li key={idx} className={styles.profileBullet}>
+                      <span className={styles.bulletDot} style={{ backgroundColor: authorData.color }}></span>
+                      {bullet}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <header className={styles.sectionHeader}>
+              <div className={styles.divider}></div>
+              <h1 className={styles.sectionTitle}>{isViewMore ? "모든 글" : displayTitle}</h1>
+              <div className={styles.divider}></div>
+            </header>
+            <div key={`grid-${currentPage}`} className={styles.gridListFade}>
+              <div className={styles.gridList}>
+                {(isViewMore ? otherPosts : filteredPosts).slice(currentPage * POSTS_PER_PAGE, (currentPage + 1) * POSTS_PER_PAGE).map(post => (
+                  <PosterCard key={post.id} {...post} />
+                ))}
+              </div>
+            </div>
+
+            {(isViewMore || (Math.ceil(filteredPosts.length / POSTS_PER_PAGE) > 1)) && (
+              <div className={styles.pagination}>
+                <div className={styles.pageInfo}>PAGE {currentPage + 1} / {Math.ceil((isViewMore ? otherPosts.length : filteredPosts.length) / POSTS_PER_PAGE)}</div>
+                <div className={styles.pageButtons}>
+                  <button 
+                    className={styles.pageBtn} 
+                    disabled={currentPage === 0}
+                    onClick={() => setCurrentPage(p => p - 1)}
+                  >
+                    ←
+                  </button>
+                  <button 
+                    className={styles.pageBtn} 
+                    disabled={currentPage >= Math.ceil((isViewMore ? otherPosts.length : filteredPosts.length) / POSTS_PER_PAGE) - 1}
+                    onClick={() => setCurrentPage(p => p + 1)}
+                  >
+                    →
+                  </button>
+                </div>
+              </div>
+            )}
+            
+            {isViewMore && (
+              <div style={{ marginTop: '40px', textAlign: 'center' }}>
+                <button className={styles.viewMoreBtn} style={{ margin: '0 auto' }} onClick={() => setIsViewMore(false)}>
+                  메인으로 돌아가기
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </>
   );

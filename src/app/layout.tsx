@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Noto_Sans_KR } from "next/font/google";
+import { Noto_Sans_KR, Outfit } from "next/font/google";
 import "./globals.css";
 import gridStyles from "./layout.module.css";
 import AppShell from "@/components/layout/AppShell";
@@ -8,6 +8,12 @@ const notoSans = Noto_Sans_KR({
   variable: "--font-noto-sans",
   subsets: ["latin"],
   weight: ["300", "400", "500", "700", "900"],
+});
+
+const outfit = Outfit({
+  variable: "--font-outfit",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
@@ -21,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" className={`${notoSans.variable}`}>
+    <html lang="ko" className={`${notoSans.variable} ${outfit.variable}`}>
       <body>
         <AppShell>
           {children}

@@ -1,30 +1,39 @@
 .sidebar {
-  width: 250px;
-  background-color: var(--background);
+  width: 280px;
+  background-color: var(--bg-primary);
   position: sticky;
   top: 70px;
-  padding: 40px 20px;
+  height: calc(100vh - 70px);
+  padding: 40px 24px;
   display: flex;
   flex-direction: column;
   gap: 40px;
-  border-right: 1px solid var(--border);
-  z-index: 100;
+  border-right: 1px solid var(--border-light);
+  z-index: 1100; /* Higher than TopNavbar if needed, but TopNavbar is 1000 */
+  overflow-y: visible; /* Crucial for tooltips to not be clipped if container is tight */
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .sectionTitle {
-  font-size: 0.8rem;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
-  color: var(--text-light);
-  margin-bottom: 16px;
+  letter-spacing: 0.1em;
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
   padding-left: 12px;
 }
 
 .menuList {
-  list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .menuBtn, .userBtn {
@@ -32,31 +41,33 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  background: none;
-  border: none;
-  padding: 10px 12px;
-  border-radius: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: all 0.2s;
-  color: var(--text-muted);
+  transition: var(--transition-normal);
+  color: var(--text-secondary);
   font-family: inherit;
   font-size: 0.95rem;
   font-weight: 500;
 }
 
 .menuBtn:hover, .userBtn:hover {
-  background-color: var(--bg-hover);
-  color: var(--text-main);
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
 }
 
 .menuBtn.active, .userBtn.active {
-  background-color: var(--text-main);
-  color: var(--background);
-  font-weight: 700;
+  background-color: var(--text-primary);
+  color: var(--bg-primary);
+  font-weight: 600;
+  box-shadow: var(--shadow-md);
 }
 
 .userBtn {
   justify-content: space-between;
+  padding-right: 8px;
 }
 
 .userInfo {
@@ -71,31 +82,35 @@
 }
 
 .colorLine {
-  width: 40px;
-  height: 6px;
-  border-radius: 3px;
+  width: 4px;
+  height: 20px;
+  border-radius: 2px;
   flex-shrink: 0;
-  transition: width 0.3s ease;
+  transition: var(--transition-normal);
 }
 
 .userBtn:hover .colorLine {
-  width: 50px;
+  height: 28px;
+}
+
+.userBtn.active .colorLine {
+  background-color: var(--bg-primary) !important;
 }
 
 .authorTooltip {
   position: absolute;
-  left: 100%;
+  left: calc(100% + 16px);
   top: 0;
-  background: var(--background);
-  border: 1px solid var(--border);
-  padding: 16px;
-  border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-  width: 280px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-medium);
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-premium);
+  width: 300px;
   z-index: 1000;
   opacity: 0;
   visibility: hidden;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   pointer-events: none;
   transform: translateX(10px);
 }
@@ -103,66 +118,56 @@
 .userContainer:hover .authorTooltip {
   opacity: 1;
   visibility: visible;
-  transform: translateX(20px);
-}
-
-.authorTooltip::before {
-  content: '';
-  position: absolute;
-  left: -6px;
-  top: 20px;
-  transform: rotate(45deg);
-  width: 10px;
-  height: 10px;
-  background: var(--background);
-  border-left: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
+  transform: translateX(0);
 }
 
 .tooltipBio {
-  font-size: 0.85rem;
+  font-family: var(--font-outfit), var(--font-noto-sans), sans-serif;
+  font-size: 0.9rem;
   font-weight: 700;
-  color: var(--text-main);
-  margin-bottom: 10px;
-  line-height: 1.4;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  line-height: 1.5;
 }
 
 .tooltipBullets {
-  list-style: none;
-  padding: 0;
-  margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 10px;
 }
 
 .tooltipBullets li {
-  font-size: 0.8rem;
-  color: var(--text-muted);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
   position: relative;
-  padding-left: 14px;
-  line-height: 1.4;
+  padding-left: 20px;
+  line-height: 1.5;
 }
 
 .tooltipBullets li::before {
-  content: '•';
+  content: '→';
   position: absolute;
   left: 0;
-  color: var(--accent);
+  color: var(--accent-primary);
+  font-weight: bold;
 }
 
 @media (max-width: 768px) {
   .sidebar {
     position: fixed;
-    top: 70px;
+    top: 64px;
     left: -100%;
     width: 280px;
-    height: calc(100vh - 70px);
-    z-index: 101;
-    transition: left 0.3s ease;
-    box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+    height: calc(100vh - 64px);
+    z-index: 2000;
+    transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 10px 0 50px rgba(0,0,0,0.2);
+    border-right: none;
   }
   .sidebar.open {
     left: 0;
+  }
+  .authorTooltip {
+    display: none; /* Tooltip often awkward on mobile tap, can be improved later */
   }
 }
