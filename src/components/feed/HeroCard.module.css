@@ -4,18 +4,13 @@
   display: flex;
   background-color: #000;
   height: 100%;
-  border-radius: var(--radius-lg);
   overflow: hidden;
-  /* Fix for rounded corners being pixelated during transforms */
-  -webkit-mask-image: -webkit-radial-gradient(white, black);
-  mask-image: radial-gradient(white, black);
-  isolation: isolate;
 }
 
 .heightFull { height: min(780px, 78vh); }
 .heightTwoThird { height: min(520px, 52vh); }
 .heightOneThird { height: min(260px, 26vh); }
-.heightCompact { height: 80px; }
+.heightCompact { height: 56px; }
 
 .bgImage {
   position: absolute;
@@ -26,7 +21,6 @@
   object-fit: cover;
   z-index: 1;
   transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-  border-radius: inherit;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
 }
@@ -58,7 +52,8 @@
 }
 
 .heightCompact .contentLink {
-  padding: 16px 32px;
+  padding: 12px;
+  max-width: 100%;
   align-items: center;
   justify-content: center;
 }
@@ -130,17 +125,17 @@
 
 .heightCompact .title {
   font-family: var(--font-outfit), var(--font-noto-sans), sans-serif;
-  font-size: 1.05rem; /* Larger */
-  font-weight: 800;
+  font-size: 1.22rem; /* Increased as requested (+ ~2px) */
+  font-weight: 900;
   margin-bottom: 0;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
   color: #ffffff;
-  text-align: left;
+  text-align: center;
   flex: 1;
   letter-spacing: -0.01em;
   line-height: 1.25;
-  white-space: pre-line; /* For newline */
+  white-space: pre-line;
 }
 
 .innerContainer {

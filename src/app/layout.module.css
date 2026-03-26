@@ -5,6 +5,7 @@
   height: calc(100vh - 70px);
   background-color: var(--bg-primary);
   position: relative;
+  overflow: hidden; /* Prevent double scrollbars */
 }
 
 .contentWrapper {

@@ -6,7 +6,7 @@ import styles from "./page.module.css";
 import HeroCard from "@/components/feed/HeroCard";
 import PosterCard from "@/components/feed/PosterCard";
 import { AUTHORS } from "@/lib/constants/authors";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 
 interface HomeContentProps {
   filteredPosts: any[];
@@ -21,14 +21,15 @@ export default function HomeContent({
   animationKey,
   isInitialVisit 
 }: HomeContentProps) {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const currentAuthorId = searchParams.get("author");
+  const isViewMore = searchParams.get("view") === "all";
   const authorData = AUTHORS.find(a => a.id === currentAuthorId);
 
   const [showIntro, setShowIntro] = useState(false);
   const [heroIndex, setHeroIndex] = useState(0);
   const [slideDir, setSlideDir] = useState<'next' | 'prev'>('next');
-  const [isViewMore, setIsViewMore] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
 
   const POSTS_PER_PAGE = 8;
@@ -45,8 +46,7 @@ export default function HomeContent({
   // Reset pagination when filter changes
   useEffect(() => {
     setCurrentPage(0);
-    setIsViewMore(false);
-  }, [animationKey]);
+  }, [animationKey, isViewMore]);
 
   // Scroll to top when view or page changes
   useEffect(() => {
@@ -80,7 +80,7 @@ export default function HomeContent({
 
 
   // Grid posts logic
-  const showFullGrid = isFiltered || isViewMore;
+  const showFullGrid = isFiltered || isViewMore || searchParams.get("view") === "all";
   const displayPosts = showFullGrid 
     ? otherPosts.slice(currentPage * POSTS_PER_PAGE, (currentPage + 1) * POSTS_PER_PAGE)
     : otherPosts.slice(0, 4);
@@ -95,7 +95,6 @@ export default function HomeContent({
         {!showFullGrid ? (
           <>
             <header className={styles.sectionHeader} style={{ marginTop: '8px' }}>
-              <div className={styles.divider}></div>
               <h1 className={styles.sectionTitle}>지금 뜨는 리뷰</h1>
               <div className={styles.divider}></div>
             </header>
@@ -150,7 +149,6 @@ export default function HomeContent({
 
             <div className={styles.gridSection}>
               <header className={styles.sectionHeader}>
-                <div className={styles.divider}></div>
                 <h3 className={styles.sectionTitle}>다른 리뷰</h3>
                 <div className={styles.divider}></div>
               </header>
@@ -162,7 +160,7 @@ export default function HomeContent({
 
               {otherPosts.length > 4 && (
                 <div className={styles.viewMoreContainer}>
-                  <button className={styles.viewMoreBtn} onClick={() => setIsViewMore(true)}>
+                  <button className={styles.viewMoreBtn} onClick={() => router.push('/?view=all')}>
                     더 보기 <span className={styles.btnIcon}>+</span>
                   </button>
                 </div>
@@ -192,11 +190,10 @@ export default function HomeContent({
             )}
 
             <header className={styles.sectionHeader}>
-              <div className={styles.divider}></div>
-              <h1 className={styles.sectionTitle}>{isViewMore ? "모든 글" : displayTitle}</h1>
+              <h1 className={styles.sectionTitle}>{ isViewMore ? "모든 글" : displayTitle}</h1>
               <div className={styles.divider}></div>
             </header>
-            <div key={`grid-${currentPage}`} className={styles.gridListFade}>
+            <div key={`grid-${currentPage}-${animationKey}`} className={styles.gridListFade}>
               <div className={styles.gridList}>
                 {(isViewMore ? otherPosts : filteredPosts).slice(currentPage * POSTS_PER_PAGE, (currentPage + 1) * POSTS_PER_PAGE).map(post => (
                   <PosterCard key={post.id} {...post} />
@@ -205,32 +202,43 @@ export default function HomeContent({
             </div>
 
             {(isViewMore || (Math.ceil(filteredPosts.length / POSTS_PER_PAGE) > 1)) && (
-              <div className={styles.pagination}>
-                <div className={styles.pageInfo}>PAGE {currentPage + 1} / {Math.ceil((isViewMore ? otherPosts.length : filteredPosts.length) / POSTS_PER_PAGE)}</div>
-                <div className={styles.pageButtons}>
-                  <button 
-                    className={styles.pageBtn} 
-                    disabled={currentPage === 0}
-                    onClick={() => setCurrentPage(p => p - 1)}
-                  >
-                    ←
-                  </button>
-                  <button 
-                    className={styles.pageBtn} 
-                    disabled={currentPage >= Math.ceil((isViewMore ? otherPosts.length : filteredPosts.length) / POSTS_PER_PAGE) - 1}
-                    onClick={() => setCurrentPage(p => p + 1)}
-                  >
-                    →
-                  </button>
+              <div className={styles.paginationRow}>
+                {/* Left empty spacer */}
+                <div className={styles.pageLeftSpacer}></div>
+
+                {/* Center: Back to Main */}
+                <div className={styles.centerControl}>
+                  {isViewMore && (
+                    <button className={styles.backToMainBtn} onClick={() => router.push('/')}>
+                      메인으로 돌아가기
+                    </button>
+                  )}
                 </div>
-              </div>
-            )}
-            
-            {isViewMore && (
-              <div style={{ marginTop: '40px', textAlign: 'center' }}>
-                <button className={styles.viewMoreBtn} style={{ margin: '0 auto' }} onClick={() => setIsViewMore(false)}>
-                  메인으로 돌아가기
-                </button>
+
+                {/* Right: Page Info + Arrows */}
+                <div className={styles.rightControl}>
+                  <div className={styles.pageInfo}>PAGE {currentPage + 1} / {Math.ceil((isViewMore ? otherPosts.length : filteredPosts.length) / POSTS_PER_PAGE)}</div>
+                  <div className={styles.pageButtons}>
+                    <button 
+                      className={styles.pageBtn} 
+                      disabled={currentPage === 0}
+                      onClick={() => setCurrentPage(p => p - 1)}
+                    >
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                      </svg>
+                    </button>
+                    <button 
+                      className={styles.pageBtn} 
+                      disabled={currentPage >= Math.ceil((isViewMore ? otherPosts.length : filteredPosts.length) / POSTS_PER_PAGE) - 1}
+                      onClick={() => setCurrentPage(p => p + 1)}
+                    >
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
               </div>
             )}
           </div>

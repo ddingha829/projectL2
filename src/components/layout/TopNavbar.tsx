@@ -62,12 +62,11 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
         <button className={styles.hamburgerBtn} onClick={onMobileToggle}>
           <span className={styles.hamburgerIcon}>≡</span>
         </button>
-        <div className={styles.mobileLogo}>
-          <Link href="/">
-            <picture>
-              <source srcSet="/logo2.png" media="(prefers-color-scheme: dark)" />
-              <img src="/logo.png" alt="WoogaWooga Logo" style={{ height: '28px', width: 'auto' }} />
-            </picture>
+        <div className={styles.logoArea}>
+          <Link href="/" className={styles.logoText}>
+            <span className={styles.logoMain}>우가우가</span>
+            <span className={styles.logoDot}>.</span>
+            <span className={styles.logoSub}>WoogaWooga</span>
           </Link>
         </div>
       </div>

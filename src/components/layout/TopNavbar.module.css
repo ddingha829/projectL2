@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 40px;
+  padding: 0 40px 0 0; /* No left padding for precise logo alignment */
   border-bottom: 1px solid var(--border-light);
   background-color: var(--glass-bg);
   backdrop-filter: blur(16px);
@@ -14,9 +14,47 @@
 }
 
 .leftSection {
-  flex: 0 0 auto;
+  flex: 0 0 280px; /* Exact width of the sidebar */
+  width: 280px;
   display: flex;
   align-items: center;
+  justify-content: flex-start; /* Align to left to match sidebar */
+  position: relative;
+}
+
+.logoArea {
+  margin-left: 20px;
+}
+
+.logoText {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  font-family: var(--font-outfit), var(--font-noto-sans), sans-serif;
+  font-size: 1.45rem;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+}
+
+.logoMain {
+  color: #000;
+  font-size: 1.65rem; /* Increased as requested (+ ~3px) */
+}
+
+.logoDot {
+  color: #1a77ce;
+  margin: 0 1px;
+}
+
+.logoSub {
+  color: #1a77ce;
+}
+
+.logoArea a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .centerSection {
@@ -41,7 +79,7 @@
   align-items: center;
 }
 
-.dot {
+.logo a {
   color: var(--accent-primary);
   margin-right: 2px;
 }
@@ -150,8 +188,8 @@
 
 .loginLink {
   padding: 10px 24px;
-  background-color: var(--text-primary);
-  color: var(--bg-primary);
+  background-color: #1a77ce; /* Blue background */
+  color: #ffffff; /* White text for contrast */
   text-decoration: none;
   border-radius: var(--radius-xl);
   font-size: 0.9rem;
@@ -192,7 +230,8 @@
   color: var(--text-primary);
   cursor: pointer;
   padding: 8px;
-  margin-left: -12px;
+  position: absolute;
+  left: 16px; /* Position absolute to not affect centering */
 }
 
 @media (max-width: 1100px) {
@@ -206,7 +245,22 @@
     height: 64px;
     padding: 0 16px;
   }
-  
+
+.logoArea {
+  margin-left: -20px; /* Shift further left */
+}
+
+.logoArea img {
+  height: 38px !important; /* Enlarge by ~35% */
+  width: auto;
+}
+
+  .leftSection {
+    flex: 1; /* Take space on mobile */
+    width: auto;
+    justify-content: center;
+  }
+
   .hamburgerBtn {
     display: block;
   }

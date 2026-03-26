@@ -19,8 +19,9 @@
   position: relative;
   width: 100%;
   padding-top: 140%; /* Slightly shorter than 150% for a modern magazine feel */
-  border-radius: var(--radius-lg);
+  border-radius: 20px;
   overflow: hidden;
+  border: 2px solid #000;
   background-color: var(--bg-tertiary);
   margin-bottom: 20px;
   box-shadow: var(--shadow-md);

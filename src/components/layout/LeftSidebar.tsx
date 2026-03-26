@@ -1,37 +1,72 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import styles from "./LeftSidebar.module.css";
-import React, { Suspense } from "react";
-
 import { AUTHORS } from "@/lib/constants/authors";
 import { MOCK_NOTICE } from "@/lib/constants/notice";
 import HeroCard from "@/components/feed/HeroCard";
 
 const CATEGORIES = [
+  { id: "all", name: "모든 글", icon: "🏠" },
   { id: "movie", name: "영화", icon: "🎬" },
   { id: "book", name: "책", icon: "📚" },
   { id: "game", name: "게임", icon: "🎮" },
-  { id: "restaurant", name: "맛집", icon: "🍽️" },
+  { id: "restaurant", name: "맛집", icon: "🍱" },
   { id: "travel", name: "여행", icon: "✈️" },
   { id: "exhibition", name: "전시회", icon: "🖼️" },
   { id: "other", name: "기타", icon: "✨" },
 ];
 
-function SidebarContent({ isOpen, onClose }: { isOpen?: boolean, onClose?: () => void }) {
+interface LeftSidebarProps {
+  isOpen: boolean;
+  onClose?: () => void;
+}
+
+export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const currentCategory = searchParams.get("category");
   const currentAuthor = searchParams.get("author");
+  const currentView = searchParams.get("view");
 
-  const handleFilter = (type: "category" | "author", value: string) => {
+  const [hoveredAuthor, setHoveredAuthor] = useState<any>(null);
+  const [coords, setCoords] = useState({ top: 0, left: 0 });
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const handleAuthorEnter = (author: any, e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    // Position bubble to the right of the sidebar boundary
+    setCoords({ top: rect.top, left: 280 + 16 }); 
+    setHoveredAuthor(author);
+  };
+
+  const handleAuthorLeave = () => {
+    setHoveredAuthor(null);
+  };
+
+  const handleFilter = (type: "category" | "author", value: string | null) => {
     const params = new URLSearchParams(searchParams.toString());
     
-    if (params.get(type) === value) {
-      params.delete(type);
+    if (value === "all") {
+      params.delete("category");
+      params.delete("author");
+      params.set("view", "all");
     } else {
-      params.set(type, value);
+      params.delete("view");
+      if (value === null) {
+        params.delete(type);
+      } else if (params.get(type) === value) {
+        params.delete(type);
+      } else {
+        params.set(type, value);
+      }
     }
     
     router.push(`/?${params.toString()}`);
@@ -39,68 +74,100 @@ function SidebarContent({ isOpen, onClose }: { isOpen?: boolean, onClose?: () =>
   };
 
   return (
-    <aside className={`${styles.sidebar} ${isOpen ? styles.open : ""}`}>
-      <div className={styles.section} style={{ marginBottom: '16px' }}>
-        <h3 className={styles.sectionTitle}>Notice</h3>
-        <div style={{ borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--border-light)', backgroundColor: '#000' }}>
-          <HeroCard {...MOCK_NOTICE} heightRatio="compact" />
+    <>
+      <aside className={`${styles.sidebar} ${isOpen ? styles.open : ""}`}>
+        <div className={styles.section}>
+          <header className={styles.sidebarHeader}>
+            <h3 className={styles.sectionTitle}>Notice</h3>
+            <div className={styles.sidebarDivider}></div>
+          </header>
+          <div className={styles.noticeContainer}>
+            <HeroCard {...MOCK_NOTICE} heightRatio="compact" />
+          </div>
         </div>
-      </div>
 
-      <div className={styles.section}>
-        <h3 className={styles.sectionTitle}>Categories</h3>
-        <ul className={styles.menuList}>
-          {CATEGORIES.map((cat) => (
-            <li key={cat.id} className={styles.menuItem}>
+        <div className={styles.section}>
+          <header className={styles.sidebarHeader}>
+            <h3 className={styles.sectionTitle}>Categories</h3>
+            <div className={styles.sidebarDivider}></div>
+          </header>
+          <ul className={styles.categoryGrid}>
+            <li className={styles.fullRow}>
               <button 
-                onClick={() => handleFilter("category", cat.id)}
-                className={`${styles.menuBtn} ${currentCategory === cat.id ? styles.active : ""}`}
+                onClick={() => handleFilter("category", "all")}
+                className={`${styles.menuBtn} ${currentView === "all" ? styles.active : ""}`}
               >
-                <span className={styles.icon}>{cat.icon}</span>
-                <span className={styles.name}>{cat.name}</span>
+                <span className={styles.icon}>{CATEGORIES[0].icon}</span>
+                <span className={styles.name}>{CATEGORIES[0].name}</span>
               </button>
             </li>
-          ))}
-        </ul>
-      </div>
+            {CATEGORIES.slice(1).map((cat) => (
+              <li key={cat.id} className={styles.menuItem}>
+                <button 
+                  onClick={() => handleFilter("category", cat.id)}
+                  className={`${styles.menuBtn} ${currentCategory === cat.id ? styles.active : ""}`}
+                >
+                  <span className={styles.icon}>{cat.icon}</span>
+                  <span className={styles.name}>{cat.name}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
 
-      <div className={styles.section}>
-        <h3 className={styles.sectionTitle}>Writers</h3>
-        <ul className={styles.menuList}>
-          {AUTHORS.map((author) => (
-            <li key={author.id} className={styles.menuItem}>
-              <div className={styles.userContainer}>
+        <div className={styles.section}>
+          <header className={styles.sidebarHeader}>
+            <h3 className={styles.sectionTitle}>Writers</h3>
+            <div className={styles.sidebarDivider}></div>
+          </header>
+          <ul className={styles.menuList}>
+            {AUTHORS.map((author) => (
+              <li 
+                key={author.id} 
+                className={styles.userContainer}
+                onMouseEnter={(e) => handleAuthorEnter(author, e)}
+                onMouseLeave={handleAuthorLeave}
+              >
                 <button 
                   onClick={() => handleFilter("author", author.id)}
                   className={`${styles.userBtn} ${currentAuthor === author.id ? styles.active : ""}`}
                 >
                   <div className={styles.userInfo}>
-                    <img src={author.avatar} alt={author.name} style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover' }} />
-                    <span className={styles.name}>{author.name}</span>
+                    {author.avatar.startsWith("/") || author.avatar.startsWith("http") ? (
+                      <img src={author.avatar} alt={author.name} className={styles.avatarImg} />
+                    ) : (
+                      <span className={styles.avatarEmoji}>{author.avatar}</span>
+                    )}
+                    <span className={styles.authorName}>{author.name}</span>
                   </div>
                   <div className={styles.colorLine} style={{ backgroundColor: author.color }}></div>
                 </button>
-                <div className={styles.authorTooltip}>
-                  <p className={styles.tooltipBio}>{author.description.bio}</p>
-                  <ul className={styles.tooltipBullets}>
-                    {author.description.bullets.map((bullet, idx) => (
-                      <li key={idx}>{bullet}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </aside>
-  );
-}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </aside>
 
-export default function LeftSidebar({ isOpen, onClose }: { isOpen?: boolean, onClose?: () => void }) {
-  return (
-    <Suspense fallback={<aside className={styles.sidebar}></aside>}>
-      <SidebarContent isOpen={isOpen} onClose={onClose} />
-    </Suspense>
+      {mounted && hoveredAuthor && createPortal(
+        <div 
+          className={styles.authorTooltip}
+          style={{ 
+            top: `${coords.top}px`, 
+            left: `${coords.left}px`, 
+            opacity: 1, 
+            visibility: 'visible',
+            ['--author-color' as any]: hoveredAuthor.color
+          }}
+        >
+          <h4 className={styles.tooltipBio}>{hoveredAuthor.description.bio}</h4>
+          <ul className={styles.tooltipBullets}>
+            {hoveredAuthor.description.bullets.map((bullet: string, idx: number) => (
+              <li key={idx}>{bullet}</li>
+            ))}
+          </ul>
+        </div>,
+        document.body
+      )}
+    </>
   );
 }
