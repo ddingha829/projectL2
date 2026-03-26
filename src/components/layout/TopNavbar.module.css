@@ -50,7 +50,10 @@
   white-space: nowrap;
 }
 
-.logoMain { color: #000; font-size: 1.65rem; }
+.logoMain {
+  color: var(--text-primary);
+  font-size: 1.65rem;
+}
 .logoDot { color: #1a77ce; margin: 0 1px; }
 .logoSub { color: #1a77ce; }
 
@@ -116,8 +119,8 @@
 }
 
 .writeButton {
-  background: #000;
-  color: #fff;
+  background: var(--text-primary);
+  color: var(--bg-primary);
   padding: 8px 16px;
   border-radius: 30px;
   font-size: 0.85rem;
@@ -142,7 +145,7 @@
 .logoutButton {
   background: none;
   border: none;
-  color: #999;
+  color: var(--text-tertiary);
   font-size: 0.75rem;
   cursor: pointer;
 }

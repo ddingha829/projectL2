@@ -169,8 +169,8 @@
 }
 
 .menuBtn:hover {
-  background-color: #000;
-  color: #fff;
+  background-color: var(--text-primary);
+  color: var(--bg-primary);
   transform: translateY(-1px);
 }
 
@@ -210,8 +210,8 @@
 }
 
 .userBtn:hover {
-  background-color: #000;
-  color: #fff;
+  background-color: var(--text-primary);
+  color: var(--bg-primary);
   transform: translateY(-1px);
 }
 
