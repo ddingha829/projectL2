@@ -94,7 +94,11 @@ export default function HomeContent({
       <div className={styles.container}>
         {!showFullGrid ? (
           <>
-
+            <header className={styles.sectionHeader} style={{ marginTop: '8px' }}>
+              <div className={styles.divider}></div>
+              <h1 className={styles.sectionTitle}>지금 뜨는 리뷰</h1>
+              <div className={styles.divider}></div>
+            </header>
             <div className={styles.heroWrapper}>
               <div className={styles.desktopOnly}>
                 <div 

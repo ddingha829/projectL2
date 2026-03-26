@@ -14,6 +14,8 @@ const CATEGORIES = [
   { id: "book", name: "책", icon: "📚" },
   { id: "game", name: "게임", icon: "🎮" },
   { id: "restaurant", name: "맛집", icon: "🍽️" },
+  { id: "travel", name: "여행", icon: "✈️" },
+  { id: "exhibition", name: "전시회", icon: "🖼️" },
   { id: "other", name: "기타", icon: "✨" },
 ];
 
@@ -38,9 +40,9 @@ function SidebarContent({ isOpen, onClose }: { isOpen?: boolean, onClose?: () =>
 
   return (
     <aside className={`${styles.sidebar} ${isOpen ? styles.open : ""}`}>
-      <div className={styles.section} style={{ marginBottom: '32px' }}>
+      <div className={styles.section} style={{ marginBottom: '16px' }}>
         <h3 className={styles.sectionTitle}>Notice</h3>
-        <div style={{ borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--border-light)' }}>
+        <div style={{ borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--border-light)', backgroundColor: '#000' }}>
           <HeroCard {...MOCK_NOTICE} heightRatio="compact" />
         </div>
       </div>

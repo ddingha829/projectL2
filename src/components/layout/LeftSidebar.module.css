@@ -7,7 +7,7 @@
   padding: 40px 24px;
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 24px;
   border-right: 1px solid var(--border-light);
   z-index: 1100; /* Higher than TopNavbar if needed, but TopNavbar is 1000 */
   overflow-y: visible; /* Crucial for tooltips to not be clipped if container is tight */
@@ -16,7 +16,7 @@
 .section {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
 }
 
 .sectionTitle {
@@ -33,7 +33,7 @@
 .menuList {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 2px;
 }
 
 .menuBtn, .userBtn {
@@ -43,8 +43,8 @@
   gap: 12px;
   background: transparent;
   border: 1px solid transparent;
-  padding: 12px 16px;
-  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  border-radius: 8px;
   cursor: pointer;
   transition: var(--transition-normal);
   color: var(--text-secondary);

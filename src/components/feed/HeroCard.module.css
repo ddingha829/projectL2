@@ -15,7 +15,7 @@
 .heightFull { height: min(780px, 78vh); }
 .heightTwoThird { height: min(520px, 52vh); }
 .heightOneThird { height: min(260px, 26vh); }
-.heightCompact { height: 110px; }
+.heightCompact { height: 80px; }
 
 .bgImage {
   position: absolute;
@@ -130,16 +130,17 @@
 
 .heightCompact .title {
   font-family: var(--font-outfit), var(--font-noto-sans), sans-serif;
-  font-size: 0.95rem; /* Smaller for sidebar */
-  font-weight: 600;
+  font-size: 1.05rem; /* Larger */
+  font-weight: 800;
   margin-bottom: 0;
-  -webkit-line-clamp: 2; /* Allow 2 lines */
+  -webkit-line-clamp: 2;
   line-clamp: 2;
   color: #ffffff;
-  text-align: left; /* Left align for sidebar */
+  text-align: left;
   flex: 1;
   letter-spacing: -0.01em;
-  line-height: 1.3;
+  line-height: 1.25;
+  white-space: pre-line; /* For newline */
 }
 
 .innerContainer {
