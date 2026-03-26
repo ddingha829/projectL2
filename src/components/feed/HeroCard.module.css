@@ -1,7 +1,7 @@
 .hero {
   position: relative;
   width: 100%;
-  display: flex;
+  display: block; /* Changed from flex to avoid alignment gaps */
   background-color: #000;
   height: 100%;
   overflow: hidden;
@@ -288,7 +288,7 @@
 
 @media (max-width: 768px) {
   .hero:not(.heightCompact) {
-    height: 310px; /* Reduced by approx 20% from 380px */
+    height: 280px; /* Reduced further as requested */
   }
   .contentLink {
     padding: 30px 24px;
@@ -307,18 +307,19 @@
 
 @media (max-width: 768px) {
   .hero:not(.heightCompact) {
-    height: 310px; /* Reduced by approx 20% from 380px */
+    height: 280px;
     border-radius: var(--radius-lg);
-    margin-bottom: 32px;
+    margin-bottom: 24px;
   }
   .title {
-    font-size: 2rem;
+    font-size: 1.5rem;
+    margin-bottom: 12px;
   }
-  .readBtn {
-    padding: 12px 28px;
-    font-size: 1rem;
+  .meta {
+    gap: 10px;
+    font-size: 0.8rem;
   }
   .overlay {
-    padding: 30px 24px;
+    padding: 20px 16px;
   }
 }
