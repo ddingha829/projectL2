@@ -77,14 +77,7 @@ export default function HomeContent({
   // If we have filters, just show the grid with the title
   const isFiltered = displayTitle !== "Home";
 
-  const MOCK_NOTICE = {
-    id: "notice-1",
-    category: "공지",
-    title: "우가우가 블로그 개편 안내 - 새로운 디자인으로 인사드립니다!",
-    author: { id: "admin", name: "관리자", color: "#666666", avatar: "📢" },
-    likes: 99,
-    imageUrl: "https://images.unsplash.com/photo-1432821596592-e2c18b78144f?auto=format&fit=crop&w=1600&q=80"
-  };
+
 
   // Grid posts logic
   const showFullGrid = isFiltered || isViewMore;
@@ -101,15 +94,7 @@ export default function HomeContent({
       <div className={styles.container}>
         {!showFullGrid ? (
           <>
-            <div className={styles.noticeWrapper} style={{ marginTop: '8px' }}>
-              <HeroCard {...MOCK_NOTICE} heightRatio="compact" />
-            </div>
 
-            <header className={styles.sectionHeader} style={{ marginTop: '24px' }}>
-              <div className={styles.divider}></div>
-              <h1 className={styles.sectionTitle}>떠오르는 글</h1>
-              <div className={styles.divider}></div>
-            </header>
             <div className={styles.heroWrapper}>
               <div className={styles.desktopOnly}>
                 <div 
@@ -162,7 +147,7 @@ export default function HomeContent({
             <div className={styles.gridSection}>
               <header className={styles.sectionHeader}>
                 <div className={styles.divider}></div>
-                <h3 className={styles.sectionTitle}>다른 참신하고 재밌는 글들</h3>
+                <h3 className={styles.sectionTitle}>다른 리뷰</h3>
                 <div className={styles.divider}></div>
               </header>
               <div className={styles.gridList}>

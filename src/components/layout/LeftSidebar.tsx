@@ -6,6 +6,8 @@ import styles from "./LeftSidebar.module.css";
 import React, { Suspense } from "react";
 
 import { AUTHORS } from "@/lib/constants/authors";
+import { MOCK_NOTICE } from "@/lib/constants/notice";
+import HeroCard from "@/components/feed/HeroCard";
 
 const CATEGORIES = [
   { id: "movie", name: "영화", icon: "🎬" },
@@ -36,6 +38,13 @@ function SidebarContent({ isOpen, onClose }: { isOpen?: boolean, onClose?: () =>
 
   return (
     <aside className={`${styles.sidebar} ${isOpen ? styles.open : ""}`}>
+      <div className={styles.section} style={{ marginBottom: '32px' }}>
+        <h3 className={styles.sectionTitle}>Notice</h3>
+        <div style={{ borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--border-light)' }}>
+          <HeroCard {...MOCK_NOTICE} heightRatio="compact" />
+        </div>
+      </div>
+
       <div className={styles.section}>
         <h3 className={styles.sectionTitle}>Categories</h3>
         <ul className={styles.menuList}>
