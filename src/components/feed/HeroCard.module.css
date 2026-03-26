@@ -45,6 +45,9 @@
   align-items: flex-end;
   padding: 40px 50px;
   text-decoration: none;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .heightOneThird .contentLink {
@@ -60,6 +63,8 @@
 
 .content {
   max-width: 900px;
+  width: 100%;
+  min-width: 0;
   animation: slideUp 0.8s ease-out;
 }
 
@@ -113,6 +118,11 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   letter-spacing: -0.02em;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  white-space: normal;
+  width: 100%;
+  max-width: 100%;
 }
 
 .heightTwoThird .title { font-size: clamp(1.5rem, 3.5vw, 2.5rem); }
@@ -286,19 +296,6 @@
   transition: background 0.3s ease;
 }
 
-@media (max-width: 768px) {
-  .hero:not(.heightCompact) {
-    height: 280px; /* Reduced further as requested */
-  }
-  .contentLink {
-    padding: 30px 24px;
-  }
-  .navButtons {
-    right: 24px;
-    bottom: 24px;
-  }
-}
-
 @media (max-width: 1100px) {
   .overlay {
     padding: 40px;
@@ -307,19 +304,31 @@
 
 @media (max-width: 768px) {
   .hero:not(.heightCompact) {
-    height: 260px; /* Slightly adjusted to feel more proportional while staying compact */
+    height: 260px;
     border-radius: var(--radius-lg);
     margin-bottom: 24px;
   }
+  .contentLink {
+    padding: 20px 24px;
+  }
+  .navButtons {
+    right: 16px;
+    bottom: 16px;
+  }
   .title {
-    font-size: 1.5rem;
-    margin-bottom: 12px;
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    max-width: 100%;
   }
   .meta {
     gap: 10px;
     font-size: 0.8rem;
   }
   .overlay {
-    padding: 20px 16px;
+    padding: 0;
   }
 }
