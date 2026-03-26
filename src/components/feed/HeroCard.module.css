@@ -287,8 +287,8 @@
 }
 
 @media (max-width: 768px) {
-  .hero {
-    height: 380px !important;
+  .hero:not(.heightCompact) {
+    height: 380px;
   }
   .contentLink {
     padding: 30px 24px;
@@ -306,8 +306,8 @@
 }
 
 @media (max-width: 768px) {
-  .hero {
-    height: 450px;
+  .hero:not(.heightCompact) {
+    height: 380px;
     border-radius: var(--radius-lg);
     margin-bottom: 32px;
   }
