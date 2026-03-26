@@ -39,85 +39,67 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
     return () => authListener.subscription.unsubscribe();
   }, [supabase]);
 
-  useEffect(() => {
-    if (isSearchOpen && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [isSearchOpen]);
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       router.push(`/?search=${encodeURIComponent(searchQuery)}`);
-      setIsSearchOpen(false);
       setSearchQuery("");
     }
   };
 
-  const handleToggle = () => {
-    setIsSearchOpen(!isSearchOpen);
-  };
   return (
     <header className={styles.header}>
-      <div className={styles.leftSection}>
-        <button className={styles.hamburgerBtn} onClick={onMobileToggle}>
-          <span className={styles.hamburgerIcon}>≡</span>
-        </button>
-        <div className={styles.logoArea}>
+      <div className={styles.navContent}>
+        {/* Left: Hamburger + Logo */}
+        <div className={styles.leftGroup}>
+          <button className={styles.hamburgerBtn} onClick={onMobileToggle}>≡</button>
           <Link href="/" className={styles.logoText}>
             <span className={styles.logoMain}>우가우가</span>
             <span className={styles.logoDot}>.</span>
             <span className={styles.logoSub}>WoogaWooga</span>
           </Link>
         </div>
-      </div>
-      
-      <div className={styles.centerSection}>
-        {/* Center section cleared as search moved to right */}
-      </div>
 
-      <div className={styles.rightSection}>
-        <div className={`${styles.searchContainer} ${isSearchOpen ? styles.open : ""}`}>
-          <form 
-            onSubmit={handleSearch} 
-            className={styles.searchForm}
-            onBlur={(e) => {
-              if (!e.currentTarget.contains(e.relatedTarget)) {
-                setIsSearchOpen(false);
-              }
-            }}
-          >
+        {/* Right: Search + Icons + Auth */}
+        <div className={styles.rightGroup}>
+          <form onSubmit={handleSearch} className={styles.searchBar}>
             <input
-              ref={inputRef}
               type="text"
               placeholder="게시물 검색..."
               className={styles.searchInput}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <button className={styles.searchBtn} type="button" onClick={handleToggle}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <button type="submit" className={styles.searchBtn}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
               </svg>
             </button>
           </form>
-        </div>
-        <button className={styles.iconBtn}>📄</button>
-        <button className={styles.iconBtn}>🔔</button>
-        <div className={styles.profile}>
-          {user ? (
-            <div className={styles.authContainer}>
-              {role === 'admin' && (
-                <Link href="/write" className={styles.writeBtn}>✍️ 글쓰기</Link>
-              )}
-              <div className={styles.avatar}>{user.email?.charAt(0).toUpperCase() || "👦"}</div>
-              <form action={logout}>
-                <button type="submit" className={styles.logoutBtn}>Logout</button>
-              </form>
-            </div>
-          ) : (
-            <Link href="/login" className={styles.loginLink}>Login</Link>
-          )}
+
+          <div className={styles.iconGroup}>
+            <button className={styles.iconBtn}>📄</button>
+            <button className={styles.iconBtn}>🔔</button>
+          </div>
+
+          <div className={styles.authWrapper}>
+            {user ? (
+              <div className={styles.authInfo}>
+                {role === 'admin' && (
+                  <Link href="/write" className={styles.writeButton}>✍️ 쓰기</Link>
+                )}
+                <div className={styles.userAvatar}>
+                  {user.email?.charAt(0).toUpperCase() || "👦"}
+                </div>
+                <form action={logout}>
+                  <button type="submit" className={styles.logoutButton}>Logout</button>
+                </form>
+              </div>
+            ) : (
+              <Link href="/login" className={styles.loginButton}>Login</Link>
+            )}
+          </div>
         </div>
       </div>
     </header>

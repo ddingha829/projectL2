@@ -1,29 +1,42 @@
 .header {
   height: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 40px 0 0; 
-  border-bottom: 1px solid var(--border-light);
+  width: 100%;
   background-color: var(--glass-bg);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  justify-content: center;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 2000;
 }
 
-.leftSection {
-  flex: 0 0 280px; 
-  width: 280px;
+.navContent {
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  position: relative;
+  justify-content: space-between;
+  padding: 0 20px;
 }
 
-.logoArea {
-  margin-left: 20px;
+.leftGroup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  min-width: 280px; /* Match sidebar on desktop */
+}
+
+.hamburgerBtn {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #000;
+  cursor: pointer;
+  display: none;
 }
 
 .logoText {
@@ -37,56 +50,28 @@
   white-space: nowrap;
 }
 
-.logoMain {
-  color: #000;
-  font-size: 1.65rem;
-}
+.logoMain { color: #000; font-size: 1.65rem; }
+.logoDot { color: #1a77ce; margin: 0 1px; }
+.logoSub { color: #1a77ce; }
 
-.logoDot {
-  color: #1a77ce;
-  margin: 0 1px;
-}
-
-.logoSub {
-  color: #1a77ce;
-}
-
-.centerSection {
+.rightGroup {
+  display: flex;
+  align-items: center;
+  gap: 24px;
   flex: 1;
-}
-
-.rightSection {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
   justify-content: flex-end;
-  gap: 20px;
 }
 
-.iconBtn {
-  background: none;
-  border: none;
-  font-size: 1.25rem;
-  cursor: pointer;
-  color: var(--text-secondary);
-  transition: var(--transition-fast);
+.searchBar {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 8px;
-  border-radius: 50%;
-}
-
-.searchContainer {
-  display: flex;
-  align-items: center;
-  border-radius: var(--radius-xl);
-  background-color: var(--bg-secondary);
+  background: var(--bg-secondary);
   border: 1px solid var(--border-light);
+  border-radius: 40px;
   padding: 0 16px;
+  height: 40px;
   width: 100%;
   max-width: 300px;
-  height: 44px;
 }
 
 .searchInput {
@@ -94,68 +79,104 @@
   border: none;
   background: transparent;
   outline: none;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 .searchBtn {
   background: none;
   border: none;
-  color: var(--text-tertiary);
+  color: #888;
   cursor: pointer;
+  display: flex;
+  align-items: center;
 }
 
-.loginLink {
-  padding: 10px 24px;
-  background-color: #1a77ce;
-  color: #ffffff;
-  border-radius: var(--radius-xl);
-  font-size: 0.9rem;
-  font-weight: 600;
+.iconGroup {
+  display: flex;
+  gap: 12px;
 }
 
-.hamburgerBtn {
-  display: none;
+.iconBtn {
   background: none;
   border: none;
-  color: var(--text-primary);
+  font-size: 1.3rem;
   cursor: pointer;
+  color: #666;
+}
+
+.authWrapper {
+  display: flex;
+  align-items: center;
+}
+
+.authInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.writeButton {
+  background: #000;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.userAvatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  color: #1a77ce;
+  border: 4px solid #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.logoutButton {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.loginButton {
+  background: #1a77ce;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
 }
 
 @media (max-width: 768px) {
-  .header {
-    height: 64px;
-    padding: 0 16px;
-  }
-  
-  .leftSection {
+  .leftGroup {
     flex: 1;
-    width: 100%;
-    display: flex;
     justify-content: center;
     position: relative;
+    min-width: 0;
   }
-
+  
   .hamburgerBtn {
     display: block;
     position: absolute;
     left: 0;
     font-size: 2.2rem;
-    padding: 4px;
   }
-
-  .logoArea {
-    margin-left: 0;
+  
+  .rightGroup {
+    display: none;
   }
 
   .logoText {
     font-size: 1.2rem;
-  }
-  
-  .logoMain {
-    font-size: 1.35rem;
-  }
-
-  .rightSection {
-    display: none; /* Icons move to sidebar on mobile */
   }
 }
