@@ -187,8 +187,8 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
             left: `${coords.left}px`, 
             opacity: 1, 
             visibility: 'visible',
-            ['--author-color' as any]: hoveredAuthor.color
-          }}
+            '--author-color': hoveredAuthor.color
+          } as React.CSSProperties}
         >
           <h4 className={styles.tooltipBio}>{hoveredAuthor.description.bio}</h4>
           <ul className={styles.tooltipBullets}>

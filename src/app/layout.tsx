@@ -3,6 +3,7 @@ import { Noto_Sans_KR, Outfit } from "next/font/google";
 import "./globals.css";
 import gridStyles from "./layout.module.css";
 import AppShell from "@/components/layout/AppShell";
+import { Suspense } from "react";
 
 const notoSans = Noto_Sans_KR({
   variable: "--font-noto-sans",
@@ -29,9 +30,11 @@ export default function RootLayout({
   return (
     <html lang="ko" className={`${notoSans.variable} ${outfit.variable}`}>
       <body>
-        <AppShell>
-          {children}
-        </AppShell>
+        <Suspense fallback={null}>
+          <AppShell>
+            {children}
+          </AppShell>
+        </Suspense>
       </body>
     </html>
   );

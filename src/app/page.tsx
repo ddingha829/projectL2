@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import HomeContent from "./HomeContent";
+import { Suspense } from "react";
 
 export const MOCK_AUTHORS = {
   chulsoo: { id: "chulsoo", name: "철수", color: "#FF3333", avatar: "👨" },
@@ -289,11 +290,13 @@ export default async function Home({
   }
 
   return (
-    <HomeContent 
-      filteredPosts={filteredPosts} 
-      displayTitle={displayTitle} 
-      animationKey={animationKey}
-      isInitialVisit={isInitialVisit}
-    />
+    <Suspense fallback={<div>Loading...</div>}>
+      <HomeContent 
+        filteredPosts={filteredPosts} 
+        displayTitle={displayTitle} 
+        animationKey={animationKey}
+        isInitialVisit={isInitialVisit}
+      />
+    </Suspense>
   );
 }

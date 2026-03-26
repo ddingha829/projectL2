@@ -170,7 +170,7 @@ export default function HomeContent({
         ) : (
           <div key={animationKey} className={styles.feedAnimator}>
             {authorData && (
-              <div className={styles.authorProfileCard} style={{ '--author-color': authorData.color } as any}>
+              <div className={styles.authorProfileCard} style={{ '--author-color': authorData.color } as React.CSSProperties}>
                 <div className={styles.profileHeader}>
                   <img src={authorData.avatar} alt={authorData.name} className={styles.profileAvatar} />
                   <div className={styles.profileInfo}>
