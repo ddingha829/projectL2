@@ -307,7 +307,7 @@
 
 @media (max-width: 768px) {
   .hero:not(.heightCompact) {
-    height: 280px;
+    height: 260px; /* Slightly adjusted to feel more proportional while staying compact */
     border-radius: var(--radius-lg);
     margin-bottom: 24px;
   }

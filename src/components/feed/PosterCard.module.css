@@ -127,7 +127,7 @@
     min-width: 170px;
   }
   .imageWrapper {
-    padding-top: 110%; /* Reduced by approx 20% for cleaner mobile view */
+    padding-top: 120%; /* Restore tall magazine ratio (120%) as requested, while keeping overall height in check via layout */
     margin-bottom: 12px;
     border-radius: var(--radius-md);
   }

@@ -318,20 +318,18 @@
 
   /* When filtered or in full view, use vertical grid instead of swiping */
   .feedAnimator .gridList {
-    display: flex; /* Back to swipe for mobile filter results as requested */
-    grid-template-columns: none;
-    gap: 16px;
-    overflow-x: auto;
-    width: 100vw;
-    margin-left: -16px;
-    padding-left: 16px;
-    padding-right: 16px;
-    scrollbar-width: none;
+    display: grid; /* Switched from full-width swipe to 2-column grid for better magazine-style proportion */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 10px 16px 40px 16px;
+    width: 100%;
+    margin-left: 0;
+    overflow-x: hidden;
   }
   
   .feedAnimator .gridList > * {
-    flex: none;
     width: 100%;
+    flex: none;
   }
 }
 
