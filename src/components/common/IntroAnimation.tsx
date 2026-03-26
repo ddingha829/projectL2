@@ -50,7 +50,7 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
             <h1 className={styles.fadeText}>원시시대부터 기록은 인간의 본능입니다</h1>
           )}
           {step === 2 && (
-            <h1 className={styles.fadeText}>우리는 크게 달라지지 않았습니다</h1>
+            <h1 className={styles.fadeText}>우리는 크게 달라지지 않았습니다...</h1>
           )}
         </div>
       </div>
