@@ -127,6 +127,7 @@
     min-width: 170px;
   }
   .imageWrapper {
+    padding-top: 110%; /* Reduced by approx 20% for cleaner mobile view */
     margin-bottom: 12px;
     border-radius: var(--radius-md);
   }

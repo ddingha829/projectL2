@@ -125,17 +125,17 @@
 
 .heightCompact .title {
   font-family: var(--font-outfit), var(--font-noto-sans), sans-serif;
-  font-size: 1.22rem; /* Increased as requested (+ ~2px) */
+  font-size: 1.22rem;
   font-weight: 900;
   margin-bottom: 0;
   -webkit-line-clamp: 1;
   line-clamp: 1;
   color: #ffffff;
   text-align: center;
+  width: 100%; /* Ensure full width for centering */
   flex: 1;
   letter-spacing: -0.01em;
   line-height: 1.25;
-  white-space: pre-line;
 }
 
 .innerContainer {
