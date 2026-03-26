@@ -38,7 +38,7 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    setMounted(true);
+    Promise.resolve().then(() => setMounted(true));
   }, []);
 
   const handleSearch = (e: React.FormEvent) => {

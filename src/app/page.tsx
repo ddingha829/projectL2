@@ -1,3 +1,4 @@
+// Test server stability
 import { createClient } from "@/lib/supabase/server";
 import HomeContent from "./HomeContent";
 import { Suspense } from "react";
@@ -292,6 +293,7 @@ export default async function Home({
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <HomeContent 
+        key={animationKey}
         filteredPosts={filteredPosts} 
         displayTitle={displayTitle} 
         animationKey={animationKey}

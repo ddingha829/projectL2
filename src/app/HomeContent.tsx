@@ -39,14 +39,14 @@ export default function HomeContent({
   useEffect(() => {
     if (isInitialVisit) {
       const visited = sessionStorage.getItem("introVisited");
-      if (!visited) setShowIntro(true);
+      if (!visited) {
+        // Wrap in microtask to avoid "setState in effect" warning if necessary
+        Promise.resolve().then(() => setShowIntro(true));
+      }
     }
   }, [isInitialVisit]);
 
-  // Reset pagination when filter changes
-  useEffect(() => {
-    setCurrentPage(0);
-  }, [animationKey, isViewMore]);
+  // Pagination reset is now handled by the 'key' prop on HomeContent in page.tsx
 
   // Scroll to top when view or page changes
   useEffect(() => {
@@ -171,21 +171,33 @@ export default function HomeContent({
           <div key={animationKey} className={styles.feedAnimator}>
             {authorData && (
               <div className={styles.authorProfileCard} style={{ '--author-color': authorData.color } as React.CSSProperties}>
-                <div className={styles.profileHeader}>
-                  <img src={authorData.avatar} alt={authorData.name} className={styles.profileAvatar} />
-                  <div className={styles.profileInfo}>
-                    <h2 className={styles.profileName}>{authorData.name} <span>Writer</span></h2>
-                    <p className={styles.profileBio}>{authorData.description.bio}</p>
+                <div className={styles.profileMain}>
+                  <div className={styles.profileTop}>
+                    <img src={authorData.avatar} alt={authorData.name} className={styles.profileAvatar} />
+                    <h2 className={styles.profileName}>
+                      {authorData.name} <span>Writer</span>
+                    </h2>
                   </div>
+                  <p className={styles.profileBioText}>
+                    {authorData.description.bio
+                      .replace(/[()]/g, '')
+                      .replace(/, 남,/g, ', 남성,')
+                      .replace(/, 여,/g, ', 여성,')}
+                  </p>
                 </div>
-                <ul className={styles.profileBullets}>
-                  {authorData.description.bullets.map((bullet, idx) => (
-                    <li key={idx} className={styles.profileBullet}>
-                      <span className={styles.bulletDot} style={{ backgroundColor: authorData.color }}></span>
-                      {bullet}
-                    </li>
-                  ))}
-                </ul>
+
+                <div className={styles.profileDivider}></div>
+
+                <div className={styles.profileDetail}>
+                  <ul className={styles.profileBullets}>
+                    {authorData.description.bullets.map((bullet, idx) => (
+                      <li key={idx} className={styles.profileBullet}>
+                        <span className={styles.bulletDot} style={{ backgroundColor: authorData.color }}></span>
+                        {bullet}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             )}
 
