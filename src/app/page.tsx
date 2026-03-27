@@ -218,7 +218,7 @@ export default async function Home({
   const supabase = await createClient();
   let query = supabase
     .from('posts')
-    .select('*, author:profiles(id, name:display_name, avatar:avatar_url)')
+    .select('*, author:profiles(id, name:display_name, avatar:avatar_url, bio, bullets:description_bullets)')
     .order('created_at', { ascending: false });
 
   if (categoryFilter) {
@@ -235,27 +235,38 @@ export default async function Home({
 
   const livePosts = dbPosts?.map((p: any) => {
     const strippedContent = p.content ? p.content.replace(/<[^>]+>/g, '') : "내용이 없습니다.";
+    const authorData = p.author || {};
     return {
-      id: `db-${p.id}`, // Unique ID prefix
+      id: `db-${p.id}`,
       categoryId: p.category,
       category: CATEGORY_MAP[p.category] || p.category,
       title: p.title,
       content: strippedContent.substring(0, 150) + (strippedContent.length > 150 ? '...' : ''),
       author: {
-         id: p.author.id,
-         name: p.author.name || 'Anonymous',
-         avatar: p.author.avatar || '👦',
-         color: '#0a467d'
+        id: authorData.id || 'db-anon',
+        name: authorData.name || '익명 작가',
+        avatar: authorData.avatar || '👤',
+        color: '#0a467d',
+        description: {
+          bio: authorData.bio || '활동 중인 작가입니다.',
+          bullets: authorData.bullets || ['신규 작가']
+        }
       },
       date: new Date(p.created_at).toISOString().split('T')[0],
-      likes: p.likes_count,
+      rawDate: p.created_at, // Use full timestamp for internal sorting
+      likes: p.likes_count || 0,
       comments: 0,
-      imageUrl: p.image_url
+      imageUrl: p.image_url || 'https://images.unsplash.com/photo-1542204165-65bf26472b9b?auto=format&fit=crop&w=1600&q=80'
     };
   }) || [];
 
-  // Combine live and mock data
-  let filteredPosts = [...livePosts, ...MOCK_POSTS];
+  // Sort function to handle both raw ISO strings and mock dates
+  const sortByDate = (a: any, b: any) => {
+    return new Date(b.rawDate || b.date).getTime() - new Date(a.rawDate || a.date).getTime();
+  };
+
+  // Combine live and mock data, sorting by newest first
+  let filteredPosts = [...livePosts, ...MOCK_POSTS].sort(sortByDate);
   
   // Apply filtering to the combined list
   if (categoryFilter) {

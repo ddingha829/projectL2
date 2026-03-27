@@ -12,6 +12,17 @@ export async function createPost(formData: FormData) {
     redirect('/login');
   }
 
+  // Check if user has writer or admin role
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
+
+  if (!profile || (profile.role !== 'writer' && profile.role !== 'admin')) {
+    redirect('/write?error=No permission');
+  }
+
   const category = formData.get('category') as string;
   const title = formData.get('title') as string;
   const imageUrl = formData.get('imageUrl') as string;

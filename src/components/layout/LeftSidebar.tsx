@@ -8,6 +8,7 @@ import styles from "./LeftSidebar.module.css";
 import { AUTHORS } from "@/lib/constants/authors";
 import { MOCK_NOTICE } from "@/lib/constants/notice";
 import HeroCard from "@/components/feed/HeroCard";
+import { createClient } from "@/lib/supabase/client";
 
 const CATEGORIES = [
   { id: "all", name: "모든 글", icon: "🏠" },
@@ -36,10 +37,38 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
   const [coords, setCoords] = useState({ top: 0, left: 0 });
   const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [liveAuthors, setLiveAuthors] = useState<any[]>([]);
 
   useEffect(() => {
     Promise.resolve().then(() => setMounted(true));
+    
+    // Fetch live writers from DB
+    const fetchLiveAuthors = async () => {
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .or('role.eq.writer,role.eq.admin');
+      
+      if (data && !error) {
+        const mapped = data.map(p => ({
+          id: p.id,
+          name: p.display_name || "익명 작가",
+          avatar: p.avatar_url || "👤",
+          color: "#0a467d",
+          description: {
+            bio: p.bio || "활동 중인 작가입니다.",
+            bullets: p.description_bullets || ["신규 작가"]
+          }
+        }));
+        setLiveAuthors(mapped);
+      }
+    };
+
+    fetchLiveAuthors();
   }, []);
+
+  const ALL_AUTHORS = [...AUTHORS, ...liveAuthors];
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -152,7 +181,7 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
             <div className={styles.sidebarDivider}></div>
           </header>
           <ul className={styles.menuList}>
-            {AUTHORS.map((author) => (
+            {ALL_AUTHORS.map((author) => (
               <li 
                 key={author.id} 
                 className={styles.userContainer}
