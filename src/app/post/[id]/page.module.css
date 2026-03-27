@@ -59,6 +59,40 @@
   margin-bottom: 40px;
 }
 
+.mainImageWrapper {
+  margin-bottom: 40px;
+  border-radius: 16px;
+  overflow: hidden;
+  width: 100%;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.mainImage {
+  width: 100%;
+  height: auto;
+  max-height: 600px;
+  object-fit: cover;
+  display: block;
+  transition: max-height 0.3s ease;
+}
+
+@media (max-width: 1024px) {
+  .mainImage {
+    max-height: 450px;
+  }
+}
+
+@media (max-width: 768px) {
+  .mainImage {
+    max-height: 350px;
+    border-radius: 12px;
+  }
+  .mainImageWrapper {
+    border-radius: 12px;
+    margin-bottom: 24px;
+  }
+}
+
 .evaluation {
   display: flex;
   justify-content: center;
