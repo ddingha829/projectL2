@@ -110,6 +110,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
 
         <PostInteractions 
           postId={actualId} 
+          authorId={post.author?.id || post.author_id}
           initialLikes={post.likes_count || 0} 
           initialComments={commentsData} 
           user={user} 

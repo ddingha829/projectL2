@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "./page.module.css";
 
-export default function PostInteractions({ postId, initialLikes, initialComments, user }: { postId: string, initialLikes: number, initialComments: any[], user: any }) {
+export default function PostInteractions({ postId, authorId, initialLikes, initialComments, user }: { postId: string, authorId: string, initialLikes: number, initialComments: any[], user: any }) {
   const [likes, setLikes] = useState(initialLikes);
   const [comments, setComments] = useState(initialComments);
   const [newComment, setNewComment] = useState("");
@@ -98,15 +98,21 @@ export default function PostInteractions({ postId, initialLikes, initialComments
         </div>
 
         <div className={styles.commentList}>
-          {comments.length > 0 ? comments.map((c: any) => (
-            <div key={c.id} className={styles.comment}>
-              <div className={styles.commentMeta}>
-                <span className={styles.commentAuthor}>{c.user?.display_name || c.user?.name || 'Anonymous'}</span>
-                <span className={styles.commentDate}>{new Date(c.created_at).toLocaleDateString()}</span>
+          {comments.length > 0 ? comments.map((c: any) => {
+            const isAuthor = (c.user_id === authorId) || (c.user?.id === authorId);
+            return (
+              <div key={c.id} className={`${styles.comment} ${isAuthor ? styles.authorComment : ""}`}>
+                <div className={styles.commentMeta}>
+                  <div className={styles.commentAuthorInfo}>
+                    <span className={styles.commentAuthor}>{c.user?.display_name || c.user?.name || '익명 작가'}</span>
+                    {isAuthor && <span className={styles.writerBadge}>Writer</span>}
+                  </div>
+                  <span className={styles.commentDate}>{new Date(c.created_at).toLocaleDateString()}</span>
+                </div>
+                <p className={styles.commentText}>{c.content}</p>
               </div>
-              <p className={styles.commentText}>{c.content}</p>
-            </div>
-          )) : (
+            );
+          }) : (
              <p style={{ color: 'var(--text-muted)' }}>첫 번째 댓글을 남겨보세요!</p>
           )}
         </div>
