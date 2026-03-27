@@ -1,7 +1,9 @@
-// Test server stability
 import { createClient } from "@/lib/supabase/server";
 import HomeContent from "./HomeContent";
 import { Suspense } from "react";
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export const MOCK_AUTHORS = {
   chulsoo: { id: "chulsoo", name: "철수", color: "#FF3333", avatar: "👨" },
@@ -12,7 +14,6 @@ export const MOCK_AUTHORS = {
 };
 
 export const MOCK_POSTS = [
-  // ... MOCK_POSTS stay the same, skipping for brevity in thought but including in output
   {
     id: "1",
     categoryId: "movie",
@@ -195,8 +196,6 @@ export const MOCK_POSTS = [
   }
 ];
 
-export const dynamic = 'force-dynamic';
-
 export default async function Home({
   searchParams,
 }: {
@@ -212,32 +211,29 @@ export default async function Home({
     book: "책",
     game: "게임",
     restaurant: "맛집",
-    other: "기타"
+    other: "기타",
+    travel: "여행",
+    exhibition: "전시회"
   };
 
   const supabase = await createClient();
-  let query = supabase
+  
+  // Base query for all posts
+  const { data: dbPosts, error: dbError } = await supabase
     .from('posts')
     .select('*, author:profiles(id, name:display_name, avatar:avatar_url, bio, bullets:description_bullets)')
     .order('created_at', { ascending: false });
 
-  if (categoryFilter) {
-    query = query.eq('category', categoryFilter);
+  if (dbError) {
+    console.error('Supabase fetch error:', dbError);
   }
-  if (authorFilter) {
-    query = query.eq('author_id', authorFilter);
-  }
-  if (searchFilter) {
-    query = query.ilike('title', `%${searchFilter}%`);
-  }
-
-  const { data: dbPosts } = await query;
 
   const livePosts = dbPosts?.map((p: any) => {
     const strippedContent = p.content ? p.content.replace(/<[^>]+>/g, '') : "내용이 없습니다.";
     const authorData = p.author || {};
     return {
       id: `db-${p.id}`,
+      dbId: p.id,
       categoryId: p.category,
       category: CATEGORY_MAP[p.category] || p.category,
       title: p.title,
@@ -252,31 +248,35 @@ export default async function Home({
           bullets: authorData.bullets || ['신규 작가']
         }
       },
-      date: new Date(p.created_at).toISOString().split('T')[0],
-      rawDate: p.created_at, // Use full timestamp for internal sorting
+      date: p.created_at, // Full timestamp for sorting
+      displayDate: new Date(p.created_at).toISOString().split('T')[0],
       likes: p.likes_count || 0,
       comments: 0,
       imageUrl: p.image_url || 'https://images.unsplash.com/photo-1542204165-65bf26472b9b?auto=format&fit=crop&w=1600&q=80'
     };
   }) || [];
 
-  // Sort function to handle both raw ISO strings and mock dates
+  // Sort function to handle both raw ISO strings (DB) and mock dates
   const sortByDate = (a: any, b: any) => {
-    return new Date(b.rawDate || b.date).getTime() - new Date(a.rawDate || a.date).getTime();
+    const timeA = new Date(a.date).getTime() || 0;
+    const timeB = new Date(b.date).getTime() || 0;
+    return timeB - timeA;
   };
 
-  // Combine live and mock data, sorting by newest first
-  let filteredPosts = [...livePosts, ...MOCK_POSTS].sort(sortByDate);
-  
+  // Combine live and mock data
+  const normalMocks = MOCK_POSTS.map(m => ({ ...m, displayDate: m.date }));
+  let allPosts = [...livePosts, ...normalMocks].sort(sortByDate);
+
   // Apply filtering to the combined list
-  if (categoryFilter) {
+  let filteredPosts = allPosts;
+  if (categoryFilter && categoryFilter !== 'all') {
     filteredPosts = filteredPosts.filter(p => p.categoryId === categoryFilter);
   }
   if (authorFilter) {
     filteredPosts = filteredPosts.filter(p => p.author.id === authorFilter);
   }
   if (searchFilter) {
-    const lowerQuery = (searchFilter as string).toLowerCase();
+    const lowerQuery = searchFilter.toLowerCase();
     filteredPosts = filteredPosts.filter(p => 
       p.title.toLowerCase().includes(lowerQuery) || 
       p.content.toLowerCase().includes(lowerQuery)
@@ -286,27 +286,25 @@ export default async function Home({
   const animationKey = `${categoryFilter || 'all'}-${authorFilter || 'all'}-${searchFilter || 'all'}`;
   const isInitialVisit = !categoryFilter && !authorFilter && !searchFilter;
 
-  const categoryName = categoryFilter ? CATEGORY_MAP[categoryFilter as string] || categoryFilter : "";
-  const authorObj = MOCK_AUTHORS[authorFilter as keyof typeof MOCK_AUTHORS];
-  const authorName = authorObj ? authorObj.name : "";
+  const categoryName = categoryFilter ? CATEGORY_MAP[categoryFilter] || categoryFilter : "";
+  const authorName = authorFilter === 'all' ? "" : (allPosts.find(p => p.author.id === authorFilter)?.author.name || "");
 
   let displayTitle = "Home";
   if (searchFilter) {
     displayTitle = `'${searchFilter}' 검색 결과`;
-  } else if (categoryFilter && authorFilter) {
+  } else if (categoryFilter && categoryFilter !== 'all' && authorFilter) {
     displayTitle = `${authorName}님이 작성한 ${categoryName}`;
-  } else if (categoryFilter) {
+  } else if (categoryFilter && categoryFilter !== 'all') {
     displayTitle = categoryName;
   } else if (authorFilter) {
-    displayTitle = `${authorName}님의 리뷰`;
+    displayTitle = authorName;
   }
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div>페이지 로딩 중...</div>}>
       <HomeContent 
-        key={animationKey}
         filteredPosts={filteredPosts} 
-        displayTitle={displayTitle} 
+        displayTitle={displayTitle}
         animationKey={animationKey}
         isInitialVisit={isInitialVisit}
       />

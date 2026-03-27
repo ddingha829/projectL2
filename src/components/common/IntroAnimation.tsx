@@ -40,17 +40,17 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
   return (
     <div className={`${styles.overlay} ${step === 3 ? styles.fadeOut : ''}`}>
       <div className={styles.imageContainer}>
-        <img 
-          src="/intro-cave.jpg" 
-          alt="Prehistoric Cave Painting" 
+        <img
+          src="/intro-cave.jpg"
+          alt="Prehistoric Cave Painting"
           className={styles.introImage}
         />
         <div className={styles.textContainer}>
           {step === 1 && (
-            <h1 className={styles.fadeText}>원시시대부터 기록은 인간의 본능입니다</h1>
+            <h1 className={styles.fadeText}>원시시대부터, 기록은 인간의 본능입니다</h1>
           )}
           {step === 2 && (
-            <h1 className={styles.fadeText}>우리는 크게 달라지지 않았습니다...</h1>
+            <h1 className={styles.fadeText}>안타깝게도 우리는 크게 달라지지 않았습니다...</h1>
           )}
         </div>
       </div>
