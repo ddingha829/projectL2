@@ -145,6 +145,7 @@ export default function HomeContent({
                   </div>
                 ))}
               </div>
+              <div className={styles.heroFrame}></div>
             </div>
 
             <div className={styles.gridSection}>

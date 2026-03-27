@@ -1,16 +1,21 @@
 .hero {
   position: relative;
   width: 100%;
-  display: block; /* Changed from flex to avoid alignment gaps */
+  display: block;
   background-color: #000;
   height: 100%;
-  overflow: hidden;
 }
+
+
 
 .heightFull { height: min(780px, 78vh); }
 .heightTwoThird { height: min(520px, 52vh); }
 .heightOneThird { height: min(260px, 26vh); }
-.heightCompact { height: 56px; }
+.heightCompact { 
+  height: 56px; 
+  border: none !important; 
+  border-radius: 0 !important;
+}
 
 .bgImage {
   position: absolute;
@@ -37,6 +42,11 @@
   background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.2) 60%, transparent 100%);
   display: flex;
   flex-direction: column;
+}
+
+.heightCompact .overlay {
+  background: rgba(0, 0, 0, 0.45); /* Uniform dark overlay for better text contrast */
+  justify-content: center;
 }
 
 .contentLink {
@@ -135,8 +145,8 @@
 
 .heightCompact .title {
   font-family: var(--font-outfit), var(--font-noto-sans), sans-serif;
-  font-size: 1.22rem;
-  font-weight: 900;
+  font-size: 1.1rem;
+  font-weight: 800;
   margin-bottom: 0;
   -webkit-line-clamp: 1;
   line-clamp: 1;
@@ -307,6 +317,11 @@
     height: 260px;
     border-radius: var(--radius-lg);
     margin-bottom: 24px;
+    overflow: hidden;
+  }
+  
+  .hero:not(.heightCompact) .borderOverlay {
+    border-radius: var(--radius-lg);
   }
   .contentLink {
     padding: 20px 24px;

@@ -39,16 +39,16 @@ export default function HeroCard({
                 <span className={styles.category}>{category}</span>
                 <h2 className={styles.title}>{title}</h2>
                 <div className={styles.meta}>
-                   <span className={styles.likes}><span className={styles.icon}>👍</span> {likes}</span>
-                   <span className={styles.dot}>•</span>
-                    <div className={styles.authorBadge} style={{ backgroundColor: `${author.color}22`, border: `1px solid ${author.color}44` }}>
-                      {author.avatar.startsWith('/') || author.avatar.startsWith('http') ? (
-                        <img src={author.avatar} alt={author.name} className={styles.avatarImg} />
-                      ) : (
-                        <span className={styles.avatarEmoji}>{author.avatar}</span>
-                      )}
-                      <span className={styles.authorName}>{author.name}</span>
-                    </div>
+                  <span className={styles.likes}><span className={styles.icon}>👍</span> {likes}</span>
+                  <span className={styles.dot}>•</span>
+                  <div className={styles.authorBadge} style={{ backgroundColor: `${author.color}22`, border: `1px solid ${author.color}44` }}>
+                    {author.avatar.startsWith('/') || author.avatar.startsWith('http') ? (
+                      <img src={author.avatar} alt={author.name} className={styles.avatarImg} />
+                    ) : (
+                      <span className={styles.avatarEmoji}>{author.avatar}</span>
+                    )}
+                    <span className={styles.authorName}>{author.name}</span>
+                  </div>
                 </div>
               </>
             )}
