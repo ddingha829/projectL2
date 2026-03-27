@@ -82,6 +82,7 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
   };
 
   const handleAuthorEnter = (author: any, e: React.MouseEvent) => {
+    if (window.innerWidth <= 768) return; // Skip tooltips on mobile
     const rect = e.currentTarget.getBoundingClientRect();
     // Position bubble to the right of the sidebar boundary
     setCoords({ top: rect.top, left: 280 + 16 }); 
@@ -117,6 +118,12 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
   return (
     <>
       <aside className={`${styles.sidebar} ${isOpen ? styles.open : ""}`}>
+        {/* Mobile Header: Title + Close Button */}
+        <div className={styles.mobileHeader}>
+          <h2 className={styles.sidebarBrand}>Menu</h2>
+          <button className={styles.closeBtn} onClick={onClose}>✕</button>
+        </div>
+
         {/* Mobile Only: Icons at top */}
         <div className={styles.mobileActions}>
           <div className={styles.actionRow}>

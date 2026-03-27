@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname, useSearchParams } from "next/navigation";
 import { FrozenRoute } from "@/components/common/FrozenRoute";
@@ -13,6 +13,20 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const key = `${pathname}?${searchParams.toString()}`;
+
+  // Close sidebar on navigation (Fixes Bug 2: Login page hidden behind menu)
+  useEffect(() => {
+    setIsMobileOpen(false);
+  }, [pathname, searchParams]);
+
+  // Lock body scroll when mobile menu is open (Fixes Bug 1: Scroll issues)
+  useEffect(() => {
+    if (isMobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+  }, [isMobileOpen]);
 
   return (
     <>

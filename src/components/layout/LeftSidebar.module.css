@@ -44,6 +44,10 @@
   display: none;
 }
 
+.mobileHeader {
+  display: none;
+}
+
 .mobileActions {
   display: none;
   flex-direction: column;
@@ -327,19 +331,62 @@
 @media (max-width: 768px) {
   .sidebar {
     position: fixed;
-    top: 64px;
+    top: 0;
     left: -100%;
-    width: 280px;
-    height: calc(100vh - 64px);
-    z-index: 2000;
+    width: 100vw;
+    height: 100vh;
+    z-index: 3000;
     transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 10px 0 50px rgba(0,0,0,0.2);
+    box-shadow: none;
     border-right: none;
+    padding: 24px 20px;
+    background-color: var(--bg-primary);
   }
+
   .sidebar.open {
     left: 0;
   }
+
+  .mobileHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    padding: 0 8px;
+  }
+
+  .sidebarBrand {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: -1px;
+  }
+
+  .closeBtn {
+    background: var(--bg-secondary);
+    border: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-primary);
+  }
+
+  .iconBtn {
+    font-size: 1.8rem;
+  }
+
+  .loginBtnSmall {
+    padding: 10px 24px;
+    font-size: 1rem;
+  }
+
   .authorTooltip {
-    display: none; /* Tooltip often awkward on mobile tap, can be improved later */
+    display: none;
   }
 }
