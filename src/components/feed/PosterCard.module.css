@@ -56,9 +56,10 @@
   left: 12px;
   background-color: var(--glass-bg);
   color: var(--text-primary);
-  padding: 6px 14px;
+  height: 32px;
+  padding: 0 14px;
   border-radius: var(--radius-sm);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 700;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -66,6 +67,10 @@
   letter-spacing: 0.05em;
   z-index: 2;
   border: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
 }
 
 .editorsPickBadge {
@@ -74,22 +79,26 @@
   right: 12px;
   background: linear-gradient(135deg, #ffd700, #ff8c00);
   color: #000;
-  padding: 6px 14px;
+  height: 32px;
+  padding: 0 14px;
   border-radius: var(--radius-sm);
-  font-size: 0.7rem;
-  font-weight: 900;
+  font-size: 0.75rem;
+  font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   z-index: 2;
   box-shadow: 0 4px 10px rgba(0,0,0,0.2);
   display: flex;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  gap: 6px;
   border: 1px solid rgba(255, 255, 255, 0.4);
+  box-sizing: border-box;
 }
 
 .pickIcon {
   font-size: 0.9rem;
+  line-height: 1;
 }
 
 .content {
