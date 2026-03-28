@@ -12,7 +12,7 @@
 
 .sectionTitle {
   font-family: var(--font-outfit), var(--font-noto-sans), sans-serif;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 800;
   color: var(--text-primary); 
   text-transform: uppercase;
@@ -413,7 +413,7 @@
     gap: 16px;
   }
   .sectionTitle {
-    font-size: 1.1rem;
+    font-size: 1.32rem;
     white-space: nowrap;
     text-align: left;
   }
@@ -563,7 +563,7 @@
   border-left: 12px solid var(--author-color); /* Slightly thicker border */
   border-radius: var(--radius-lg);
   padding: 48px 64px; /* Roomier padding for larger elements */
-  margin-bottom: 56px;
+  margin-bottom: 17px; /* Reduced to 30% of 56px */
   margin-top: 24px;
   box-shadow: 0 10px 50px rgba(0, 0, 0, 0.1);
   animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;

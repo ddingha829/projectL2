@@ -129,3 +129,58 @@
   cursor: pointer;
   user-select: none;
 }
+
+/* Upload UI */
+.uploadBox {
+  width: 100%;
+  height: 200px;
+  border: 2px dashed #ddd;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  background-color: #fcfcfc;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.uploadBox:hover {
+  border-color: #0a467d;
+  background-color: rgba(10, 70, 125, 0.05);
+}
+
+.uploadPlaceholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: #999;
+  text-align: center;
+}
+
+.uploadPlaceholder span {
+  font-size: 2rem;
+}
+
+.uploadPlaceholder p {
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.previewImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.submitBtn:disabled {
+  background-color: #ccc !important;
+  cursor: not-allowed;
+  transform: none;
+}
