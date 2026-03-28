@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 17px;
 }
 
 .sectionTitle {
@@ -113,14 +113,43 @@
 .gridList {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 32px;
-  margin-bottom: 32px;
+  gap: 16px; /* Reduced by 50% (32 -> 16) to enlarge cards */
+  margin-bottom: 8px; /* Further reduced by ~20% (10 -> 8) */
 }
 
-.viewMoreContainer {
+.viewMoreBtnInline {
+  background: none;
+  border: none;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 0.85rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
   display: flex;
-  justify-content: flex-end;
-  margin-top: 20px; /* Pull it up as requested */
+  align-items: center;
+  gap: 6px;
+  padding-left: 12px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.viewMoreBtnInline:hover {
+  transform: translateX(4px);
+  color: #1a77ce;
+}
+
+@media (max-width: 768px) {
+  .viewMoreBtnInline {
+    display: none !important;
+  }
+}
+
+.btnIconInline {
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--text-primary);
 }
 
 .viewMoreBtn {
@@ -142,9 +171,111 @@
   color: #555;
 }
 
+.headerControls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding-left: 16px;
+}
+
+.backToMainBtnInline {
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  padding: 5px 14px;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.backToMainBtnInline:hover {
+  background: #1a77ce;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+
+
+.pageNavInline {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.pageInfoInline {
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #999;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+.pageButtonsInline {
+  display: flex;
+  gap: 6px;
+}
+
+.pageBtnSmall {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  color: #000;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pageBtnSmall:hover:not(:disabled) {
+  background: #000;
+  border-color: #000;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.pageBtnSmall:disabled {
+  opacity: 0.15;
+  cursor: not-allowed;
+}
+
 .btnIcon {
   font-size: 1.4rem;
   line-height: 1;
+}
+
+/* Infinite Scroll Sentinel */
+.sentinel {
+  width: 100%;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.shimmer {
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #bbb;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  animation: shimmerPulse 1.5s infinite ease-in-out;
+}
+
+@keyframes shimmerPulse {
+  0% { opacity: 0.3; }
+  50% { opacity: 0.7; }
+  100% { opacity: 0.3; }
 }
 
 .pagination {
@@ -262,7 +393,7 @@
 @media (max-width: 1200px) {
   .gridList {
     grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+    gap: 12px; /* Reduced by 50% (24 -> 12) */
   }
 }
 
@@ -295,7 +426,11 @@
   }
   .gridList {
     grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
+    gap: 8px; /* 50% reduction */
+  }
+
+  .headerControls {
+    display: none !important; /* Hide pagination on mobile as requested */
   }
 }
 
@@ -308,8 +443,8 @@
     display: flex;
     overflow-x: auto;
     overflow-y: hidden;
-    gap: 16px;
-    padding: 10px 4px 20px 4px;
+    gap: 8px; /* 50% reduction */
+    padding: 10px 4px 4px 4px; /* Further reduced from 6px */
     scrollbar-width: none; /* Hide scrollbar for clean look */
     -ms-overflow-style: none;
     scroll-snap-type: x mandatory;
@@ -333,8 +468,8 @@
   .feedAnimator .gridList {
     display: grid; /* Switched from full-width swipe to 2-column grid for better magazine-style proportion */
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    padding: 10px 16px 40px 16px;
+    gap: 10px; /* 50% reduction */
+    padding: 10px 16px 8px 16px; /* Further reduced from 12px */
     width: 100%;
     margin-left: 0;
     overflow-x: hidden;

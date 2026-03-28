@@ -14,20 +14,24 @@ export default function PosterCard({ id, category, title, author, imageUrl, isEd
   return (
     <article className={styles.card}>
       <Link href={`/post/${id}`} className={styles.link}>
-        <div className={styles.imageWrapper}>
-          <img src={imageUrl} alt={title} className={styles.posterImage} />
-          <div className={styles.categoryBadge}>{category}</div>
-          {isEditorsPick && (
-            <div className={styles.editorsPickBadge}>
-              <span className={styles.pickIcon}>🏆</span>
-              공들여 씀
+        <div className={styles.cardMain}>
+          <div className={styles.imageWrapper}>
+            <img src={imageUrl} alt={title} className={styles.posterImage} />
+            <div className={styles.categoryBadge}>{category}</div>
+            
+            <div className={styles.titleOverlay}>
+              <h3 className={styles.title}>{title}</h3>
             </div>
-          )}
-        </div>
-        <div className={styles.content}>
-          <h3 className={styles.title}>{title}</h3>
-          <div className={styles.footer}>
-            <div className={styles.authorBadge} style={{ backgroundColor: `${author.color}22`, border: `1px solid ${author.color}44` }}>
+          </div>
+          
+          <div className={styles.cardMeta}>
+            {isEditorsPick && (
+              <div className={styles.editorsPickBadge}>
+                <span className={styles.pickIcon}>🏆</span>
+                PICK
+              </div>
+            )}
+            <div className={styles.authorBadge} style={{ '--author-color': author.color } as React.CSSProperties}>
               {author.avatar.startsWith('/') || author.avatar.startsWith('http') ? (
                 <img src={author.avatar} alt={author.name} className={styles.avatarImg} />
               ) : (

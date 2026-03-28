@@ -32,8 +32,23 @@ export default function HomeContent({
   const [heroIndex, setHeroIndex] = useState(0);
   const [slideDir, setSlideDir] = useState<'next' | 'prev'>('next');
   const [currentPage, setCurrentPage] = useState(0);
-
   const POSTS_PER_PAGE = 8;
+  const [mobileVisibleCount, setMobileVisibleCount] = useState(4);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile environment (Client-side)
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Reset counters on filter change
+  useEffect(() => {
+    setCurrentPage(0);
+    setMobileVisibleCount(4);
+  }, [animationKey]);
   
   // ... Rest stays same, but I'll insert the Profile JSX in the return
 
@@ -82,11 +97,33 @@ export default function HomeContent({
 
   // Grid posts logic
   const showFullGrid = isFiltered || isViewMore || searchParams.get("view") === "all";
-  const displayPosts = showFullGrid 
-    ? otherPosts.slice(currentPage * POSTS_PER_PAGE, (currentPage + 1) * POSTS_PER_PAGE)
-    : otherPosts.slice(0, 4);
+  const paginatedData = isViewMore ? otherPosts : filteredPosts;
+  const totalPages = Math.ceil(paginatedData.length / POSTS_PER_PAGE);
 
-  const totalPages = Math.ceil(otherPosts.length / POSTS_PER_PAGE);
+  // Selection logic: Desktop (Pagination) vs Mobile (Infinite)
+  const displayPosts = showFullGrid 
+    ? (isMobile 
+        ? paginatedData.slice(0, mobileVisibleCount) 
+        : paginatedData.slice(currentPage * POSTS_PER_PAGE, (currentPage + 1) * POSTS_PER_PAGE))
+    : (isMobile
+        ? otherPosts.slice(0, mobileVisibleCount)
+        : otherPosts.slice(0, 4));
+
+  // Infinite Scroll Trigger
+  useEffect(() => {
+    if (!isMobile) return;
+    
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        setMobileVisibleCount(prev => Math.min(prev + 4, paginatedData.length));
+      }
+    }, { threshold: 0.1 });
+
+    const sentinel = document.getElementById('mobile-scroll-sentinel');
+    if (sentinel) observer.observe(sentinel);
+
+    return () => observer.disconnect();
+  }, [isMobile, paginatedData.length, mobileVisibleCount, isViewMore, showFullGrid]);
 
   return (
     <>
@@ -153,18 +190,23 @@ export default function HomeContent({
               <header className={styles.sectionHeader}>
                 <h3 className={styles.sectionTitle}>다른 리뷰</h3>
                 <div className={styles.divider}></div>
+                
+                {otherPosts.length > 4 && (
+                  <button className={styles.viewMoreBtnInline} onClick={() => router.push('/?view=all')}>
+                    전체보기 <span className={styles.btnIconInline}>+</span>
+                  </button>
+                )}
               </header>
               <div className={styles.gridList}>
                 {displayPosts.map(post => (
                   <PosterCard key={post.id} {...post} />
                 ))}
               </div>
-
-              {otherPosts.length > 4 && (
-                <div className={styles.viewMoreContainer}>
-                  <button className={styles.viewMoreBtn} onClick={() => router.push('/?view=all')}>
-                    더 보기 <span className={styles.btnIcon}>+</span>
-                  </button>
+              
+              {/* Mobile Sentinel */}
+              {isMobile && displayPosts.length < (isViewMore ? otherPosts.length : totalPages * POSTS_PER_PAGE) && (
+                <div id="mobile-scroll-sentinel" className={styles.sentinel}>
+                  <div className={styles.shimmer}>Loading more...</div>
                 </div>
               )}
             </div>
@@ -209,56 +251,59 @@ export default function HomeContent({
 
             <header className={styles.sectionHeader}>
               <h1 className={styles.sectionTitle}>{ isViewMore ? "모든 글" : displayTitle}</h1>
+              
+              {isViewMore && (
+                <button className={styles.backToMainBtnInline} onClick={() => router.push('/')}>
+                  메인으로
+                </button>
+              )}
+
               <div className={styles.divider}></div>
+
+              {/* Inline Controls (Pagination) */}
+              <div className={styles.headerControls}>
+                {totalPages >= 1 && (
+                  <div className={styles.pageNavInline}>
+                    <span className={styles.pageInfoInline}>PAGE {currentPage + 1} / {totalPages}</span>
+                    <div className={styles.pageButtonsInline}>
+                      <button 
+                        className={styles.pageBtnSmall} 
+                        disabled={currentPage === 0}
+                        onClick={() => setCurrentPage(p => p - 1)}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                      </button>
+                      <button 
+                        className={styles.pageBtnSmall} 
+                        disabled={currentPage >= totalPages - 1}
+                        onClick={() => setCurrentPage(p => p + 1)}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </header>
-            <div key={`grid-${currentPage}-${animationKey}`} className={styles.gridListFade}>
+
+            <div key={isMobile ? 'mobile-grid' : `grid-${currentPage}-${animationKey}`} className={styles.gridListFade}>
               <div className={styles.gridList}>
-                {(isViewMore ? otherPosts : filteredPosts).slice(currentPage * POSTS_PER_PAGE, (currentPage + 1) * POSTS_PER_PAGE).map(post => (
+                {displayPosts.map(post => (
                   <PosterCard key={post.id} {...post} />
                 ))}
               </div>
+              
+              {/* Mobile Sentinel for Full Grid */}
+              {isMobile && displayPosts.length < paginatedData.length && (
+                <div id="mobile-scroll-sentinel" className={styles.sentinel}>
+                  <div className={styles.shimmer}>Loading more...</div>
+                </div>
+              )}
             </div>
-
-            {(isViewMore || (Math.ceil(filteredPosts.length / POSTS_PER_PAGE) > 1)) && (
-              <div className={styles.paginationRow}>
-                {/* Left empty spacer */}
-                <div className={styles.pageLeftSpacer}></div>
-
-                {/* Center: Back to Main */}
-                <div className={styles.centerControl}>
-                  {isViewMore && (
-                    <button className={styles.backToMainBtn} onClick={() => router.push('/')}>
-                      메인으로 돌아가기
-                    </button>
-                  )}
-                </div>
-
-                {/* Right: Page Info + Arrows */}
-                <div className={styles.rightControl}>
-                  <div className={styles.pageInfo}>PAGE {currentPage + 1} / {Math.ceil((isViewMore ? otherPosts.length : filteredPosts.length) / POSTS_PER_PAGE)}</div>
-                  <div className={styles.pageButtons}>
-                    <button 
-                      className={styles.pageBtn} 
-                      disabled={currentPage === 0}
-                      onClick={() => setCurrentPage(p => p - 1)}
-                    >
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="15 18 9 12 15 6"></polyline>
-                      </svg>
-                    </button>
-                    <button 
-                      className={styles.pageBtn} 
-                      disabled={currentPage >= Math.ceil((isViewMore ? otherPosts.length : filteredPosts.length) / POSTS_PER_PAGE) - 1}
-                      onClick={() => setCurrentPage(p => p + 1)}
-                    >
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="9 18 15 12 9 6"></polyline>
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         )}
       </div>
