@@ -230,3 +230,40 @@
   font-size: 0.85rem;
   color: var(--text-tertiary);
 }
+
+@media (max-width: 768px) {
+  .requestForm {
+    padding: 16px;
+    gap: 12px;
+  }
+  
+  .formActions {
+    flex-direction: column;
+  }
+
+  .cancelBtn {
+    order: 2;
+  }
+
+  .submitBtn {
+    order: 1;
+  }
+
+  .requestItem {
+    padding: 16px;
+  }
+
+  .replyInputArea {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .replyBtn {
+    width: 100%;
+  }
+
+  .listTitle {
+    font-size: 1rem;
+    margin-top: 20px;
+  }
+}
