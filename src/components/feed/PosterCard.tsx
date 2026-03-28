@@ -7,15 +7,22 @@ interface PosterCardProps {
   title: string;
   author: { id: string, name: string, color: string, avatar: string };
   imageUrl: string;
+  isEditorsPick?: boolean;
 }
 
-export default function PosterCard({ id, category, title, author, imageUrl }: PosterCardProps) {
+export default function PosterCard({ id, category, title, author, imageUrl, isEditorsPick }: PosterCardProps) {
   return (
     <article className={styles.card}>
       <Link href={`/post/${id}`} className={styles.link}>
         <div className={styles.imageWrapper}>
           <img src={imageUrl} alt={title} className={styles.posterImage} />
           <div className={styles.categoryBadge}>{category}</div>
+          {isEditorsPick && (
+            <div className={styles.editorsPickBadge}>
+              <span className={styles.pickIcon}>🏆</span>
+              공들여 씀
+            </div>
+          )}
         </div>
         <div className={styles.content}>
           <h3 className={styles.title}>{title}</h3>

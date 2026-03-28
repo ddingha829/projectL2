@@ -14,12 +14,13 @@ interface HeroCardProps {
   showNav?: boolean;
   currentIndex?: number;
   totalCount?: number;
+  isEditorsPick?: boolean;
 }
 
 export default function HeroCard({ 
   id, category, title, author, likes, imageUrl, 
   heightRatio = 'full', onPrev, onNext, showNav,
-  currentIndex = 0, totalCount = 3
+  currentIndex = 0, totalCount = 3, isEditorsPick
 }: HeroCardProps) {
   const containerStyle = heightRatio === '1/3' ? styles.heightOneThird : 
                         heightRatio === '2/3' ? styles.heightTwoThird : 
@@ -36,7 +37,15 @@ export default function HeroCard({
               <h2 className={styles.title}>{title}</h2>
             ) : (
               <>
-                <span className={styles.category}>{category}</span>
+                <div className={styles.categoryAndBadge}>
+                  <span className={styles.category}>{category}</span>
+                  {isEditorsPick && (
+                    <div className={styles.editorsPickBadge}>
+                      <span className={styles.pickIcon}>🏆</span>
+                      공들여 씀
+                    </div>
+                  )}
+                </div>
                 <h2 className={styles.title}>{title}</h2>
                 <div className={styles.meta}>
                   <span className={styles.likes}><span className={styles.icon}>👍</span> {likes}</span>

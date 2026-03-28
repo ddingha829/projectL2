@@ -60,7 +60,8 @@ export const MOCK_POSTS = [
     date: "2024-03-15",
     likes: 120,
     comments: 34,
-    imageUrl: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1600&q=80"
+    imageUrl: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1600&q=80",
+    isEditorsPick: true
   },
   {
     id: "11",
@@ -72,7 +73,8 @@ export const MOCK_POSTS = [
     date: "2024-02-20",
     likes: 156,
     comments: 67,
-    imageUrl: "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1600&q=80"
+    imageUrl: "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1600&q=80",
+    isEditorsPick: true
   }
 ];
 
@@ -133,7 +135,8 @@ export default async function Home({
       displayDate: new Date(p.created_at).toLocaleDateString('ko-KR'),
       likes: p.likes_count || 0,
       comments: 0,
-      imageUrl: p.image_url || 'https://images.unsplash.com/photo-1542204165-65bf26472b9b?auto=format&fit=crop&w=1600&q=80'
+      imageUrl: p.image_url || 'https://images.unsplash.com/photo-1542204165-65bf26472b9b?auto=format&fit=crop&w=1600&q=80',
+      isEditorsPick: p.is_editors_pick || false
     };
   }) || [];
 

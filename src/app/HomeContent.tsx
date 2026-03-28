@@ -7,6 +7,7 @@ import HeroCard from "@/components/feed/HeroCard";
 import PosterCard from "@/components/feed/PosterCard";
 import { AUTHORS } from "@/lib/constants/authors";
 import { useSearchParams, useRouter } from "next/navigation";
+import ReviewRequest from "@/components/feed/ReviewRequest";
 
 interface HomeContentProps {
   filteredPosts: any[];
@@ -198,6 +199,10 @@ export default function HomeContent({
                       </li>
                     ))}
                   </ul>
+                </div>
+                
+                <div className={styles.requestSection}>
+                   <ReviewRequest writerId={authorData.id} color={authorData.color} />
                 </div>
               </div>
             )}

@@ -105,3 +105,27 @@
   font-size: 4rem;
   margin-bottom: 20px;
 }
+
+.checkboxGroup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-primary);
+  padding: 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-medium);
+  margin-top: 10px;
+}
+
+.checkboxGroup input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.checkboxLabel {
+  font-weight: 700;
+  color: var(--text-primary);
+  cursor: pointer;
+  user-select: none;
+}

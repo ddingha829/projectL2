@@ -52,6 +52,11 @@ export default function WritePostForm() {
         <input type="hidden" name="content" value={content} />
       </div>
 
+      <div className={styles.checkboxGroup}>
+        <input type="checkbox" id="isEditorsPick" name="isEditorsPick" />
+        <label htmlFor="isEditorsPick" className={styles.checkboxLabel}>🏆 이 게시물을 에디터의 추천(Editor's Pick)으로 지정합니다.</label>
+      </div>
+
       <SubmitButton />
     </form>
   );

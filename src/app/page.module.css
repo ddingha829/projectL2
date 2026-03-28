@@ -440,6 +440,12 @@
   overflow: hidden;
 }
 
+.requestSection {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+}
+
 @media (max-width: 1200px) {
   .authorProfileCard {
     grid-template-columns: 1fr;
@@ -603,6 +609,12 @@
   .bulletDot {
     width: 6px;
     height: 6px;
+  }
+  .requestSection {
+    position: relative;
+    right: 0;
+    bottom: 0;
+    margin-top: 10px;
   }
 }
 

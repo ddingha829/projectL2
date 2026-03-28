@@ -27,6 +27,7 @@ export async function createPost(formData: FormData) {
   const title = formData.get('title') as string;
   const imageUrl = formData.get('imageUrl') as string;
   const content = formData.get('content') as string;
+  const isEditorsPick = formData.get('isEditorsPick') === 'on';
 
   const { error } = await supabase
     .from('posts')
@@ -37,6 +38,7 @@ export async function createPost(formData: FormData) {
         title,
         image_url: imageUrl,
         content,
+        is_editors_pick: isEditorsPick
       }
     ]);
 

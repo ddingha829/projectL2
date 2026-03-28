@@ -10,6 +10,7 @@
   position: sticky;
   top: 0;
   z-index: 2000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 .navContent {
@@ -158,6 +159,82 @@
   font-size: 0.9rem;
   font-weight: 700;
   text-decoration: none;
+}
+
+.dropdownContainer {
+  position: relative;
+}
+
+.avatarBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 10px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  min-width: 200px;
+  padding: 8px 0;
+  z-index: 2001;
+  animation: slideUp 0.3s ease;
+}
+
+.menuHeader {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+}
+
+.userEmail {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.userRole {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.menuItem, .menuItemLogout {
+  display: block;
+  width: 100%;
+  padding: 10px 16px;
+  text-align: left;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: var(--transition-fast);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.menuItem:hover, .menuItemLogout:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.menuItemLogout {
+  color: #ef4444;
+}
+
+.menuItemLogout:hover {
+  background: #fef2f2;
 }
 
 @media (max-width: 768px) {

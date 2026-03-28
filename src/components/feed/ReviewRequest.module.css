@@ -1,0 +1,232 @@
+.container {
+  margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.headerRow {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.toggleBtn {
+  background: var(--author-color);
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  letter-spacing: -0.01em;
+}
+
+.toggleBtn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btnIcon {
+  font-size: 1rem;
+}
+
+.requestForm {
+  margin-top: 24px;
+  padding: 24px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border: 1px dashed var(--border-medium);
+  animation: slideDown 0.4s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.textarea {
+  width: 100%;
+  padding: 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-medium);
+  background: var(--bg-primary);
+  font-size: 1rem;
+  resize: vertical;
+  min-height: 100px;
+  font-family: inherit;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--text-primary);
+}
+
+.formActions {
+  display: flex;
+  gap: 12px;
+}
+
+.submitBtn {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  border-radius: var(--radius-md);
+  color: white;
+  font-weight: 800;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.submitBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cancelBtn {
+  flex: 0.5;
+  padding: 14px;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.message {
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+.success { background: #d1fae5; color: #065f46; }
+.error { background: #fee2e2; color: #991b1b; }
+
+.requestList {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.listTitle {
+  font-size: 1.1rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--text-primary);
+  padding-bottom: 8px;
+  margin-bottom: 20px;
+}
+
+.requestItem {
+  background: var(--bg-primary);
+  padding: 20px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+}
+
+.itemHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.userName {
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.date {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+}
+
+.itemContent {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.authorReply {
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.replyHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.authorBadge {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.replyDate {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+}
+
+.replyText {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.replyInputArea {
+  margin-top: 16px;
+  display: flex;
+  gap: 8px;
+}
+
+.replyInput {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-medium);
+  font-size: 0.85rem;
+  background: var(--bg-secondary);
+}
+
+.replyBtn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: white;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.loginMsg {
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+}

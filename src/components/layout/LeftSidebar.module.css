@@ -8,10 +8,11 @@
   display: flex;
   flex-direction: column;
   gap: 16px; /* Increased gap as requested */
-  border-right: 1px solid var(--border-light);
   z-index: 1100;
   overflow-y: auto; /* Make sidebar independently scrollable */
   scrollbar-gutter: stable; /* Prevent content jump */
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.05);
+  border-right: none;
 }
 
 /* Custom scrollbar to make it look like part of the divider */

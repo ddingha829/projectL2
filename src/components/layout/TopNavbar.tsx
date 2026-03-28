@@ -12,10 +12,23 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
   const [searchQuery, setSearchQuery] = useState("");
   const [user, setUser] = useState<any>(null);
   const [role, setRole] = useState<string>("user");
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const supabase = createClient();
+  
+  // Close menu on click outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsProfileMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -89,12 +102,34 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
                 {role === 'admin' && (
                   <Link href="/write" className={styles.writeButton}>✍️ 쓰기</Link>
                 )}
-                <div className={styles.userAvatar}>
-                  {user.email?.charAt(0).toUpperCase() || "👦"}
+                <div className={styles.dropdownContainer} ref={dropdownRef}>
+                  <button 
+                    className={styles.avatarBtn} 
+                    onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+                    aria-label="Profile and settings"
+                  >
+                    <div className={styles.userAvatar}>
+                      {user.email?.charAt(0).toUpperCase() || "👦"}
+                    </div>
+                  </button>
+                  
+                  {isProfileMenuOpen && (
+                    <div className={styles.dropdownMenu}>
+                      <div className={styles.menuHeader}>
+                        <span className={styles.userEmail}>{user.email}</span>
+                        <span className={styles.userRole}>{role}</span>
+                      </div>
+                      <Link href="/settings" className={styles.menuItem} onClick={() => setIsProfileMenuOpen(false)}>
+                        ⚙️ 설정 및 프로필 수정
+                      </Link>
+                      <form action={logout}>
+                        <button type="submit" className={styles.menuItemLogout} onClick={() => setIsProfileMenuOpen(false)}>
+                          👋 로그아웃
+                        </button>
+                      </form>
+                    </div>
+                  )}
                 </div>
-                <form action={logout}>
-                  <button type="submit" className={styles.logoutButton}>Logout</button>
-                </form>
               </div>
             ) : (
               <Link href="/login" className={styles.loginButton}>Login</Link>

@@ -68,6 +68,30 @@
   border: 1px solid var(--glass-border);
 }
 
+.editorsPickBadge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: linear-gradient(135deg, #ffd700, #ff8c00);
+  color: #000;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.7rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  z-index: 2;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.pickIcon {
+  font-size: 0.9rem;
+}
+
 .content {
   padding: 0 4px;
 }
