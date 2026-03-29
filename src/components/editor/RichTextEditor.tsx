@@ -16,23 +16,28 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
   const quillRef = useRef<any>(null);
   const supabase = createClient();
 
-  // 브라우저에서만 라이브러리 로드 (서버 크래시 방지 핵심)
+  // 브라우저에서만 라이브러리 로드 (서버 크래시 및 빌드 에러 방지)
   useEffect(() => {
     const initQuill = async () => {
-      const { default: RQ, Quill: Q } = await import('react-quill');
-      const { default: ImageResize } = await import('quill-image-resize-module-react');
-      
-      // 이미 등록되었는지 확인 후 등록
-      if (!Q.imports['modules/imageResize']) {
-        Q.register('modules/imageResize', ImageResize);
+      try {
+        const { default: RQ, Quill: Q } = await import('react-quill');
+        const { default: ImageResize } = await import('quill-image-resize-module-react');
+        
+        // 타입 에러 방지를 위해 'any' 캐스팅 후 모듈 등록 확인
+        const quillAny = Q as any;
+        if (quillAny && !quillAny.import('modules/imageResize')) {
+          Q.register('modules/imageResize', ImageResize);
+        }
+
+        const Font = Q.import('formats/font');
+        Font.whitelist = ['serif', 'monospace', 'noto-sans', 'outfit', 'dancing'];
+        Q.register(Font, true);
+
+        setQuill(Q);
+        setReactQuill(() => RQ);
+      } catch (err) {
+        console.error('Quill initialization failed:', err);
       }
-
-      const Font = Q.import('formats/font');
-      Font.whitelist = ['serif', 'monospace', 'noto-sans', 'outfit', 'dancing'];
-      Q.register(Font, true);
-
-      setQuill(Q);
-      setReactQuill(() => RQ);
     };
     initQuill();
   }, []);
