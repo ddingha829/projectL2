@@ -1,25 +1,41 @@
-import { useMemo, useRef, useCallback } from 'react';
-import ReactQuill, { Quill } from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import ImageResize from 'quill-image-resize-module-react';
+"use client";
+
+import { useMemo, useRef, useCallback, useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import 'react-quill/dist/quill.snow.css';
 
-// Register modules
-Quill.register('modules/imageResize', ImageResize);
-
-// Add custom font whitelist if needed
-const Font = Quill.import('formats/font');
-Font.whitelist = ['serif', 'monospace', 'noto-sans', 'outfit', 'dancing'];
-Quill.register(Font, true);
-
+// 타입 정의
 interface RichTextEditorProps {
   content: string;
   onChange: (val: string) => void;
 }
 
 export default function RichTextEditor({ content, onChange }: RichTextEditorProps) {
-  const quillRef = useRef<ReactQuill>(null);
+  const [ReactQuill, setReactQuill] = useState<any>(null);
+  const [Quill, setQuill] = useState<any>(null);
+  const quillRef = useRef<any>(null);
   const supabase = createClient();
+
+  // 브라우저에서만 라이브러리 로드 (서버 크래시 방지 핵심)
+  useEffect(() => {
+    const initQuill = async () => {
+      const { default: RQ, Quill: Q } = await import('react-quill');
+      const { default: ImageResize } = await import('quill-image-resize-module-react');
+      
+      // 이미 등록되었는지 확인 후 등록
+      if (!Q.imports['modules/imageResize']) {
+        Q.register('modules/imageResize', ImageResize);
+      }
+
+      const Font = Q.import('formats/font');
+      Font.whitelist = ['serif', 'monospace', 'noto-sans', 'outfit', 'dancing'];
+      Q.register(Font, true);
+
+      setQuill(Q);
+      setReactQuill(() => RQ);
+    };
+    initQuill();
+  }, []);
 
   const imageHandler = useCallback(() => {
     const input = document.createElement('input');
@@ -33,7 +49,7 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
 
       try {
         const fileExt = file.name.split('.').pop();
-        const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
+        const fileName = `post-content/${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
         
         const { error } = await supabase.storage
           .from('post-images')
@@ -59,29 +75,38 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
     };
   }, [supabase]);
 
-  const modules = useMemo(() => ({
-    toolbar: {
-      container: [
-        [{ 'header': [1, 2, 3, false] }],
-        [{ 'font': Font.whitelist }],
-        [{ 'size': ['small', false, 'large', 'huge'] }],
-        ['bold', 'italic', 'underline', 'strike'],
-        [{ 'color': [] }, { 'background': [] }],
-        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-        [{ 'align': [] }],
-        ['blockquote', 'code-block'],
-        ['link', 'image', 'video'],
-        ['clean']
-      ],
-      handlers: {
-        image: imageHandler
+  const modules = useMemo(() => {
+    if (!Quill) return {};
+    
+    return {
+      toolbar: {
+        container: [
+          [{ 'header': [1, 2, 3, false] }],
+          [{ 'font': ['serif', 'monospace', 'noto-sans', 'outfit', 'dancing'] }],
+          [{ 'size': ['small', false, 'large', 'huge'] }],
+          ['bold', 'italic', 'underline', 'strike'],
+          [{ 'color': [] }, { 'background': [] }],
+          [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+          [{ 'align': [] }],
+          ['blockquote', 'code-block'],
+          ['link', 'image', 'video'],
+          ['clean']
+        ],
+        handlers: {
+          image: imageHandler
+        }
+      },
+      imageResize: {
+        parchment: Quill.import('parchment'),
+        modules: ['Resize', 'DisplaySize', 'Toolbar']
       }
-    },
-    imageResize: {
-      parchment: Quill.import('parchment'),
-      modules: ['Resize', 'DisplaySize', 'Toolbar']
-    }
-  }), [imageHandler]);
+    };
+  }, [Quill, imageHandler]);
+
+  // 로딩 중 표시
+  if (!ReactQuill || !Quill) {
+    return <div style={{ height: '600px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-hover)', border: '1px solid var(--border)', borderRadius: '12px', color: 'var(--text-muted)' }}>에디터를 불러오는 중...</div>;
+  }
 
   return (
     <div className="quill-editor-wrapper">
@@ -91,7 +116,7 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
         value={content}
         onChange={onChange}
         modules={modules}
-        style={{ height: '600px', marginBottom: '50px' }}
+        style={{ height: '600px', marginBottom: '80px' }}
       />
       <style jsx global>{`
         .quill-editor-wrapper .ql-container {
@@ -107,10 +132,7 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
         .ql-editor {
           font-size: 1.05rem;
           line-height: 1.8;
-        }
-        .ql-editor img {
-           max-width: 100%;
-           height: auto;
+          min-height: 500px;
         }
       `}</style>
     </div>
