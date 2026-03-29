@@ -28,7 +28,7 @@ export async function signup(formData: FormData) {
   
   const origin = (await headers()).get('origin')
   
-  const data = {
+  const signUpParams = {
     email: formData.get('email') as string,
     password: formData.get('password') as string,
     options: {
@@ -39,13 +39,20 @@ export async function signup(formData: FormData) {
     }
   }
 
-  const { error } = await supabase.auth.signUp(data)
+  const { data, error } = await supabase.auth.signUp(signUpParams)
 
   if (error) {
     redirect(`/login?error=${encodeURIComponent(error.message)}`)
   }
 
   revalidatePath('/', 'layout')
+
+  // 이메일 인증 OFF → session 즉시 생성 → 바로 메인으로
+  // 이메일 인증 ON  → session null → 인증 안내 메시지 표시
+  if (data.session) {
+    redirect('/')
+  }
+
   redirect('/login?message=signup_success')
 }
 
