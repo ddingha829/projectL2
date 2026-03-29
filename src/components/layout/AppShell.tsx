@@ -17,6 +17,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const [isMobileScreen, setIsMobileScreen] = useState(false);
   const router = useRouter();
 
+  // Unified Auth State
   const [user, setUser] = useState<any>(null);
   const [role, setRole] = useState<string>("user");
   const [displayName, setDisplayName] = useState<string>("");
@@ -42,6 +43,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     }
   }, [isMobileOpen]);
 
+  // Optimized Sync Logic (Bypass DB lag with metadata)
   useEffect(() => {
     const syncAuth = async (currUser: any) => {
       if (!currUser) {
@@ -53,6 +55,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       }
 
       setUser(currUser);
+      
+      // STEP 1: Immediate metadata fallback (Prevents visitor downgrade if DB is slow)
       const metaRole = currUser.app_metadata?.role || currUser.user_metadata?.role || "user";
       const metaName = currUser.user_metadata?.full_name || currUser.user_metadata?.display_name || "";
       
@@ -60,6 +64,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       setDisplayName(metaName);
       setIsLoading(false); 
 
+      // STEP 2: Background profile fetch
       try {
         const { data: profile } = await supabase.from('profiles').select('role, display_name').eq('id', currUser.id).single();
         if (profile) {
@@ -67,26 +72,28 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           if (profile.display_name) setDisplayName(profile.display_name);
         }
       } catch (err) {
-        console.warn("Sync error:", err);
+        console.warn("DB profile sync skipped", err);
       }
     };
 
     supabase.auth.getUser().then(({ data }) => syncAuth(data.user));
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (session?.user) {
-        await syncAuth(session.user);
-      } else {
-        await syncAuth(null);
-      }
-
-      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED') {
-        if (event === 'SIGNED_OUT') router.push('/');
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
+        syncAuth(session?.user);
         router.refresh();
+      } else if (event === 'SIGNED_OUT') {
+        syncAuth(null);
+        router.push('/');
+        router.refresh();
+      } else if (event === 'USER_UPDATED') {
+        syncAuth(session?.user);
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      subscription.unsubscribe();
+    };
   }, [supabase, router]);
 
   return (
