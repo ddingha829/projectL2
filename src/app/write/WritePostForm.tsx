@@ -7,6 +7,7 @@ import { useFormStatus } from "react-dom";
 import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/client";
 import { useSearchParams } from "next/navigation";
+import { compressImage } from "@/lib/utils/image";
 
 // [중요] 수리된 에디터 컴포넌트를 다시 불러옴
 const RichTextEditor = dynamic(() => import("@/components/editor/RichTextEditor"), { 
@@ -47,12 +48,13 @@ export default function WritePostForm({ role }: { role: string }) {
 
     setIsUploading(true);
     try {
-      const fileExt = file.name.split('.').pop();
+      const compressedBlob = await compressImage(file);
+      const fileExt = 'jpg'; // We compress to JPEG
       const fileName = `covers/${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
       
       const { error } = await supabase.storage
         .from('post-images')
-        .upload(fileName, file);
+        .upload(fileName, compressedBlob, { contentType: 'image/jpeg' });
 
       if (error) throw error;
 

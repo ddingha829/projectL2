@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import 'react-quill-new/dist/quill.snow.css';
 import { createClient } from '@/lib/supabase/client';
+import { compressImage } from '@/lib/utils/image';
 import styles from './RichTextEditor.module.css';
 
 // [중요] 최신 버전의 Quill 2.0 및 React 19 호환을 위한 동적 로드 및 모듈 등록
@@ -47,12 +48,13 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
             if (!file) return;
 
             try {
-                const fileExt = file.name.split('.').pop();
+                const compressedBlob = await compressImage(file);
+                const fileExt = 'jpg';
                 const fileName = `editor/${Math.random().toString(36).substring(2, 10)}_${Date.now()}.${fileExt}`;
                 
                 const { error } = await supabase.storage
                     .from('post-images')
-                    .upload(fileName, file);
+                    .upload(fileName, compressedBlob, { contentType: 'image/jpeg' });
 
                 if (error) throw error;
 
