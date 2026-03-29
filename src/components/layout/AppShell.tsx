@@ -42,61 +42,51 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     }
   }, [isMobileOpen]);
 
-  // Auth Listener with Hard Reload for Login Sync
+  // Stable Auth Sync (No Reloads)
   useEffect(() => {
-    const fetchAuthData = async () => {
-      const { data: { user: authUser } } = await supabase.auth.getUser();
-      if (authUser) {
-        setUser(authUser);
-        const { data: profile } = await supabase.from('profiles').select('role, display_name').eq('id', authUser.id).single();
-        
-        // Metadata fallback for roles to prevent 'user' downgrade
-        const metaRole = authUser.app_metadata?.role || authUser.user_metadata?.role;
-        
-        if (profile) {
-          setRole(profile.role || metaRole || "user");
-          setDisplayName(profile.display_name || authUser.user_metadata?.full_name || authUser.user_metadata?.display_name || "");
-        } else {
-          setRole(metaRole || "user");
-          setDisplayName(authUser.user_metadata?.full_name || authUser.user_metadata?.display_name || "");
-        }
-      } else {
+    const syncAuth = async (currUser: any) => {
+      if (!currUser) {
         setUser(null);
         setRole("user");
         setDisplayName("");
+        return;
+      }
+
+      setUser(currUser);
+      
+      // Fallback to Metadata first (helps when Egress is hit)
+      const metaRole = currUser.app_metadata?.role || currUser.user_metadata?.role || "user";
+      const metaName = currUser.user_metadata?.full_name || currUser.user_metadata?.display_name || "";
+      
+      setRole(metaRole);
+      setDisplayName(metaName);
+
+      // Try database profile in background
+      try {
+        const { data: profile } = await supabase.from('profiles').select('role, display_name').eq('id', currUser.id).single();
+        if (profile) {
+          if (profile.role) setRole(profile.role);
+          if (profile.display_name) setDisplayName(profile.display_name);
+        }
+      } catch (err) {
+        console.warn("Profile fetch error, using metadata", err);
       }
     };
-    fetchAuthData();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      // Hard reload on SIGNED_IN to ensure cookies and all states are perfectly synced
+    // Initial check on mount
+    supabase.auth.getUser().then(({ data }) => syncAuth(data.user));
+
+    // Listen for changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN') {
-        window.location.reload();
-        return;
-      }
-      
-      if (event === 'SIGNED_OUT') {
-        setUser(null);
-        setRole("user");
-        setDisplayName("");
+        syncAuth(session?.user);
+        router.refresh();
+      } else if (event === 'SIGNED_OUT') {
+        syncAuth(null);
         router.push('/');
         router.refresh();
-        return;
-      }
-
-      const sessionUser = session?.user ?? null;
-      if (sessionUser) {
-        setUser(sessionUser);
-        const { data: profile } = await supabase.from('profiles').select('role, display_name').eq('id', sessionUser.id).single();
-        const metaRole = sessionUser.app_metadata?.role || sessionUser.user_metadata?.role;
-        
-        if (profile) {
-          setRole(profile.role || metaRole || "user");
-          setDisplayName(profile.display_name || sessionUser.user_metadata?.full_name || sessionUser.user_metadata?.display_name || "");
-        } else {
-          setRole(metaRole || "user");
-          setDisplayName(sessionUser.user_metadata?.full_name || sessionUser.user_metadata?.display_name || "");
-        }
+      } else {
+        syncAuth(session?.user);
       }
     });
 
