@@ -28,7 +28,7 @@ export default async function LoginPage({
         {isSignupSuccess && (
           <div className={styles.successAlert}>
             ✅ 회원가입이 완료되었습니다.<br />
-            작성하신 메일로 인증 메일이 발송되었으니 확인해 주세요.
+            아래에서 다시 로그인해 주세요.
           </div>
         )}
 

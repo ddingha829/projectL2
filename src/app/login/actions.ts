@@ -47,10 +47,9 @@ export async function signup(formData: FormData) {
 
   revalidatePath('/', 'layout')
 
-  // 이메일 인증 OFF → session 즉시 생성 → 바로 메인으로
-  // 이메일 인증 ON  → session null → 인증 안내 메시지 표시
+  // 이메일 인증 OFF면 session이 자동 생성되므로 로그아웃 후 안내 메시지 표시
   if (data.session) {
-    redirect('/')
+    await supabase.auth.signOut()
   }
 
   redirect('/login?message=signup_success')
