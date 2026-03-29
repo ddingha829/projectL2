@@ -67,8 +67,6 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
         <div className={styles.leftGroup}>
           <button className={styles.hamburgerBtn} onClick={onMobileToggle}>≡</button>
           <Link href="/" className={styles.logoText}>
-            <span className={styles.logoMain}>우가우가</span>
-            <span className={styles.logoDot}>.</span>
             <span className={styles.logoSub}>WoogaWooga</span>
           </Link>
         </div>

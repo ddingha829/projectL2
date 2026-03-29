@@ -1,5 +1,5 @@
 .header {
-  height: 70px;
+  height: 62px; /* Further 5% reduction */
   width: 100%;
   background-color: var(--glass-bg);
   backdrop-filter: blur(16px);
@@ -49,14 +49,14 @@
   font-weight: 900;
   letter-spacing: -0.04em;
   white-space: nowrap;
+  padding-left: 16px; /* Shifted further right to align perfectly */
 }
 
-.logoMain {
-  color: var(--text-primary);
-  font-size: 1.65rem;
+.logoSub { 
+  color: #1a77ce; 
+  font-size: 1.95rem; /* Increased size by another 5% */
+  font-weight: 1000;
 }
-.logoDot { color: #1a77ce; margin: 0 1px; }
-.logoSub { color: #1a77ce; }
 
 .rightGroup {
   display: flex;
@@ -73,7 +73,7 @@
   border: 1px solid var(--border-light);
   border-radius: 40px;
   padding: 0 16px;
-  height: 40px;
+  height: 34px; /* Reduced from 36px */
   width: 100%;
   max-width: 300px;
 }
@@ -103,7 +103,7 @@
 .iconBtn {
   background: none;
   border: none;
-  font-size: 1.3rem;
+  font-size: 1.15rem;
   cursor: pointer;
   color: #666;
 }
@@ -130,8 +130,8 @@
 }
 
 .userAvatar {
-  width: 34px;
-  height: 34px;
+  width: 28px; /* Reduced from 30px */
+  height: 28px;
   border-radius: 50%;
   background-color: #f3f4f6;
   display: flex;

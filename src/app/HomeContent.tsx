@@ -10,23 +10,30 @@ import { useSearchParams, useRouter } from "next/navigation";
 import ReviewRequest from "@/components/feed/ReviewRequest";
 
 interface HomeContentProps {
-  filteredPosts: any[];
+  heroPosts: any[];
+  otherPosts: any[];
+  allPosts: any[];
   displayTitle: string;
   animationKey: string;
   isInitialVisit: boolean;
 }
 
 export default function HomeContent({ 
-  filteredPosts, 
+  heroPosts,
+  otherPosts,
+  allPosts,
   displayTitle, 
   animationKey,
   isInitialVisit 
 }: HomeContentProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const currentAuthorId = searchParams.get("author");
+  const categoryFilter = searchParams.get("category");
+  const authorFilter = searchParams.get("author");
+  const searchFilter = searchParams.get("search");
+  
   const isViewMore = searchParams.get("view") === "all";
-  const authorData = AUTHORS.find(a => a.id === currentAuthorId);
+  const authorData = AUTHORS.find(a => a.id === authorFilter);
 
   const [showIntro, setShowIntro] = useState(false);
   const [heroIndex, setHeroIndex] = useState(0);
@@ -49,20 +56,15 @@ export default function HomeContent({
     setCurrentPage(0);
     setMobileVisibleCount(4);
   }, [animationKey]);
-  
-  // ... Rest stays same, but I'll insert the Profile JSX in the return
 
   useEffect(() => {
     if (isInitialVisit && !isMobile) {
       const visited = sessionStorage.getItem("introVisited");
       if (!visited) {
-        // Wrap in microtask to avoid "setState in effect" warning if necessary
         Promise.resolve().then(() => setShowIntro(true));
       }
     }
   }, [isInitialVisit, isMobile]);
-
-  // Pagination reset is now handled by the 'key' prop on HomeContent in page.tsx
 
   // Scroll to top when view or page changes
   useEffect(() => {
@@ -77,26 +79,36 @@ export default function HomeContent({
   const nextHero = (e: React.MouseEvent) => {
     e.preventDefault();
     setSlideDir('next');
-    setHeroIndex((prev) => (prev + 1) % 3);
+    setHeroIndex((prev) => (prev + 1) % heroPosts.length);
   };
 
   const prevHero = (e: React.MouseEvent) => {
     e.preventDefault();
     setSlideDir('prev');
-    setHeroIndex((prev) => (prev - 1 + 3) % 3);
+    setHeroIndex((prev) => (prev - 1 + heroPosts.length) % heroPosts.length);
   };
-
-  // Split posts
-  const heroPosts = filteredPosts.slice(0, 3);
-  const otherPosts = filteredPosts.slice(3);
 
   // If we have filters, just show the grid with the title
   const isFiltered = displayTitle !== "Home";
 
-
+  // Unified Filtering for the grid
+  let filteredPosts = allPosts;
+  if (categoryFilter && categoryFilter !== 'all') {
+    filteredPosts = filteredPosts.filter(p => p.categoryId === categoryFilter);
+  }
+  if (authorFilter && authorFilter !== 'all') {
+    filteredPosts = filteredPosts.filter(p => p.author.id === authorFilter);
+  }
+  if (searchFilter) {
+    const lowerQuery = searchFilter.toLowerCase();
+    filteredPosts = filteredPosts.filter(p => 
+      p.title.toLowerCase().includes(lowerQuery) || 
+      p.content.toLowerCase().includes(lowerQuery)
+    );
+  }
 
   // Grid posts logic
-  const showFullGrid = isFiltered || isViewMore || searchParams.get("view") === "all";
+  const showFullGrid = isFiltered || isViewMore;
   const paginatedData = filteredPosts;
   const totalPages = Math.ceil(paginatedData.length / POSTS_PER_PAGE);
 

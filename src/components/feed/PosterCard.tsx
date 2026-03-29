@@ -18,26 +18,29 @@ export default function PosterCard({ id, category, title, author, imageUrl, isEd
           <div className={styles.imageWrapper}>
             <img src={imageUrl} alt={title} className={styles.posterImage} />
             <div className={styles.categoryBadge}>{category}</div>
-            
-            <div className={styles.titleOverlay}>
-              <h3 className={styles.title}>{title}</h3>
-            </div>
-          </div>
-          
-          <div className={styles.cardMeta}>
+
             {isEditorsPick && (
-              <div className={styles.editorsPickBadge}>
+              <div className={styles.pickBadgeInline}>
                 <span className={styles.pickIcon}>🏆</span>
                 PICK
               </div>
             )}
-            <div className={styles.authorBadge} style={{ '--author-color': author.color } as React.CSSProperties}>
-              {author.avatar.startsWith('/') || author.avatar.startsWith('http') ? (
-                <img src={author.avatar} alt={author.name} className={styles.avatarImg} />
-              ) : (
-                <span className={styles.avatarEmoji}>{author.avatar}</span>
-              )}
-              <span className={styles.authorName}>{author.name}</span>
+
+            <div className={styles.titleOverlay}>
+              <h3 className={styles.title}>{title}</h3>
+            </div>
+
+            {/* Author badge: absolute bottom-right, independent of titleOverlay */}
+            <div className={styles.badgesLine}>
+              <div className={styles.authorBadgeHorizontal} style={{ '--author-color': author.color } as React.CSSProperties}>
+                <div className={styles.colorLine} />
+                {author.avatar.startsWith('/') || author.avatar.startsWith('http') ? (
+                  <img src={author.avatar} alt={author.name} className={styles.avatarImg} />
+                ) : (
+                  <span className={styles.avatarEmoji}>{author.avatar}</span>
+                )}
+                <span className={styles.authorName}>{author.name}</span>
+              </div>
             </div>
           </div>
         </div>

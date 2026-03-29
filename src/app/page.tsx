@@ -100,7 +100,15 @@ export default async function Home({
 
   const supabase = await createClient();
   
-  // Explicit JOIN using author_id field name to avoid ambiguous relation errors
+  // 1. Fetch Hero posts (designated by admin)
+  const { data: heroDbPosts } = await supabase
+    .from('posts')
+    .select('*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets:description_bullets)')
+    .eq('is_hero', true)
+    .order('hero_at', { ascending: false })
+    .limit(3);
+
+  // 2. Fetch all posts for the feed (excluding or including hero posts - user's preference usually separate them)
   const { data: dbPosts, error: dbError } = await supabase
     .from('posts')
     .select('*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets:description_bullets)')
@@ -110,9 +118,8 @@ export default async function Home({
     console.error('Supabase fetch error:', dbError);
   }
 
-  const livePosts = dbPosts?.map((p: any) => {
+  const mapToPost = (p: any) => {
     const strippedContent = p.content ? p.content.replace(/<[^>]+>/g, '') : "내용이 없습니다.";
-    // Ensure author exists, fallback to record if profile is missing
     const authorData = p.author || {};
     return {
       id: `db-${p.id}`,
@@ -136,9 +143,14 @@ export default async function Home({
       likes: p.likes_count || 0,
       comments: 0,
       imageUrl: p.image_url || 'https://images.unsplash.com/photo-1542204165-65bf26472b9b?auto=format&fit=crop&w=1600&q=80',
-      isEditorsPick: p.is_editors_pick || false
+      isEditorsPick: p.is_editors_pick || false,
+      isHero: p.is_hero || false,
+      heroAt: p.hero_at
     };
-  }) || [];
+  };
+
+  const heroPosts = heroDbPosts?.map(mapToPost) || [];
+  const livePosts = dbPosts?.map(mapToPost) || [];
 
   // Sort: DB posts (2026) always come before MOCK_POSTS (2024)
   const sortByDate = (a: any, b: any) => {
@@ -147,6 +159,13 @@ export default async function Home({
 
   const normalMocks = MOCK_POSTS.map(m => ({ ...m, displayDate: m.date }));
   let allPosts = [...livePosts, ...normalMocks].sort(sortByDate);
+
+  // If we have hero posts from DB, they will be used by HomeContent. 
+  // If not, it falls back to slicing allPosts.
+  const finalHeroPosts = heroPosts.length > 0 ? heroPosts : allPosts.slice(0, 3);
+  const finalOtherPosts = heroPosts.length > 0 
+    ? allPosts.filter(p => !heroPosts.find(h => h.id === p.id))
+    : allPosts.slice(3);
 
   // Unified Filtering
   let filteredPosts = allPosts;
@@ -185,7 +204,9 @@ export default async function Home({
   return (
     <Suspense fallback={<div>피드를 불러오는 중입니다...</div>}>
       <HomeContent 
-        filteredPosts={filteredPosts} 
+        heroPosts={finalHeroPosts}
+        otherPosts={finalOtherPosts}
+        allPosts={allPosts}
         displayTitle={displayTitle}
         animationKey={animationKey}
         isInitialVisit={isInitialVisit}

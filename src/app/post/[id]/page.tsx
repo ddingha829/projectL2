@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { MOCK_POSTS } from "@/app/page";
 import PostInteractions from "./PostInteractions";
+import HeroToggleBtn from "./HeroToggleBtn";
+import { getAdminStatus } from "@/app/actions/hero";
 import styles from "./page.module.css";
 
 export default async function PostDetail({ params }: { params: Promise<{ id: string }> }) {
@@ -66,6 +68,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
     post = {
        ...dbPost,
        category: CATEGORY_MAP[dbPost.category] || dbPost.category,
+       is_hero: dbPost.is_hero || false,
        author: {
          id: dbPost.author?.id || dbPost.author_id || 'db-anon',
          display_name: dbPost.author?.display_name || '활발한 작가',
@@ -83,6 +86,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
   }
 
   const { data: { user } } = await supabase.auth.getUser();
+  const { isAdmin } = await getAdminStatus();
 
   return (
     <div className={styles.container}>
@@ -109,6 +113,11 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
         <div className={styles.content} dangerouslySetInnerHTML={{ __html: post.content }} />
         
         <div className={styles.separator} />
+
+        {/* Admin-only: Hero designation button (DB posts only) */}
+        {isAdmin && isDbPost && (
+          <HeroToggleBtn postId={actualId} initialIsHero={post.is_hero || false} />
+        )}
 
         <PostInteractions 
           postId={actualId} 

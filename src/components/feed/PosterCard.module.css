@@ -75,60 +75,62 @@
   box-sizing: border-box;
 }
 
-.cardMeta {
+/* Removed cardMeta as info is integrated in titleOverlay */
+
+.badgesLine {
+  position: absolute;
+  bottom: 12px;
+  right: 14px;
   display: flex;
-  justify-content: flex-end;
   align-items: center;
-  gap: 8px;
-  margin-top: 5px; /* Reduced by 50% (10 -> 5) */
-  padding: 0 8px;
-  position: relative;
-  z-index: 10;
+  z-index: 4;
 }
 
-.authorBadge {
+.authorBadgeHorizontal {
   display: flex;
   align-items: center;
-  gap: 5px;
-  padding: 2px 8px 2px 2px;
-  border-radius: var(--radius-sm);
-  height: 26px;
-  box-sizing: border-box;
+  gap: 6px;
+  padding: 2px 10px 2px 8px;
   background-color: #fff;
-  border: 2px solid var(--author-color);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  border-radius: var(--radius-sm); /* 카테고리 배지와 동일한 R값 */
+  color: #111;
   transition: all 0.3s ease;
-  flex-shrink: 0;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  overflow: hidden;
+  position: relative;
+}
+
+.colorLine {
+  display: none;
 }
 
 .authorName {
-  font-size: 0.58rem;
-  font-weight: 850;
-  color: #111;
-  text-shadow: none;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1;
 }
 
-.editorsPickBadge {
-  background: linear-gradient(135deg, #ffd700, #ff8c00);
-  color: #000;
-  height: 22px;
-  padding: 0 10px;
-  border-radius: 4px;
-  font-size: 0.52rem;
-  font-weight: 950;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+.pickBadgeInline {
+  position: absolute;
+  top: 10px;
+  right: 10px;
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  flex-shrink: 0;
+  padding: 2px 8px;
+  background-color: #ffd700;
+  color: #000;
+  font-size: 0.65rem;
+  font-weight: 900;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  letter-spacing: 0.05em;
+  z-index: 5;
 }
 
 .pickIcon {
-  font-size: 0.7rem; /* Smaller icon for smaller badge */
+  font-size: 0.75rem; 
 }
 
 .titleOverlay {
@@ -136,15 +138,15 @@
   bottom: 0px;
   left: 0px;
   right: 0px;
-  padding: 48px 16px 14px; /* Increased top padding for smooth gradient */
-  background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.6) 25%, rgba(0, 0, 0, 1) 100%);
+  padding: 64px 16px 52px; /* 더 큰 top padding으로 제목이 한 줄 위에 표시, bottom은 배지 공간 확보 */
+  background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.28) 25%, rgba(0, 0, 0, 0.55) 100%);
   z-index: 3;
 }
 
 .title {
   font-family: var(--font-outfit), var(--font-noto-sans), sans-serif;
-  font-size: 1.05rem;
-  font-weight: 900;
+  font-size: 1.3rem;
+  font-weight: 700; /* 900 → 700 으로 얇게 */
   color: #fff;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -157,27 +159,28 @@
 }
 
 .avatarImg {
-  width: 16px; /* Reduced (20 -> 16) */
-  height: 16px;
+  width: 20px; /* Slightly larger for bookmark */
+  height: 20px;
   border-radius: 50%;
   object-fit: cover;
-  border: 1px solid rgba(255,255,255,0.4);
+  border: 1px solid rgba(0,0,0,0.1);
 }
 
 .avatarEmoji {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.6rem;
-  background: rgba(255,255,255,0.2);
-  border-radius: 50%;
+  font-size: 0.8rem;
 }
 
 @media (max-width: 768px) {
+  .card:hover {
+    transform: none !important;
+  }
   .card {
-    min-width: 150px;
+     min-width: 150px;
   }
   .imageWrapper {
     padding-top: 130%; 
@@ -186,7 +189,7 @@
     overflow: hidden; 
   }
   .titleOverlay {
-    padding: 10px 12px;
+    padding: 40px 12px 46px;
   }
   .title {
     font-size: 0.85rem;

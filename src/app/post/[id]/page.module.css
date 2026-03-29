@@ -327,3 +327,124 @@
   line-height: 1.5;
   color: var(--text-main);
 }
+
+/* ============================
+   Admin: Hero Toggle Button
+   ============================ */
+.heroAdminArea {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 40px;
+  padding: 20px 24px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(255, 200, 0, 0.06) 0%, rgba(255, 120, 0, 0.06) 100%);
+  border: 1.5px dashed rgba(255, 185, 0, 0.45);
+}
+
+.heroAdminArea::before {
+  content: '🔧 Admin';
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #b8860b;
+  background: rgba(255, 200, 0, 0.18);
+  border-radius: 4px;
+  padding: 2px 7px;
+  white-space: nowrap;
+}
+
+.heroToggleBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 2px solid rgba(180, 130, 0, 0.5);
+  background-color: transparent;
+  color: #8a6f00;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+}
+
+.heroToggleBtn:hover:not(:disabled) {
+  background-color: rgba(255, 200, 0, 0.15);
+  border-color: #b8860b;
+  color: #7a5f00;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(180, 130, 0, 0.2);
+}
+
+.heroToggleBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Active state: post is already a hero */
+.heroToggleBtnActive {
+  background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
+  border-color: #e8a000;
+  color: #3d2800;
+  box-shadow: 0 4px 16px rgba(255, 185, 0, 0.35);
+}
+
+.heroToggleBtnActive:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ffdf20 0%, #ffb020 100%);
+  box-shadow: 0 6px 20px rgba(255, 185, 0, 0.45);
+  color: #2a1a00;
+  transform: translateY(-1px);
+}
+
+.heroSpinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2.5px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: heroSpin 0.7s linear infinite;
+}
+
+@keyframes heroSpin {
+  to { transform: rotate(360deg); }
+}
+
+.heroMessage {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1a7a3a;
+  animation: heroFadeIn 0.25s ease;
+}
+
+.heroMessageError {
+  color: #c0392b;
+}
+
+@keyframes heroFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-color-scheme: dark) {
+  .heroAdminArea {
+    background: linear-gradient(135deg, rgba(255, 200, 0, 0.06) 0%, rgba(255, 120, 0, 0.06) 100%);
+    border-color: rgba(255, 185, 0, 0.3);
+  }
+  .heroAdminArea::before {
+    color: #d4a017;
+    background: rgba(255, 200, 0, 0.12);
+  }
+  .heroToggleBtn {
+    color: #c8a000;
+    border-color: rgba(200, 160, 0, 0.45);
+  }
+  .heroToggleBtnActive {
+    color: #1a0f00;
+  }
+  .heroMessage {
+    color: #3dbb6a;
+  }
+}
