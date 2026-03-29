@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import styles from "./LeftSidebar.module.css";
 import { AUTHORS } from "@/lib/constants/authors";
-import { MOCK_NOTICE } from "@/lib/constants/notice";
 import HeroCard from "@/components/feed/HeroCard";
 import { createClient } from "@/lib/supabase/client";
 
@@ -40,6 +39,7 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
   const [liveAuthors, setLiveAuthors] = useState<any[]>([]);
   const [user, setUser] = useState<any>(null);
   const [role, setRole] = useState<string>("user");
+  const [notices, setNotices] = useState<any[]>([]);
 
   useEffect(() => {
     Promise.resolve().then(() => setMounted(true));
@@ -68,6 +68,21 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
     };
 
     fetchLiveAuthors();
+
+    // Fetch notices
+    const fetchNotices = async () => {
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from('notices')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(3);
+      
+      if (data && !error) {
+        setNotices(data);
+      }
+    };
+    fetchNotices();
 
     // Fetch auth state
     const supabase = createClient();
@@ -179,12 +194,28 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
         </div>
 
         <div className={styles.section}>
-          <header className={styles.sidebarHeader}>
-            <h3 className={styles.sectionTitle}>Notice</h3>
+          <header className={`${styles.sidebarHeader} ${styles.noticeHeader}`}>
+            <Link href="/notice" className={styles.sectionTitleLink}>
+              <h3 className={styles.sectionTitle}>Notice</h3>
+            </Link>
             <div className={styles.sidebarDivider}></div>
           </header>
-          <div className={styles.noticeContainer}>
-            <HeroCard {...MOCK_NOTICE} heightRatio="compact" />
+          <div className={styles.noticeList}>
+            {notices.length > 0 ? (
+              notices.map((n) => (
+                <Link key={n.id} href={`/post/db-${n.id}`} className={styles.noticeItem}>
+                  <span className={styles.noticeDot}>•</span>
+                  <span className={styles.noticeTitle}>{n.title}</span>
+                </Link>
+              ))
+            ) : (
+              [1, 2, 3].map((i) => (
+                <div key={i} className={styles.noticePlaceholder}>
+                  <span className={styles.placeholderDot}>•</span>
+                  <span className={styles.placeholderText}>공지사항이 없습니다.</span>
+                </div>
+              ))
+            )}
           </div>
         </div>
 
@@ -219,7 +250,7 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
 
         <div className={styles.section}>
           <header className={styles.sidebarHeader}>
-            <h3 className={styles.sectionTitle}>Writers</h3>
+            <h3 className={styles.sectionTitle}>Editors</h3>
             <div className={styles.sidebarDivider}></div>
           </header>
           <ul className={styles.menuList}>

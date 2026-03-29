@@ -4,7 +4,7 @@
   --bg-secondary: #f9fafb;
   --bg-tertiary: #f3f4f6;
   
-  --text-primary: #111827;
+  --text-primary: #2C2C2C;
   --text-secondary: #4b5563;
   --text-tertiary: #9ca3af;
   
@@ -34,9 +34,9 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg-primary: #030712;
-    --bg-secondary: #0f172a;
-    --bg-tertiary: #1e293b;
+    --bg-primary: #2C2C2C;
+    --bg-secondary: #353535;
+    --bg-tertiary: #3D3D3D;
     
     --text-primary: #f9fafb;
     --text-secondary: #d1d5db;
@@ -56,9 +56,9 @@
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
 
     /* Paper feel in dark mode */
-    --bg-primary: #0a0a0a;
+    --bg-primary: #2C2C2C;
     --text-primary: #f0f0f0;
-    --border-light: #222;
+    --border-light: #444;
   }
 }
 

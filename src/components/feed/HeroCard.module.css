@@ -2,15 +2,15 @@
   position: relative;
   width: 100%;
   display: block;
-  background-color: #000;
+  background-color: #2C2C2C;
   height: 100%;
 }
 
 
 
-.heightFull { height: min(780px, 78vh); }
-.heightTwoThird { height: min(520px, 52vh); }
-.heightOneThird { height: min(260px, 26vh); }
+.heightFull { height: min(768px, 76vh); }
+.heightTwoThird { height: min(512px, 50vh); }
+.heightOneThird { height: min(256px, 25vh); }
 .heightCompact { 
   height: 56px; 
   border: none !important; 
@@ -39,7 +39,7 @@
   z-index: 2;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.56) 0%, rgba(0, 0, 0, 0.14) 60%, transparent 100%);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0.35) 30%, transparent 60%);
   display: flex;
   flex-direction: column;
 }
@@ -53,7 +53,7 @@
   flex: 1;
   display: flex;
   align-items: flex-end;
-  padding: 40px 50px;
+  padding: 30px 50px; /* Lowered title position */
   text-decoration: none;
   width: 100%;
   min-width: 0;

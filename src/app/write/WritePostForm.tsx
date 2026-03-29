@@ -75,7 +75,13 @@ export default function WritePostForm({ role }: { role: string }) {
     <form action={createPost} className={styles.formContainer}>
       <div className={styles.inputGroup}>
         <label htmlFor="category">카테고리</label>
-        <select id="category" name="category" required className={styles.input}>
+        <select 
+          id="category" 
+          name="category" 
+          required 
+          className={styles.input}
+          defaultValue={searchParams.get('category') || 'movie'}
+        >
           <option value="movie">영화 (Movie)</option>
           <option value="book">책 (Book)</option>
           <option value="game">게임 (Game)</option>

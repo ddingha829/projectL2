@@ -112,6 +112,7 @@ export default async function Home({
   const { data: dbPosts, error: dbError } = await supabase
     .from('posts')
     .select('*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets:description_bullets)')
+    .neq('category', 'notice')
     .order('created_at', { ascending: false });
 
   if (dbError) {

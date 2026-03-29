@@ -23,10 +23,10 @@
 .imageWrapper {
   position: relative;
   width: 100%;
-  padding-top: 133.33%; /* Magazine ratio 3:4 */
+  padding-top: 125%; /* Magazine ratio 4:5 */
   border-radius: 20px;
   overflow: hidden;
-  border: 2px solid #000;
+  border: 1.5px solid #2C2C2C;
   isolation: isolate;
   background-color: var(--bg-tertiary);
   margin-bottom: 8px; /* Reduced since no title below */
@@ -102,8 +102,8 @@
   bottom: 0px;
   left: 0px;
   right: 0px;
-  padding: 64px 16px 52px; /* Restored bottom padding for badge */
-  background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.28) 25%, rgba(0, 0, 0, 0.55) 100%);
+  padding: 50px 16px 36px; /* Lowered title and shrunk area */
+  background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0) 28%, rgba(0, 0, 0, 0.75) 65%, rgba(0, 0, 0, 0.95) 100%);
   z-index: 3;
 }
 
@@ -154,13 +154,13 @@
      min-width: 150px;
   }
   .imageWrapper {
-    padding-top: 133.33%; /* Mobile consistent with Desktop */
+    padding-top: 125%; /* Mobile consistent with Desktop */
     margin-bottom: 8px;
     border-radius: var(--radius-md);
     overflow: hidden; 
   }
   .titleOverlay {
-    padding: 40px 12px 14px;
+    padding: 30px 12px 8px; /* Lowered mobile title position */
   }
   .title {
     font-size: 0.95rem; /* Increase mobile title too */

@@ -13,7 +13,7 @@
   display: flex;
   justify-content: center;
   overflow-y: auto;
-  padding: 16px 0 40px 0;
+  padding: 6px 0 40px 0; /* 65% reduction from original 16px */
   background: radial-gradient(circle at top right, var(--bg-secondary), transparent 40%),
               radial-gradient(circle at bottom left, var(--bg-tertiary), transparent 40%);
   scroll-behavior: smooth;

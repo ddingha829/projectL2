@@ -147,7 +147,7 @@ export default function HomeContent({
       <div className={styles.container}>
         {!showFullGrid ? (
           <>
-            <header className={styles.sectionHeader} style={{ marginTop: '8px' }}>
+            <header className={styles.sectionHeader} style={{ marginTop: '3px' }}>
               <h1 className={styles.sectionTitle}>지금 뜨는 리뷰</h1>
               <div className={styles.divider}></div>
             </header>

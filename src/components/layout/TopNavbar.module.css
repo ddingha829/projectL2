@@ -34,7 +34,7 @@
   background: none;
   border: none;
   font-size: 2rem;
-  color: #000;
+  color: #2C2C2C;
   cursor: pointer;
   display: none;
 }
@@ -52,7 +52,7 @@
 }
 
 .logoSub { 
-  color: #1a77ce; 
+  color: #204bb8; 
   font-size: 1.95rem; /* Increased size by another 5% */
   font-weight: 1000;
 }

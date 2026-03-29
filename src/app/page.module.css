@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  margin-bottom: 17px;
+  margin-bottom: 7px; /* 60% reduction from original 17px */
 }
 
 .sectionTitle {
@@ -22,9 +22,8 @@
 
 .divider {
   flex: 1;
-  height: 4px;
-  background-color: var(--text-primary); 
-  border-radius: 2px;
+  height: 0;
+  border-top: 1.5px solid #2C2C2C; /* Using border for more precise subpixel rendering */
 }
 
 .heroWrapper {
@@ -32,15 +31,15 @@
   width: 100%;
   border-radius: 24px;
   overflow: hidden;
-  background: #000;
-  margin-bottom: 24px;
+  background: #2C2C2C;
+  margin-bottom: 10px; /* Reduced to shrink gap with Other Reviews */
 }
 
 /* The fixed frame on top of the sliding tracks */
 .heroFrame {
   position: absolute;
   inset: 0;
-  border: 2px solid #111;
+  border: 1.5px solid #2C2C2C;
   border-radius: 24px;
   z-index: 20;
   pointer-events: none;
@@ -114,7 +113,7 @@
 }
 
 .gridSection {
-  margin-top: 16px; /* Even tighter spacing as requested */
+  margin-top: 10px; /* Reduced by 60% from original level */
 }
 
 .gridList {
@@ -190,7 +189,7 @@
 }
 
 .backToMainBtnInline {
-  background: #000;
+  background: #2C2C2C;
   color: #fff;
   border: none;
   border-radius: 30px;
@@ -247,8 +246,8 @@
 }
 
 .pageBtnSmall:hover:not(:disabled) {
-  background: #000;
-  border-color: #000;
+  background: #2C2C2C;
+  border-color: #2C2C2C;
   color: #fff;
   transform: translateY(-1px);
 }
@@ -366,8 +365,8 @@
 }
 
 .pageBtn:hover:not(:disabled) {
-  border-color: #000;
-  background-color: #000;
+  border-color: #2C2C2C;
+  background-color: #2C2C2C;
   color: #fff;
   transform: translateY(-2px);
 }
@@ -378,7 +377,7 @@
 }
 
 .backToMainBtn {
-  background: #000;
+  background: #2C2C2C;
   color: white;
   border: none;
   padding: 8px 24px; /* Reduced vertical padding */
