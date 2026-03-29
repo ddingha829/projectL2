@@ -23,7 +23,7 @@
 .divider {
   flex: 1;
   height: 0;
-  border-top: 1.5px solid #2C2C2C; /* Using border for more precise subpixel rendering */
+  border-top: 2px solid #2C2C2C; /* Matched with sidebar divider */
 }
 
 .heroWrapper {
@@ -39,7 +39,7 @@
 .heroFrame {
   position: absolute;
   inset: 0;
-  border: 1.5px solid #2C2C2C;
+  border: 2px solid #2C2C2C; /* Matched with sidebar divider */
   border-radius: 24px;
   z-index: 20;
   pointer-events: none;

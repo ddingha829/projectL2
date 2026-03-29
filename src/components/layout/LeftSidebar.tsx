@@ -279,6 +279,10 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
             ))}
           </ul>
         </div>
+
+        <div className={styles.copyright}>
+          <p>Copyright 2026. Project L2.<br />All rights reserved.</p>
+        </div>
       </aside>
 
       {mounted && hoveredAuthor && createPortal(

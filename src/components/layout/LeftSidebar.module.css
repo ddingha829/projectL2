@@ -7,7 +7,7 @@
   padding: 10px 16px 14px 16px; /* Further reduced vertical padding */
   display: flex;
   flex-direction: column;
-  gap: 16px; /* Increased gap as requested */
+  gap: 11px; /* 30% reduction from 16px */
   z-index: 1100;
   overflow-y: auto; /* Make sidebar independently scrollable */
   scrollbar-gutter: stable; /* Prevent content jump */
@@ -60,7 +60,8 @@
 .actionRow {
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
+  gap: 20px;
   width: 100%;
 }
 
@@ -209,15 +210,14 @@
 }
 
 .noticeHeader {
-  margin-bottom: 4px !important; /* Reduced by ~60% specifically for Notice */
+  margin-bottom: 8px !important; /* 30% reduction from original 12px */
 }
 
 
 .sidebarDivider {
   flex: 1;
-  height: 2px;
-  background-color: #101720;
-  border-radius: 1px;
+  height: 0;
+  border-top: 2px solid #101720; /* Using border for precise 2px thickness */
 }
 
 .menuList {
@@ -450,16 +450,33 @@
   }
 
   .iconBtn {
-    font-size: 1.8rem;
+    font-size: 1.25rem; /* Reduced from 1.8rem */
+    padding: 8px;
   }
 
   .loginBtnSmall {
-    padding: 8px 20px;
-    font-size: 0.95rem;
-    border-radius: 12px;
+    padding: 6px 14px; /* Reduced from 8px 20px */
+    font-size: 0.85rem;
+    border-radius: 30px;
+  }
+
+  .mobileSearch {
+    padding: 6px 12px; /* Reduced padding */
+    margin: 0 8px;
   }
 
   .authorTooltip {
     display: none;
   }
 }
+
+.copyright {
+  margin-top: auto;
+  padding: 32px 16px 8px;
+  color: #999;
+  font-size: 0.65rem;
+  text-align: center;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+}
+
