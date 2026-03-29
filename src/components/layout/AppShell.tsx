@@ -21,6 +21,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<any>(null);
   const [role, setRole] = useState<string>("user");
   const [displayName, setDisplayName] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(true);
   const [supabase] = useState(() => createClient());
 
   useEffect(() => {
@@ -42,26 +43,28 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     }
   }, [isMobileOpen]);
 
-  // Stable Auth Sync (No Reloads)
+  // Optimized Sync Logic (Bypass DB lag with metadata)
   useEffect(() => {
     const syncAuth = async (currUser: any) => {
       if (!currUser) {
         setUser(null);
         setRole("user");
         setDisplayName("");
+        setIsLoading(false);
         return;
       }
 
       setUser(currUser);
       
-      // Fallback to Metadata first (helps when Egress is hit)
+      // STEP 1: Immediate metadata fallback (Prevents visitor downgrade if DB is slow)
       const metaRole = currUser.app_metadata?.role || currUser.user_metadata?.role || "user";
       const metaName = currUser.user_metadata?.full_name || currUser.user_metadata?.display_name || "";
       
       setRole(metaRole);
       setDisplayName(metaName);
+      setIsLoading(false); 
 
-      // Try database profile in background
+      // STEP 2: Background profile fetch
       try {
         const { data: profile } = await supabase.from('profiles').select('role, display_name').eq('id', currUser.id).single();
         if (profile) {
@@ -69,23 +72,21 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           if (profile.display_name) setDisplayName(profile.display_name);
         }
       } catch (err) {
-        console.warn("Profile fetch error, using metadata", err);
+        console.warn("DB profile sync skipped", err);
       }
     };
 
-    // Initial check on mount
     supabase.auth.getUser().then(({ data }) => syncAuth(data.user));
 
-    // Listen for changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN') {
+      if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
         syncAuth(session?.user);
         router.refresh();
       } else if (event === 'SIGNED_OUT') {
         syncAuth(null);
         router.push('/');
         router.refresh();
-      } else {
+      } else if (event === 'USER_UPDATED') {
         syncAuth(session?.user);
       }
     });
@@ -98,7 +99,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <>
       <TopNavbar 
-        key={`navbar-${user?.id || 'guest'}`}
+        key={`navbar-${user?.id || 'guest'}-${isLoading}`}
         onMobileToggle={() => setIsMobileOpen(!isMobileOpen)} 
         user={user}
         role={role}
@@ -106,7 +107,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       />
       <div className={gridStyles.mainContainer}>
         <LeftSidebar 
-          key={`sidebar-${user?.id || 'guest'}`}
+          key={`sidebar-${user?.id || 'guest'}-${isLoading}`}
           isOpen={isMobileOpen} 
           onClose={() => setIsMobileOpen(false)} 
           user={user}
