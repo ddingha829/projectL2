@@ -1,8 +1,7 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { usePathname, useSearchParams } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import { FrozenRoute } from "@/components/common/FrozenRoute";
 import TopNavbar from "./TopNavbar";
 import LeftSidebar from "./LeftSidebar";
@@ -14,6 +13,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const searchParams = useSearchParams();
   const key = `${pathname}?${searchParams.toString()}`;
   const [isMobileScreen, setIsMobileScreen] = useState(false);
+  const router = useRouter();
+
+  // Unified Auth State
+  const [user, setUser] = useState<any>(null);
+  const [role, setRole] = useState<string>("user");
+  const [displayName, setDisplayName] = useState<string>("");
+  const [supabase] = useState(() => createClient());
 
   useEffect(() => {
     const checkSize = () => setIsMobileScreen(window.innerWidth <= 768);
@@ -22,12 +28,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     return () => window.removeEventListener('resize', checkSize);
   }, []);
 
-  // Close sidebar on navigation (Fixes Bug 2: Login page hidden behind menu)
   useEffect(() => {
     setIsMobileOpen(false);
   }, [pathname, searchParams]);
 
-  // Lock body scroll when mobile menu is open (Fixes Bug 1: Scroll issues)
   useEffect(() => {
     if (isMobileOpen) {
       document.body.style.overflow = "hidden";
@@ -36,11 +40,71 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     }
   }, [isMobileOpen]);
 
+  // Auth Sync Logic
+  useEffect(() => {
+    const fetchAuthData = async () => {
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (authUser) {
+        setUser(authUser);
+        const { data: profile } = await supabase.from('profiles').select('role, display_name').eq('id', authUser.id).single();
+        if (profile) {
+          setRole(profile.role);
+          setDisplayName(profile.display_name || authUser.user_metadata?.full_name || authUser.user_metadata?.display_name || "");
+        } else {
+          setDisplayName(authUser.user_metadata?.full_name || authUser.user_metadata?.display_name || "");
+        }
+      } else {
+        setUser(null);
+        setRole("user");
+        setDisplayName("");
+      }
+    };
+    fetchAuthData();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      // Trigger refresh on significant events to sync server components
+      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
+        router.refresh();
+      }
+      
+      const sessionUser = session?.user ?? null;
+      setUser(sessionUser);
+      
+      if (sessionUser) {
+        const { data: profile } = await supabase.from('profiles').select('role, display_name').eq('id', sessionUser.id).single();
+        if (profile) {
+          setRole(profile.role);
+          setDisplayName(profile.display_name || sessionUser.user_metadata?.full_name || sessionUser.user_metadata?.display_name || "");
+        } else {
+          setDisplayName(sessionUser.user_metadata?.full_name || sessionUser.user_metadata?.display_name || "");
+        }
+      } else {
+        setRole("user");
+        setDisplayName("");
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [supabase, router]);
+
   return (
     <>
-      <TopNavbar onMobileToggle={() => setIsMobileOpen(!isMobileOpen)} />
+      <TopNavbar 
+        onMobileToggle={() => setIsMobileOpen(!isMobileOpen)} 
+        user={user}
+        role={role}
+        displayName={displayName}
+      />
       <div className={gridStyles.mainContainer}>
-        <LeftSidebar isOpen={isMobileOpen} onClose={() => setIsMobileOpen(false)} />
+        <LeftSidebar 
+          isOpen={isMobileOpen} 
+          onClose={() => setIsMobileOpen(false)} 
+          user={user}
+          role={role}
+          displayName={displayName}
+        />
         {isMobileOpen && (
           <div className={gridStyles.mobileOverlay} onClick={() => setIsMobileOpen(false)}></div>
         )}

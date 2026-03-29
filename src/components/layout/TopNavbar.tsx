@@ -7,18 +7,24 @@ import { createClient } from "@/lib/supabase/client";
 import { logout } from "@/app/login/actions";
 import styles from "./TopNavbar.module.css";
 
-export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => void }) {
+export default function TopNavbar({ 
+  onMobileToggle, 
+  user, 
+  role, 
+  displayName 
+}: { 
+  onMobileToggle?: () => void;
+  user: any;
+  role: string;
+  displayName: string;
+}) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [user, setUser] = useState<any>(null);
-  const [role, setRole] = useState<string>("user");
-  const [displayName, setDisplayName] = useState<string>("");
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [supabase] = useState(() => createClient());
   const [isPending, startTransition] = useTransition();
 
   // Close menu on click outside
@@ -31,44 +37,6 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  useEffect(() => {
-    // Immediate check
-    const checkUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        setUser(user);
-        const { data: profile } = await supabase.from('profiles').select('role, display_name').eq('id', user.id).single();
-        if (profile) {
-          setRole(profile.role);
-          setDisplayName(profile.display_name || user.user_metadata?.full_name || user.user_metadata?.display_name || "");
-        } else {
-          setDisplayName(user.user_metadata?.full_name || user.user_metadata?.display_name || "");
-        }
-      }
-    };
-    checkUser();
-
-    // Listener for subsequent changes
-    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
-      const newUser = session?.user ?? null;
-      setUser(newUser);
-      if (newUser) {
-        const { data: profile } = await supabase.from('profiles').select('role, display_name').eq('id', newUser.id).single();
-        if (profile) {
-          setRole(profile.role);
-          setDisplayName(profile.display_name || newUser.user_metadata?.full_name || newUser.user_metadata?.display_name || "");
-        } else {
-          setDisplayName(newUser.user_metadata?.full_name || newUser.user_metadata?.display_name || "");
-        }
-      } else {
-        setRole("user");
-        setDisplayName("");
-      }
-    });
-
-    return () => authListener.subscription.unsubscribe();
-  }, [supabase]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

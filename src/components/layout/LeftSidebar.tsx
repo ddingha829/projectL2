@@ -23,9 +23,12 @@ const CATEGORIES = [
 interface LeftSidebarProps {
   isOpen: boolean;
   onClose?: () => void;
+  user: any;
+  role: string;
+  displayName: string;
 }
 
-export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
+export default function LeftSidebar({ isOpen, onClose, user, role, displayName }: LeftSidebarProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const currentCategory = searchParams.get("category");
@@ -37,9 +40,6 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
   const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [liveAuthors, setLiveAuthors] = useState<any[]>([]);
-  const [user, setUser] = useState<any>(null);
-  const [role, setRole] = useState<string>("user");
-  const [displayName, setDisplayName] = useState<string>("");
   const [notices, setNotices] = useState<any[]>([]);
   const [supabase] = useState(() => createClient());
 
@@ -98,44 +98,6 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
       }
     };
     fetchNotices();
-
-    // Fetch auth state
-    supabase.auth.getUser().then(({ data }) => {
-      if (data.user) {
-        setUser(data.user);
-        supabase.from('profiles').select('role, display_name').eq('id', data.user.id).single()
-          .then(({ data: profile }) => {
-            if (profile) {
-              setRole(profile.role);
-              setDisplayName(profile.display_name || data.user?.user_metadata?.full_name || data.user?.user_metadata?.display_name || "");
-            } else {
-              setDisplayName(data.user?.user_metadata?.full_name || data.user?.user_metadata?.display_name || "");
-            }
-          });
-      }
-    });
-
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user ?? null);
-      if (!session?.user) {
-        setRole("user");
-        setDisplayName("");
-      } else {
-        supabase.from('profiles').select('role, display_name').eq('id', session.user.id).single()
-          .then(({ data: profile }) => {
-            if (profile) {
-              setRole(profile.role);
-              setDisplayName(profile.display_name || session.user?.user_metadata?.full_name || session.user?.user_metadata?.display_name || "");
-            } else {
-              setDisplayName(session.user?.user_metadata?.full_name || session.user?.user_metadata?.display_name || "");
-            }
-          });
-      }
-    });
-
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
   }, [supabase]);
 
   const ALL_AUTHORS = [...AUTHORS, ...liveAuthors];
