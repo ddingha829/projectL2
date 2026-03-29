@@ -111,19 +111,22 @@ export default function HomeContent({
 
   // Infinite Scroll Trigger
   useEffect(() => {
-    if (!isMobile) return;
+    if (!isMobile || !showFullGrid) return;
     
     const observer = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
         setMobileVisibleCount(prev => Math.min(prev + 4, paginatedData.length));
       }
-    }, { threshold: 0.1 });
+    }, { 
+      threshold: 0.05,
+      rootMargin: '100px' // Start loading slightly before reaching the bottom
+    });
 
     const sentinel = document.getElementById('mobile-scroll-sentinel');
     if (sentinel) observer.observe(sentinel);
 
     return () => observer.disconnect();
-  }, [isMobile, paginatedData.length, mobileVisibleCount, isViewMore, showFullGrid]);
+  }, [isMobile, paginatedData.length, showFullGrid]); // removed mobileVisibleCount to prevent flicker
 
   return (
     <>
