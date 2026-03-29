@@ -17,7 +17,7 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const supabase = createClient();
+  const [supabase] = useState(() => createClient());
   const [isPending, startTransition] = useTransition();
 
   // Close menu on click outside

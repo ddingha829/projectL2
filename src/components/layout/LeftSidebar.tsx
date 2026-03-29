@@ -40,6 +40,7 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
   const [user, setUser] = useState<any>(null);
   const [role, setRole] = useState<string>("user");
   const [notices, setNotices] = useState<any[]>([]);
+  const [supabase] = useState(() => createClient());
 
   useEffect(() => {
     Promise.resolve().then(() => setMounted(true));
@@ -85,7 +86,6 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
     fetchNotices();
 
     // Fetch auth state
-    const supabase = createClient();
     supabase.auth.getUser().then(({ data }) => {
       if (data.user) {
         setUser(data.user);
@@ -108,7 +108,7 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
     return () => {
       authListener.subscription.unsubscribe();
     };
-  }, []);
+  }, [supabase]);
 
   const ALL_AUTHORS = [...AUTHORS, ...liveAuthors];
 
