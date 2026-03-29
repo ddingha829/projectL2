@@ -42,17 +42,22 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     }
   }, [isMobileOpen]);
 
-  // Auth Sync Logic
+  // Auth Listener with Hard Reload for Login Sync
   useEffect(() => {
     const fetchAuthData = async () => {
       const { data: { user: authUser } } = await supabase.auth.getUser();
       if (authUser) {
         setUser(authUser);
         const { data: profile } = await supabase.from('profiles').select('role, display_name').eq('id', authUser.id).single();
+        
+        // Metadata fallback for roles to prevent 'user' downgrade
+        const metaRole = authUser.app_metadata?.role || authUser.user_metadata?.role;
+        
         if (profile) {
-          setRole(profile.role);
+          setRole(profile.role || metaRole || "user");
           setDisplayName(profile.display_name || authUser.user_metadata?.full_name || authUser.user_metadata?.display_name || "");
         } else {
+          setRole(metaRole || "user");
           setDisplayName(authUser.user_metadata?.full_name || authUser.user_metadata?.display_name || "");
         }
       } else {
@@ -64,25 +69,34 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     fetchAuthData();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      // Trigger refresh on significant events to sync server components
-      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
-        router.refresh();
+      // Hard reload on SIGNED_IN to ensure cookies and all states are perfectly synced
+      if (event === 'SIGNED_IN') {
+        window.location.reload();
+        return;
       }
       
-      const sessionUser = session?.user ?? null;
-      setUser(sessionUser);
-      
-      if (sessionUser) {
-        const { data: profile } = await supabase.from('profiles').select('role, display_name').eq('id', sessionUser.id).single();
-        if (profile) {
-          setRole(profile.role);
-          setDisplayName(profile.display_name || sessionUser.user_metadata?.full_name || sessionUser.user_metadata?.display_name || "");
-        } else {
-          setDisplayName(sessionUser.user_metadata?.full_name || sessionUser.user_metadata?.display_name || "");
-        }
-      } else {
+      if (event === 'SIGNED_OUT') {
+        setUser(null);
         setRole("user");
         setDisplayName("");
+        router.push('/');
+        router.refresh();
+        return;
+      }
+
+      const sessionUser = session?.user ?? null;
+      if (sessionUser) {
+        setUser(sessionUser);
+        const { data: profile } = await supabase.from('profiles').select('role, display_name').eq('id', sessionUser.id).single();
+        const metaRole = sessionUser.app_metadata?.role || sessionUser.user_metadata?.role;
+        
+        if (profile) {
+          setRole(profile.role || metaRole || "user");
+          setDisplayName(profile.display_name || sessionUser.user_metadata?.full_name || sessionUser.user_metadata?.display_name || "");
+        } else {
+          setRole(metaRole || "user");
+          setDisplayName(sessionUser.user_metadata?.full_name || sessionUser.user_metadata?.display_name || "");
+        }
       }
     });
 
