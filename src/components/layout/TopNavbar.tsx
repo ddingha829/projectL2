@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -18,7 +18,8 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const supabase = createClient();
-  
+  const [isPending, startTransition] = useTransition();
+
   // Close menu on click outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -57,6 +58,24 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
     if (searchQuery.trim()) {
       router.push(`/?search=${encodeURIComponent(searchQuery)}`);
       setSearchQuery("");
+      setIsProfileMenuOpen(false);
+    }
+  };
+
+  const handleLogout = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isPending) return;
+    
+    if (confirm("로그아웃 하시겠습니까?")) {
+      startTransition(async () => {
+        try {
+          await logout();
+        } catch (err) {
+          console.error("Logout error:", err);
+        }
+        // 확실한 상태 반영을 위해 메인으로 강제 이동하며 페이지 새로고침
+        window.location.href = "/";
+      });
     }
   };
 
@@ -97,7 +116,7 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
           <div className={styles.authWrapper}>
             {user ? (
               <div className={styles.authInfo}>
-                {role === 'admin' && (
+                {(role === 'admin' || role === 'editor') && (
                   <Link href="/write" className={styles.writeButton}>✍️ 쓰기</Link>
                 )}
                 <div className={styles.dropdownContainer} ref={dropdownRef}>
@@ -105,9 +124,10 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
                     className={styles.avatarBtn} 
                     onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
                     aria-label="Profile and settings"
+                    disabled={isPending}
                   >
                     <div className={styles.userAvatar}>
-                      {user.email?.charAt(0).toUpperCase() || "👦"}
+                      {isPending ? "..." : (user.email?.charAt(0).toUpperCase() || "👦")}
                     </div>
                   </button>
                   
@@ -120,9 +140,13 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
                       <Link href="/settings" className={styles.menuItem} onClick={() => setIsProfileMenuOpen(false)}>
                         ⚙️ 설정 및 프로필 수정
                       </Link>
-                      <form action={logout}>
-                        <button type="submit" className={styles.menuItemLogout} onClick={() => setIsProfileMenuOpen(false)}>
-                          👋 로그아웃
+                      <form onSubmit={handleLogout}>
+                        <button 
+                          type="submit" 
+                          className={styles.menuItemLogout} 
+                          disabled={isPending}
+                        >
+                          {isPending ? "⏳ 로그아웃 중..." : "👋 로그아웃"}
                         </button>
                       </form>
                     </div>
