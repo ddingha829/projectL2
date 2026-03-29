@@ -329,6 +329,56 @@
 }
 
 /* ============================
+   Edit / Delete Buttons
+   ============================ */
+.manageBar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 32px;
+}
+
+.editBtn, .deleteBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+  border: 1.5px solid;
+}
+
+.editBtn {
+  background: transparent;
+  color: #0a467d;
+  border-color: #0a467d;
+}
+
+.editBtn:hover:not(:disabled) {
+  background: #0a467d;
+  color: #fff;
+}
+
+.deleteBtn {
+  background: transparent;
+  color: #c0392b;
+  border-color: #c0392b;
+}
+
+.deleteBtn:hover:not(:disabled) {
+  background: #c0392b;
+  color: #fff;
+}
+
+.editBtn:disabled, .deleteBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ============================
    Admin: Hero Toggle Button
    ============================ */
 .heroAdminArea {

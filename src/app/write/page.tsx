@@ -18,13 +18,13 @@ export default async function WritePostPage() {
     .eq('id', user.id)
     .single();
 
-  if (profile?.role !== 'admin') {
+  if (profile?.role !== 'admin' && profile?.role !== 'editor') {
     return (
       <div className={styles.container}>
         <div className={styles.emptyState}>
           <span className={styles.emptyIcon}>🔒</span>
           <h2>Access Denied</h2>
-          <p>글쓰기 권한(Admin)이 없습니다. 데이터베이스에서 권한을 변경해주세요.</p>
+          <p>글쓰기 권한(Editor 이상)이 없습니다.</p>
         </div>
       </div>
     );

@@ -19,7 +19,7 @@ export async function createPost(formData: FormData) {
     .eq('id', user.id)
     .single();
 
-  if (!profile || (profile.role !== 'writer' && profile.role !== 'admin')) {
+  if (!profile || (profile.role !== 'editor' && profile.role !== 'admin')) {
     redirect('/write?error=No permission');
   }
 

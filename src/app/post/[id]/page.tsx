@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { MOCK_POSTS } from "@/app/page";
 import PostInteractions from "./PostInteractions";
 import HeroToggleBtn from "./HeroToggleBtn";
+import PostManageBtns from "./PostManageBtns";
 import { getAdminStatus } from "@/app/actions/hero";
 import styles from "./page.module.css";
 
@@ -88,6 +89,14 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
   const { data: { user } } = await supabase.auth.getUser();
   const { isAdmin } = await getAdminStatus();
 
+  // 현재 유저 role 조회 (수정/삭제 버튼 표시 여부)
+  let currentUserRole = 'user'
+  if (user) {
+    const { data: profile } = await supabase
+      .from('profiles').select('role').eq('id', user.id).single()
+    currentUserRole = profile?.role || 'user'
+  }
+
   return (
     <div className={styles.container}>
       <Link href="/" className={styles.backBtn}>← 목록으로 돌아가기</Link>
@@ -117,6 +126,16 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
         {/* Admin-only: Hero designation button (DB posts only) */}
         {isAdmin && isDbPost && (
           <HeroToggleBtn postId={actualId} initialIsHero={post.is_hero || false} />
+        )}
+
+        {/* 수정/삭제 버튼 (DB 게시물 + 권한 있는 유저만) */}
+        {isDbPost && user && (currentUserRole === 'admin' || currentUserRole === 'editor') && (
+          <PostManageBtns
+            postId={actualId}
+            authorId={post.author?.id || post.author_id || ''}
+            currentUserId={user.id}
+            role={currentUserRole}
+          />
         )}
 
         <PostInteractions 
