@@ -1,158 +1,155 @@
 "use client";
 
-import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import { Image } from '@tiptap/extension-image';
-import { FontFamily } from '@tiptap/extension-font-family';
-import { TextStyle } from '@tiptap/extension-text-style';
-import { Color } from '@tiptap/extension-color';
-import { Underline } from '@tiptap/extension-underline';
-import { TextAlign } from '@tiptap/extension-text-align';
-import { Highlight } from '@tiptap/extension-highlight';
-import { Youtube } from '@tiptap/extension-youtube';
-import { Table } from '@tiptap/extension-table';
-import { TableRow } from '@tiptap/extension-table-row';
-import { TableCell } from '@tiptap/extension-table-cell';
-import { TableHeader } from '@tiptap/extension-table-header';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
+import dynamic from 'next/dynamic';
+import 'react-quill-new/dist/quill.snow.css'; // [수정] react-quill-new 스타일
 import { createClient } from '@/lib/supabase/client';
 import styles from './RichTextEditor.module.css';
 
+// [중요] React 19 + Next.js SSR 환경 호환성을 위해 react-quill-new 사용 (findDOMNode 오류 해결)
+const ReactQuill = dynamic(async () => {
+    const { default: RQ } = await import('react-quill-new'); // [수정] react-quill-new 임포트
+    return function QuillComponent({ forwardedRef, ...props }: any) {
+        return <RQ ref={forwardedRef} {...props} />;
+    };
+}, { ssr: false });
+
 interface RichTextEditorProps {
-  content: string;
-  onChange: (val: string) => void;
+    content: string;
+    onChange: (val: string) => void;
 }
 
-const FONTS = [
-  { label: 'Sans (기본)', value: 'Noto Sans KR' },
-  { label: 'Serif (세리프)', value: 'serif' },
-  { label: 'Mono (모노체)', value: 'monospace' },
-  { label: 'Outfit (영어 추천)', value: 'Outfit' },
-  { label: 'Dancing Script', value: 'Dancing Script' },
-];
-
 export default function RichTextEditor({ content, onChange }: RichTextEditorProps) {
-  const [isClient, setIsClient] = useState(false);
-  const supabase = createClient();
+    const [isClient, setIsClient] = useState(false);
+    const quillRef = useRef<any>(null);
+    const supabase = createClient();
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      TextStyle,
-      FontFamily,
-      Color,
-      Underline,
-      Highlight.configure({ multicolor: true }),
-      TextAlign.configure({ types: ['heading', 'paragraph'] }),
-      Image.configure({ inline: true, allowBase64: true }),
-      Youtube.configure({ width: 840, height: 480 }),
-      Table.configure({ resizable: true }),
-      TableRow,
-      TableHeader,
-      TableCell,
-    ],
-    content: content,
-    onUpdate: ({ editor }) => {
-      onChange(editor.getHTML());
-    },
-  });
+    // 이미지 핸들러: 로컬 이미지를 선택하면 Supabase Storage에 업로드 후 URL 삽입
+    const imageHandler = () => {
+        const input = document.createElement("input");
+        input.setAttribute("type", "file");
+        input.setAttribute("accept", "image/*");
+        input.click();
 
-  const addImage = useCallback(async () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.onchange = async () => {
-      const file = input.files?.[0];
-      if (!file) return;
-      try {
-        const fileExt = file.name.split('.').pop();
-        const fileName = `editor/${Math.random().toString(36).substring(2, 10)}_${Date.now()}.${fileExt}`;
-        const { error } = await supabase.storage.from('post-images').upload(fileName, file);
-        if (error) throw error;
-        const { data: { publicUrl } } = supabase.storage.from('post-images').getPublicUrl(fileName);
-        if (editor) editor.chain().focus().setImage({ src: publicUrl }).run();
-      } catch (err) {
-        console.error('Image upload failed:', err);
-      }
+        input.onchange = async () => {
+            const file = input.files ? input.files[0] : null;
+            if (!file) return;
+
+            try {
+                const fileExt = file.name.split('.').pop();
+                const fileName = `editor/${Math.random().toString(36).substring(2, 10)}_${Date.now()}.${fileExt}`;
+                
+                const { error } = await supabase.storage
+                    .from('post-images')
+                    .upload(fileName, file);
+
+                if (error) throw error;
+
+                const { data: { publicUrl } } = supabase.storage
+                    .from('post-images')
+                    .getPublicUrl(fileName);
+
+                const quill = quillRef.current?.getEditor();
+                const range = quill?.getSelection();
+                if (quill && range) {
+                    quill.insertEmbed(range.index, "image", publicUrl);
+                    quill.setSelection(range.index + 1);
+                }
+            } catch (err) {
+                console.error("Quill image upload failed:", err);
+                alert("이미지 업로드에 실패했습니다.");
+            }
+        };
     };
-    input.click();
-  }, [editor, supabase]);
 
-  const addYoutube = useCallback(() => {
-    const url = prompt('유튜브 URL을 입력하세요:');
-    if (url && editor) {
-      editor.chain().focus().setYoutubeVideo({ src: url }).run();
-    }
-  }, [editor]);
-
-  if (!isClient || !editor) {
-    return <div className={styles.loading}>에디터를 불러오는 중입니다...</div>;
-  }
-
-  return (
-    <div className={styles.editorContainer}>
-      <div className={styles.toolbar}>
-        <select 
-          onChange={(e) => editor.chain().focus().setFontFamily(e.target.value).run()}
-          className={styles.fontSelect}
-          value={editor.getAttributes('textStyle').fontFamily || ''}
-        >
-          {FONTS.map(f => <option key={f.value} value={f.value}>{f.label}</option>)}
-        </select>
-        <button type="button" onClick={() => editor.chain().focus().toggleBold().run()} className={editor.isActive('bold') ? styles.active : ''}><b>B</b></button>
-        <button type="button" onClick={() => editor.chain().focus().toggleUnderline().run()} className={editor.isActive('underline') ? styles.active : ''}><u>U</u></button>
-        <button type="button" onClick={() => editor.chain().focus().toggleHighlight({ color: '#ffec3d' }).run()} className={editor.isActive('highlight') ? styles.active : ''}>🖍️</button>
-        <input type="color" onInput={(e: any) => editor.chain().focus().setColor(e.target.value).run()} className={styles.colorPicker} />
-
-        <div className={styles.divider} />
-
-        <button type="button" onClick={() => editor.chain().focus().setTextAlign('left').run()} className={editor.isActive({ textAlign: 'left' }) ? styles.active : ''}>⬅️</button>
-        <button type="button" onClick={() => editor.chain().focus().setTextAlign('center').run()} className={editor.isActive({ textAlign: 'center' }) ? styles.active : ''}>↔️</button>
-        <button type="button" onClick={() => editor.chain().focus().toggleBlockquote().run()} className={editor.isActive('blockquote') ? styles.active : ''}>❝ 인용</button>
-        <button type="button" onClick={() => editor.chain().focus().setHorizontalRule().run()}>➖ 구분선</button>
-
-        <div className={styles.divider} />
-
-        <button type="button" onClick={addImage}>🖼️ 이미지</button>
-        <button type="button" onClick={addYoutube}>📺 영상</button>
-
-        <div className={styles.divider} />
-
-        <div className={styles.tableGroup}>
-          <button type="button" onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}>📅 표</button>
-          {editor.isActive('table') && (
-            <div className={styles.tableControls}>
-              <button type="button" onClick={() => editor.chain().focus().addColumnAfter().run()}>➕列</button>
-              <button type="button" onClick={() => editor.chain().focus().addRowAfter().run()}>➕行</button>
-              <button type="button" onClick={() => editor.chain().focus().deleteTable().run()}>❌</button>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <EditorContent editor={editor} className={styles.content} />
-
-      <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Outfit:wght@400;700&family=Noto+Sans+KR:wght@400;700&display=swap');
-
-        .ProseMirror {
-          padding: 40px; min-height: 600px; outline: none; background: #fff;
-          font-family: 'Noto Sans KR', sans-serif; font-size: 1.1rem; line-height: 1.9; color: #222;
+    const modules = useMemo(() => ({
+        toolbar: {
+            container: [
+                [{ 'header': [1, 2, 3, false] }],
+                [{ 'font': [] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'align': [] }],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                ['blockquote', 'code-block'],
+                ['link', 'image', 'video'],
+                ['clean']
+            ],
+            handlers: {
+                image: imageHandler
+            }
         }
-        .ProseMirror table { border-collapse: collapse; margin: 2rem 0; width: 100%; table-layout: fixed; border: 1px solid #eee; }
-        .ProseMirror td, .ProseMirror th { border: 1px solid #eee; padding: 12px 15px; position: relative; text-align: left; }
-        .ProseMirror th { background: #f9fafb; font-weight: 700; }
-        .ProseMirror iframe { border-radius: 12px; margin: 2rem auto; display: block; max-width: 100%; }
-        .ProseMirror h1 { font-size: 2.6rem; font-weight: 700; margin: 1.5em 0 0.8em; }
-        .ProseMirror h2 { font-size: 1.8rem; font-weight: 700; margin: 1.2em 0 0.6em; }
-        .ProseMirror blockquote { border-left: 5px solid var(--primary); padding-left: 25px; font-style: italic; background: #fdfdff; padding: 15px 25px; margin: 30px 0; }
-        .ProseMirror hr { border: none; border-top: 2px solid #eee; margin: 40px 0; }
-        .ProseMirror img { max-width: 100%; height: auto; border-radius: 12px; margin: 2rem auto; display: block; }
-      `}</style>
-    </div>
-  );
+    }), []);
+
+    const formats = [
+        'header', 'font',
+        'bold', 'italic', 'underline', 'strike',
+        'color', 'background',
+        'align',
+        'list', 'bullet',
+        'blockquote', 'code-block',
+        'link', 'image', 'video'
+    ];
+
+    if (!isClient) return <div className={styles.loading}>에디터를 불러오는 중입니다...</div>;
+
+    return (
+        <div className={styles.editorContainer}>
+            <ReactQuill
+                forwardedRef={quillRef}
+                theme="snow"
+                value={content}
+                onChange={onChange}
+                modules={modules}
+                formats={formats}
+                className={styles.quillEditor}
+            />
+            
+            <style jsx global>{`
+                /* Quill 스타일 정밀 커스터마이징 */
+                .ql-editor {
+                    min-height: 600px;
+                    font-size: 1.1rem;
+                    line-height: 1.8;
+                    padding: 40px !important;
+                    font-family: 'Noto Sans KR', sans-serif;
+                }
+                .ql-editor h1 { font-size: 2.5rem; margin-top: 1.5em; margin-bottom: 0.5em; font-weight: 800; }
+                .ql-editor h2 { font-size: 1.8rem; margin-top: 1.2em; margin-bottom: 0.4em; }
+                .ql-editor blockquote { 
+                    border-left: 5px solid #1a77ce; 
+                    background: #f8faff; 
+                    padding: 15px 25px; 
+                    margin: 20px 0;
+                    color: #555;
+                    font-style: italic;
+                }
+                .ql-editor img {
+                    border-radius: 12px;
+                    margin: 20px auto;
+                    display: block;
+                    max-width: 100%;
+                }
+                .ql-toolbar.ql-snow {
+                    border: none;
+                    border-bottom: 1px solid #eee;
+                    padding: 12px 16px;
+                    background: #fdfdfd;
+                    position: sticky;
+                    top: 0;
+                    z-index: 100;
+                }
+                .ql-container.ql-snow {
+                    border: none;
+                }
+                /* 툴바 아이콘 크기 살짝 조정 */
+                .ql-snow .ql-picker.ql-header { width: 100px; }
+                .ql-snow .ql-picker.ql-font { width: 120px; }
+            `}</style>
+        </div>
+    );
 }

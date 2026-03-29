@@ -143,7 +143,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 4px 12px;
+  padding: 0px 12px; /* Removed top padding to shrink gap */
 }
 
 .noticeItem {
@@ -210,7 +210,8 @@
 }
 
 .noticeHeader {
-  margin-bottom: 8px !important; /* 30% reduction from original 12px */
+  margin-bottom: 1.5px !important; /* Additional 20% reduction level */
+  line-height: 1; /* Match line height for minimum extra space */
 }
 
 

@@ -108,7 +108,7 @@ export default function WritePostForm({ role }: { role: string }) {
           ) : (
             <div className={styles.uploadPlaceholder}>
               <span>📸 클릭하여 이미지 업로드</span>
-              <p>권장 비율 14:20 (매거진 스타일)</p>
+              <p>권장 비율 4:5 (인스타 스타일)</p>
             </div>
           )}
           <input type="file" ref={fileInputRef} onChange={handleMainImageUpload} className={styles.hiddenInput} accept="image/*" />
