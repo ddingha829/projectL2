@@ -38,6 +38,8 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
   const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [liveAuthors, setLiveAuthors] = useState<any[]>([]);
+  const [user, setUser] = useState<any>(null);
+  const [role, setRole] = useState<string>("user");
 
   useEffect(() => {
     Promise.resolve().then(() => setMounted(true));
@@ -66,6 +68,31 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
     };
 
     fetchLiveAuthors();
+
+    // Fetch auth state
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) {
+        setUser(data.user);
+        supabase.from('profiles').select('role').eq('id', data.user.id).single()
+          .then(({ data: profile }) => {
+            if (profile) setRole(profile.role);
+          });
+      }
+    });
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
+      if (!session?.user) setRole("user");
+      else {
+        supabase.from('profiles').select('role').eq('id', session.user.id).single()
+          .then(({ data: profile }) => setRole(profile?.role || "user"));
+      }
+    });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
   }, []);
 
   const ALL_AUTHORS = [...AUTHORS, ...liveAuthors];
@@ -126,11 +153,6 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
 
         {/* Mobile Only: Icons at top */}
         <div className={styles.mobileActions}>
-          <div className={styles.actionRow}>
-            <button className={styles.iconBtn}>📄</button>
-            <button className={styles.iconBtn}>🔔</button>
-            <Link href="/login" className={styles.loginBtnSmall}>Login</Link>
-          </div>
           <form className={styles.mobileSearch} onSubmit={handleSearch}>
             <input 
               type="text" 
@@ -141,6 +163,19 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
             />
             <button type="submit" className={styles.mobileSearchBtn}>🔍</button>
           </form>
+          <div className={styles.actionRow}>
+            <button className={styles.iconBtn}>📄</button>
+            <button className={styles.iconBtn}>🔔</button>
+            {user ? (
+              <Link href="/settings" className={styles.userProfileBtn} onClick={onClose}>
+                <div className={styles.mobileAvatar}>
+                  {user.email?.charAt(0).toUpperCase() || "👤"}
+                </div>
+              </Link>
+            ) : (
+              <Link href="/login" className={styles.loginBtnSmall} onClick={onClose}>로그인</Link>
+            )}
+          </div>
         </div>
 
         <div className={styles.section}>

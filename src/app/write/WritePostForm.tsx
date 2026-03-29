@@ -6,6 +6,7 @@ import styles from "./page.module.css";
 import { useFormStatus } from "react-dom";
 import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/client";
+import { useSearchParams } from "next/navigation";
 
 // [중요] 수리된 에디터 컴포넌트를 다시 불러옴
 const RichTextEditor = dynamic(() => import("@/components/editor/RichTextEditor"), { 
@@ -23,6 +24,9 @@ function SubmitButton({ isUploading }: { isUploading: boolean }) {
 }
 
 export default function WritePostForm({ role }: { role: string }) {
+  const searchParams = useSearchParams();
+  const error = searchParams.get('error');
+
   const [content, setContent] = useState("<p>리뷰를 작성해 보세요!</p>");
   const [mainImageUrl, setMainImageUrl] = useState("");
   const [isUploading, setIsUploading] = useState(false);
@@ -32,7 +36,10 @@ export default function WritePostForm({ role }: { role: string }) {
 
   useEffect(() => {
     setIsClient(true);
-  }, []);
+    if (error) {
+      alert(`저장 중 오류가 발생했습니다: ${error}`);
+    }
+  }, [error]);
 
   const handleMainImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -76,6 +83,9 @@ export default function WritePostForm({ role }: { role: string }) {
           <option value="travel">여행 (Travel)</option>
           <option value="exhibition">전시회 (Exhibition)</option>
           <option value="other">기타 (Other)</option>
+          {role === 'admin' && (
+            <option value="notice">📢 공지사항 (Notice)</option>
+          )}
         </select>
       </div>
 
@@ -97,7 +107,8 @@ export default function WritePostForm({ role }: { role: string }) {
           )}
           <input type="file" ref={fileInputRef} onChange={handleMainImageUpload} className={styles.hiddenInput} accept="image/*" />
         </div>
-        <input type="hidden" name="imageUrl" value={mainImageUrl} required />
+        {/* 브라우저의 'required' 밸리데이션이 hidden input에서 오작동할 수 있어 속성 제거 */}
+        <input type="hidden" name="imageUrl" value={mainImageUrl} />
       </div>
 
       {/* 수리된 에디터 컴포넌트 복구 */}

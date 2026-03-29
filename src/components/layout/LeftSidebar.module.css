@@ -52,10 +52,8 @@
 .mobileActions {
   display: none;
   flex-direction: column;
-  gap: 12px;
-  padding: 12px;
-  background-color: var(--bg-secondary);
-  border-radius: var(--radius-md);
+  gap: 16px;
+  padding: 0 8px;
   margin-bottom: 24px;
 }
 
@@ -85,10 +83,10 @@
 
 .mobileSearch {
   display: flex;
-  background: white;
-  border: 1px solid var(--border-light);
-  border-radius: 20px;
-  padding: 4px 12px;
+  background: var(--bg-secondary);
+  border: none;
+  border-radius: 12px;
+  padding: 8px 16px;
   align-items: center;
 }
 
@@ -96,14 +94,34 @@
   flex: 1;
   border: none;
   outline: none;
-  font-size: 0.9rem;
+  background: transparent;
+  font-size: 1rem;
   padding: 4px;
 }
 
 .mobileSearchBtn {
   background: none;
   border: none;
+  font-size: 1.2rem;
   cursor: pointer;
+}
+
+.userProfileBtn {
+  text-decoration: none;
+}
+
+.mobileAvatar {
+  width: 40px;
+  height: 40px;
+  background-color: var(--accent-primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 12px rgba(26, 119, 206, 0.2);
 }
 
 @media (max-width: 768px) {
@@ -340,7 +358,7 @@
     transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     box-shadow: none;
     border-right: none;
-    padding: 24px 20px;
+    padding: 16px 20px;
     background-color: var(--bg-primary);
   }
 
@@ -352,7 +370,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 32px;
+    margin-bottom: 16px;
     padding: 0 8px;
   }
 
@@ -383,8 +401,9 @@
   }
 
   .loginBtnSmall {
-    padding: 10px 24px;
-    font-size: 1rem;
+    padding: 8px 20px;
+    font-size: 0.95rem;
+    border-radius: 12px;
   }
 
   .authorTooltip {
