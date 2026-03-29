@@ -197,7 +197,7 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: #101720;
+  color: var(--text-primary);
   white-space: nowrap;
 }
 
@@ -218,7 +218,7 @@
 .sidebarDivider {
   flex: 1;
   height: 0;
-  border-top: 2px solid #101720; /* Using border for precise 2px thickness */
+  border-top: 2px solid var(--divider-color); /* Using border with adaptive variable */
 }
 
 .menuList {
@@ -234,7 +234,7 @@
   justify-content: center;
   gap: 8px;
   background: transparent;
-  border: 1px solid #e0e0e0; /* Gray border as requested */
+  border: 1px solid var(--border-light); /* Adaptive border */
   padding: 8px 12px;
   border-radius: 8px; /* More rectangular R value */
   cursor: pointer;
@@ -439,10 +439,10 @@
   .closeBtn {
     background: var(--bg-secondary);
     border: none;
-    width: 44px;
-    height: 44px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
-    font-size: 1.2rem;
+    font-size: 0.9rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -450,20 +450,73 @@
     color: var(--text-primary);
   }
 
-  .iconBtn {
-    font-size: 1.25rem; /* Reduced from 1.8rem */
-    padding: 8px;
+  .mobileActions {
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Tighten overall gap */
+    padding: 12px 16px;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--divider-color);
+    margin-bottom: 16px;
+    justify-content: flex-start;
   }
 
-  .loginBtnSmall {
-    padding: 6px 14px; /* Reduced from 8px 20px */
-    font-size: 0.85rem;
-    border-radius: 30px;
+  .actionRow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  .iconBtn {
+    background: none;
+    border: none;
+    font-size: 1.15rem;
+    padding: 4px;
+    color: var(--text-primary);
+    cursor: pointer;
   }
 
   .mobileSearch {
-    padding: 6px 12px; /* Reduced padding */
-    margin: 0 8px;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: 40px;
+    height: 38px;
+    padding: 0 14px;
+    min-width: 0;
+    gap: 8px;
+  }
+
+  .mobileInput {
+    flex: 1;
+    border: none;
+    background: transparent;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    padding: 0;
+    width: 100%;
+    outline: none;
+    line-height: normal; /* Center placeholder vertically */
+    display: flex;
+    align-items: center;
+  }
+
+  .mobileInput::placeholder {
+    line-height: normal;
+    display: flex;
+    align-items: center;
+  }
+
+  .mobileSearchBtn {
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    filter: grayscale(1) invert(0);
   }
 
   .authorTooltip {

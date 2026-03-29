@@ -167,17 +167,8 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
         </div>
 
         {/* Mobile Only: Icons at top */}
+        {/* Mobile Only: Icons to the left of Search */}
         <div className={styles.mobileActions}>
-          <form className={styles.mobileSearch} onSubmit={handleSearch}>
-            <input 
-              type="text" 
-              placeholder="검색..." 
-              className={styles.mobileInput} 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <button type="submit" className={styles.mobileSearchBtn}>🔍</button>
-          </form>
           <div className={styles.actionRow}>
             <button className={styles.iconBtn}>📄</button>
             <button className={styles.iconBtn}>🔔</button>
@@ -191,6 +182,16 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
               <Link href="/login" className={styles.loginBtnSmall} onClick={onClose}>로그인</Link>
             )}
           </div>
+          <form className={styles.mobileSearch} onSubmit={handleSearch}>
+            <input 
+              type="text" 
+              placeholder="검색..." 
+              className={styles.mobileInput} 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <button type="submit" className={styles.mobileSearchBtn}>🔍</button>
+          </form>
         </div>
 
         <div className={styles.section}>
