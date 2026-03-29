@@ -107,7 +107,9 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
           .then(({ data: profile }) => {
             if (profile) {
               setRole(profile.role);
-              setDisplayName(profile.display_name || "");
+              setDisplayName(profile.display_name || data.user?.user_metadata?.full_name || data.user?.user_metadata?.display_name || "");
+            } else {
+              setDisplayName(data.user?.user_metadata?.full_name || data.user?.user_metadata?.display_name || "");
             }
           });
       }
@@ -123,7 +125,9 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
           .then(({ data: profile }) => {
             if (profile) {
               setRole(profile.role);
-              setDisplayName(profile.display_name || "");
+              setDisplayName(profile.display_name || session.user?.user_metadata?.full_name || session.user?.user_metadata?.display_name || "");
+            } else {
+              setDisplayName(session.user?.user_metadata?.full_name || session.user?.user_metadata?.display_name || "");
             }
           });
       }

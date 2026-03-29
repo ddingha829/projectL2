@@ -41,7 +41,9 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
         const { data: profile } = await supabase.from('profiles').select('role, display_name').eq('id', user.id).single();
         if (profile) {
           setRole(profile.role);
-          setDisplayName(profile.display_name || "");
+          setDisplayName(profile.display_name || user.user_metadata?.full_name || user.user_metadata?.display_name || "");
+        } else {
+          setDisplayName(user.user_metadata?.full_name || user.user_metadata?.display_name || "");
         }
       }
     };
@@ -55,7 +57,9 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
         const { data: profile } = await supabase.from('profiles').select('role, display_name').eq('id', newUser.id).single();
         if (profile) {
           setRole(profile.role);
-          setDisplayName(profile.display_name || "");
+          setDisplayName(profile.display_name || newUser.user_metadata?.full_name || newUser.user_metadata?.display_name || "");
+        } else {
+          setDisplayName(newUser.user_metadata?.full_name || newUser.user_metadata?.display_name || "");
         }
       } else {
         setRole("user");
