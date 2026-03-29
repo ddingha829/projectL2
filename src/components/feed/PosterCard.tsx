@@ -8,9 +8,10 @@ interface PosterCardProps {
   author: { id: string, name: string, color: string, avatar: string };
   imageUrl: string;
   isEditorsPick?: boolean;
+  displayDate?: string;
 }
 
-export default function PosterCard({ id, category, title, author, imageUrl, isEditorsPick }: PosterCardProps) {
+export default function PosterCard({ id, category, title, author, imageUrl, isEditorsPick, displayDate }: PosterCardProps) {
   return (
     <article className={styles.card}>
       <Link href={`/post/${id}`} className={styles.link}>
@@ -30,17 +31,10 @@ export default function PosterCard({ id, category, title, author, imageUrl, isEd
               <h3 className={styles.title}>{title}</h3>
             </div>
 
-            {/* Author badge: absolute bottom-right, independent of titleOverlay */}
-            <div className={styles.badgesLine}>
-              <div className={styles.authorBadgeHorizontal} style={{ '--author-color': author.color } as React.CSSProperties}>
-                <div className={styles.colorLine} />
-                {author.avatar.startsWith('/') || author.avatar.startsWith('http') ? (
-                  <img src={author.avatar} alt={author.name} className={styles.avatarImg} />
-                ) : (
-                  <span className={styles.avatarEmoji}>{author.avatar}</span>
-                )}
-                <span className={styles.authorName}>{author.name}</span>
-              </div>
+            {/* Date and Author: absolute bottom-right */}
+            <div className={styles.metaInfo}>
+              <span className={styles.date}>{displayDate}</span>
+              <span className={styles.author}>{author.name}</span>
             </div>
           </div>
         </div>

@@ -34,17 +34,18 @@ export async function replyToRequest(requestId: string, reply: string) {
 
   if (!user) return { success: false, error: 'Not authenticated' }
 
-  // Check if user is the writer of this request (or admin)
-  const { data: request } = await supabase
-    .from('review_requests')
-    .select('writer_id')
-    .eq('id', requestId)
-    .single()
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
 
-  if (!request || (request.writer_id !== user.id && user.email !== 'admin@example.com')) {
-    // In a real app we'd check roles, but for now we'll assume the writer can reply.
-    // However, since mock writer IDs like 'chulsoo' aren't UUIDs, I'll need to be careful.
-    // If mocking, we might skip strict check or use the 'profiles' role.
+  const isAdmin = profile?.role === 'admin';
+  const isEditor = profile?.role === 'editor';
+
+  // Check if user is an authorized editor or admin
+  if (!isAdmin && !isEditor) {
+    return { success: false, error: '답글 작성 권한이 없습니다.' };
   }
 
   const { error } = await supabase
@@ -68,7 +69,7 @@ export async function getReviewRequests(writerId: string) {
   
   const { data, error } = await supabase
     .from('review_requests')
-    .select('*, user:profiles(display_name, avatar_url)')
+    .select('*, user:profiles!user_id(display_name, avatar_url)')
     .eq('writer_id', writerId)
     .order('created_at', { ascending: false })
 

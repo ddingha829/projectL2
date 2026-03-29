@@ -71,7 +71,7 @@ export default function RequestBoard({ writerId, writerName, color }: RequestBoa
     setIsSubmitting(false);
   };
 
-  const isAuthorUser = role === 'admin' || role === 'writer';
+  const isAuthorUser = role === 'admin' || role === 'editor';
 
   return (
     <div className={styles.pageContainer}>

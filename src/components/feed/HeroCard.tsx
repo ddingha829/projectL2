@@ -15,12 +15,14 @@ interface HeroCardProps {
   currentIndex?: number;
   totalCount?: number;
   isEditorsPick?: boolean;
+  displayDate?: string;
 }
 
 export default function HeroCard({ 
   id, category, title, author, likes, imageUrl, 
   heightRatio = 'full', onPrev, onNext, showNav,
-  currentIndex = 0, totalCount = 3, isEditorsPick
+  currentIndex = 0, totalCount = 3, isEditorsPick,
+  displayDate
 }: HeroCardProps) {
   const containerStyle = heightRatio === '1/3' ? styles.heightOneThird : 
                         heightRatio === '2/3' ? styles.heightTwoThird : 
@@ -49,26 +51,17 @@ export default function HeroCard({
                 <h2 className={styles.title}>{title}</h2>
                 <div className={styles.meta}>
                   <span className={styles.likes}><span className={styles.icon}>👍</span> {likes}</span>
+                  {/* Date and Author: inline within meta */}
+                  <div className={styles.metaInfo}>
+                    <span className={styles.date}>{displayDate}</span>
+                    <span className={styles.author}>{author.name}</span>
+                  </div>
                 </div>
               </>
             )}
           </div>
         </Link>
       </div>
-
-      {/* Author badge: absolute bottom-right */}
-      {heightRatio !== 'compact' && (
-        <div className={styles.authorBadgeAbsolute}>
-          <div className={styles.authorBadge}>
-            {author.avatar.startsWith('/') || author.avatar.startsWith('http') ? (
-              <img src={author.avatar} alt={author.name} className={styles.avatarImg} />
-            ) : (
-              <span className={styles.avatarEmoji}>{author.avatar}</span>
-            )}
-            <span className={styles.authorName}>{author.name}</span>
-          </div>
-        </div>
-      )}
 
       {showNav && (
         <div className={styles.navButtons}>
