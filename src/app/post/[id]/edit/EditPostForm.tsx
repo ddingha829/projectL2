@@ -5,6 +5,7 @@ import { updatePost } from '@/app/actions/postManage'
 import styles from '@/app/write/page.module.css'
 import dynamic from 'next/dynamic'
 import { createClient } from '@/lib/supabase/client'
+import { compressImage } from '@/lib/utils/image'
 
 const RichTextEditor = dynamic(() => import('@/components/editor/RichTextEditor'), {
   ssr: false,
@@ -35,15 +36,38 @@ export default function EditPostForm({
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    setIsUploading(true)
     try {
-      const fileExt = file.name.split('.').pop()
+      let uploadBlob: Blob | File = file
+      let fileExt = 'jpg'
+      let contentType = 'image/jpeg'
+
+      // GIF 특수 처리: 압축하지 않되 1MB 제한
+      if (file.type === 'image/gif') {
+        if (file.size > 1024 * 1024) {
+          alert('GIF 파일은 애니메이션 유지를 위해 압축하지 않으므로, 1MB 이하만 업로드 가능합니다.')
+          setIsUploading(false)
+          return
+        }
+        uploadBlob = file
+        fileExt = 'gif'
+        contentType = 'image/gif'
+      } else {
+        // 일반 이미지는 압축 진행
+        uploadBlob = await compressImage(file)
+        fileExt = 'jpg'
+        contentType = 'image/jpeg'
+      }
+
       const fileName = `covers/${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`
-      const { error } = await supabase.storage.from('post-images').upload(fileName, file)
+      const { error } = await supabase.storage
+        .from('post-images')
+        .upload(fileName, uploadBlob, { contentType })
+
       if (error) throw error
       const { data: { publicUrl } } = supabase.storage.from('post-images').getPublicUrl(fileName)
       setImageUrl(publicUrl)
-    } catch {
+    } catch (err) {
+      console.error('Edit upload failed:', err)
       alert('이미지 업로드에 실패했습니다.')
     } finally {
       setIsUploading(false)

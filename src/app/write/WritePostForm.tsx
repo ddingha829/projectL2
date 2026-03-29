@@ -48,13 +48,32 @@ export default function WritePostForm({ role }: { role: string }) {
 
     setIsUploading(true);
     try {
-      const compressedBlob = await compressImage(file);
-      const fileExt = 'jpg'; // We compress to JPEG
+      let uploadBlob: Blob | File = file;
+      let fileExt = 'jpg';
+      let contentType = 'image/jpeg';
+
+      // GIF 특수 처리: 압축하지 않되 1MB 제한
+      if (file.type === 'image/gif') {
+        if (file.size > 1024 * 1024) {
+          alert('GIF 파일은 애니메이션 유지를 위해 압축하지 않으므로, 1MB 이하만 업로드 가능합니다.');
+          setIsUploading(false);
+          return;
+        }
+        uploadBlob = file;
+        fileExt = 'gif';
+        contentType = 'image/gif';
+      } else {
+        // 일반 이미지는 기존처럼 압축 진행
+        uploadBlob = await compressImage(file);
+        fileExt = 'jpg';
+        contentType = 'image/jpeg';
+      }
+
       const fileName = `covers/${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
       
       const { error } = await supabase.storage
         .from('post-images')
-        .upload(fileName, compressedBlob, { contentType: 'image/jpeg' });
+        .upload(fileName, uploadBlob, { contentType });
 
       if (error) throw error;
 
