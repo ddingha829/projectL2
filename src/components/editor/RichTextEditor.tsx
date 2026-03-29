@@ -2,18 +2,18 @@
 
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import Image from '@tiptap/extension-image';
-import FontFamily from '@tiptap/extension-font-family';
-import TextStyle from '@tiptap/extension-text-style';
-import Color from '@tiptap/extension-color';
-import Underline from '@tiptap/extension-underline';
-import TextAlign from '@tiptap/extension-text-align';
-import Highlight from '@tiptap/extension-highlight';
-import Youtube from '@tiptap/extension-youtube';
-import Table from '@tiptap/extension-table';
-import TableRow from '@tiptap/extension-table-row';
-import TableCell from '@tiptap/extension-table-cell';
-import TableHeader from '@tiptap/extension-table-header';
+import { Image } from '@tiptap/extension-image';
+import { FontFamily } from '@tiptap/extension-font-family';
+import { TextStyle } from '@tiptap/extension-text-style';
+import { Color } from '@tiptap/extension-color';
+import { Underline } from '@tiptap/extension-underline';
+import { TextAlign } from '@tiptap/extension-text-align';
+import { Highlight } from '@tiptap/extension-highlight';
+import { Youtube } from '@tiptap/extension-youtube';
+import { Table } from '@tiptap/extension-table';
+import { TableRow } from '@tiptap/extension-table-row';
+import { TableCell } from '@tiptap/extension-table-cell';
+import { TableHeader } from '@tiptap/extension-table-header';
 import { useEffect, useState, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import styles from './RichTextEditor.module.css';
@@ -96,7 +96,6 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
   return (
     <div className={styles.editorContainer}>
       <div className={styles.toolbar}>
-        {/* 그룹 1: 폰트 & 서식 */}
         <select 
           onChange={(e) => editor.chain().focus().setFontFamily(e.target.value).run()}
           className={styles.fontSelect}
@@ -111,7 +110,6 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
 
         <div className={styles.divider} />
 
-        {/* 그룹 2: 정렬 & 섹션 */}
         <button type="button" onClick={() => editor.chain().focus().setTextAlign('left').run()} className={editor.isActive({ textAlign: 'left' }) ? styles.active : ''}>⬅️</button>
         <button type="button" onClick={() => editor.chain().focus().setTextAlign('center').run()} className={editor.isActive({ textAlign: 'center' }) ? styles.active : ''}>↔️</button>
         <button type="button" onClick={() => editor.chain().focus().toggleBlockquote().run()} className={editor.isActive('blockquote') ? styles.active : ''}>❝ 인용</button>
@@ -119,20 +117,18 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
 
         <div className={styles.divider} />
 
-        {/* 그룹 3: 미디어 삽입 */}
         <button type="button" onClick={addImage}>🖼️ 이미지</button>
         <button type="button" onClick={addYoutube}>📺 영상</button>
 
         <div className={styles.divider} />
 
-        {/* 그룹 4: 표 관리 */}
         <div className={styles.tableGroup}>
-          <button type="button" onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()} title="표 삽입">📅 표</button>
+          <button type="button" onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}>📅 표</button>
           {editor.isActive('table') && (
             <div className={styles.tableControls}>
-              <button type="button" onClick={() => editor.chain().focus().addColumnAfter().run()} title="열 추가">➕列</button>
-              <button type="button" onClick={() => editor.chain().focus().addRowAfter().run()} title="행 추가">➕行</button>
-              <button type="button" onClick={() => editor.chain().focus().deleteTable().run()} title="표 삭제">❌</button>
+              <button type="button" onClick={() => editor.chain().focus().addColumnAfter().run()}>➕列</button>
+              <button type="button" onClick={() => editor.chain().focus().addRowAfter().run()}>➕行</button>
+              <button type="button" onClick={() => editor.chain().focus().deleteTable().run()}>❌</button>
             </div>
           )}
         </div>
@@ -147,26 +143,15 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
           padding: 40px; min-height: 600px; outline: none; background: #fff;
           font-family: 'Noto Sans KR', sans-serif; font-size: 1.1rem; line-height: 1.9; color: #222;
         }
-
-        /* 표 스타일 (매거진 스타일) */
-        .ProseMirror table {
-          border-collapse: collapse; margin: 2rem 0; width: 100%; table-layout: fixed;
-          border-radius: 8px; overflow: hidden; border: 1px solid #eee;
-        }
-        .ProseMirror td, .ProseMirror th {
-          border: 1px solid #eee; padding: 12px 15px; position: relative; text-align: left; vertical-align: middle;
-        }
-        .ProseMirror th { background: #f9fafb; font-weight: 700; color: #111; }
-        .ProseMirror .selectedCell:after { background: rgba(200, 200, 255, 0.4); content: ""; left: 0; right: 0; top: 0; bottom: 0; pointer-events: none; position: absolute; z-index: 2; }
-
-        /* 유튜브 임베드 */
-        .ProseMirror iframe { border-radius: 12px; margin: 2rem auto; display: block; max-width: 100%; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); }
-
-        .ProseMirror h1 { font-size: 2.6rem; font-weight: 700; margin: 1.5em 0 0.8em; line-height: 1.25; color: #111; }
-        .ProseMirror h2 { font-size: 1.8rem; font-weight: 700; margin: 1.2em 0 0.6em; line-height: 1.35; color: #333; }
-        .ProseMirror blockquote { border-left: 5px solid var(--primary); padding-left: 25px; color: #444; font-style: italic; font-size: 1.25rem; margin: 40px 0; background: #fdfdff; padding-top: 10px; padding-bottom: 10px; }
-        .ProseMirror hr { border: none; border-top: 2px solid #eee; margin: 50px auto; width: 80%; }
-        .ProseMirror img { max-width: 100%; height: auto; border-radius: 12px; margin: 3rem auto; display: block; filter: saturate(1.1); }
+        .ProseMirror table { border-collapse: collapse; margin: 2rem 0; width: 100%; table-layout: fixed; border: 1px solid #eee; }
+        .ProseMirror td, .ProseMirror th { border: 1px solid #eee; padding: 12px 15px; position: relative; text-align: left; }
+        .ProseMirror th { background: #f9fafb; font-weight: 700; }
+        .ProseMirror iframe { border-radius: 12px; margin: 2rem auto; display: block; max-width: 100%; }
+        .ProseMirror h1 { font-size: 2.6rem; font-weight: 700; margin: 1.5em 0 0.8em; }
+        .ProseMirror h2 { font-size: 1.8rem; font-weight: 700; margin: 1.2em 0 0.6em; }
+        .ProseMirror blockquote { border-left: 5px solid var(--primary); padding-left: 25px; font-style: italic; background: #fdfdff; padding: 15px 25px; margin: 30px 0; }
+        .ProseMirror hr { border: none; border-top: 2px solid #eee; margin: 40px 0; }
+        .ProseMirror img { max-width: 100%; height: auto; border-radius: 12px; margin: 2rem auto; display: block; }
       `}</style>
     </div>
   );
