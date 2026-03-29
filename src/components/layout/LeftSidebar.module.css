@@ -107,27 +107,54 @@
   cursor: pointer;
 }
 
-.userProfileBtn {
-  text-decoration: none;
+.mobileUserInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
 }
 
-.mobileAvatar {
-  width: 40px;
-  height: 40px;
-  background-color: var(--accent-primary);
-  color: white;
-  border-radius: 50%;
+.mobileUserHeader {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 8px;
+}
+
+.mobileNickname {
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 1.35rem; /* Large and sleek */
   font-weight: 800;
-  font-size: 1.2rem;
-  box-shadow: 0 4px 12px rgba(26, 119, 206, 0.2);
+  color: #204bb8;
+  letter-spacing: -0.04em;
+}
+
+.mobileRole {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+}
+
+.mobileUserLinks {
+  display: flex;
+  gap: 16px;
+}
+
+.mobileLink {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--border-medium);
 }
 
 @media (max-width: 768px) {
   .mobileActions {
     display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 0 12px;
   }
 }
 
@@ -453,10 +480,10 @@
   .mobileActions {
     display: flex;
     align-items: center;
-    gap: 12px; /* Tighten overall gap */
+    gap: 12px;
     padding: 12px 16px;
     background: var(--bg-primary);
-    border-bottom: 1px solid var(--divider-color);
+    border-bottom: none; /* Divider removed as requested */
     margin-bottom: 16px;
     justify-content: flex-start;
   }

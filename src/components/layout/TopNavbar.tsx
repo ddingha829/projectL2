@@ -12,6 +12,7 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
   const [searchQuery, setSearchQuery] = useState("");
   const [user, setUser] = useState<any>(null);
   const [role, setRole] = useState<string>("user");
+  const [displayName, setDisplayName] = useState<string>("");
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
   const router = useRouter();
@@ -37,8 +38,11 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         setUser(user);
-        const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
-        if (profile) setRole(profile.role);
+        const { data: profile } = await supabase.from('profiles').select('role, display_name').eq('id', user.id).single();
+        if (profile) {
+          setRole(profile.role);
+          setDisplayName(profile.display_name || "");
+        }
       }
     };
     checkUser();
@@ -48,10 +52,14 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
       const newUser = session?.user ?? null;
       setUser(newUser);
       if (newUser) {
-        const { data: profile } = await supabase.from('profiles').select('role').eq('id', newUser.id).single();
-        if (profile) setRole(profile.role);
+        const { data: profile } = await supabase.from('profiles').select('role, display_name').eq('id', newUser.id).single();
+        if (profile) {
+          setRole(profile.role);
+          setDisplayName(profile.display_name || "");
+        }
       } else {
         setRole("user");
+        setDisplayName("");
       }
     });
 
@@ -119,10 +127,6 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
             </button>
           </form>
 
-          <div className={styles.iconGroup}>
-            <button className={styles.iconBtn}>📄</button>
-            <button className={styles.iconBtn}>🔔</button>
-          </div>
 
           <div className={styles.authWrapper}>
             {user ? (
@@ -137,23 +141,30 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
                     aria-label="Profile and settings"
                     disabled={isPending}
                   >
-                    <div className={styles.userAvatar}>
-                      {isPending ? "..." : (user.email?.charAt(0).toUpperCase() || "👦")}
+                    <div className={styles.userNameDisplay}>
+                      {isPending ? "..." : (displayName || user.email?.split('@')[0] || "사용자")}
+                      <span className={styles.dropdownArrow}>▼</span>
                     </div>
                   </button>
                   
                   {isProfileMenuOpen && (
                     <div className={styles.dropdownMenu}>
                       <div className={styles.menuHeader}>
-                        <span className={styles.userEmail}>{user.email}</span>
-                        <span className={styles.userRole}>{role}</span>
+                        <span className={styles.menuUserName}>{displayName || "사용자"}</span>
+                        <span className={styles.menuUserEmail}>{user.email}</span>
+                        <div className={styles.roleBadge}>{role}</div>
                       </div>
                       <Link href="/settings" className={styles.menuItem} onClick={() => setIsProfileMenuOpen(false)}>
-                        ⚙️ 설정 및 프로필 수정
+                        설정 및 프로필 수정
                       </Link>
+                      {(role === 'admin' || role === 'editor') && (
+                        <button className={styles.menuItem} onClick={() => { alert('알림 설정 페이지는 준비 중입니다.'); setIsProfileMenuOpen(false); }}>
+                          알림 설정
+                        </button>
+                      )}
                       {role === 'admin' && (
                         <Link href="/admin" className={styles.menuItem} onClick={() => setIsProfileMenuOpen(false)}>
-                          🛠️ 관리자 대시보드
+                          관리자 대시보드
                         </Link>
                       )}
                       <form onSubmit={handleLogout}>

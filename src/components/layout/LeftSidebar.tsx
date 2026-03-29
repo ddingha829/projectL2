@@ -39,6 +39,7 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
   const [liveAuthors, setLiveAuthors] = useState<any[]>([]);
   const [user, setUser] = useState<any>(null);
   const [role, setRole] = useState<string>("user");
+  const [displayName, setDisplayName] = useState<string>("");
   const [notices, setNotices] = useState<any[]>([]);
   const [supabase] = useState(() => createClient());
 
@@ -102,19 +103,29 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
     supabase.auth.getUser().then(({ data }) => {
       if (data.user) {
         setUser(data.user);
-        supabase.from('profiles').select('role').eq('id', data.user.id).single()
+        supabase.from('profiles').select('role, display_name').eq('id', data.user.id).single()
           .then(({ data: profile }) => {
-            if (profile) setRole(profile.role);
+            if (profile) {
+              setRole(profile.role);
+              setDisplayName(profile.display_name || "");
+            }
           });
       }
     });
 
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
-      if (!session?.user) setRole("user");
-      else {
-        supabase.from('profiles').select('role').eq('id', session.user.id).single()
-          .then(({ data: profile }) => setRole(profile?.role || "user"));
+      if (!session?.user) {
+        setRole("user");
+        setDisplayName("");
+      } else {
+        supabase.from('profiles').select('role, display_name').eq('id', session.user.id).single()
+          .then(({ data: profile }) => {
+            if (profile) {
+              setRole(profile.role);
+              setDisplayName(profile.display_name || "");
+            }
+          });
       }
     });
 
@@ -182,19 +193,22 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
         {/* Mobile Only: Icons at top */}
         {/* Mobile Only: Icons to the left of Search */}
         <div className={styles.mobileActions}>
-          <div className={styles.actionRow}>
-            <button className={styles.iconBtn}>📄</button>
-            <button className={styles.iconBtn}>🔔</button>
-            {user ? (
-              <Link href="/settings" className={styles.userProfileBtn} onClick={onClose}>
-                <div className={styles.mobileAvatar}>
-                  {user.email?.charAt(0).toUpperCase() || "👤"}
-                </div>
-              </Link>
-            ) : (
+          {user ? (
+            <div className={styles.mobileUserInfo}>
+              <div className={styles.mobileUserHeader}>
+                <span className={styles.mobileNickname}>{displayName || user.email?.split('@')[0]}</span>
+                <span className={styles.mobileRole}>[{role}]</span>
+              </div>
+              <div className={styles.mobileUserLinks}>
+                <Link href="/notice" className={styles.mobileLink} onClick={onClose}>알림 설정</Link>
+                <Link href="/settings" className={styles.mobileLink} onClick={onClose}>설정 및 프로필 수정</Link>
+              </div>
+            </div>
+          ) : (
+            <div className={styles.actionRow}>
               <Link href="/login" className={styles.loginBtnSmall} onClick={onClose}>로그인</Link>
-            )}
-          </div>
+            </div>
+          )}
           <form className={styles.mobileSearch} onSubmit={handleSearch}>
             <input 
               type="text" 
