@@ -2,13 +2,21 @@
 
 import { useEffect, useState, useMemo, useRef } from 'react';
 import dynamic from 'next/dynamic';
-import 'react-quill-new/dist/quill.snow.css'; // [수정] react-quill-new 스타일
+import 'react-quill-new/dist/quill.snow.css';
 import { createClient } from '@/lib/supabase/client';
 import styles from './RichTextEditor.module.css';
 
-// [중요] React 19 + Next.js SSR 환경 호환성을 위해 react-quill-new 사용 (findDOMNode 오류 해결)
+// [중요] 최신 버전의 Quill 2.0 및 React 19 호환을 위한 동적 로드 및 모듈 등록
 const ReactQuill = dynamic(async () => {
-    const { default: RQ } = await import('react-quill-new'); // [수정] react-quill-new 임포트
+    const { default: RQ } = await import('react-quill-new');
+    const { default: ImageResize } = await import('quill-image-resize-module-react');
+    
+    // Quill 인스턴스에 이미지 리사이즈 모듈 등록
+    // react-quill-new는 내부적으로 Quill을 내장하고 있거나 전역 Quill을 사용할 수 있음
+    if (typeof window !== 'undefined' && RQ.Quill) {
+        RQ.Quill.register('modules/imageResize', ImageResize);
+    }
+
     return function QuillComponent({ forwardedRef, ...props }: any) {
         return <RQ ref={forwardedRef} {...props} />;
     };
@@ -28,7 +36,6 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
         setIsClient(true);
     }, []);
 
-    // 이미지 핸들러: 로컬 이미지를 선택하면 Supabase Storage에 업로드 후 URL 삽입
     const imageHandler = () => {
         const input = document.createElement("input");
         input.setAttribute("type", "file");
@@ -82,6 +89,11 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
             handlers: {
                 image: imageHandler
             }
+        },
+        // [추가] 이미지 리사이즈 설정
+        imageResize: {
+            parchment: null, // Quill 2.0 호환성 관련 설정
+            modules: ['Resize', 'DisplaySize', 'Toolbar']
         }
     }), []);
 
@@ -110,7 +122,6 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
             />
             
             <style jsx global>{`
-                /* Quill 스타일 정밀 커스터마이징 */
                 .ql-editor {
                     min-height: 600px;
                     font-size: 1.1rem;
@@ -133,6 +144,11 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
                     margin: 20px auto;
                     display: block;
                     max-width: 100%;
+                    cursor: pointer;
+                }
+                /* 리사이즈 툴바 스타일 개선 */
+                .ql-image-resizer {
+                    border: 2px solid #1a77ce;
                 }
                 .ql-toolbar.ql-snow {
                     border: none;
@@ -146,7 +162,6 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
                 .ql-container.ql-snow {
                     border: none;
                 }
-                /* 툴바 아이콘 크기 살짝 조정 */
                 .ql-snow .ql-picker.ql-header { width: 100px; }
                 .ql-snow .ql-picker.ql-font { width: 120px; }
             `}</style>
