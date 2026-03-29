@@ -54,12 +54,12 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               <motion.div
                 key={key}
                 className={gridStyles.contentInner}
-                initial={{ x: "100%", opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                exit={{ x: "-100%", opacity: 0 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
                 transition={{ 
-                  x: { duration: 1.2, ease: [0.8, 0, 0.1, 1] },
-                  opacity: { duration: 0.6, ease: "easeOut" }
+                  duration: 0.5, 
+                  ease: "easeInOut" 
                 }}
                 style={{ width: '100%' }}
               >
