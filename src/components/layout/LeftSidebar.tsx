@@ -163,7 +163,9 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
             <div className={styles.mobileUserInfo}>
               <div className={styles.mobileUserHeader}>
                 <span className={styles.mobileNickname}>{displayName || user.email?.split('@')[0]}</span>
-                <span className={styles.mobileRole}>[{role}]</span>
+                <span className={styles.mobileRole}>
+                  [{role === 'admin' ? '운영자' : role === 'editor' ? '에디터' : '방문객'}]
+                </span>
               </div>
               <div className={styles.mobileUserLinks}>
                 <Link href="/notice" className={styles.mobileLink} onClick={onClose}>알림 설정</Link>

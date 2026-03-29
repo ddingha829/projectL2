@@ -94,6 +94,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <>
       <TopNavbar 
+        key={`navbar-${user?.id || 'guest'}`}
         onMobileToggle={() => setIsMobileOpen(!isMobileOpen)} 
         user={user}
         role={role}
@@ -101,6 +102,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       />
       <div className={gridStyles.mainContainer}>
         <LeftSidebar 
+          key={`sidebar-${user?.id || 'guest'}`}
           isOpen={isMobileOpen} 
           onClose={() => setIsMobileOpen(false)} 
           user={user}

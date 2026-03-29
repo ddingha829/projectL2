@@ -142,6 +142,14 @@
   line-height: 1;
 }
 
+.roleLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #999;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
 .avatarBtn:hover .userNameDisplay {
   color: var(--accent-primary);
 }

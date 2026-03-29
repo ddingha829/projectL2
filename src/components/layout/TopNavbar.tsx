@@ -115,6 +115,9 @@ export default function TopNavbar({
                   >
                     <div className={styles.userNameDisplay}>
                       {isPending ? "..." : (displayName || user.email?.split('@')[0] || "사용자")}
+                      <span className={styles.roleLabel}>
+                        {role === 'admin' ? '운영자' : role === 'editor' ? '에디터' : '방문객'}
+                      </span>
                       <span className={styles.dropdownArrow}>▼</span>
                     </div>
                   </button>
