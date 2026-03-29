@@ -160,13 +160,14 @@
     overflow: hidden; 
   }
   .titleOverlay {
-    padding: 30px 12px 8px; /* Lowered mobile title position */
+    padding: 30px 12px 32px; /* Increased bottom padding to make space for meta info */
   }
   .title {
-    font-size: 0.95rem; /* Increase mobile title too */
+    font-size: 0.95rem; 
   }
   .metaInfo {
-    font-size: 0.65rem;
-    padding: 2px 4px 8px;
+    bottom: 8px;
+    right: 12px;
+    font-size: 0.62rem;
   }
 }
