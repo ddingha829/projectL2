@@ -4,15 +4,15 @@
   color: var(--text-primary);
   padding: 40px;
   font-family: var(--font-outfit), sans-serif;
+  transition: background-color 0.3s ease;
 }
 
 .glassCard {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
   border-radius: 20px;
   padding: 30px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-premium);
 }
 
 .header {
@@ -23,151 +23,213 @@
 }
 
 .title {
-  font-size: 2rem;
-  font-weight: 800;
-  background: linear-gradient(135deg, #fff, #66b5ff);
+  font-size: 2.2rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--text-primary), var(--accent-primary));
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  letter-spacing: -0.03em;
 }
 
 .tabs {
   display: flex;
-  gap: 15px;
+  gap: 12px;
   margin-bottom: 30px;
+  flex-wrap: wrap;
 }
 
 .tabBtn {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #aaa;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  color: var(--text-secondary);
   padding: 12px 24px;
   border-radius: 12px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  font-weight: 600;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 700;
+  font-family: inherit;
 }
 
 .tabBtn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-medium);
 }
 
 .activeTab {
-  background: #1a77ce !important;
+  background: var(--accent-primary) !important;
   color: #fff !important;
-  border-color: #1a77ce !important;
-  box-shadow: 0 4px 15px rgba(26, 119, 206, 0.3);
+  border-color: var(--accent-primary) !important;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.25);
+}
+
+.searchBar {
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.searchInput {
+  width: 100%;
+  background: var(--bg-primary);
+  border: 2px solid var(--border-light);
+  padding: 14px 14px 14px 44px;
+  border-radius: 14px;
+  color: var(--text-primary);
+  font-family: inherit;
+  outline: none;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+}
+
+.searchInput:focus {
+  border-color: var(--accent-primary);
+}
+
+.searchIcon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-tertiary);
+  font-size: 1.1rem;
 }
 
 .tableWrapper {
   overflow-x: auto;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .adminTable {
   width: 100%;
   border-collapse: separate;
-  border-spacing: 0 10px;
+  border-spacing: 0 8px;
   font-size: 0.95rem;
 }
 
 .adminTable th {
   text-align: left;
-  padding: 15px;
-  color: #666;
-  font-weight: 600;
+  padding: 12px 15px;
+  color: var(--text-tertiary);
+  font-weight: 800;
   text-transform: uppercase;
-  font-size: 0.8rem;
-  letter-spacing: 0.1rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
 }
 
 .adminTable tr {
-  background: rgba(255, 255, 255, 0.02);
-  transition: transform 0.2s, background 0.2s;
+  background: var(--bg-tertiary);
+  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
 }
 
 .adminTable tr:hover {
-  background: rgba(255, 255, 255, 0.05);
-  transform: scale(1.002);
+  background: var(--bg-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .adminTable td {
-  padding: 20px 15px;
-  border-top: 1px solid rgba(255, 255, 255, 0.03);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  padding: 18px 15px;
+  color: var(--text-primary);
+  border-top: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .adminTable td:first-child {
-  border-left: 1px solid rgba(255, 255, 255, 0.03);
+  border-left: 1px solid var(--border-light);
   border-top-left-radius: 12px;
   border-bottom-left-radius: 12px;
 }
 
 .adminTable td:last-child {
-  border-right: 1px solid rgba(255, 255, 255, 0.03);
+  border-right: 1px solid var(--border-light);
   border-top-right-radius: 12px;
   border-bottom-right-radius: 12px;
 }
 
-.badge {
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 0.75rem;
+.postTitle {
   font-weight: 700;
+  color: var(--text-primary);
+  max-width: 320px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.badgeEditor { background: rgba(51, 204, 255, 0.15); color: #33ccff; }
-.badgeAdmin { background: rgba(255, 51, 51, 0.15); color: #ff3333; }
-.badgeUser { background: rgba(255, 255, 255, 0.1); color: #ccc; }
+.badge {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.badgeEditor { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+.badgeAdmin { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+.badgeUser { background: var(--bg-primary); color: var(--text-secondary); border: 1px solid var(--border-light); }
 
 .actionBtn {
-  background: none;
-  border: none;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
   cursor: pointer;
-  padding: 8px;
-  color: #888;
-  transition: color 0.2s;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  transition: all 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .actionBtn:hover {
-  color: #fff;
+  color: var(--text-primary);
+  border-color: var(--accent-primary);
+  background: var(--bg-secondary);
 }
 
 .deleteBtn:hover {
-  color: #ff4d4d;
+  color: #ef4444 !important;
+  border-color: #ef4444 !important;
 }
 
 .editBtn:hover {
-  color: #4da6ff;
+  color: var(--accent-primary) !important;
+}
+
+.authorAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+  border: 1px solid var(--border-light);
 }
 
 .categoryGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
   margin-top: 20px;
 }
 
 .categoryCard {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  padding: 20px;
-  border-radius: 15px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-light);
+  padding: 16px 20px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  font-weight: 700;
 }
 
-.authorAvatar {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-right: 12px;
+.emptyState {
+  padding: 80px 20px;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-weight: 600;
 }
 
 .noPermission {
@@ -176,60 +238,24 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 20px;
-  background-color: #03050a;
-  color: #fff;
+  gap: 24px;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  text-align: center;
+  padding: 20px;
 }
 
 .backBtn {
-  background: #1a77ce;
-  border: none;
-  color: white;
-  padding: 12px 24px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 700;
-}
-
-.postTitle {
-  font-weight: 600;
-  color: #eee;
-  max-width: 300px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.emptyState {
-  padding: 60px;
-  text-align: center;
-  color: #666;
-}
-
-.searchBar {
-  margin-bottom: 20px;
-  position: relative;
-}
-
-.searchInput {
-  width: 100%;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 12px 12px 12px 40px;
+  background: var(--accent-primary);
+  color: white !important;
+  padding: 14px 32px;
   border-radius: 12px;
-  color: #fff;
-  font-family: inherit;
-  outline: none;
+  text-decoration: none;
+  font-weight: 800;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
+  transition: transform 0.2s;
 }
 
-.searchInput:focus {
-  border-color: #1a77ce;
-}
-
-.searchIcon {
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #666;
+.backBtn:hover {
+  transform: translateY(-2px);
 }
