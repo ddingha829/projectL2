@@ -4,7 +4,14 @@ import { useState, useRef, useEffect } from "react";
 import { createPost } from "./actions";
 import styles from "./page.module.css";
 import { useFormStatus } from "react-dom";
+import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/client";
+
+// [중요] 수리된 에디터 컴포넌트를 다시 불러옴
+const RichTextEditor = dynamic(() => import("@/components/editor/RichTextEditor"), { 
+  ssr: false, 
+  loading: () => <div style={{ height: '600px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-hover)', borderRadius: '12px' }}>글쓰기 에디터 로딩중...</div> 
+});
 
 function SubmitButton({ isUploading }: { isUploading: boolean }) {
   const { pending } = useFormStatus();
@@ -16,7 +23,7 @@ function SubmitButton({ isUploading }: { isUploading: boolean }) {
 }
 
 export default function WritePostForm({ role }: { role: string }) {
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState("<p>리뷰를 작성해 보세요!</p>");
   const [mainImageUrl, setMainImageUrl] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [isClient, setIsClient] = useState(false);
@@ -49,12 +56,13 @@ export default function WritePostForm({ role }: { role: string }) {
       setMainImageUrl(publicUrl);
     } catch (err) {
       console.error('Cover upload failed:', err);
+      alert('대표 이미지 업로드 실패');
     } finally {
       setIsUploading(false);
     }
   };
 
-  if (!isClient) return <div className={styles.formContainer}>준비 중...</div>;
+  if (!isClient) return <div className={styles.formContainer}>잠시만 기다려 주세요...</div>;
 
   return (
     <form action={createPost} className={styles.formContainer}>
@@ -65,6 +73,8 @@ export default function WritePostForm({ role }: { role: string }) {
           <option value="book">책 (Book)</option>
           <option value="game">게임 (Game)</option>
           <option value="restaurant">맛집 (Restaurant)</option>
+          <option value="travel">여행 (Travel)</option>
+          <option value="exhibition">전시회 (Exhibition)</option>
           <option value="other">기타 (Other)</option>
         </select>
       </div>
@@ -75,35 +85,32 @@ export default function WritePostForm({ role }: { role: string }) {
       </div>
 
       <div className={styles.inputGroup}>
-        <label>대표 이미지</label>
+        <label>대표 이미지 (메인 포스터)</label>
         <div className={styles.uploadBox} onClick={() => fileInputRef.current?.click()}>
           {mainImageUrl ? (
             <img src={mainImageUrl} alt="Preview" className={styles.previewImage} />
           ) : (
-            <div className={styles.uploadPlaceholder}>📸 클릭하여 업로드</div>
+            <div className={styles.uploadPlaceholder}>
+              <span>📸 클릭하여 이미지 업로드</span>
+              <p>권장 비율 14:20 (매거진 스타일)</p>
+            </div>
           )}
           <input type="file" ref={fileInputRef} onChange={handleMainImageUpload} className={styles.hiddenInput} accept="image/*" />
         </div>
         <input type="hidden" name="imageUrl" value={mainImageUrl} required />
       </div>
 
-      {/* [테스트용] 에디터 대신 일반 텍스트 입력창 사용 */}
+      {/* 수리된 에디터 컴포넌트 복구 */}
       <div className={`${styles.inputGroup} ${styles.editorGroup}`}>
-        <label>내용 (에디터 테스트 모드)</label>
-        <textarea 
-          required
-          name="content"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="리뷰 내용을 입력하세요 (현재 에디터 점검 중입니다)"
-          style={{ width: '100%', height: '400px', padding: '15px', borderRadius: '12px', border: '1px solid var(--border)', fontSize: '1rem', lineHeight: '1.6' }}
-        />
+        <label>내용</label>
+        <RichTextEditor content={content} onChange={setContent} />
+        <input type="hidden" name="content" value={content} />
       </div>
 
       {role === 'admin' && (
         <div className={styles.checkboxGroup}>
           <input type="checkbox" id="isEditorsPick" name="isEditorsPick" />
-          <label htmlFor="isEditorsPick" className={styles.checkboxLabel}>🏆 에디터 추천 지정</label>
+          <label htmlFor="isEditorsPick" className={styles.checkboxLabel}>🏆 이 게시물을 에디터 추천으로 지정합니다.</label>
         </div>
       )}
 
