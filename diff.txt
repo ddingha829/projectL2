@@ -1,0 +1,922 @@
+﻿diff --git a/package-lock.json b/package-lock.json
+index 4d9bc83..aec5750 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -31,7 +31,7 @@
+         "quill-image-resize-module-react": "^3.0.0",
+         "react": "19.2.4",
+         "react-dom": "19.2.4",
+-        "react-quill": "^2.0.0"
++        "react-quill-new": "^3.8.3"
+       },
+       "devDependencies": {
+         "@types/node": "^20",
+@@ -5234,11 +5234,16 @@
+       "integrity": "sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w==",
+       "license": "MIT"
+     },
++    "node_modules/lodash-es": {
++      "version": "4.17.23",
++      "resolved": "https://registry.npmjs.org/lodash-es/-/lodash-es-4.17.23.tgz",
++      "integrity": "sha512-kVI48u3PZr38HdYz98UmfPnXl2DXrpdctLrFLCd3kOx1xUkOmpFPx7gCWWM5MPkL/fD8zb+Ph0QzjGFs4+hHWg==",
++      "license": "MIT"
++    },
+     "node_modules/lodash.clonedeep": {
+       "version": "4.5.0",
+       "resolved": "https://registry.npmjs.org/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz",
+       "integrity": "sha512-H5ZhCF25riFd9uB5UCkVKo61m3S/xZk1x4wA6yp/L3RFP6Z/eHH1ymQcGLo7J3GMPfm0V/7m1tryHuGVxpqEBQ==",
+-      "dev": true,
+       "license": "MIT"
+     },
+     "node_modules/lodash.isequal": {
+@@ -5246,7 +5251,6 @@
+       "resolved": "https://registry.npmjs.org/lodash.isequal/-/lodash.isequal-4.5.0.tgz",
+       "integrity": "sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==",
+       "deprecated": "This package is deprecated. Use require('node:util').isDeepStrictEqual instead.",
+-      "dev": true,
+       "license": "MIT"
+     },
+     "node_modules/lodash.merge": {
+@@ -6144,28 +6148,66 @@
+       "dev": true,
+       "license": "MIT"
+     },
+-    "node_modules/react-quill": {
+-      "version": "2.0.0",
+-      "resolved": "https://registry.npmjs.org/react-quill/-/react-quill-2.0.0.tgz",
+-      "integrity": "sha512-4qQtv1FtCfLgoD3PXAur5RyxuUbPXQGOHgTlFie3jtxp43mXDtzCKaOgQ3mLyZfi1PUlyjycfivKelFhy13QUg==",
++    "node_modules/react-quill-new": {
++      "version": "3.8.3",
++      "resolved": "https://registry.npmjs.org/react-quill-new/-/react-quill-new-3.8.3.tgz",
++      "integrity": "sha512-c96PYqFTo0pI4R3e79B3rH9LUIce1kIQbmTBu/imJQZk8305ogyLyBqKKjG2UoInDlquXqePSzmBo2aVia3ttw==",
+       "license": "MIT",
+       "dependencies": {
+-        "@types/quill": "^1.3.10",
+-        "lodash": "^4.17.4",
+-        "quill": "^1.3.7"
++        "lodash-es": "^4.17.21",
++        "quill": "~2.0.3"
+       },
+       "peerDependencies": {
+-        "react": "^16 || ^17 || ^18",
+-        "react-dom": "^16 || ^17 || ^18"
++        "quill-delta": "^5.1.0",
++        "react": "^16 || ^17 || ^18 || ^19",
++        "react-dom": "^16 || ^17 || ^18 || ^19"
+       }
+     },
+-    "node_modules/react-quill/node_modules/@types/quill": {
+-      "version": "1.3.10",
+-      "resolved": "https://registry.npmjs.org/@types/quill/-/quill-1.3.10.tgz",
+-      "integrity": "sha512-IhW3fPW+bkt9MLNlycw8u8fWb7oO7W5URC9MfZYHBlA24rex9rs23D5DETChu1zvgVdc5ka64ICjJOgQMr6Shw==",
++    "node_modules/react-quill-new/node_modules/eventemitter3": {
++      "version": "5.0.4",
++      "resolved": "https://registry.npmjs.org/eventemitter3/-/eventemitter3-5.0.4.tgz",
++      "integrity": "sha512-mlsTRyGaPBjPedk6Bvw+aqbsXDtoAyAzm5MO7JgU+yVRyMQ5O8bD4Kcci7BS85f93veegeCPkL8R4GLClnjLFw==",
++      "license": "MIT"
++    },
++    "node_modules/react-quill-new/node_modules/fast-diff": {
++      "version": "1.3.0",
++      "resolved": "https://registry.npmjs.org/fast-diff/-/fast-diff-1.3.0.tgz",
++      "integrity": "sha512-VxPP4NqbUjj6MaAOafWeUn2cXWLcCtljklUtZf0Ind4XQ+QPtmA0b18zZy0jIQx+ExRVCR/ZQpBmik5lXshNsw==",
++      "license": "Apache-2.0"
++    },
++    "node_modules/react-quill-new/node_modules/parchment": {
++      "version": "3.0.0",
++      "resolved": "https://registry.npmjs.org/parchment/-/parchment-3.0.0.tgz",
++      "integrity": "sha512-HUrJFQ/StvgmXRcQ1ftY6VEZUq3jA2t9ncFN4F84J/vN0/FPpQF+8FKXb3l6fLces6q0uOHj6NJn+2xvZnxO6A==",
++      "license": "BSD-3-Clause"
++    },
++    "node_modules/react-quill-new/node_modules/quill": {
++      "version": "2.0.3",
++      "resolved": "https://registry.npmjs.org/quill/-/quill-2.0.3.tgz",
++      "integrity": "sha512-xEYQBqfYx/sfb33VJiKnSJp8ehloavImQ2A6564GAbqG55PGw1dAWUn1MUbQB62t0azawUS2CZZhWCjO8gRvTw==",
++      "license": "BSD-3-Clause",
++      "dependencies": {
++        "eventemitter3": "^5.0.1",
++        "lodash-es": "^4.17.21",
++        "parchment": "^3.0.0",
++        "quill-delta": "^5.1.0"
++      },
++      "engines": {
++        "npm": ">=8.2.3"
++      }
++    },
++    "node_modules/react-quill-new/node_modules/quill-delta": {
++      "version": "5.1.0",
++      "resolved": "https://registry.npmjs.org/quill-delta/-/quill-delta-5.1.0.tgz",
++      "integrity": "sha512-X74oCeRI4/p0ucjb5Ma8adTXd9Scumz367kkMK5V/IatcX6A0vlgLgKbzXWy5nZmCGeNJm2oQX0d2Eqj+ZIlCA==",
+       "license": "MIT",
+       "dependencies": {
+-        "parchment": "^1.1.2"
++        "fast-diff": "^1.3.0",
++        "lodash.clonedeep": "^4.5.0",
++        "lodash.isequal": "^4.5.0"
++      },
++      "engines": {
++        "node": ">= 12.0.0"
+       }
+     },
+     "node_modules/reflect.getprototypeof": {
+diff --git a/package.json b/package.json
+index f661ba3..6eaa9bc 100644
+--- a/package.json
++++ b/package.json
+@@ -32,7 +32,7 @@
+     "quill-image-resize-module-react": "^3.0.0",
+     "react": "19.2.4",
+     "react-dom": "19.2.4",
+-    "react-quill": "^2.0.0"
++    "react-quill-new": "^3.8.3"
+   },
+   "devDependencies": {
+     "@types/node": "^20",
+diff --git a/src/app/globals.css b/src/app/globals.css
+index d7fde19..94bf81a 100644
+--- a/src/app/globals.css
++++ b/src/app/globals.css
+@@ -13,6 +13,7 @@
+   
+   --border-light: #e5e7eb;
+   --border-medium: #d1d5db;
++  --divider-color: #2C2C2C; /* Global divider color for light mode */
+   
+   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+@@ -57,8 +58,11 @@
+ 
+     /* Paper feel in dark mode */
+     --bg-primary: #2C2C2C;
+-    --text-primary: #f0f0f0;
++    --text-primary: #ffffff;      /* Pure white for headings in dark mode */
++    --text-secondary: #d1d5db;
++    --text-tertiary: #888888;
+     --border-light: #444;
++    --divider-color: rgba(255, 255, 255, 0.5); /* Even brighter for visibility */
+   }
+ }
+ 
+diff --git a/src/app/notice/notice.module.css b/src/app/notice/notice.module.css
+index 6cb321e..f857a96 100644
+--- a/src/app/notice/notice.module.css
++++ b/src/app/notice/notice.module.css
+@@ -1,7 +1,8 @@
+ .container {
+-  max-width: 1000px;
++  width: 100%;
++  max-width: none;
+   margin: 0 auto;
+-  padding: 40px 20px;
++  padding: 40px 0;
+   animation: fadeIn 0.5s ease-out;
+ }
+ 
+diff --git a/src/app/page.module.css b/src/app/page.module.css
+index 7d10df9..4eec8bb 100644
+--- a/src/app/page.module.css
++++ b/src/app/page.module.css
+@@ -23,7 +23,7 @@
+ .divider {
+   flex: 1;
+   height: 0;
+-  border-top: 2px solid #2C2C2C; /* Matched with sidebar divider */
++  border-top: 2px solid var(--divider-color); /* Matched with sidebar divider */
+ }
+ 
+ .heroWrapper {
+@@ -39,7 +39,7 @@
+ .heroFrame {
+   position: absolute;
+   inset: 0;
+-  border: 2px solid #2C2C2C; /* Matched with sidebar divider */
++  border: 2px solid var(--divider-color); /* Matched with sidebar divider */
+   border-radius: 24px;
+   z-index: 20;
+   pointer-events: none;
+@@ -434,70 +434,41 @@
+   .gridSection {
+     margin-top: 40px;
+   }
+-  .gridList {
+-    grid-template-columns: repeat(2, 1fr);
+-    gap: 8px; /* 50% reduction */
+-  }
+ 
+   .headerControls {
+     display: none !important; /* Hide pagination on mobile as requested */
+   }
+-}
+ 
+-@media (max-width: 768px) {
+   .heroTrack {
+     height: 280px !important;
+   }
+   
+   .gridList {
+-    display: flex;
+-    overflow-x: auto;
+-    overflow-y: hidden;
+-    gap: 4px; /* Further reduced from 8px to 4px */
+-    padding: 8px 4px 4px 4px; 
+-    scrollbar-width: none; 
+-    -ms-overflow-style: none;
+-    scroll-snap-type: x mandatory;
+-    width: 100vw;
+-    margin-left: -16px; 
+-    padding-left: 16px;
+-    padding-right: 16px;
+-  }
+-  
+-  .gridList::-webkit-scrollbar {
+-    display: none;
+-  }
+-
+-  .gridList > * {
+-    flex: 0 0 38vw; 
+-    scroll-snap-align: start;
+-    min-width: 130px; /* Reduced from 140px */
+-  }
+-
+-  /* When filtered or in full view, use vertical grid instead of swiping */
+-  .feedAnimator .gridList {
+-    display: grid; /* Switched from full-width swipe to 2-column grid for better magazine-style proportion */
++    display: grid;
+     grid-template-columns: repeat(2, 1fr);
+-    gap: 10px; /* 50% reduction */
+-    padding: 10px 16px 8px 16px; /* Further reduced from 12px */
++    gap: 10px; /* Consistent 10px gap for clean magazine look */
++    padding: 10px 16px 8px 16px; 
+     width: 100%;
+     margin-left: 0;
+     overflow-x: hidden;
+   }
+-  
+-  .feedAnimator .gridList > * {
++
++  .gridList > * {
+     width: 100%;
+     flex: none;
+   }
+-}
+ 
+-@media (max-width: 480px) {
+-  .gridList {
+-    grid-template-columns: 1fr;
+-    gap: 24px;
++  /* Specific override for feed animator results if needed, keeping 10px gap */
++  .feedAnimator .gridList {
++    display: grid;
++    grid-template-columns: repeat(2, 1fr);
++    gap: 10px;
++    width: 100%;
+   }
+ }
+ 
++/* Removed redundant 1-column mobile breakpoint to maintain 2-column magazine grid */
++
+ .emptyState {
+   display: flex;
+   flex-direction: column;
+diff --git a/src/app/post/[id]/page.module.css b/src/app/post/[id]/page.module.css
+index 5b73c28..3630dd2 100644
+--- a/src/app/post/[id]/page.module.css
++++ b/src/app/post/[id]/page.module.css
+@@ -1,8 +1,9 @@
+ .container {
+-  max-width: 1100px;
+-  margin: 0 auto;
+   width: 100%;
+-  padding: 0 20px;
++  max-width: 1200px;
++  margin: 0 auto;
++  padding: 40px 0;
++  animation: fadeIn 0.4s ease-out;
+ }
+ 
+ .backBtn {
+diff --git a/src/app/write/WritePostForm.tsx b/src/app/write/WritePostForm.tsx
+index 5270f07..e6f05d6 100644
+--- a/src/app/write/WritePostForm.tsx
++++ b/src/app/write/WritePostForm.tsx
+@@ -7,6 +7,7 @@ import { useFormStatus } from "react-dom";
+ import dynamic from "next/dynamic";
+ import { createClient } from "@/lib/supabase/client";
+ import { useSearchParams } from "next/navigation";
++import { compressImage } from "@/lib/utils/image";
+ 
+ // [以묒슂] ?섎━???먮뵒??而댄룷?뚰듃瑜??ㅼ떆 遺덈윭?? const RichTextEditor = dynamic(() => import("@/components/editor/RichTextEditor"), { 
+@@ -47,12 +48,13 @@ export default function WritePostForm({ role }: { role: string }) {
+ 
+     setIsUploading(true);
+     try {
+-      const fileExt = file.name.split('.').pop();
++      const compressedBlob = await compressImage(file);
++      const fileExt = 'jpg'; // We compress to JPEG
+       const fileName = `covers/${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
+       
+       const { error } = await supabase.storage
+         .from('post-images')
+-        .upload(fileName, file);
++        .upload(fileName, compressedBlob, { contentType: 'image/jpeg' });
+ 
+       if (error) throw error;
+ 
+@@ -108,7 +110,7 @@ export default function WritePostForm({ role }: { role: string }) {
+           ) : (
+             <div className={styles.uploadPlaceholder}>
+               <span>?벝 ?대┃?섏뿬 ?대?吏 ?낅줈??/span>
+-              <p>沅뚯옣 鍮꾩쑉 14:20 (留ㅺ굅吏??ㅽ???</p>
++              <p>沅뚯옣 鍮꾩쑉 4:5 (?몄뒪? ?ㅽ???</p>
+             </div>
+           )}
+           <input type="file" ref={fileInputRef} onChange={handleMainImageUpload} className={styles.hiddenInput} accept="image/*" />
+diff --git a/src/components/editor/RichTextEditor.tsx b/src/components/editor/RichTextEditor.tsx
+index bbdb03f..d8cb03c 100644
+--- a/src/components/editor/RichTextEditor.tsx
++++ b/src/components/editor/RichTextEditor.tsx
+@@ -1,158 +1,172 @@
+ "use client";
+ 
+-import { useEditor, EditorContent } from '@tiptap/react';
+-import StarterKit from '@tiptap/starter-kit';
+-import { Image } from '@tiptap/extension-image';
+-import { FontFamily } from '@tiptap/extension-font-family';
+-import { TextStyle } from '@tiptap/extension-text-style';
+-import { Color } from '@tiptap/extension-color';
+-import { Underline } from '@tiptap/extension-underline';
+-import { TextAlign } from '@tiptap/extension-text-align';
+-import { Highlight } from '@tiptap/extension-highlight';
+-import { Youtube } from '@tiptap/extension-youtube';
+-import { Table } from '@tiptap/extension-table';
+-import { TableRow } from '@tiptap/extension-table-row';
+-import { TableCell } from '@tiptap/extension-table-cell';
+-import { TableHeader } from '@tiptap/extension-table-header';
+-import { useEffect, useState, useCallback } from 'react';
++import { useEffect, useState, useMemo, useRef } from 'react';
++import dynamic from 'next/dynamic';
++import 'react-quill-new/dist/quill.snow.css';
+ import { createClient } from '@/lib/supabase/client';
++import { compressImage } from '@/lib/utils/image';
+ import styles from './RichTextEditor.module.css';
+ 
++// [以묒슂] 理쒖떊 踰꾩쟾??Quill 2.0 諛?React 19 ?명솚???꾪븳 ?숈쟻 濡쒕뱶 諛?紐⑤뱢 ?깅줉
++const ReactQuill = dynamic(async () => {
++    const { default: RQ } = await import('react-quill-new');
++    const { default: ImageResize } = await import('quill-image-resize-module-react');
++    
++    // Quill ?몄뒪?댁뒪???대?吏 由ъ궗?댁쫰 紐⑤뱢 ?깅줉
++    // react-quill-new???대??곸쑝濡?Quill???댁옣?섍퀬 ?덇굅???꾩뿭 Quill???ъ슜?????덉쓬
++    if (typeof window !== 'undefined' && RQ.Quill) {
++        RQ.Quill.register('modules/imageResize', ImageResize);
++    }
++
++    return function QuillComponent({ forwardedRef, ...props }: any) {
++        return <RQ ref={forwardedRef} {...props} />;
++    };
++}, { ssr: false });
++
+ interface RichTextEditorProps {
+-  content: string;
+-  onChange: (val: string) => void;
++    content: string;
++    onChange: (val: string) => void;
+ }
+ 
+-const FONTS = [
+-  { label: 'Sans (湲곕낯)', value: 'Noto Sans KR' },
+-  { label: 'Serif (?몃━??', value: 'serif' },
+-  { label: 'Mono (紐⑤끂泥?', value: 'monospace' },
+-  { label: 'Outfit (?곸뼱 異붿쿇)', value: 'Outfit' },
+-  { label: 'Dancing Script', value: 'Dancing Script' },
+-];
+-
+ export default function RichTextEditor({ content, onChange }: RichTextEditorProps) {
+-  const [isClient, setIsClient] = useState(false);
+-  const supabase = createClient();
+-
+-  useEffect(() => {
+-    setIsClient(true);
+-  }, []);
+-
+-  const editor = useEditor({
+-    extensions: [
+-      StarterKit,
+-      TextStyle,
+-      FontFamily,
+-      Color,
+-      Underline,
+-      Highlight.configure({ multicolor: true }),
+-      TextAlign.configure({ types: ['heading', 'paragraph'] }),
+-      Image.configure({ inline: true, allowBase64: true }),
+-      Youtube.configure({ width: 840, height: 480 }),
+-      Table.configure({ resizable: true }),
+-      TableRow,
+-      TableHeader,
+-      TableCell,
+-    ],
+-    content: content,
+-    onUpdate: ({ editor }) => {
+-      onChange(editor.getHTML());
+-    },
+-  });
+-
+-  const addImage = useCallback(async () => {
+-    const input = document.createElement('input');
+-    input.type = 'file';
+-    input.accept = 'image/*';
+-    input.onchange = async () => {
+-      const file = input.files?.[0];
+-      if (!file) return;
+-      try {
+-        const fileExt = file.name.split('.').pop();
+-        const fileName = `editor/${Math.random().toString(36).substring(2, 10)}_${Date.now()}.${fileExt}`;
+-        const { error } = await supabase.storage.from('post-images').upload(fileName, file);
+-        if (error) throw error;
+-        const { data: { publicUrl } } = supabase.storage.from('post-images').getPublicUrl(fileName);
+-        if (editor) editor.chain().focus().setImage({ src: publicUrl }).run();
+-      } catch (err) {
+-        console.error('Image upload failed:', err);
+-      }
++    const [isClient, setIsClient] = useState(false);
++    const quillRef = useRef<any>(null);
++    const supabase = createClient();
++
++    useEffect(() => {
++        setIsClient(true);
++    }, []);
++
++    const imageHandler = () => {
++        const input = document.createElement("input");
++        input.setAttribute("type", "file");
++        input.setAttribute("accept", "image/*");
++        input.click();
++
++        input.onchange = async () => {
++            const file = input.files ? input.files[0] : null;
++            if (!file) return;
++
++            try {
++                const compressedBlob = await compressImage(file);
++                const fileExt = 'jpg';
++                const fileName = `editor/${Math.random().toString(36).substring(2, 10)}_${Date.now()}.${fileExt}`;
++                
++                const { error } = await supabase.storage
++                    .from('post-images')
++                    .upload(fileName, compressedBlob, { contentType: 'image/jpeg' });
++
++                if (error) throw error;
++
++                const { data: { publicUrl } } = supabase.storage
++                    .from('post-images')
++                    .getPublicUrl(fileName);
++
++                const quill = quillRef.current?.getEditor();
++                const range = quill?.getSelection();
++                if (quill && range) {
++                    quill.insertEmbed(range.index, "image", publicUrl);
++                    quill.setSelection(range.index + 1);
++                }
++            } catch (err) {
++                console.error("Quill image upload failed:", err);
++                alert("?대?吏 ?낅줈?쒖뿉 ?ㅽ뙣?덉뒿?덈떎.");
++            }
++        };
+     };
+-    input.click();
+-  }, [editor, supabase]);
+ 
+-  const addYoutube = useCallback(() => {
+-    const url = prompt('?좏뒠釉?URL???낅젰?섏꽭??');
+-    if (url && editor) {
+-      editor.chain().focus().setYoutubeVideo({ src: url }).run();
+-    }
+-  }, [editor]);
+-
+-  if (!isClient || !editor) {
+-    return <div className={styles.loading}>?먮뵒?곕? 遺덈윭?ㅻ뒗 以묒엯?덈떎...</div>;
+-  }
+-
+-  return (
+-    <div className={styles.editorContainer}>
+-      <div className={styles.toolbar}>
+-        <select 
+-          onChange={(e) => editor.chain().focus().setFontFamily(e.target.value).run()}
+-          className={styles.fontSelect}
+-          value={editor.getAttributes('textStyle').fontFamily || ''}
+-        >
+-          {FONTS.map(f => <option key={f.value} value={f.value}>{f.label}</option>)}
+-        </select>
+-        <button type="button" onClick={() => editor.chain().focus().toggleBold().run()} className={editor.isActive('bold') ? styles.active : ''}><b>B</b></button>
+-        <button type="button" onClick={() => editor.chain().focus().toggleUnderline().run()} className={editor.isActive('underline') ? styles.active : ''}><u>U</u></button>
+-        <button type="button" onClick={() => editor.chain().focus().toggleHighlight({ color: '#ffec3d' }).run()} className={editor.isActive('highlight') ? styles.active : ''}>?뼃截?/button>
+-        <input type="color" onInput={(e: any) => editor.chain().focus().setColor(e.target.value).run()} className={styles.colorPicker} />
+-
+-        <div className={styles.divider} />
+-
+-        <button type="button" onClick={() => editor.chain().focus().setTextAlign('left').run()} className={editor.isActive({ textAlign: 'left' }) ? styles.active : ''}>燧낉툘</button>
+-        <button type="button" onClick={() => editor.chain().focus().setTextAlign('center').run()} className={editor.isActive({ textAlign: 'center' }) ? styles.active : ''}>?뷂툘</button>
+-        <button type="button" onClick={() => editor.chain().focus().toggleBlockquote().run()} className={editor.isActive('blockquote') ? styles.active : ''}>???몄슜</button>
+-        <button type="button" onClick={() => editor.chain().focus().setHorizontalRule().run()}>??援щ텇??/button>
+-
+-        <div className={styles.divider} />
+-
+-        <button type="button" onClick={addImage}>?뼹截??대?吏</button>
+-        <button type="button" onClick={addYoutube}>?벟 ?곸긽</button>
+-
+-        <div className={styles.divider} />
+-
+-        <div className={styles.tableGroup}>
+-          <button type="button" onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}>?뱟 ??/button>
+-          {editor.isActive('table') && (
+-            <div className={styles.tableControls}>
+-              <button type="button" onClick={() => editor.chain().focus().addColumnAfter().run()}>?뺝닓</button>
+-              <button type="button" onClick={() => editor.chain().focus().addRowAfter().run()}>?뺠죱</button>
+-              <button type="button" onClick={() => editor.chain().focus().deleteTable().run()}>??/button>
+-            </div>
+-          )}
+-        </div>
+-      </div>
+-
+-      <EditorContent editor={editor} className={styles.content} />
+-
+-      <style jsx global>{`
+-        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Outfit:wght@400;700&family=Noto+Sans+KR:wght@400;700&display=swap');
+-
+-        .ProseMirror {
+-          padding: 40px; min-height: 600px; outline: none; background: #fff;
+-          font-family: 'Noto Sans KR', sans-serif; font-size: 1.1rem; line-height: 1.9; color: #222;
++    const modules = useMemo(() => ({
++        toolbar: {
++            container: [
++                [{ 'header': [1, 2, 3, false] }],
++                [{ 'font': [] }],
++                ['bold', 'italic', 'underline', 'strike'],
++                [{ 'color': [] }, { 'background': [] }],
++                [{ 'align': [] }],
++                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
++                ['blockquote', 'code-block'],
++                ['link', 'image', 'video'],
++                ['clean']
++            ],
++            handlers: {
++                image: imageHandler
++            }
++        },
++        // [異붽?] ?대?吏 由ъ궗?댁쫰 ?ㅼ젙
++        imageResize: {
++            parchment: null, // Quill 2.0 ?명솚??愿???ㅼ젙
++            modules: ['Resize', 'DisplaySize', 'Toolbar']
+         }
+-        .ProseMirror table { border-collapse: collapse; margin: 2rem 0; width: 100%; table-layout: fixed; border: 1px solid #eee; }
+-        .ProseMirror td, .ProseMirror th { border: 1px solid #eee; padding: 12px 15px; position: relative; text-align: left; }
+-        .ProseMirror th { background: #f9fafb; font-weight: 700; }
+-        .ProseMirror iframe { border-radius: 12px; margin: 2rem auto; display: block; max-width: 100%; }
+-        .ProseMirror h1 { font-size: 2.6rem; font-weight: 700; margin: 1.5em 0 0.8em; }
+-        .ProseMirror h2 { font-size: 1.8rem; font-weight: 700; margin: 1.2em 0 0.6em; }
+-        .ProseMirror blockquote { border-left: 5px solid var(--primary); padding-left: 25px; font-style: italic; background: #fdfdff; padding: 15px 25px; margin: 30px 0; }
+-        .ProseMirror hr { border: none; border-top: 2px solid #eee; margin: 40px 0; }
+-        .ProseMirror img { max-width: 100%; height: auto; border-radius: 12px; margin: 2rem auto; display: block; }
+-      `}</style>
+-    </div>
+-  );
++    }), []);
++
++    const formats = [
++        'header', 'font',
++        'bold', 'italic', 'underline', 'strike',
++        'color', 'background',
++        'align',
++        'list', 'bullet',
++        'blockquote', 'code-block',
++        'link', 'image', 'video'
++    ];
++
++    if (!isClient) return <div className={styles.loading}>?먮뵒?곕? 遺덈윭?ㅻ뒗 以묒엯?덈떎...</div>;
++
++    return (
++        <div className={styles.editorContainer}>
++            <ReactQuill
++                forwardedRef={quillRef}
++                theme="snow"
++                value={content}
++                onChange={onChange}
++                modules={modules}
++                formats={formats}
++                className={styles.quillEditor}
++            />
++            
++            <style jsx global>{`
++                .ql-editor {
++                    min-height: 600px;
++                    font-size: 1.1rem;
++                    line-height: 1.8;
++                    padding: 40px !important;
++                    font-family: 'Noto Sans KR', sans-serif;
++                }
++                .ql-editor h1 { font-size: 2.5rem; margin-top: 1.5em; margin-bottom: 0.5em; font-weight: 800; }
++                .ql-editor h2 { font-size: 1.8rem; margin-top: 1.2em; margin-bottom: 0.4em; }
++                .ql-editor blockquote { 
++                    border-left: 5px solid #1a77ce; 
++                    background: #f8faff; 
++                    padding: 15px 25px; 
++                    margin: 20px 0;
++                    color: #555;
++                    font-style: italic;
++                }
++                .ql-editor img {
++                    border-radius: 12px;
++                    margin: 20px auto;
++                    display: block;
++                    max-width: 100%;
++                    cursor: pointer;
++                }
++                /* 由ъ궗?댁쫰 ?대컮 ?ㅽ???媛쒖꽑 */
++                .ql-image-resizer {
++                    border: 2px solid #1a77ce;
++                }
++                .ql-toolbar.ql-snow {
++                    border: none;
++                    border-bottom: 1px solid #eee;
++                    padding: 12px 16px;
++                    background: #fdfdfd;
++                    position: sticky;
++                    top: 0;
++                    z-index: 100;
++                }
++                .ql-container.ql-snow {
++                    border: none;
++                }
++                .ql-snow .ql-picker.ql-header { width: 100px; }
++                .ql-snow .ql-picker.ql-font { width: 120px; }
++            `}</style>
++        </div>
++    );
+ }
+diff --git a/src/components/feed/PosterCard.module.css b/src/components/feed/PosterCard.module.css
+index 383938d..5d8990a 100644
+--- a/src/components/feed/PosterCard.module.css
++++ b/src/components/feed/PosterCard.module.css
+@@ -26,7 +26,7 @@
+   padding-top: 125%; /* Magazine ratio 4:5 */
+   border-radius: 20px;
+   overflow: hidden;
+-  border: 2px solid #2C2C2C; /* Matched with sidebar divider */
++  border: 2px solid var(--divider-color); /* Matched with sidebar divider */
+   isolation: isolate;
+   background-color: var(--bg-tertiary);
+   margin-bottom: 8px; /* Reduced since no title below */
+diff --git a/src/components/layout/LeftSidebar.module.css b/src/components/layout/LeftSidebar.module.css
+index e0cb2e2..8e7b230 100644
+--- a/src/components/layout/LeftSidebar.module.css
++++ b/src/components/layout/LeftSidebar.module.css
+@@ -143,7 +143,7 @@
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+-  padding: 4px 12px;
++  padding: 0px 12px; /* Removed top padding to shrink gap */
+ }
+ 
+ .noticeItem {
+@@ -197,7 +197,7 @@
+   font-weight: 800;
+   text-transform: uppercase;
+   letter-spacing: 0.1em;
+-  color: #101720;
++  color: var(--text-primary);
+   white-space: nowrap;
+ }
+ 
+@@ -210,14 +210,15 @@
+ }
+ 
+ .noticeHeader {
+-  margin-bottom: 8px !important; /* 30% reduction from original 12px */
++  margin-bottom: 1.5px !important; /* Additional 20% reduction level */
++  line-height: 1; /* Match line height for minimum extra space */
+ }
+ 
+ 
+ .sidebarDivider {
+   flex: 1;
+   height: 0;
+-  border-top: 2px solid #101720; /* Using border for precise 2px thickness */
++  border-top: 2px solid var(--divider-color); /* Using border with adaptive variable */
+ }
+ 
+ .menuList {
+@@ -233,7 +234,7 @@
+   justify-content: center;
+   gap: 8px;
+   background: transparent;
+-  border: 1px solid #e0e0e0; /* Gray border as requested */
++  border: 1px solid var(--border-light); /* Adaptive border */
+   padding: 8px 12px;
+   border-radius: 8px; /* More rectangular R value */
+   cursor: pointer;
+@@ -438,10 +439,10 @@
+   .closeBtn {
+     background: var(--bg-secondary);
+     border: none;
+-    width: 44px;
+-    height: 44px;
++    width: 34px;
++    height: 34px;
+     border-radius: 50%;
+-    font-size: 1.2rem;
++    font-size: 0.9rem;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+@@ -449,20 +450,73 @@
+     color: var(--text-primary);
+   }
+ 
+-  .iconBtn {
+-    font-size: 1.25rem; /* Reduced from 1.8rem */
+-    padding: 8px;
++  .mobileActions {
++    display: flex;
++    align-items: center;
++    gap: 12px; /* Tighten overall gap */
++    padding: 12px 16px;
++    background: var(--bg-primary);
++    border-bottom: 1px solid var(--divider-color);
++    margin-bottom: 16px;
++    justify-content: flex-start;
++  }
++
++  .actionRow {
++    display: flex;
++    align-items: center;
++    gap: 12px;
++    flex-shrink: 0;
+   }
+ 
+-  .loginBtnSmall {
+-    padding: 6px 14px; /* Reduced from 8px 20px */
+-    font-size: 0.85rem;
+-    border-radius: 30px;
++  .iconBtn {
++    background: none;
++    border: none;
++    font-size: 1.15rem;
++    padding: 4px;
++    color: var(--text-primary);
++    cursor: pointer;
+   }
+ 
+   .mobileSearch {
+-    padding: 6px 12px; /* Reduced padding */
+-    margin: 0 8px;
++    flex: 1;
++    display: flex;
++    align-items: center;
++    background: var(--bg-secondary);
++    border: 1px solid var(--border-light);
++    border-radius: 40px;
++    height: 38px;
++    padding: 0 14px;
++    min-width: 0;
++    gap: 8px;
++  }
++
++  .mobileInput {
++    flex: 1;
++    border: none;
++    background: transparent;
++    color: var(--text-primary);
++    font-size: 0.9rem;
++    padding: 0;
++    width: 100%;
++    outline: none;
++    line-height: normal; /* Center placeholder vertically */
++    display: flex;
++    align-items: center;
++  }
++
++  .mobileInput::placeholder {
++    line-height: normal;
++    display: flex;
++    align-items: center;
++  }
++
++  .mobileSearchBtn {
++    background: none;
++    border: none;
++    padding: 4px;
++    cursor: pointer;
++    font-size: 0.9rem;
++    filter: grayscale(1) invert(0);
+   }
+ 
+   .authorTooltip {
+diff --git a/src/components/layout/LeftSidebar.tsx b/src/components/layout/LeftSidebar.tsx
+index 529b777..9a26b79 100644
+--- a/src/components/layout/LeftSidebar.tsx
++++ b/src/components/layout/LeftSidebar.tsx
+@@ -167,17 +167,8 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
+         </div>
+ 
+         {/* Mobile Only: Icons at top */}
++        {/* Mobile Only: Icons to the left of Search */}
+         <div className={styles.mobileActions}>
+-          <form className={styles.mobileSearch} onSubmit={handleSearch}>
+-            <input 
+-              type="text" 
+-              placeholder="寃??.." 
+-              className={styles.mobileInput} 
+-              value={searchQuery}
+-              onChange={(e) => setSearchQuery(e.target.value)}
+-            />
+-            <button type="submit" className={styles.mobileSearchBtn}>?뵇</button>
+-          </form>
+           <div className={styles.actionRow}>
+             <button className={styles.iconBtn}>?뱞</button>
+             <button className={styles.iconBtn}>?뵒</button>
+@@ -191,6 +182,16 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
+               <Link href="/login" className={styles.loginBtnSmall} onClick={onClose}>濡쒓렇??/Link>
+             )}
+           </div>
++          <form className={styles.mobileSearch} onSubmit={handleSearch}>
++            <input 
++              type="text" 
++              placeholder="寃??.." 
++              className={styles.mobileInput} 
++              value={searchQuery}
++              onChange={(e) => setSearchQuery(e.target.value)}
++            />
++            <button type="submit" className={styles.mobileSearchBtn}>?뵇</button>
++          </form>
+         </div>
+ 
+         <div className={styles.section}>
+diff --git a/src/lib/utils/image.ts b/src/lib/utils/image.ts
+new file mode 100644
+index 0000000..1d791c6
+--- /dev/null
++++ b/src/lib/utils/image.ts
+@@ -0,0 +1,63 @@
++/**
++ * 釉뚮씪?곗???Canvas API瑜??ъ슜?섏뿬 ?대?吏瑜?由ъ궗?댁쭠 諛??뺤텞?⑸땲??
++ * @param file ?낅줈?쒗븷 ?먮낯 ?대?吏 ?뚯씪
++ * @param maxWidth 理쒕? ?덉슜 媛濡??덈퉬 (湲곕낯 1600px)
++ * @param quality ?뺤텞 ?덉쭏 (0~1 ?ъ씠, 湲곕낯 0.8)
++ * @returns ?뺤텞???대?吏 Blob
++ */
++export async function compressImage(
++  file: File, 
++  maxWidth: number = 1600, 
++  quality: number = 0.8
++): Promise<Blob> {
++  return new Promise((resolve, reject) => {
++    const reader = new FileReader();
++    reader.readAsDataURL(file);
++    
++    reader.onload = (event) => {
++      const img = new Image();
++      img.src = event.target?.result as string;
++      
++      img.onload = () => {
++        const canvas = document.createElement('canvas');
++        let width = img.width;
++        let height = img.height;
++
++        // 由ъ궗?댁쭠 怨꾩궛: maxWidth蹂대떎 ??寃쎌슦 鍮꾩쑉 ?좎??섎ŉ 異뺤냼
++        if (width > maxWidth) {
++          height = Math.round((height * maxWidth) / width);
++          width = maxWidth;
++        }
++
++        canvas.width = width;
++        canvas.height = height;
++
++        const ctx = canvas.getContext('2d');
++        if (!ctx) {
++          reject(new Error('Canvas context could not be created'));
++          return;
++        }
++
++        // ?대?吏 洹몃━湲?(由ъ궗?댁쭠 ?곸슜)
++        ctx.drawImage(img, 0, 0, width, height);
++
++        // Canvas ?댁슜??Blob?쇰줈 蹂??(?덉쭏 ?뺤텞 ?곸슜)
++        canvas.toBlob(
++          (blob) => {
++            if (blob) {
++              resolve(blob);
++            } else {
++              reject(new Error('Image compression failed'));
++            }
++          },
++          'image/jpeg', // 踰붿슜?깆쓣 ?꾪빐 jpeg濡??뺤텞 沅뚯옣
++          quality
++        );
++      };
++
++      img.onerror = (err) => reject(err);
++    };
++
++    reader.onerror = (err) => reject(err);
++  });
++}

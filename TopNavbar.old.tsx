@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useRef, useEffect, useTransition } from "react";
 import Link from "next/link";
@@ -17,7 +17,7 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [supabase] = useState(() => createClient());
+  const supabase = createClient();
   const [isPending, startTransition] = useTransition();
 
   // Close menu on click outside
@@ -44,13 +44,10 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
 
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
-      if (!session?.user) {
-        setRole("user");
-      } else {
+      if (!session?.user) setRole("user");
+      else {
         supabase.from('profiles').select('role').eq('id', session.user.id).single()
-          .then(({ data: profile }) => {
-            if (profile) setRole(profile.role);
-          });
+          .then(({ data: profile }) => setRole(profile?.role || "user"));
       }
     });
     return () => authListener.subscription.unsubscribe();
@@ -69,14 +66,14 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
     e.preventDefault();
     if (isPending) return;
     
-    if (confirm("로그아웃 하시겠습니까?")) {
+    if (confirm("濡쒓렇?꾩썐 ?섏떆寃좎뒿?덇퉴?")) {
       startTransition(async () => {
         try {
           await logout();
         } catch (err) {
           console.error("Logout error:", err);
         }
-        // 확실한 상태 반영을 위해 메인으로 강제 이동하며 페이지 새로고침
+        // ?뺤떎???곹깭 諛섏쁺???꾪빐 硫붿씤?쇰줈 媛뺤젣 ?대룞?섎ŉ ?섏씠吏 ?덈줈怨좎묠
         window.location.href = "/";
       });
     }
@@ -87,7 +84,7 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
       <div className={styles.navContent}>
         {/* Left: Hamburger + Logo */}
         <div className={styles.leftGroup}>
-          <button className={styles.hamburgerBtn} onClick={onMobileToggle}>≡</button>
+          <button className={styles.hamburgerBtn} onClick={onMobileToggle}>??/button>
           <Link href="/" className={styles.logoText}>
             <span className={styles.logoSub}>WoogaWooga</span>
           </Link>
@@ -98,7 +95,7 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
           <form onSubmit={handleSearch} className={styles.searchBar}>
             <input
               type="text"
-              placeholder="게시물 검색..."
+              placeholder="寃뚯떆臾?寃??.."
               className={styles.searchInput}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -112,15 +109,15 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
           </form>
 
           <div className={styles.iconGroup}>
-            <button className={styles.iconBtn}>📄</button>
-            <button className={styles.iconBtn}>🔔</button>
+            <button className={styles.iconBtn}>?뱞</button>
+            <button className={styles.iconBtn}>?뵒</button>
           </div>
 
           <div className={styles.authWrapper}>
             {user ? (
               <div className={styles.authInfo}>
                 {(role === 'admin' || role === 'editor') && (
-                  <Link href="/write" className={styles.writeButton}>✍️ 쓰기</Link>
+                  <Link href="/write" className={styles.writeButton}>?랃툘 ?곌린</Link>
                 )}
                 <div className={styles.dropdownContainer} ref={dropdownRef}>
                   <button 
@@ -130,7 +127,7 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
                     disabled={isPending}
                   >
                     <div className={styles.userAvatar}>
-                      {isPending ? "..." : (user.email?.charAt(0).toUpperCase() || "👦")}
+                      {isPending ? "..." : (user.email?.charAt(0).toUpperCase() || "?뫂")}
                     </div>
                   </button>
                   
@@ -141,7 +138,7 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
                         <span className={styles.userRole}>{role}</span>
                       </div>
                       <Link href="/settings" className={styles.menuItem} onClick={() => setIsProfileMenuOpen(false)}>
-                        ⚙️ 설정 및 프로필 수정
+                        ?숋툘 ?ㅼ젙 諛??꾨줈???섏젙
                       </Link>
                       <form onSubmit={handleLogout}>
                         <button 
@@ -149,7 +146,7 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
                           className={styles.menuItemLogout} 
                           disabled={isPending}
                         >
-                          {isPending ? "⏳ 로그아웃 중..." : "👋 로그아웃"}
+                          {isPending ? "??濡쒓렇?꾩썐 以?.." : "?몝 濡쒓렇?꾩썐"}
                         </button>
                       </form>
                     </div>

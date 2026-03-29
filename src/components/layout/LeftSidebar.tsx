@@ -47,23 +47,36 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
     
     // Fetch live writers from DB
     const fetchLiveAuthors = async () => {
-      const supabase = createClient();
+      // Fetch distinct authors who have at least one post
       const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .or('role.eq.writer,role.eq.admin');
+        .from('posts')
+        .select('author:profiles!author_id(*)')
+        .not('author_id', 'is', null);
       
       if (data && !error) {
-        const mapped = data.map(p => ({
-          id: p.id,
-          name: p.display_name || "익명 작가",
-          avatar: p.avatar_url || "👤",
-          color: "#0a467d",
-          description: {
-            bio: p.bio || "활동 중인 작가입니다.",
-            bullets: p.description_bullets || ["신규 작가"]
-          }
-        }));
+        // Filter unique authors and those with appropriate roles
+        const uniqueAuthorIds = new Set();
+        const mapped = data
+          .map((p: any) => p.author)
+          .filter((p: any) => {
+            if (!p || uniqueAuthorIds.has(p.id)) return false;
+            const hasRole = ['admin', 'editor', 'writer'].includes(p.role);
+            if (hasRole) {
+              uniqueAuthorIds.add(p.id);
+              return true;
+            }
+            return false;
+          })
+          .map((p: any) => ({
+            id: p.id,
+            name: p.display_name || "익명 작가",
+            avatar: p.avatar_url || "👤",
+            color: "#0a467d",
+            description: {
+              bio: p.bio || "활동 중인 작가입니다.",
+              bullets: p.description_bullets || ["신규 작가"]
+            }
+          }));
         setLiveAuthors(mapped);
       }
     };

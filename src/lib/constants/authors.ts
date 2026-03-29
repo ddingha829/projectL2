@@ -55,18 +55,4 @@ export const AUTHORS = [
       ]
     }
   },
-  { 
-    id: "donghyun", 
-    name: "동현", 
-    color: "#B833FF", 
-    avatar: "/avatars/donghyun.png",
-    description: {
-      bio: "(사소한 것에서 의미를 찾는 20대 초반, 남, 강원도 거주)",
-      bullets: [
-        "인디 밴드 음악과 빈티지 가구 쇼핑을 즐기는 힙스터",
-        "피자 테두리를 제일 좋아하는 독특한 취향의 소유자",
-        "자연 속에서 멍하니 하늘을 보며 영감을 얻는 예술가 지망생"
-      ]
-    }
-  },
 ];

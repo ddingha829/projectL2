@@ -33,7 +33,14 @@ export default function HomeContent({
   const searchFilter = searchParams.get("search");
   
   const isViewMore = searchParams.get("view") === "all";
-  const authorData = AUTHORS.find(a => a.id === authorFilter);
+  
+  // Find author data from static list OR from the actual posts (for live DB users)
+  const staticAuthor = AUTHORS.find(a => a.id === authorFilter);
+  const liveAuthor = !staticAuthor && authorFilter 
+    ? allPosts.find(p => p.author.id === authorFilter)?.author 
+    : null;
+    
+  const authorData = staticAuthor || liveAuthor;
 
   const [showIntro, setShowIntro] = useState(false);
   const [heroIndex, setHeroIndex] = useState(0);
@@ -238,10 +245,7 @@ export default function HomeContent({
                     </h2>
                   </div>
                   <p className={styles.profileBioText}>
-                    {authorData.description.bio
-                      .replace(/[()]/g, '')
-                      .replace(/, 남,/g, ', 남성,')
-                      .replace(/, 여,/g, ', 여성,')}
+                    {authorData.description.bio}
                   </p>
                 </div>
 
@@ -249,7 +253,7 @@ export default function HomeContent({
 
                 <div className={styles.profileDetail}>
                   <ul className={styles.profileBullets}>
-                    {authorData.description.bullets.map((bullet, idx) => (
+                    {authorData.description.bullets.map((bullet: string, idx: number) => (
                       <li key={idx} className={styles.profileBullet}>
                         <span className={styles.bulletDot} style={{ backgroundColor: authorData.color }}></span>
                         {bullet}

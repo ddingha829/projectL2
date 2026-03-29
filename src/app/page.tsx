@@ -10,7 +10,6 @@ export const MOCK_AUTHORS = {
   younghee: { id: "younghee", name: "영희", color: "#33CCFF", avatar: "👩" },
   minsoo: { id: "minsoo", name: "민수", color: "#33FF99", avatar: "👦" },
   jieun: { id: "jieun", name: "지은", color: "#FF9933", avatar: "👧" },
-  donghyun: { id: "donghyun", name: "동현", color: "#B833FF", avatar: "👱" },
 };
 
 export const MOCK_POSTS = [
