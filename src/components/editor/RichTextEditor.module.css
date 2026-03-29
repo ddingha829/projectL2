@@ -3,75 +3,77 @@
   border-radius: 12px;
   overflow: hidden;
   background: white;
-  transition: box-shadow 0.2s;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-}
-
-.editorContainer:focus-within {
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  border-color: var(--primary);
+  box-shadow: 0 4px 6px -1px var(--shadow-sm);
 }
 
 .toolbar {
-  padding: 10px 15px;
+  padding: 12px 18px;
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   background: #fdfdfd;
   flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .fontSelect {
-  padding: 6px 10px;
-  border-radius: 6px;
+  padding: 8px 12px;
+  border-radius: 8px;
   border: 1px solid #ddd;
   background: white;
   font-size: 0.85rem;
-  color: var(--text-main);
+  color: #333;
   cursor: pointer;
   outline: none;
-  min-width: 120px;
-}
-
-.fontSelect:hover {
-  border-color: #bbb;
+  min-width: 140px;
 }
 
 .divider {
   width: 1px;
-  height: 20px;
+  height: 24px;
   background: #eee;
-  margin: 0 4px;
+  margin: 0 2px;
 }
 
 .toolbar button {
   padding: 8px 12px;
   background: transparent;
   border: 1px solid transparent;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s;
-  font-size: 0.95rem;
-  color: #555;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  transition: all 0.25s ease;
+  font-size: 1rem;
+  color: #444;
 }
 
 .toolbar button:hover {
-  background: #f2f2f2;
+  background: #f4f4ff;
+  color: var(--primary);
+  border-color: #e0e0ff;
 }
 
 .toolbar button.active {
   background: #efefff;
   color: var(--primary);
   border-color: #e0e0ff;
+  font-weight: 600;
+}
+
+.colorPicker {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid #eee;
+  border-radius: 50%;
+  cursor: pointer;
 }
 
 .content {
   background: #fff;
-  min-height: 550px;
+  min-height: 600px;
 }
 
 .loading {
@@ -82,4 +84,5 @@
   color: var(--text-muted);
   background: #f9f9f9;
   border-radius: 12px;
+  font-weight: 500;
 }
