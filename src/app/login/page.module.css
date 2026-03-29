@@ -41,6 +41,18 @@
   border: 1px solid rgba(255, 51, 51, 0.2);
 }
 
+.successAlert {
+  background-color: rgba(52, 199, 89, 0.1);
+  color: #34c759;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+  text-align: center;
+  border: 1px solid rgba(52, 199, 89, 0.2);
+  line-height: 1.5;
+}
+
 .form {
   display: flex;
   flex-direction: column;

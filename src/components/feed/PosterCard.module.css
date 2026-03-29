@@ -137,7 +137,7 @@
   left: 0px;
   right: 0px;
   padding: 48px 16px 14px; /* Increased top padding for smooth gradient */
-  background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.5) 25%, rgba(0, 0, 0, 0.95) 100%);
+  background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.6) 25%, rgba(0, 0, 0, 1) 100%);
   z-index: 3;
 }
 

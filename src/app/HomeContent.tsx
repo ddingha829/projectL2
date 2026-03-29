@@ -53,14 +53,14 @@ export default function HomeContent({
   // ... Rest stays same, but I'll insert the Profile JSX in the return
 
   useEffect(() => {
-    if (isInitialVisit) {
+    if (isInitialVisit && !isMobile) {
       const visited = sessionStorage.getItem("introVisited");
       if (!visited) {
         // Wrap in microtask to avoid "setState in effect" warning if necessary
         Promise.resolve().then(() => setShowIntro(true));
       }
     }
-  }, [isInitialVisit]);
+  }, [isInitialVisit, isMobile]);
 
   // Pagination reset is now handled by the 'key' prop on HomeContent in page.tsx
 
@@ -97,7 +97,7 @@ export default function HomeContent({
 
   // Grid posts logic
   const showFullGrid = isFiltered || isViewMore || searchParams.get("view") === "all";
-  const paginatedData = isViewMore ? otherPosts : filteredPosts;
+  const paginatedData = filteredPosts;
   const totalPages = Math.ceil(paginatedData.length / POSTS_PER_PAGE);
 
   // Selection logic: Desktop (Pagination) vs Mobile (Infinite)
@@ -106,7 +106,7 @@ export default function HomeContent({
         ? paginatedData.slice(0, mobileVisibleCount) 
         : paginatedData.slice(currentPage * POSTS_PER_PAGE, (currentPage + 1) * POSTS_PER_PAGE))
     : (isMobile
-        ? otherPosts.slice(0, mobileVisibleCount)
+        ? otherPosts.slice(0, 4)
         : otherPosts.slice(0, 4));
 
   // Infinite Scroll Trigger
@@ -191,7 +191,7 @@ export default function HomeContent({
                 <h3 className={styles.sectionTitle}>다른 리뷰</h3>
                 <div className={styles.divider}></div>
                 
-                {otherPosts.length > 4 && (
+                {filteredPosts.length > 3 && (
                   <button className={styles.viewMoreBtnInline} onClick={() => router.push('/?view=all')}>
                     전체보기 <span className={styles.btnIconInline}>+</span>
                   </button>
@@ -203,8 +203,8 @@ export default function HomeContent({
                 ))}
               </div>
               
-              {/* Mobile Sentinel */}
-              {isMobile && displayPosts.length < (isViewMore ? otherPosts.length : totalPages * POSTS_PER_PAGE) && (
+              {/* Mobile Sentinel (Hidden on Main Page as requested) */}
+              {isMobile && showFullGrid && displayPosts.length < (isViewMore ? otherPosts.length : totalPages * POSTS_PER_PAGE) && (
                 <div id="mobile-scroll-sentinel" className={styles.sentinel}>
                   <div className={styles.shimmer}>Loading more...</div>
                 </div>

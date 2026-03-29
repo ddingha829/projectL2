@@ -107,6 +107,8 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
         )}
         
         <div className={styles.content} dangerouslySetInnerHTML={{ __html: post.content }} />
+        
+        <div className={styles.separator} />
 
         <PostInteractions 
           postId={actualId} 

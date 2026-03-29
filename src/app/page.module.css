@@ -78,6 +78,13 @@
 }
 
 @media (max-width: 768px) {
+  .container,
+  .gridListFade,
+  .authorProfileCard,
+  .feedAnimator {
+    animation: none !important;
+  }
+  
   .desktopOnly {
     display: none;
   }
@@ -142,9 +149,13 @@
 
 @media (max-width: 768px) {
   .viewMoreBtnInline {
-    display: none !important;
+    font-size: 0.75rem;
+    padding-left: 4px;
+    gap: 4px;
   }
 }
+
+/* Removed display: none for mobile as requested */
 
 .btnIconInline {
   font-size: 1.1rem;
@@ -443,13 +454,13 @@
     display: flex;
     overflow-x: auto;
     overflow-y: hidden;
-    gap: 8px; /* 50% reduction */
-    padding: 10px 4px 4px 4px; /* Further reduced from 6px */
-    scrollbar-width: none; /* Hide scrollbar for clean look */
+    gap: 4px; /* Further reduced from 8px to 4px */
+    padding: 8px 4px 4px 4px; 
+    scrollbar-width: none; 
     -ms-overflow-style: none;
     scroll-snap-type: x mandatory;
     width: 100vw;
-    margin-left: -16px; /* Offset parent padding to touch edges */
+    margin-left: -16px; 
     padding-left: 16px;
     padding-right: 16px;
   }
@@ -459,9 +470,9 @@
   }
 
   .gridList > * {
-    flex: 0 0 38vw; /* Shows approx 2.5 items (38% * 2.5 = 95%) */
+    flex: 0 0 38vw; 
     scroll-snap-align: start;
-    min-width: 140px;
+    min-width: 130px; /* Reduced from 140px */
   }
 
   /* When filtered or in full view, use vertical grid instead of swiping */

@@ -5,8 +5,10 @@ import Link from 'next/link'
 export default function LoginPage({
   searchParams,
 }: {
-  searchParams: { error?: string }
+  searchParams: { error?: string, message?: string }
 }) {
+  const isSignupSuccess = searchParams.message === 'signup_success'
+
   return (
     <div className={styles.container}>
       <div className={styles.card}>
@@ -16,6 +18,13 @@ export default function LoginPage({
         {searchParams.error && (
           <div className={styles.errorAlert}>{searchParams.error}</div>
         )}
+
+        {isSignupSuccess && (
+          <div className={styles.successAlert}>
+            회원가입이 완료되었습니다. 작성하신 메일로 인증 메일이 발송되었으니 확인해 주시기 바랍니다.
+          </div>
+        )}
+
 
         <form className={styles.form}>
           <div className={styles.inputGroup}>
