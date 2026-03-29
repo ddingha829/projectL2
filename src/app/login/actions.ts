@@ -16,7 +16,7 @@ export async function login(formData: FormData) {
   const { error } = await supabase.auth.signInWithPassword(data)
 
   if (error) {
-    redirect('/login?error=Invalid login credentials')
+    redirect('/login?error=' + encodeURIComponent('이메일 또는 비밀번호가 일치하지 않습니다.'))
   }
 
   revalidatePath('/', 'layout')
@@ -54,4 +54,24 @@ export async function logout() {
   await supabase.auth.signOut()
   revalidatePath('/', 'layout')
   redirect('/')
+}
+
+export async function resetPassword(formData: FormData) {
+  const supabase = await createClient()
+  const origin = (await headers()).get('origin')
+  const email = formData.get('email') as string
+
+  if (!email) {
+    redirect('/login?error=' + encodeURIComponent('비밀번호 재설정을 위해 위에 이메일을 먼저 입력해 주세요.'))
+  }
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${origin}/auth/callback?type=recovery`,
+  })
+
+  if (error) {
+    redirect('/login?error=' + encodeURIComponent('비밀번호 재설정 이메일 발송에 실패했습니다: ' + error.message))
+  }
+
+  redirect('/login?message=reset_sent')
 }
