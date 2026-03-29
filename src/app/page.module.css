@@ -434,69 +434,40 @@
   .gridSection {
     margin-top: 40px;
   }
-  .gridList {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px; /* 50% reduction */
-  }
 
   .headerControls {
     display: none !important; /* Hide pagination on mobile as requested */
   }
-}
 
-@media (max-width: 768px) {
   .heroTrack {
     height: 280px !important;
   }
   
   .gridList {
-    display: flex;
-    overflow-x: auto;
-    overflow-y: hidden;
-    gap: 4px; /* Further reduced from 8px to 4px */
-    padding: 8px 4px 4px 4px; 
-    scrollbar-width: none; 
-    -ms-overflow-style: none;
-    scroll-snap-type: x mandatory;
-    width: 100vw;
-    margin-left: -16px; 
-    padding-left: 16px;
-    padding-right: 16px;
-  }
-  
-  .gridList::-webkit-scrollbar {
-    display: none;
-  }
-
-  .gridList > * {
-    flex: 0 0 38vw; 
-    scroll-snap-align: start;
-    min-width: 130px; /* Reduced from 140px */
-  }
-
-  /* When filtered or in full view, use vertical grid instead of swiping */
-  .feedAnimator .gridList {
-    display: grid; 
+    display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 4px; /* Drastically reduced (originally 20-30px, then 10px) to match 80% reduction request */
+    gap: 10px; /* Consistent 10px gap for clean magazine look */
     padding: 10px 16px 8px 16px; 
     width: 100%;
     margin-left: 0;
     overflow-x: hidden;
   }
-  
-  .feedAnimator .gridList > * {
+
+  .gridList > * {
     width: 100%;
     flex: none;
   }
-}
 
-@media (max-width: 480px) {
-  .gridList {
-    grid-template-columns: 1fr;
-    gap: 24px;
+  /* Specific override for feed animator results if needed, keeping 10px gap */
+  .feedAnimator .gridList {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    width: 100%;
   }
 }
+
+/* Removed redundant 1-column mobile breakpoint to maintain 2-column magazine grid */
 
 .emptyState {
   display: flex;
