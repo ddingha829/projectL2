@@ -1,15 +1,16 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { createPost } from "./actions";
 import styles from "./page.module.css";
 import { useFormStatus } from "react-dom";
 import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/client";
 
+// SSR을 끄고 클라이언트에서만 에디터를 로드함 (런타임 에러 방지용)
 const RichTextEditor = dynamic(() => import("@/components/editor/RichTextEditor"), { 
   ssr: false, 
-  loading: () => <div style={{ height: '600px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border)', borderRadius: '12px' }}>에디터 로딩중...</div> 
+  loading: () => <div style={{ height: '500px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-hover)', borderRadius: '12px' }}>에디터 로딩중...</div> 
 });
 
 function SubmitButton({ isUploading }: { isUploading: boolean }) {
@@ -21,12 +22,18 @@ function SubmitButton({ isUploading }: { isUploading: boolean }) {
   );
 }
 
-export default function WritePostForm() {
+export default function WritePostForm({ role }: { role: string }) {
   const [content, setContent] = useState("<p>리뷰를 작성해 보세요!</p>");
   const [mainImageUrl, setMainImageUrl] = useState("");
   const [isUploading, setIsUploading] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const supabase = createClient();
+
+  // hydration mismatch 방지
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleMainImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -56,6 +63,8 @@ export default function WritePostForm() {
     }
   };
 
+  if (!isClient) return <div className={styles.formContainer}>잠시만 기다려 주세요...</div>;
+
   return (
     <form action={createPost} className={styles.formContainer}>
       <div className={styles.inputGroup}>
@@ -65,6 +74,8 @@ export default function WritePostForm() {
           <option value="book">책 (Book)</option>
           <option value="game">게임 (Game)</option>
           <option value="restaurant">맛집 (Restaurant)</option>
+          <option value="travel">여행 (Travel)</option>
+          <option value="exhibition">전시회 (Exhibition)</option>
           <option value="other">기타 (Other)</option>
         </select>
       </div>
@@ -102,10 +113,13 @@ export default function WritePostForm() {
         <input type="hidden" name="content" value={content} />
       </div>
 
-      <div className={styles.checkboxGroup}>
-        <input type="checkbox" id="isEditorsPick" name="isEditorsPick" />
-        <label htmlFor="isEditorsPick" className={styles.checkboxLabel}>🏆 이 게시물을 에디터의 추천(Editor's Pick)으로 지정합니다.</label>
-      </div>
+      {/* 관리자(admin)일 때만 에디터 추천 노출 */}
+      {role === 'admin' && (
+        <div className={styles.checkboxGroup}>
+          <input type="checkbox" id="isEditorsPick" name="isEditorsPick" />
+          <label htmlFor="isEditorsPick" className={styles.checkboxLabel}>🏆 이 게시물을 에디터의 추천(Editor's Pick)으로 지정합니다.</label>
+        </div>
+      )}
 
       <SubmitButton isUploading={isUploading} />
     </form>
