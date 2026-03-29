@@ -1,0 +1,235 @@
+.adminContainer {
+  min-height: 100vh;
+  background-color: #03050a;
+  color: #fff;
+  padding: 40px;
+  font-family: var(--font-outfit), sans-serif;
+}
+
+.glassCard {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #fff, #66b5ff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.tabs {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.tabBtn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #aaa;
+  padding: 12px 24px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 600;
+}
+
+.tabBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.activeTab {
+  background: #1a77ce !important;
+  color: #fff !important;
+  border-color: #1a77ce !important;
+  box-shadow: 0 4px 15px rgba(26, 119, 206, 0.3);
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  margin-top: 20px;
+}
+
+.adminTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+  font-size: 0.95rem;
+}
+
+.adminTable th {
+  text-align: left;
+  padding: 15px;
+  color: #666;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.1rem;
+}
+
+.adminTable tr {
+  background: rgba(255, 255, 255, 0.02);
+  transition: transform 0.2s, background 0.2s;
+}
+
+.adminTable tr:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: scale(1.002);
+}
+
+.adminTable td {
+  padding: 20px 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.adminTable td:first-child {
+  border-left: 1px solid rgba(255, 255, 255, 0.03);
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+
+.adminTable td:last-child {
+  border-right: 1px solid rgba(255, 255, 255, 0.03);
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+.badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.badgeEditor { background: rgba(51, 204, 255, 0.15); color: #33ccff; }
+.badgeAdmin { background: rgba(255, 51, 51, 0.15); color: #ff3333; }
+.badgeUser { background: rgba(255, 255, 255, 0.1); color: #ccc; }
+
+.actionBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  color: #888;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.actionBtn:hover {
+  color: #fff;
+}
+
+.deleteBtn:hover {
+  color: #ff4d4d;
+}
+
+.editBtn:hover {
+  color: #4da6ff;
+}
+
+.categoryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.categoryCard {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 20px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.authorAvatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 12px;
+}
+
+.noPermission {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  background-color: #03050a;
+  color: #fff;
+}
+
+.backBtn {
+  background: #1a77ce;
+  border: none;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.postTitle {
+  font-weight: 600;
+  color: #eee;
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.emptyState {
+  padding: 60px;
+  text-align: center;
+  color: #666;
+}
+
+.searchBar {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.searchInput {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 12px 12px 12px 40px;
+  border-radius: 12px;
+  color: #fff;
+  font-family: inherit;
+  outline: none;
+}
+
+.searchInput:focus {
+  border-color: #1a77ce;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+}
