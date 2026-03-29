@@ -110,7 +110,7 @@ export default function AdminDashboard({ initialPosts, initialProfiles }: AdminD
                     <div className={styles.postTitle} title={post.title}>{post.title}</div>
                   </td>
                   <td>
-                    <span className={styles.badge} style={{ background: 'rgba(255, 255, 255, 0.05)', color: '#fff' }}>
+                    <span className={styles.badge} style={{ background: 'var(--bg-tertiary)', color: 'var(--text-primary)' }}>
                       {post.category}
                     </span>
                   </td>

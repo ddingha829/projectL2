@@ -32,27 +32,29 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
   }, []);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      if (data.user) {
-        setUser(data.user);
-        supabase.from('profiles').select('role').eq('id', data.user.id).single()
-          .then(({ data: profile }) => {
-            if (profile) setRole(profile.role);
-          });
+    // Immediate check
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUser(user);
+        const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+        if (profile) setRole(profile.role);
+      }
+    };
+    checkUser();
+
+    // Listener for subsequent changes
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
+      const newUser = session?.user ?? null;
+      setUser(newUser);
+      if (newUser) {
+        const { data: profile } = await supabase.from('profiles').select('role').eq('id', newUser.id).single();
+        if (profile) setRole(profile.role);
+      } else {
+        setRole("user");
       }
     });
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user ?? null);
-      if (!session?.user) {
-        setRole("user");
-      } else {
-        supabase.from('profiles').select('role').eq('id', session.user.id).single()
-          .then(({ data: profile }) => {
-            if (profile) setRole(profile.role);
-          });
-      }
-    });
     return () => authListener.subscription.unsubscribe();
   }, [supabase]);
 

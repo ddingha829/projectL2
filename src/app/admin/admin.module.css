@@ -1,7 +1,7 @@
 .adminContainer {
   min-height: 100vh;
-  background-color: #03050a;
-  color: #fff;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
   padding: 40px;
   font-family: var(--font-outfit), sans-serif;
 }
