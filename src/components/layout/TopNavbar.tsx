@@ -149,6 +149,11 @@ export default function TopNavbar({ onMobileToggle }: { onMobileToggle?: () => v
                       <Link href="/settings" className={styles.menuItem} onClick={() => setIsProfileMenuOpen(false)}>
                         ⚙️ 설정 및 프로필 수정
                       </Link>
+                      {role === 'admin' && (
+                        <Link href="/admin" className={styles.menuItem} onClick={() => setIsProfileMenuOpen(false)}>
+                          🛠️ 관리자 대시보드
+                        </Link>
+                      )}
                       <form onSubmit={handleLogout}>
                         <button 
                           type="submit" 
