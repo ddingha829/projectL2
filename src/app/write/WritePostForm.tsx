@@ -28,7 +28,7 @@ export default function WritePostForm({ role }: { role: string }) {
   const searchParams = useSearchParams();
   const error = searchParams.get('error');
 
-  const [content, setContent] = useState("<p>리뷰를 작성해 보세요!</p>");
+  const [content, setContent] = useState("");
   const [mainImageUrl, setMainImageUrl] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [isClient, setIsClient] = useState(false);
@@ -141,7 +141,11 @@ export default function WritePostForm({ role }: { role: string }) {
       {/* 수리된 에디터 컴포넌트 복구 */}
       <div className={`${styles.inputGroup} ${styles.editorGroup}`}>
         <label>내용</label>
-        <RichTextEditor content={content} onChange={setContent} />
+        <RichTextEditor 
+          content={content} 
+          onChange={setContent} 
+          placeholder="리뷰를 작성해 보세요!"
+        />
         <input type="hidden" name="content" value={content} />
       </div>
 

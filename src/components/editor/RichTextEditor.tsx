@@ -26,9 +26,10 @@ const ReactQuill = dynamic(async () => {
 interface RichTextEditorProps {
     content: string;
     onChange: (val: string) => void;
+    placeholder?: string;
 }
 
-export default function RichTextEditor({ content, onChange }: RichTextEditorProps) {
+export default function RichTextEditor({ content, onChange, placeholder }: RichTextEditorProps) {
     const [isClient, setIsClient] = useState(false);
     const quillRef = useRef<any>(null);
     const supabase = createClient();
@@ -41,54 +42,62 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
         const input = document.createElement("input");
         input.setAttribute("type", "file");
         input.setAttribute("accept", "image/*");
+        input.setAttribute("multiple", ""); // 다중 선택 허용
         input.click();
 
         input.onchange = async () => {
-            const file = input.files ? input.files[0] : null;
-            if (!file) return;
+            const files = input.files ? Array.from(input.files) : [];
+            if (files.length === 0) return;
 
-            try {
-                let uploadBlob: Blob | File = file;
-                let fileExt = 'jpg';
-                let contentType = 'image/jpeg';
+            const quill = quillRef.current?.getEditor();
+            let range = quill?.getSelection();
+            
+            // 현재 커서 위치가 없으면 마지막으로 설정
+            let currentIndex = range ? range.index : quill.getLength();
 
-                // GIF 특수 처리: 압축하지 않되 1MB 제한
-                if (file.type === 'image/gif') {
-                    if (file.size > 1024 * 1024) {
-                        alert('GIF 파일은 애니메이션 유지를 위해 압축하지 않으므로, 1MB 이하만 업로드 가능합니다.');
-                        return;
+            for (const file of files) {
+                try {
+                    let uploadBlob: Blob | File = file;
+                    let fileExt = 'jpg';
+                    let contentType = 'image/jpeg';
+
+                    // GIF 특수 처리: 압축하지 않되 1MB 제한
+                    if (file.type === 'image/gif') {
+                        if (file.size > 1024 * 1024) {
+                            alert(`'${file.name}' GIF 파일은 1MB 이하만 업로드 가능합니다.`);
+                            continue;
+                        }
+                        uploadBlob = file;
+                        fileExt = 'gif';
+                        contentType = 'image/gif';
+                    } else {
+                        // 일반 이미지는 기존처럼 압축 진행
+                        uploadBlob = await compressImage(file);
+                        fileExt = 'jpg';
+                        contentType = 'image/jpeg';
                     }
-                    uploadBlob = file;
-                    fileExt = 'gif';
-                    contentType = 'image/gif';
-                } else {
-                    // 일반 이미지는 기존처럼 압축 진행
-                    uploadBlob = await compressImage(file);
-                    fileExt = 'jpg';
-                    contentType = 'image/jpeg';
+
+                    const fileName = `editor/${Math.random().toString(36).substring(2, 10)}_${Date.now()}.${fileExt}`;
+                    
+                    const { error } = await supabase.storage
+                        .from('post-images')
+                        .upload(fileName, uploadBlob, { contentType });
+
+                    if (error) throw error;
+
+                    const { data: { publicUrl } } = supabase.storage
+                        .from('post-images')
+                        .getPublicUrl(fileName);
+
+                    if (quill) {
+                        quill.insertEmbed(currentIndex, "image", publicUrl);
+                        currentIndex++; // 다음 이미지 위치를 한 칸 뒤로
+                        quill.setSelection(currentIndex);
+                    }
+                } catch (err) {
+                    console.error(`Upload failed for ${file.name}:`, err);
+                    alert(`'${file.name}' 이미지 업로드에 실패했습니다.`);
                 }
-
-                const fileName = `editor/${Math.random().toString(36).substring(2, 10)}_${Date.now()}.${fileExt}`;
-                
-                const { error } = await supabase.storage
-                    .from('post-images')
-                    .upload(fileName, uploadBlob, { contentType });
-
-                if (error) throw error;
-
-                const { data: { publicUrl } } = supabase.storage
-                    .from('post-images')
-                    .getPublicUrl(fileName);
-
-                const quill = quillRef.current?.getEditor();
-                const range = quill?.getSelection();
-                if (quill && range) {
-                    quill.insertEmbed(range.index, "image", publicUrl);
-                    quill.setSelection(range.index + 1);
-                }
-            } catch (err) {
-                console.error("Quill image upload failed:", err);
-                alert("이미지 업로드에 실패했습니다.");
             }
         };
     };
@@ -149,6 +158,7 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
                 onChange={onChange}
                 modules={modules}
                 formats={formats}
+                placeholder={placeholder}
                 className={styles.quillEditor}
             />
             
