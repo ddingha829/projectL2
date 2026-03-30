@@ -9,9 +9,12 @@ interface PosterCardProps {
   imageUrl: string;
   isEditorsPick?: boolean;
   displayDate?: string;
+  likes?: number;
 }
 
-export default function PosterCard({ id, category, title, author, imageUrl, isEditorsPick, displayDate }: PosterCardProps) {
+export default function PosterCard({ 
+  id, category, title, author, imageUrl, isEditorsPick, displayDate, likes = 0 
+}: PosterCardProps) {
   return (
     <article className={styles.card}>
       <Link href={`/post/${id}`} className={styles.link}>
@@ -29,12 +32,14 @@ export default function PosterCard({ id, category, title, author, imageUrl, isEd
 
             <div className={styles.titleOverlay}>
               <h3 className={styles.title}>{title}</h3>
-            </div>
-
-            {/* Date and Author: absolute bottom-right */}
-            <div className={styles.metaInfo}>
-              <span className={styles.date}>{displayDate}</span>
-              <span className={styles.author}>{author.name}</span>
+              {/* Metadata split: Likes on left, Date/Author on right */}
+              <div className={styles.metaInfo}>
+                <span className={styles.likes}>👍 {likes}</span>
+                <div className={styles.metaRight}>
+                  <span className={styles.date}>{displayDate}</span>
+                  <span className={styles.author}>{author.name}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

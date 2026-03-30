@@ -33,6 +33,7 @@ export default function HomeContent({
   const searchFilter = searchParams.get("search");
   
   const isViewMore = searchParams.get("view") === "all";
+  const isFiltered = displayTitle !== "Home";
   
   // Find author data from static list OR from the actual posts (for live DB users)
   const staticAuthor = AUTHORS.find(a => a.id === authorFilter);
@@ -49,6 +50,17 @@ export default function HomeContent({
   const POSTS_PER_PAGE = 8;
   const [mobileVisibleCount, setMobileVisibleCount] = useState(4);
   const [isMobile, setIsMobile] = useState(false);
+  const [mobileGridCols, setMobileGridCols] = useState(2);
+
+  // UseEffect to set default cols based on view mode (Main: 2, ViewAll: 3)
+  useEffect(() => {
+    // If not in View All mode, force 2 columns
+    if (!isViewMore && !isFiltered) {
+      setMobileGridCols(2);
+    } else {
+      setMobileGridCols(isViewMore ? 3 : 2);
+    }
+  }, [isViewMore, isFiltered]);
 
   // Detect mobile environment (Client-side)
   useEffect(() => {
@@ -83,6 +95,8 @@ export default function HomeContent({
     sessionStorage.setItem("introVisited", "true");
   };
 
+
+
   const nextHero = (e: React.MouseEvent) => {
     e.preventDefault();
     setSlideDir('next');
@@ -95,8 +109,15 @@ export default function HomeContent({
     setHeroIndex((prev) => (prev - 1 + heroPosts.length) % heroPosts.length);
   };
 
-  // If we have filters, just show the grid with the title
-  const isFiltered = displayTitle !== "Home";
+  const changeGridCols = (delta: number) => {
+    setMobileGridCols(prev => {
+      const next = prev + delta;
+      if (next >= 1 && next <= 3) return next;
+      return prev;
+    });
+  };
+
+
 
   // Unified Filtering for the grid
   let filteredPosts = allPosts;
@@ -212,6 +233,23 @@ export default function HomeContent({
               <header className={styles.sectionHeader}>
                 <h3 className={styles.sectionTitle}>다른 리뷰</h3>
                 <div className={styles.divider}></div>
+
+                {/* 모바일 그리드 조절기 (전체보기 혹은 필터링 결과에서만 노출) */}
+                {isMobile && (isViewMore || isFiltered) && (
+                  <div className={styles.mobileGridControls}>
+                    <button 
+                      className={styles.gridBtn} 
+                      onClick={(e) => { e.preventDefault(); changeGridCols(-1); }}
+                      disabled={mobileGridCols <= 1}
+                    >－</button>
+                    <span className={styles.gridVal}>{mobileGridCols}</span>
+                    <button 
+                      className={styles.gridBtn} 
+                      onClick={(e) => { e.preventDefault(); changeGridCols(1); }}
+                      disabled={mobileGridCols >= 3}
+                    >＋</button>
+                  </div>
+                )}
                 
                 {filteredPosts.length > 3 && (
                   <button className={styles.viewMoreBtnInline} onClick={() => router.push('/?view=all')}>
@@ -219,7 +257,10 @@ export default function HomeContent({
                   </button>
                 )}
               </header>
-              <div className={styles.gridList}>
+              <div 
+                className={styles.gridList}
+                style={{ '--mobile-cols': mobileGridCols } as React.CSSProperties}
+              >
                 {displayPosts.map(post => (
                   <PosterCard key={post.id} {...post} />
                 ))}
@@ -307,6 +348,23 @@ export default function HomeContent({
 
               <div className={styles.divider}></div>
 
+              {/* 모바일 그리드 조절기 */}
+              {isMobile && (
+                <div className={styles.mobileGridControls}>
+                  <button 
+                    className={styles.gridBtn} 
+                    onClick={(e) => { e.preventDefault(); changeGridCols(-1); }}
+                    disabled={mobileGridCols <= 1}
+                  >－</button>
+                  <span className={styles.gridVal}>{mobileGridCols}</span>
+                  <button 
+                    className={styles.gridBtn} 
+                    onClick={(e) => { e.preventDefault(); changeGridCols(1); }}
+                    disabled={mobileGridCols >= 3}
+                  >＋</button>
+                </div>
+              )}
+
               {/* Inline Controls (Pagination) */}
               <div className={styles.headerControls}>
                 {totalPages >= 1 && (
@@ -338,7 +396,10 @@ export default function HomeContent({
             </header>
 
             <div key={isMobile ? 'mobile-grid' : `grid-${currentPage}-${animationKey}`} className={styles.gridListFade}>
-              <div className={styles.gridList}>
+              <div 
+                className={styles.gridList}
+                style={{ '--mobile-cols': mobileGridCols } as React.CSSProperties}
+              >
                 {displayPosts.map(post => (
                   <PosterCard key={post.id} {...post} />
                 ))}
