@@ -9,7 +9,7 @@
 
 
 .heightFull { height: min(768px, 76vh); }
-.heightTwoThird { height: min(512px, 50vh); }
+.heightTwoThird { height: min(476px, 47vh); }
 .heightOneThird { height: min(256px, 25vh); }
 .heightCompact { 
   height: 56px; 

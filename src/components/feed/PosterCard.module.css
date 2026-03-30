@@ -23,7 +23,7 @@
 .imageWrapper {
   position: relative;
   width: 100%;
-  padding-top: 125%; /* Magazine ratio 4:5 */
+  padding-top: 122.5%; /* Adjusted to half of recent reduction */
   border-radius: 20px;
   overflow: hidden;
   border: 2px solid var(--divider-color); /* Matched with sidebar divider */
