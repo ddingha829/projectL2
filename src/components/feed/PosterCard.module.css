@@ -185,49 +185,51 @@
   }
 
   /* Dynamic font scaling based on parent variable --mobile-cols */
+  /* Using a modified slope (0.55 - 0.75) instead of linear 1.0 to keep small cards legible */
   .titleOverlay {
-    /* Increased horizontal padding by ~30% (8 -> 11) */
-    padding: calc(18px / var(--mobile-cols, 2)) calc(11px / var(--mobile-cols, 2)) calc(24px / var(--mobile-cols, 2));
+    padding: calc(18px / (1 + (var(--mobile-cols, 2) - 1) * 0.55)) 
+             calc(11px / (1 + (var(--mobile-cols, 2) - 1) * 0.55)) 
+             calc(24px / (1 + (var(--mobile-cols, 2) - 1) * 0.55));
     background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0) 25%, rgba(0, 0, 0, 0.4) 55%, rgba(0, 0, 0, 0.9) 100%);
   }
 
   .title {
-    /* ~1.65rem baseline (another 10% reduction) */
-    font-size: calc(1.65rem / var(--mobile-cols, 2)); 
+    /* 1col: 1.65rem, 2col: 1.05rem, 3col: 0.78rem (~40% boost from linear 0.55) */
+    font-size: calc(1.65rem / (1 + (var(--mobile-cols, 2) - 1) * 0.55)); 
     line-height: 1.25;
     font-weight: 800;
   }
 
   .categoryBadge {
-    /* 1col height: ~30px (another 10% reduction) */
-    height: calc(30px / var(--mobile-cols, 2));
-    padding: 0 calc(12px / var(--mobile-cols, 2));
-    font-size: calc(0.9rem / var(--mobile-cols, 2));
-    top: calc(12px / var(--mobile-cols, 2));
-    left: calc(12px / var(--mobile-cols, 2));
+    /* 1col: 30px, 3col: ~12px (Slope 0.75 keeps it readable) */
+    height: calc(30px / (1 + (var(--mobile-cols, 2) - 1) * 0.75));
+    padding: 0 calc(12px / (1 + (var(--mobile-cols, 2) - 1) * 0.75));
+    font-size: calc(0.9rem / (1 + (var(--mobile-cols, 2) - 1) * 0.75));
+    top: calc(12px / (1 + (var(--mobile-cols, 2) - 1) * 0.75));
+    left: calc(12px / (1 + (var(--mobile-cols, 2) - 1) * 0.75));
     border-radius: 3px;
     font-weight: 900;
   }
 
   .pickBadgeInline {
-    /* Scale pick badge */
-    top: calc(12px / var(--mobile-cols, 2));
-    right: calc(12px / var(--mobile-cols, 2));
-    padding: calc(3px / var(--mobile-cols, 2)) calc(7px / var(--mobile-cols, 2));
-    font-size: calc(0.75rem / var(--mobile-cols, 2));
+    top: calc(12px / (1 + (var(--mobile-cols, 2) - 1) * 0.75));
+    right: calc(12px / (1 + (var(--mobile-cols, 2) - 1) * 0.75));
+    padding: calc(3px / (1 + (var(--mobile-cols, 2) - 1) * 0.75)) calc(7px / (1 + (var(--mobile-cols, 2) - 1) * 0.75));
+    font-size: calc(0.75rem / (1 + (var(--mobile-cols, 2) - 1) * 0.75));
   }
 
   .pickIcon {
-    font-size: calc(1rem / var(--mobile-cols, 2));
+    font-size: calc(1rem / (1 + (var(--mobile-cols, 2) - 1) * 0.75));
   }
 
   .metaInfo {
-    display: flex; /* Restore for mobile under the title */
+    display: flex; 
     justify-content: space-between;
     width: 100%;
     gap: 6px;
-    font-size: calc(0.85rem / var(--mobile-cols, 2)); /* Approx 50% of title scale */
-    margin-top: calc(8px / var(--mobile-cols, 2));
+    /* 1col: 0.85rem, 3col: 0.34rem (~20% boost from linear 0.28) */
+    font-size: calc(0.85rem / (1 + (var(--mobile-cols, 2) - 1) * 0.75)); 
+    margin-top: calc(8px / (1 + (var(--mobile-cols, 2) - 1) * 0.75));
   }
 
   .date::before, .author::before {
