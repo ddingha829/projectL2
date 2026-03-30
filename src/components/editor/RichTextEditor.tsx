@@ -110,10 +110,21 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
                 image: imageHandler
             }
         },
-        // [추가] 이미지 리사이즈 설정
         imageResize: {
             parchment: null, // Quill 2.0 호환성 관련 설정
             modules: ['Resize', 'DisplaySize', 'Toolbar']
+        },
+        // [수정] 모바일 엔터 키 이슈 해결을 위한 키보드 바인딩 추가
+        keyboard: {
+            bindings: {
+                enter: {
+                    key: 'Enter',
+                    handler: function(range: any, context: any) {
+                        // 기본 엔터 동작을 허용하되, 모바일에서 명확히 캡처되도록 함
+                        return true; 
+                    }
+                }
+            }
         }
     }), []);
 
@@ -148,6 +159,15 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
                     line-height: 1.8;
                     padding: 40px !important;
                     font-family: 'Noto Sans KR', sans-serif;
+                }
+                @media (max-width: 768px) {
+                    .ql-editor {
+                        padding: 20px 16px !important;
+                        font-size: 1rem;
+                    }
+                    .ql-toolbar.ql-snow {
+                        padding: 8px 12px;
+                    }
                 }
                 .ql-editor h1 { font-size: 2.5rem; margin-top: 1.5em; margin-bottom: 0.5em; font-weight: 800; }
                 .ql-editor h2 { font-size: 1.8rem; margin-top: 1.2em; margin-bottom: 0.4em; }

@@ -6,7 +6,7 @@ import styles from './admin.module.css'
 import Link from 'next/link'
 
 export const metadata = {
-  title: 'Admin Dashboard | Review Site',
+  title: 'Admin Dashboard | WoogaWooga 우가우가',
   description: 'Manage posts, users, and categories.',
 }
 

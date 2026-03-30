@@ -1,8 +1,10 @@
 .container {
   max-width: 800px;
+  width: 100%;
   margin: 0 auto;
   padding: 40px 20px;
   min-height: calc(100vh - 70px);
+  box-sizing: border-box;
 }
 
 .header {
@@ -167,10 +169,21 @@
 }
 
 @media (max-width: 768px) {
+  .container {
+    padding: 20px 12px;
+  }
   .title {
-    font-size: 2rem;
+    font-size: 1.7rem;
+    letter-spacing: -0.02em;
   }
   .formSection {
-    padding: 24px;
+    padding: 16px;
+    border-radius: var(--radius-md);
+  }
+  .sectionTitle {
+    font-size: 1.15rem;
+  }
+  .submitBtn {
+    padding: 14px 20px;
   }
 }

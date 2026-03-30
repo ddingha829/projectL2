@@ -237,33 +237,61 @@ export default function HomeContent({
           <div key={animationKey} className={styles.feedAnimator}>
             {authorData && (
               <div className={styles.authorProfileCard} style={{ '--author-color': authorData.color } as React.CSSProperties}>
-                <div className={styles.profileMain}>
-                  <div className={styles.profileTop}>
-                    <img src={authorData.avatar} alt={authorData.name} className={styles.profileAvatar} />
-                    <h2 className={styles.profileName}>
-                      {authorData.name} <span>Writer</span>
-                    </h2>
+                {/* [데스크탑 전용 레이아웃] */}
+                <div className={styles.desktopContent}>
+                  <div className={styles.profileMain}>
+                    <div className={styles.profileTop}>
+                      <img src={authorData.avatar} alt={authorData.name} className={styles.profileAvatar} />
+                      <h2 className={styles.profileName}>
+                        {authorData.name} <span>Writer</span>
+                      </h2>
+                    </div>
+                    <p className={styles.profileBioText}>
+                      {authorData.description.bio}
+                    </p>
                   </div>
-                  <p className={styles.profileBioText}>
-                    {authorData.description.bio}
-                  </p>
+                  <div className={styles.profileDivider}></div>
+                  <div className={styles.profileDetail}>
+                    <ul className={styles.profileBullets}>
+                      {authorData.description.bullets.map((bullet: string, idx: number) => (
+                        <li key={idx} className={styles.profileBullet}>
+                          <span className={styles.bulletDot} style={{ backgroundColor: authorData.color }}></span>
+                          {bullet}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className={styles.requestSection}>
+                    <ReviewRequest writerId={authorData.id} color={authorData.color} />
+                  </div>
                 </div>
 
-                <div className={styles.profileDivider}></div>
-
-                <div className={styles.profileDetail}>
-                  <ul className={styles.profileBullets}>
-                    {authorData.description.bullets.map((bullet: string, idx: number) => (
-                      <li key={idx} className={styles.profileBullet}>
-                        <span className={styles.bulletDot} style={{ backgroundColor: authorData.color }}></span>
-                        {bullet}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                
-                <div className={styles.requestSection}>
-                   <ReviewRequest writerId={authorData.id} color={authorData.color} />
+                {/* [모바일 전용 레이아웃] - 첨부해주신 이미지 구조에 최적화 */}
+                <div className={styles.mobileContent}>
+                  <div className={styles.mobileTopRow}>
+                    <div className={styles.mobileAuthorBlock}>
+                      <img src={authorData.avatar} alt={authorData.name} className={styles.mobileAvatar} />
+                      <div className={styles.mobileNameBadge}>
+                        <span className={styles.mobileWriterName}>{authorData.name}</span>
+                        <span className={styles.mobileBadge}>WRITER</span>
+                      </div>
+                    </div>
+                    <div className={styles.mobileMainIntroList}>
+                      <ul>
+                        {authorData.description.bullets.map((bullet: string, idx: number) => (
+                          <li key={idx} style={{ '--author-color': authorData.color } as React.CSSProperties}>
+                            {bullet}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                  <div className={styles.mobileBottomRow}>
+                    <p className={styles.mobileBioText}>{authorData.description.bio}</p>
+                  </div>
+                  <div className={styles.mobileRequestBtnWrap}>
+                    <ReviewRequest writerId={authorData.id} color={authorData.color} />
+                  </div>
                 </div>
               </div>
             )}

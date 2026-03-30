@@ -18,8 +18,8 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "Review Site",
-  description: "Interactive review site for movies, books, and restaurants",
+  title: "WoogaWooga 우가우가",
+  description: "평범한 사람들이 써나가는 위대한 일상",
 };
 
 export default function RootLayout({

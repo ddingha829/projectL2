@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { FrozenRoute } from "@/components/common/FrozenRoute";
 import TopNavbar from "./TopNavbar";
@@ -38,8 +39,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (isMobileOpen) {
       document.body.style.overflow = "hidden";
+      document.body.style.overscrollBehavior = "none";
     } else {
       document.body.style.overflow = "unset";
+      document.body.style.overscrollBehavior = "unset";
     }
   }, [isMobileOpen]);
 
@@ -144,6 +147,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           )}
         </main>
       </div>
+      {isMobileScreen && (role === 'admin' || role === 'editor') && (
+        <Link href="/write" className={gridStyles.mobileFAB}>
+          ✍️
+        </Link>
+      )}
     </>
   );
 }
