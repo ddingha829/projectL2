@@ -147,11 +147,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           )}
         </main>
       </div>
-      {isMobileScreen && (role === 'admin' || role === 'editor') && (
-        <Link href="/write" className={gridStyles.mobileFAB}>
-          ✍️
-        </Link>
-      )}
+
     </>
   );
 }

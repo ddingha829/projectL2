@@ -162,7 +162,14 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
           {user ? (
             <div className={styles.mobileUserInfo}>
               <div className={styles.mobileUserHeader}>
-                <span className={styles.mobileNickname}>{displayName || user.email?.split('@')[0]}</span>
+                <div className={styles.nameAndWrite}>
+                  <span className={styles.mobileNickname}>{displayName || user.email?.split('@')[0]}</span>
+                  {(role === 'admin' || role === 'editor') && (
+                    <Link href="/write" className={styles.mobileWriteBtn} onClick={onClose}>
+                      ✍️ 글쓰기
+                    </Link>
+                  )}
+                </div>
                 <span className={styles.mobileRole}>
                   [{role === 'admin' ? '운영자' : role === 'editor' ? '에디터' : '방문객'}]
                 </span>
