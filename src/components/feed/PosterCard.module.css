@@ -152,9 +152,7 @@
 }
 
 .date::before {
-  content: "•";
-  margin-right: 8px;
-  opacity: 0.4;
+  content: none; /* Removed dot */
 }
 
 .author {
@@ -163,9 +161,13 @@
 }
 
 .author::before {
-  content: "•";
-  margin-right: 8px;
-  opacity: 0.4;
+  content: none; /* Removed dot */
+}
+
+.metaRight {
+  display: flex;
+  gap: 8px; /* Tightened gap */
+  align-items: center;
 }
 
 @media (max-width: 768px) {
@@ -185,41 +187,44 @@
   }
 
   /* Dynamic font scaling based on parent variable --mobile-cols */
-  /* Using a modified slope (0.55 - 0.75) instead of linear 1.0 to keep small cards legible */
+  /* Slopes adjusted (0.60 for title, 0.80 for meta) for 5% reduction at 3 columns */
   .titleOverlay {
-    padding: calc(18px / (1 + (var(--mobile-cols, 2) - 1) * 0.55)) 
-             calc(11px / (1 + (var(--mobile-cols, 2) - 1) * 0.55)) 
-             calc(24px / (1 + (var(--mobile-cols, 2) - 1) * 0.55));
+    /* Reduced horizontal baseline by 30% from 24px to 17px */
+    padding: calc(18px / (1 + (var(--mobile-cols, 2) - 1) * 0.6)) 
+             calc(17px / (1 + (var(--mobile-cols, 2) - 1) * 0.6)) 
+             calc(24px / (1 + (var(--mobile-cols, 2) - 1) * 0.6));
     background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0) 25%, rgba(0, 0, 0, 0.4) 55%, rgba(0, 0, 0, 0.9) 100%);
   }
 
   .title {
-    /* 1col: 1.65rem, 2col: 1.05rem, 3col: 0.78rem (~40% boost from linear 0.55) */
-    font-size: calc(1.65rem / (1 + (var(--mobile-cols, 2) - 1) * 0.55)); 
+    /* 1col: 1.65rem, 2col: 1.03rem, 3col: 0.75rem (5% smaller than the previous 0.78) */
+    font-size: calc(1.65rem / (1 + (var(--mobile-cols, 2) - 1) * 0.6)); 
     line-height: 1.25;
     font-weight: 800;
+    word-break: keep-all; /* Prevent syllable splitting in Korean headers */
+    overflow-wrap: break-word;
   }
 
   .categoryBadge {
-    /* 1col: 30px, 3col: ~12px (Slope 0.75 keeps it readable) */
-    height: calc(30px / (1 + (var(--mobile-cols, 2) - 1) * 0.75));
-    padding: 0 calc(12px / (1 + (var(--mobile-cols, 2) - 1) * 0.75));
-    font-size: calc(0.9rem / (1 + (var(--mobile-cols, 2) - 1) * 0.75));
-    top: calc(12px / (1 + (var(--mobile-cols, 2) - 1) * 0.75));
-    left: calc(12px / (1 + (var(--mobile-cols, 2) - 1) * 0.75));
+    /* Baseline 30px, slower slope 0.68 to boost 3rd column by ~10% more */
+    height: calc(30px / (1 + (var(--mobile-cols, 2) - 1) * 0.68));
+    padding: 0 calc(12px / (1 + (var(--mobile-cols, 2) - 1) * 0.68));
+    font-size: calc(0.9rem / (1 + (var(--mobile-cols, 2) - 1) * 0.68));
+    top: calc(12px / (1 + (var(--mobile-cols, 2) - 1) * 0.68));
+    left: calc(12px / (1 + (var(--mobile-cols, 2) - 1) * 0.68));
     border-radius: 3px;
     font-weight: 900;
   }
 
   .pickBadgeInline {
-    top: calc(12px / (1 + (var(--mobile-cols, 2) - 1) * 0.75));
-    right: calc(12px / (1 + (var(--mobile-cols, 2) - 1) * 0.75));
-    padding: calc(3px / (1 + (var(--mobile-cols, 2) - 1) * 0.75)) calc(7px / (1 + (var(--mobile-cols, 2) - 1) * 0.75));
-    font-size: calc(0.75rem / (1 + (var(--mobile-cols, 2) - 1) * 0.75));
+    top: calc(12px / (1 + (var(--mobile-cols, 2) - 1) * 0.68));
+    right: calc(12px / (1 + (var(--mobile-cols, 2) - 1) * 0.68));
+    padding: calc(3px / (1 + (var(--mobile-cols, 2) - 1) * 0.68)) calc(7px / (1 + (var(--mobile-cols, 2) - 1) * 0.68));
+    font-size: calc(0.75rem / (1 + (var(--mobile-cols, 2) - 1) * 0.68));
   }
 
   .pickIcon {
-    font-size: calc(1rem / (1 + (var(--mobile-cols, 2) - 1) * 0.75));
+    font-size: calc(1rem / (1 + (var(--mobile-cols, 2) - 1) * 0.68));
   }
 
   .metaInfo {
@@ -227,12 +232,17 @@
     justify-content: space-between;
     width: 100%;
     gap: 6px;
-    /* 1col: 0.85rem, 3col: 0.34rem (~20% boost from linear 0.28) */
-    font-size: calc(0.85rem / (1 + (var(--mobile-cols, 2) - 1) * 0.75)); 
-    margin-top: calc(8px / (1 + (var(--mobile-cols, 2) - 1) * 0.75));
+    /* 1col: 0.85rem, 3col: 0.36rem (~10% boost from prior 0.33) */
+    font-size: calc(0.85rem / (1 + (var(--mobile-cols, 2) - 1) * 0.68)); 
+    margin-top: calc(8px / (1 + (var(--mobile-cols, 2) - 1) * 0.68));
   }
 
   .date::before, .author::before {
-    margin-right: 4px;
+    display: none;
+  }
+  .metaRight {
+    display: flex;
+    gap: calc(10px / (1 + (var(--mobile-cols, 2) - 1) * 0.68)); /* Dynamic tightening */
+    align-items: center;
   }
 }

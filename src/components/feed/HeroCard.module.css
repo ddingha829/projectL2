@@ -253,24 +253,20 @@
   font-size: 0.95rem;
 }
 
-/* Author badge repositioned to absolute top-right of the hero card */
+/* Author badge repositioned for a cleaner, unified look without dots */
 .metaInfo {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px; /* Reduced desktop gap */
   font-family: var(--font-noto-sans), sans-serif;
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.85);
-  margin-left: 8px; /* Spacing from Likes */
+  margin-left: 0; 
   position: relative;
-  padding-left: 16px;
 }
 
 .metaInfo::before {
-  content: "•";
-  position: absolute;
-  left: 0;
-  opacity: 0.4;
+  content: none; /* Removed dot */
 }
 
 .date {
@@ -360,16 +356,26 @@
 @media (max-width: 768px) {
   .hero:not(.heightCompact) {
     height: 260px;
-    border-radius: var(--radius-lg);
-    margin-bottom: 24px;
+    border-radius: 0 !important; 
+    margin-bottom: 0px; 
+    border: none !important;
     overflow: hidden;
   }
   
+  .bgImage {
+    border-radius: 0 !important;
+  }
+
   .hero:not(.heightCompact) .borderOverlay {
-    border-radius: var(--radius-lg);
+    border-radius: 0 !important;
+    border: none !important;
   }
   .contentLink {
-    padding: 20px 24px;
+    padding: 20px 17px; /* Reduced by 30% from 24px */
+  }
+  .categoryAndBadge {
+    top: 16px;
+    left: 17px; 
   }
   .navButtons {
     right: 16px;

@@ -177,7 +177,7 @@ export default function HomeContent({
           <>
             <header className={styles.sectionHeader} style={{ marginTop: '3px' }}>
               <h1 className={styles.sectionTitle}>지금 뜨는 리뷰</h1>
-              <div className={styles.divider}></div>
+              <div className={styles.headerSpacer}></div>
             </header>
             <div className={styles.heroWrapper}>
               <div className={styles.desktopOnly}>
@@ -232,7 +232,7 @@ export default function HomeContent({
             <div className={styles.gridSection}>
               <header className={styles.sectionHeader}>
                 <h3 className={styles.sectionTitle}>다른 리뷰</h3>
-                <div className={styles.divider}></div>
+                <div className={styles.headerSpacer}></div>
 
                 {/* 모바일 그리드 조절기 (전체보기 혹은 필터링 결과에서만 노출) */}
                 {isMobile && (isViewMore || isFiltered) && (
@@ -284,7 +284,7 @@ export default function HomeContent({
                     <div className={styles.profileTop}>
                       <img src={authorData.avatar} alt={authorData.name} className={styles.profileAvatar} />
                       <h2 className={styles.profileName}>
-                        {authorData.name} <span>Writer</span>
+                        {authorData.name} <span>Editor</span>
                       </h2>
                     </div>
                     <p className={styles.profileBioText}>
@@ -314,7 +314,7 @@ export default function HomeContent({
                       <img src={authorData.avatar} alt={authorData.name} className={styles.mobileAvatar} />
                       <div className={styles.mobileNameBadge}>
                         <span className={styles.mobileWriterName}>{authorData.name}</span>
-                        <span className={styles.mobileBadge}>WRITER</span>
+                        <span className={styles.mobileBadge}>EDITOR</span>
                       </div>
                     </div>
                     <div className={styles.mobileMainIntroList}>
@@ -338,15 +338,13 @@ export default function HomeContent({
             )}
 
             <header className={styles.sectionHeader}>
-              <h1 className={styles.sectionTitle}>{ isViewMore ? "모든 글" : displayTitle}</h1>
-              
-              {isViewMore && (
-                <button className={styles.backToMainBtnInline} onClick={() => router.push('/')}>
-                  메인으로
-                </button>
-              )}
+              <h1 className={`${styles.sectionTitle} ${isViewMore ? styles.allPostsTitle : ''}`}>
+                { isViewMore ? "모든 글" : displayTitle}
+              </h1>
 
-              <div className={styles.divider}></div>
+              <div className={styles.headerSpacer}></div>
+              
+              {/* Removed Back Button and Divider for 'All Posts' view as requested */}
 
               {/* 모바일 그리드 조절기 */}
               {isMobile && (

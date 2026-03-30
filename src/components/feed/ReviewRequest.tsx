@@ -18,7 +18,7 @@ export default function ReviewRequest({ writerId, color }: ReviewRequestProps) {
           style={{ '--author-color': color } as React.CSSProperties}
         >
           <span className={styles.btnIcon}>💬</span>
-          작가님, 이런 리뷰도 보고싶어요!
+          에디터님, 이것도 리뷰해주세요!
         </Link>
       </div>
     </div>

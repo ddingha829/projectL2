@@ -20,6 +20,10 @@
   white-space: nowrap;
 }
 
+.allPostsTitle {
+  margin-left: 10px; /* Shifted to right */
+}
+
 .divider {
   flex: 1;
   height: 0;
@@ -151,6 +155,7 @@
     font-size: 0.75rem;
     padding-left: 4px;
     gap: 4px;
+    margin-right: 16px; /* Matched right indent */
   }
 }
 
@@ -220,7 +225,7 @@
   font-family: var(--font-outfit), sans-serif;
   font-size: 0.75rem;
   font-weight: 800;
-  color: #999;
+  color: var(--text-primary); /* Unified with title */
   letter-spacing: 0.05em;
   white-space: nowrap;
   text-transform: uppercase;
@@ -238,9 +243,9 @@
   align-items: center;
   justify-content: center;
   background: transparent;
-  border: 1px solid #eee;
+  border: 1px solid var(--border-light);
   border-radius: 6px;
-  color: #000;
+  color: var(--text-primary); /* Unified with title */
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -415,25 +420,42 @@
 
 @media (max-width: 768px) {
   .sectionHeader {
-    width: 100%;
+    width: calc(100% + 16px);
+    margin-left: -8px;
+    margin-right: -8px;
+    padding: 0 16px; /* Title starts at 16px from card edge? No, 16px from screen edge. */
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    margin-bottom: 3px !important; /* Reduced by 60% approx */
-    gap: 10px; /* Reduced to pull elements closer on mobile */
+    margin-bottom: 3px !important; 
+    gap: 10px;
   }
   .sectionTitle {
     font-size: 1.25rem;
     white-space: nowrap;
     text-align: left;
+    margin-left: 16px; /* Matched 'All Posts' visual indent */
+  }
+  .allPostsTitle {
+    margin-left: 16px; 
   }
   .divider {
     flex: 1;
     display: block;
   }
   
-  .heroWrapper {
+  .heroWrapper, .heroFrame {
     margin-bottom: 3px !important; /* Reduced by 70% */
+    border-radius: 0 !important;
+    border: none !important;
+    margin-left: -8px !important;
+    margin-right: -8px !important;
+    width: calc(100% + 16px) !important;
+    box-shadow: none !important;
+  }
+  
+  .heroFrame {
+    display: none !important; /* Hide frame on mobile if it's causing issues */
   }
 
   /* 모바일 그리드 조절기 스타일 */
@@ -473,9 +495,13 @@
     font-size: 0.7rem;
     font-weight: 900;
     font-family: var(--font-outfit), sans-serif;
-    color: var(--accent-primary);
+    color: var(--text-primary); /* Unified with title */
     min-width: 14px;
     text-align: center;
+  }
+
+  .headerSpacer {
+    flex: 1;
   }
 
   .gridSection {
@@ -495,9 +521,9 @@
     grid-template-columns: repeat(var(--mobile-cols, 2), 1fr) !important;
     gap: 1px !important; /* Instagram Explore style */
     padding: 0 !important; /* Edge-to-edge */
-    width: 100% !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
+    width: calc(100% + 16px) !important;
+    margin-left: -8px !important;
+    margin-right: -8px !important;
     overflow-x: hidden;
   }
 
@@ -512,7 +538,9 @@
     grid-template-columns: repeat(var(--mobile-cols, 3), 1fr) !important;
     gap: 1px !important;
     padding: 0 !important;
-    width: 100% !important;
+    width: calc(100% + 16px) !important;
+    margin-left: -8px !important;
+    margin-right: -8px !important;
   }
 }
 
@@ -592,7 +620,7 @@
   border: 1px solid var(--border-light);
   border-left: 12px solid var(--author-color);
   border-radius: var(--radius-lg);
-  padding: 48px 64px;
+  padding: 24px 64px; /* Reduced top/bottom padding by 50% from 48px */
   margin-bottom: 17px;
   margin-top: 24px;
   box-shadow: 0 10px 50px rgba(0, 0, 0, 0.1);
@@ -604,8 +632,8 @@
 
 .requestSection {
   position: absolute;
-  bottom: 24px;
-  right: 24px;
+  bottom: 12px;
+  right: 12px;
 }
 
 @media (max-width: 1300px) {
@@ -670,7 +698,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 56px; /* Doubled from 28px as requested */
+  gap: 14px; /* Reduced by another 50% from 28px */
 }
 
 .profileAvatar {
@@ -686,7 +714,7 @@
 
 .profileName {
   font-family: var(--font-outfit), sans-serif;
-  font-size: 2.2rem;
+  font-size: 1.95rem; /* Reduced by 10% from 2.2 */
   font-weight: 800;
   color: var(--text-primary);
   display: flex;
@@ -696,7 +724,7 @@
 }
 
 .profileName span {
-  font-size: 0.85rem;
+  font-size: 0.76rem; /* Reduced by 10% from 0.85 */
   font-weight: 800;
   text-transform: uppercase;
   color: #fff;
@@ -757,8 +785,8 @@
 .profileBullet {
   display: flex;
   align-items: center;
-  gap: 16px;
-  font-size: 1.2rem;
+  gap: 5.5px; /* Reduced by 30% from 8px */
+  font-size: 1.08rem; 
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1.35;
@@ -772,8 +800,8 @@
 }
 
 .bulletDot {
-  width: 10px;
-  height: 10px;
+  width: 8px; /* Slightly smaller */
+  height: 8px;
   border-radius: 50%;
   flex-shrink: 0;
   box-shadow: 0 0 12px var(--author-color);
@@ -799,15 +827,15 @@
   .mobileContent {
     display: flex;
     flex-direction: column;
-    padding: 24px 16px 12px 16px; /* Reduced bottom padding by 50% */
-    gap: 8px; /* Further reduced from 16px to 8px */
+    padding: 12px 16px; /* Reduced top padding by 50% from 24px */
+    gap: 8px; 
     width: 100%;
   }
 
   .mobileTopRow {
     display: grid;
     grid-template-columns: 100px 1fr;
-    gap: 16px;
+    gap: 8px; /* Reduced by 50% from 16px */
     align-items: center;
   }
 
@@ -815,7 +843,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 4px; /* Reduced by 50% from 8px */
   }
 
   .mobileAvatar {
@@ -836,13 +864,13 @@
   }
 
   .mobileWriterName {
-    font-size: 1.25rem;
+    font-size: 1.1rem; /* Reduced by ~10% from 1.25 */
     font-weight: 800;
     color: var(--text-primary);
   }
 
   .mobileBadge {
-    font-size: 0.7rem;
+    font-size: 0.63rem; /* Reduced by 10% */
     font-weight: 900;
     background-color: var(--author-color);
     color: #fff;
@@ -856,7 +884,7 @@
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 8px; /* Reduced by ~30% from 12px */
   }
 
   .mobileMainIntroList li {

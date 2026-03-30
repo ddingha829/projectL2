@@ -15,9 +15,9 @@
   background: var(--author-color);
   border: none;
   color: white;
-  padding: 8px 16px;
+  padding: 4px 14px; /* Reduced height by approx 50% */
   border-radius: var(--radius-md);
-  font-size: 0.8rem;
+  font-size: 0.72rem; /* Slightly smaller to fit slim button */
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
