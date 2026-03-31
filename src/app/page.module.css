@@ -428,7 +428,7 @@
     width: 100%;
     margin-left: 0;
     margin-right: 0;
-    padding: 16px 4px 8px; /* Adjusted from 16px side to 4px */
+    padding: 16px 2px 8px; /* Reduced to 2px */
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -452,11 +452,11 @@
   
   .heroWrapper, .heroFrame {
     margin-bottom: 12px !important; 
-    border-radius: 12px !important; /* Slightly smaller radius for smaller margin */
+    border-radius: 10px !important; /* Slightly tighter radius for narrower margin */
     border: none !important;
-    margin-left: 4px !important;
-    margin-right: 4px !important;
-    width: calc(100% - 8px) !important;
+    margin-left: 2px !important;
+    margin-right: 2px !important;
+    width: calc(100% - 4px) !important;
     box-shadow: 0 6px 20px rgba(0,0,0,0.12) !important;
     overflow: hidden !important;
   }
@@ -527,8 +527,8 @@
   .gridList {
     display: grid !important;
     grid-template-columns: repeat(var(--mobile-cols, 2), 1fr) !important;
-    gap: 4px !important; /* 4px gap as requested */
-    padding: 0 4px !important; /* 4px side margin */
+    gap: 2px !important; 
+    padding: 0 2px !important; /* 2px side margin */
     width: 100% !important;
     margin-left: 0 !important;
     margin-right: 0 !important;
@@ -544,8 +544,8 @@
   .feedAnimator .gridList {
     display: grid !important;
     grid-template-columns: repeat(var(--mobile-cols, 2), 1fr) !important;
-    gap: 4px !important;
-    padding: 0 4px !important;
+    gap: 2px !important;
+    padding: 0 2px !important;
     width: 100% !important;
     margin-left: 0 !important;
     margin-right: 0 !important;

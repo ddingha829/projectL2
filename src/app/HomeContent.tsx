@@ -52,6 +52,8 @@ export default function HomeContent({
   const [isMobile, setIsMobile] = useState(false);
   const [mobileGridCols, setMobileGridCols] = useState(2);
   const [isHeroPaused, setIsHeroPaused] = useState(false);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
   // UseEffect to set default cols based on view mode (Main: 2, ViewAll: 3)
   useEffect(() => {
@@ -106,6 +108,32 @@ export default function HomeContent({
   const handleIntroComplete = () => {
     setShowIntro(false);
     sessionStorage.setItem("introVisited", "true");
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd || !heroPosts) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      setSlideDir('next');
+      setHeroIndex((prev) => (prev + 1) % heroPosts.length);
+    } else if (isRightSwipe) {
+      setSlideDir('prev');
+      setHeroIndex((prev) => (prev - 1 + heroPosts.length) % heroPosts.length);
+    }
+    
+    setTouchStart(null);
+    setTouchEnd(null);
   };
 
 
@@ -196,6 +224,9 @@ export default function HomeContent({
               className={styles.heroWrapper}
               onMouseEnter={() => setIsHeroPaused(true)}
               onMouseLeave={() => setIsHeroPaused(false)}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
             >
               <div className={styles.desktopOnly}>
                 <div 
