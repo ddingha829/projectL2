@@ -51,6 +51,7 @@ export default function HomeContent({
   const [mobileVisibleCount, setMobileVisibleCount] = useState(4);
   const [isMobile, setIsMobile] = useState(false);
   const [mobileGridCols, setMobileGridCols] = useState(2);
+  const [isHeroPaused, setIsHeroPaused] = useState(false);
 
   // UseEffect to set default cols based on view mode (Main: 2, ViewAll: 3)
   useEffect(() => {
@@ -58,7 +59,7 @@ export default function HomeContent({
     if (!isViewMore && !isFiltered) {
       setMobileGridCols(2);
     } else {
-      setMobileGridCols(isViewMore ? 3 : 2);
+      setMobileGridCols(2); // Default to 2 for all views as requested
     }
   }, [isViewMore, isFiltered]);
 
@@ -89,6 +90,18 @@ export default function HomeContent({
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [isViewMore, currentPage]);
+
+  // Hero auto-slide functionality for all devices (Mobile & PC)
+  useEffect(() => {
+    if (!heroPosts || heroPosts.length <= 1 || isHeroPaused) return;
+    
+    const interval = setInterval(() => {
+      setSlideDir('next');
+      setHeroIndex((prev) => (prev + 1) % heroPosts.length || 0);
+    }, 5000); // 5 seconds
+    
+    return () => clearInterval(interval);
+  }, [heroPosts?.length, isHeroPaused]);
 
   const handleIntroComplete = () => {
     setShowIntro(false);
@@ -179,7 +192,11 @@ export default function HomeContent({
               <h1 className={styles.sectionTitle}>지금 뜨는 리뷰</h1>
               <div className={styles.headerSpacer}></div>
             </header>
-            <div className={styles.heroWrapper}>
+            <div 
+              className={styles.heroWrapper}
+              onMouseEnter={() => setIsHeroPaused(true)}
+              onMouseLeave={() => setIsHeroPaused(false)}
+            >
               <div className={styles.desktopOnly}>
                 <div 
                   className={styles.heroTrack} 
@@ -220,11 +237,16 @@ export default function HomeContent({
                 )}
               </div>
               <div className={styles.mobileOnly}>
-                {heroPosts.map((post) => (
-                  <div key={post.id} className={styles.mobileHeroItem}>
-                    <HeroCard {...post} heightRatio="2/3" />
-                  </div>
-                ))}
+                <div 
+                  className={styles.heroTrack} 
+                  style={{ transform: `translateX(-${heroIndex * 100}%)` }}
+                >
+                  {heroPosts.map((post) => (
+                    <div key={post.id} className={styles.mobileHeroItem}>
+                      <HeroCard {...post} heightRatio="2/3" />
+                    </div>
+                  ))}
+                </div>
               </div>
               <div className={styles.heroFrame}></div>
             </div>

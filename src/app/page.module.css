@@ -12,12 +12,23 @@
 
 .sectionTitle {
   font-family: var(--font-outfit), var(--font-noto-sans), sans-serif;
-  font-size: 1.5rem;
+  font-size: 1.57rem; 
   font-weight: 800;
   color: var(--text-primary); 
   text-transform: uppercase;
   letter-spacing: 0.05em;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sectionTitle::before {
+  content: '';
+  width: 4px;
+  height: 24px;
+  background-color: var(--divider-color);
+  border-radius: 2px;
 }
 
 .allPostsTitle {
@@ -92,22 +103,16 @@
     display: none;
   }
   .mobileOnly {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    gap: 16px;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    align-items: stretch;
-  }
-  .mobileOnly::-webkit-scrollbar {
-    display: none;
+    display: block; 
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    height: 280px !important;
   }
   .mobileHeroItem {
     min-width: 100%;
     width: 100%;
-    height: 260px;
-    scroll-snap-align: center;
+    height: 280px !important;
     flex-shrink: 0;
   }
 }
@@ -420,24 +425,25 @@
 
 @media (max-width: 768px) {
   .sectionHeader {
-    width: calc(100% + 16px);
-    margin-left: -8px;
-    margin-right: -8px;
-    padding: 0 16px; /* Title starts at 16px from card edge? No, 16px from screen edge. */
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 16px 4px 8px; /* Adjusted from 16px side to 4px */
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    margin-bottom: 3px !important; 
-    gap: 10px;
+    margin-bottom: 0px !important; 
+    gap: 12px;
   }
   .sectionTitle {
-    font-size: 1.25rem;
+    font-size: 1.3rem; /* 1.375rem * 0.95 = 1.3rem */
     white-space: nowrap;
     text-align: left;
-    margin-left: 16px; /* Matched 'All Posts' visual indent */
+    margin-left: 0; /* Pulled left as requested */
+    line-height: 1;
   }
   .allPostsTitle {
-    margin-left: 16px; 
+    margin-left: 0; 
   }
   .divider {
     flex: 1;
@@ -445,17 +451,18 @@
   }
   
   .heroWrapper, .heroFrame {
-    margin-bottom: 3px !important; /* Reduced by 70% */
-    border-radius: 0 !important;
+    margin-bottom: 12px !important; 
+    border-radius: 12px !important; /* Slightly smaller radius for smaller margin */
     border: none !important;
-    margin-left: -8px !important;
-    margin-right: -8px !important;
-    width: calc(100% + 16px) !important;
-    box-shadow: none !important;
+    margin-left: 4px !important;
+    margin-right: 4px !important;
+    width: calc(100% - 8px) !important;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12) !important;
+    overflow: hidden !important;
   }
   
   .heroFrame {
-    display: none !important; /* Hide frame on mobile if it's causing issues */
+    display: none !important; 
   }
 
   /* 모바일 그리드 조절기 스타일 */
@@ -467,8 +474,9 @@
     border-radius: 12px;
     gap: 0;
     border: 1px solid var(--border-light);
-    margin-right: -4px;
-    scale: 0.85; /* Slightly smaller for mobile */
+    margin-right: 0;
+    scale: 0.8; /* Reverted to more compact scale */
+    z-index: 10;
   }
 
   .gridBtn {
@@ -519,11 +527,11 @@
   .gridList {
     display: grid !important;
     grid-template-columns: repeat(var(--mobile-cols, 2), 1fr) !important;
-    gap: 1px !important; /* Instagram Explore style */
-    padding: 0 !important; /* Edge-to-edge */
-    width: calc(100% + 16px) !important;
-    margin-left: -8px !important;
-    margin-right: -8px !important;
+    gap: 4px !important; /* 4px gap as requested */
+    padding: 0 4px !important; /* 4px side margin */
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
     overflow-x: hidden;
   }
 
@@ -535,12 +543,12 @@
   /* Specific override for feed animator results */
   .feedAnimator .gridList {
     display: grid !important;
-    grid-template-columns: repeat(var(--mobile-cols, 3), 1fr) !important;
-    gap: 1px !important;
-    padding: 0 !important;
-    width: calc(100% + 16px) !important;
-    margin-left: -8px !important;
-    margin-right: -8px !important;
+    grid-template-columns: repeat(var(--mobile-cols, 2), 1fr) !important;
+    gap: 4px !important;
+    padding: 0 4px !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
   }
 }
 
@@ -616,7 +624,7 @@
 }
 
 .authorProfileCard {
-  background: linear-gradient(135deg, var(--bg-secondary) 0%, #fff 100%);
+  background: var(--bg-secondary);
   border: 1px solid var(--border-light);
   border-left: 12px solid var(--author-color);
   border-radius: var(--radius-lg);
@@ -817,7 +825,7 @@
     border: 1px solid var(--border-light);
     border-left: 10px solid var(--author-color);
     border-radius: 20px;
-    background: #fff;
+    background: var(--bg-secondary);
   }
 
   .desktopContent {
@@ -852,7 +860,7 @@
     border-radius: 50%;
     border: 3px solid var(--author-color);
     padding: 2px;
-    background: #fff;
+    background: var(--bg-primary);
     object-fit: cover;
   }
 

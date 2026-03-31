@@ -181,9 +181,10 @@
   .imageWrapper {
     padding-top: 122.5%; 
     margin-bottom: 0px; 
-    border-radius: 0; 
-    border: none;
+    border-radius: 12px; 
+    border: 1px solid rgba(0, 0, 0, 0.05);
     overflow: hidden; 
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
   }
 
   /* Dynamic font scaling based on parent variable --mobile-cols */
@@ -193,7 +194,7 @@
     padding: calc(18px / (1 + (var(--mobile-cols, 2) - 1) * 0.6)) 
              calc(17px / (1 + (var(--mobile-cols, 2) - 1) * 0.6)) 
              calc(24px / (1 + (var(--mobile-cols, 2) - 1) * 0.6));
-    background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0) 25%, rgba(0, 0, 0, 0.4) 55%, rgba(0, 0, 0, 0.9) 100%);
+    background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, 0.6) 65%, rgba(0, 0, 0, 0.95) 100%);
   }
 
   .title {
