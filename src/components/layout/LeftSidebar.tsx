@@ -86,10 +86,10 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
 
     // Fetch notices
     const fetchNotices = async () => {
-      const supabase = createClient();
       const { data, error } = await supabase
-        .from('notices')
-        .select('*')
+        .from('posts')
+        .select('id, title, created_at')
+        .eq('category', 'notice')
         .order('created_at', { ascending: false })
         .limit(3);
       
@@ -164,11 +164,18 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
               <div className={styles.mobileUserHeader}>
                 <div className={styles.nameAndWrite}>
                   <span className={styles.mobileNickname}>{displayName || user.email?.split('@')[0]}</span>
-                  {(role === 'admin' || role === 'editor') && (
-                    <Link href="/write" className={styles.mobileWriteBtn} onClick={onClose}>
-                      ✍️ 글쓰기
-                    </Link>
-                  )}
+                  <div className={styles.mobileActionButtons}>
+                    {role === 'admin' && (
+                      <Link href="/admin" className={styles.mobileAdminBtn} onClick={onClose}>
+                        ⚙️ 관리
+                      </Link>
+                    )}
+                    {(role === 'admin' || role === 'editor') && (
+                      <Link href="/write" className={styles.mobileWriteBtn} onClick={onClose}>
+                        ✍️ 글쓰기
+                      </Link>
+                    )}
+                  </div>
                 </div>
                 <span className={styles.mobileRole}>
                   [{role === 'admin' ? '운영자' : role === 'editor' ? '에디터' : '방문객'}]

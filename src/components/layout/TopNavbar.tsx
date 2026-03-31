@@ -104,7 +104,12 @@ export default function TopNavbar({
             {user ? (
               <div className={styles.authInfo}>
                 {(role === 'admin' || role === 'editor') && (
-                  <Link href="/write" className={styles.writeButton}>✍️ 쓰기</Link>
+                  <div className={styles.navActions}>
+                    {role === 'admin' && (
+                      <Link href="/admin" className={styles.adminButton}>⚙️ 관리</Link>
+                    )}
+                    <Link href="/write" className={styles.writeButton}>✍️ 쓰기</Link>
+                  </div>
                 )}
                 <div className={styles.dropdownContainer} ref={dropdownRef}>
                   <button 

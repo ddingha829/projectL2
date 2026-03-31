@@ -1,6 +1,6 @@
 "use client";
  
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import IntroAnimation from "@/components/common/IntroAnimation";
 import styles from "./page.module.css";
 import HeroCard from "@/components/feed/HeroCard";
@@ -81,9 +81,9 @@ export default function HomeContent({
 
   useEffect(() => {
     if (isInitialVisit && !isMobile) {
-      const visited = sessionStorage.getItem("introVisited");
+      const visited = localStorage.getItem("introVisited");
       if (!visited) {
-        Promise.resolve().then(() => setShowIntro(true));
+        setShowIntro(true);
       }
     }
   }, [isInitialVisit, isMobile]);
@@ -105,10 +105,10 @@ export default function HomeContent({
     return () => clearInterval(interval);
   }, [heroPosts?.length, isHeroPaused]);
 
-  const handleIntroComplete = () => {
+  const handleIntroComplete = useCallback(() => {
     setShowIntro(false);
-    sessionStorage.setItem("introVisited", "true");
-  };
+    localStorage.setItem("introVisited", "true");
+  }, []);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStart(e.targetTouches[0].clientX);

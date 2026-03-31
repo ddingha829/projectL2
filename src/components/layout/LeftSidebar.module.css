@@ -511,6 +511,14 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
+    gap: 12px;
+  }
+
+  .mobileActionButtons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
   }
 
   .mobileNickname {
@@ -518,6 +526,31 @@
     font-weight: 900;
     color: var(--text-primary);
     letter-spacing: -0.02em;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .mobileAdminBtn {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-light);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s;
+  }
+
+  .mobileAdminBtn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
   }
 
   .mobileWriteBtn {

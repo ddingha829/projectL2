@@ -126,6 +126,36 @@
   font-size: 0.85rem;
   font-weight: 800;
   text-decoration: none;
+  transition: all 0.2s;
+}
+
+.writeButton:hover {
+  background: #333;
+  transform: translateY(-1px);
+}
+
+.navActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.adminButton {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  padding: 8px 14px;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  border: 1px solid var(--border-light);
+  transition: all 0.2s;
+}
+
+.adminButton:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  transform: translateY(-1px);
 }
 
 .userNameDisplay {
