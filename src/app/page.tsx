@@ -102,7 +102,7 @@ export default async function Home({
   // 1. Fetch Hero posts (designated by admin)
   const { data: heroDbPosts } = await supabase
     .from('posts')
-    .select('*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets:description_bullets)')
+    .select('*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets:description_bullets), comments(count)')
     .eq('is_hero', true)
     .order('hero_at', { ascending: false })
     .limit(3);
@@ -110,7 +110,7 @@ export default async function Home({
   // 2. Fetch all posts for the feed (excluding or including hero posts - user's preference usually separate them)
   const { data: dbPosts, error: dbError } = await supabase
     .from('posts')
-    .select('*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets:description_bullets)')
+    .select('*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets:description_bullets), comments(count)')
     .neq('category', 'notice')
     .order('created_at', { ascending: false });
 
@@ -141,7 +141,7 @@ export default async function Home({
       date: p.created_at, 
       displayDate: new Date(p.created_at).toLocaleDateString('ko-KR'),
       likes: p.likes_count || 0,
-      comments: 0,
+      comments: p.comments?.[0]?.count || 0,
       imageUrl: p.image_url || 'https://images.unsplash.com/photo-1542204165-65bf26472b9b?auto=format&fit=crop&w=1600&q=80',
       isEditorsPick: p.is_editors_pick || false,
       isHero: p.is_hero || false,
@@ -183,7 +183,7 @@ export default async function Home({
     );
   }
 
-  const animationKey = `${categoryFilter || 'all'}-${authorFilter || 'all'}-${searchFilter || 'all'}`;
+  const animationKey = `${authorFilter || 'all'}-${searchFilter || 'all'}`;
   const isInitialVisit = !categoryFilter && !authorFilter && !searchFilter;
 
   // Title Logic

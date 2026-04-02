@@ -84,6 +84,10 @@
 }
 
 @media (max-width: 768px) {
+  .container {
+    padding-left: 11px;
+    padding-right: 11px;
+  }
   .mainImage {
     max-height: 350px;
     border-radius: 12px;
@@ -188,6 +192,7 @@
   backdrop-filter: blur(2px);
   gap: 12px;
   border-radius: 8px;
+  text-align: center;
 }
 
 .content p {
@@ -229,7 +234,7 @@
 
 .commentInput {
   width: 100%;
-  min-height: 100px;
+  min-height: 80px;
   padding: 12px;
   border: 1px solid var(--border-medium);
   border-radius: 4px;
@@ -258,14 +263,14 @@
 .commentList {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 16px;
 }
 
 .comment {
   background-color: var(--bg-primary);
   border: 1px solid var(--border-medium);
   border-radius: 12px;
-  padding: 24px;
+  padding: 16px;
   position: relative;
   transition: all 0.2s ease;
   box-shadow: var(--shadow-sm);
@@ -280,7 +285,7 @@
   background-color: rgba(0, 153, 255, 0.04);
   border: 2px solid #0099ff;
   border-radius: 12px;
-  padding: 24px;
+  padding: 16px;
 }
 
 .commentAuthorInfo {
@@ -311,7 +316,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .commentAuthor {
@@ -324,7 +329,7 @@
 }
 
 .commentText {
-  font-size: 1rem;
+  font-size: 0.9rem;
   line-height: 1.5;
   color: var(--text-main);
 }

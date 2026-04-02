@@ -1,6 +1,6 @@
 "use client";
  
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import IntroAnimation from "@/components/common/IntroAnimation";
 import styles from "./page.module.css";
 import HeroCard from "@/components/feed/HeroCard";
@@ -48,12 +48,13 @@ export default function HomeContent({
   const [slideDir, setSlideDir] = useState<'next' | 'prev'>('next');
   const [currentPage, setCurrentPage] = useState(0);
   const POSTS_PER_PAGE = 8;
-  const [mobileVisibleCount, setMobileVisibleCount] = useState(4);
+  const [visibleCount, setVisibleCount] = useState(6);
   const [isMobile, setIsMobile] = useState(false);
   const [mobileGridCols, setMobileGridCols] = useState(2);
   const [isHeroPaused, setIsHeroPaused] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
   // UseEffect to set default cols based on view mode (Main: 2, ViewAll: 3)
   useEffect(() => {
@@ -73,11 +74,11 @@ export default function HomeContent({
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Reset counters on filter change
+  // Reset counters on filter change (Includes categoryFilter to ensure count resets even if animationKey is same)
   useEffect(() => {
     setCurrentPage(0);
-    setMobileVisibleCount(4);
-  }, [animationKey]);
+    setVisibleCount(6);
+  }, [animationKey, categoryFilter, authorFilter, searchFilter]);
 
   useEffect(() => {
     if (isInitialVisit && !isMobile) {
@@ -179,35 +180,29 @@ export default function HomeContent({
   // Grid posts logic
   const showFullGrid = isFiltered || isViewMore;
   const paginatedData = filteredPosts;
-  const totalPages = Math.ceil(paginatedData.length / POSTS_PER_PAGE);
 
-  // Selection logic: Desktop (Pagination) vs Mobile (Infinite)
+  // Selection logic: Infinite Scroll for results, but 2 for the main page
   const displayPosts = showFullGrid 
-    ? (isMobile 
-        ? paginatedData.slice(0, mobileVisibleCount) 
-        : paginatedData.slice(currentPage * POSTS_PER_PAGE, (currentPage + 1) * POSTS_PER_PAGE))
-    : (isMobile
-        ? otherPosts.slice(0, 4)
-        : otherPosts.slice(0, 4));
+    ? paginatedData.slice(0, visibleCount) 
+    : otherPosts.slice(0, 4);
 
-  // Infinite Scroll Trigger
+  // Infinite Scroll Trigger (Unified for all devices)
   useEffect(() => {
-    if (!isMobile || !showFullGrid) return;
+    if (!showFullGrid) return;
     
     const observer = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
-        setMobileVisibleCount(prev => Math.min(prev + 4, paginatedData.length));
+        setVisibleCount(prev => Math.min(prev + 3, paginatedData.length));
       }
     }, { 
-      threshold: 0.05,
-      rootMargin: '100px' // Start loading slightly before reaching the bottom
+      threshold: 0.1,
+      rootMargin: '300px'
     });
 
-    const sentinel = document.getElementById('mobile-scroll-sentinel');
-    if (sentinel) observer.observe(sentinel);
+    if (sentinelRef.current) observer.observe(sentinelRef.current);
 
     return () => observer.disconnect();
-  }, [isMobile, paginatedData.length, showFullGrid]); // removed mobileVisibleCount to prevent flicker
+  }, [paginatedData.length, showFullGrid, visibleCount]);
 
   return (
     <>
@@ -216,10 +211,6 @@ export default function HomeContent({
       <div className={styles.container}>
         {!showFullGrid ? (
           <>
-            <header className={styles.sectionHeader} style={{ marginTop: '3px' }}>
-              <h1 className={styles.sectionTitle}>지금 뜨는 리뷰</h1>
-              <div className={styles.headerSpacer}></div>
-            </header>
             <div 
               className={styles.heroWrapper}
               onMouseEnter={() => setIsHeroPaused(true)}
@@ -238,7 +229,7 @@ export default function HomeContent({
                       <HeroCard 
                         {...post} 
                         heightRatio="2/3" 
-                        showNav={false} // Nav handled by parent Wrapper to stay fixed
+                        showNav={false}
                       />
                     </div>
                   ))}
@@ -279,50 +270,55 @@ export default function HomeContent({
                   ))}
                 </div>
               </div>
-              <div className={styles.heroFrame}></div>
             </div>
 
             <div className={styles.gridSection}>
               <header className={styles.sectionHeader}>
-                <h3 className={styles.sectionTitle}>다른 리뷰</h3>
+                <h2 className={styles.sectionTitle}>최신 글</h2>
                 <div className={styles.headerSpacer}></div>
-
-                {/* 모바일 그리드 조절기 (전체보기 혹은 필터링 결과에서만 노출) */}
-                {isMobile && (isViewMore || isFiltered) && (
-                  <div className={styles.mobileGridControls}>
-                    <button 
-                      className={styles.gridBtn} 
-                      onClick={(e) => { e.preventDefault(); changeGridCols(-1); }}
-                      disabled={mobileGridCols <= 1}
-                    >－</button>
-                    <span className={styles.gridVal}>{mobileGridCols}</span>
-                    <button 
-                      className={styles.gridBtn} 
-                      onClick={(e) => { e.preventDefault(); changeGridCols(1); }}
-                      disabled={mobileGridCols >= 3}
-                    >＋</button>
-                  </div>
-                )}
                 
-                {filteredPosts.length > 3 && (
-                  <button className={styles.viewMoreBtnInline} onClick={() => router.push('/?view=all')}>
-                    전체보기 <span className={styles.btnIconInline}>+</span>
+                {filteredPosts.length > 0 && (
+                  <button className={`${styles.viewAllLink} ${styles.desktopOnly}`} onClick={() => router.push('/?view=all')}>
+                    전체 보기 <span className={styles.linkIcon}>→</span>
                   </button>
                 )}
               </header>
+
+               {/* Removed mobile grid controls on main screen as requested */}
+                
               <div 
-                className={styles.gridList}
+                className={styles.mainGrid}
                 style={{ '--mobile-cols': mobileGridCols } as React.CSSProperties}
               >
                 {displayPosts.map(post => (
-                  <PosterCard key={post.id} {...post} />
+                  <PosterCard 
+                    key={post.id} 
+                    {...post} 
+                    aspectRatio={isMobile ? 'default' : 'card45'} 
+                  />
                 ))}
               </div>
+
+              {/* 모바일 하단 전체보기 버튼 (메인 페이지 전용) */}
+              {isMobile && !showFullGrid && (
+                <div className={styles.mobileViewAllContainer}>
+                  <button 
+                    className={styles.mobileViewAllBtn}
+                    onClick={() => router.push('/?view=all')}
+                  >
+                    전체 글 더보기
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                      <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                  </button>
+                </div>
+              )}
               
-              {/* Mobile Sentinel (Hidden on Main Page as requested) */}
-              {isMobile && showFullGrid && displayPosts.length < (isViewMore ? otherPosts.length : totalPages * POSTS_PER_PAGE) && (
-                <div id="mobile-scroll-sentinel" className={styles.sentinel}>
-                  <div className={styles.shimmer}>Loading more...</div>
+              {/* Sentinel (Unified) */}
+              {showFullGrid && displayPosts.length < paginatedData.length && (
+                <div ref={sentinelRef} className={styles.sentinel}>
+                  <div className={styles.shimmer}>Loading...</div>
                 </div>
               )}
             </div>
@@ -331,7 +327,7 @@ export default function HomeContent({
           <div key={animationKey} className={styles.feedAnimator}>
             {authorData && (
               <div className={styles.authorProfileCard} style={{ '--author-color': authorData.color } as React.CSSProperties}>
-                {/* [데스크탑 전용 레이아웃] */}
+                {/* Desktop Profile */}
                 <div className={styles.desktopContent}>
                   <div className={styles.profileMain}>
                     <div className={styles.profileTop}>
@@ -360,7 +356,7 @@ export default function HomeContent({
                   </div>
                 </div>
 
-                {/* [모바일 전용 레이아웃] - 첨부해주신 이미지 구조에 최적화 */}
+                {/* Mobile Profile */}
                 <div className={styles.mobileContent}>
                   <div className={styles.mobileTopRow}>
                     <div className={styles.mobileAuthorBlock}>
@@ -389,77 +385,74 @@ export default function HomeContent({
                 </div>
               </div>
             )}
-
-            <header className={styles.sectionHeader}>
-              <h1 className={`${styles.sectionTitle} ${isViewMore ? styles.allPostsTitle : ''}`}>
-                { isViewMore ? "모든 글" : displayTitle}
+            <header className={styles.resultsHeader}>
+              <h1 className={styles.sectionTitle}>
+                { isViewMore ? "전체 글 보기" : displayTitle}
               </h1>
-
-              <div className={styles.headerSpacer}></div>
               
-              {/* Removed Back Button and Divider for 'All Posts' view as requested */}
-
-              {/* 모바일 그리드 조절기 */}
               {isMobile && (
-                <div className={styles.mobileGridControls}>
+                <div className={styles.centeredGridControls}>
                   <button 
-                    className={styles.gridBtn} 
-                    onClick={(e) => { e.preventDefault(); changeGridCols(-1); }}
-                    disabled={mobileGridCols <= 1}
-                  >－</button>
-                  <span className={styles.gridVal}>{mobileGridCols}</span>
+                    className={`${styles.gridBtnIcon} ${mobileGridCols === 1 ? styles.activeGridIcon : ''}`}
+                    onClick={() => setMobileGridCols(1)}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="6" width="16" height="4" rx="1"/><rect x="4" y="14" width="16" height="4" rx="1"/></svg>
+                  </button>
                   <button 
-                    className={styles.gridBtn} 
-                    onClick={(e) => { e.preventDefault(); changeGridCols(1); }}
-                    disabled={mobileGridCols >= 3}
-                  >＋</button>
+                    className={`${styles.gridBtnIcon} ${mobileGridCols === 2 ? styles.activeGridIcon : ''}`}
+                    onClick={() => setMobileGridCols(2)}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/></svg>
+                  </button>
                 </div>
               )}
-
-              {/* Inline Controls (Pagination) */}
-              <div className={styles.headerControls}>
-                {totalPages >= 1 && (
-                  <div className={styles.pageNavInline}>
-                    <span className={styles.pageInfoInline}>PAGE {currentPage + 1} / {totalPages}</span>
-                    <div className={styles.pageButtonsInline}>
-                      <button 
-                        className={styles.pageBtnSmall} 
-                        disabled={currentPage === 0}
-                        onClick={() => setCurrentPage(p => p - 1)}
-                      >
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="15 18 9 12 15 6"></polyline>
-                        </svg>
-                      </button>
-                      <button 
-                        className={styles.pageBtnSmall} 
-                        disabled={currentPage >= totalPages - 1}
-                        onClick={() => setCurrentPage(p => p + 1)}
-                      >
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="9 18 15 12 9 6"></polyline>
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
             </header>
 
-            <div key={isMobile ? 'mobile-grid' : `grid-${currentPage}-${animationKey}`} className={styles.gridListFade}>
+            <nav className={styles.categoryNav} style={{ borderBottom: 'none', margin: '8px 0', padding: 0 }}>
+              <div className={styles.categoryPills}>
+                {[
+                  { id: 'all', name: '전체' },
+                  { id: 'restaurant', name: '맛집' },
+                  { id: 'travel', name: '여행' },
+                  { id: 'movie', name: '영화' },
+                  { id: 'game', name: '게임' },
+                  { id: 'book', name: '책' },
+                  { id: 'other', name: '기타' }
+                ].map(cat => (
+                  <button
+                    key={cat.id}
+                    onClick={() => {
+                       const params = new URLSearchParams(searchParams.toString());
+                       if (cat.id === 'all') params.delete('category');
+                       else params.set('category', cat.id);
+                       router.push(`/?${params.toString()}`);
+                    }}
+                    className={`${styles.catPill} ${ (categoryFilter === cat.id || (!categoryFilter && cat.id === 'all')) ? styles.activeCat : ''}`}
+                  >
+                    {cat.name}
+                  </button>
+                ))}
+              </div>
+            </nav>
+
+            <div key={isMobile ? 'mobile-grid' : `grid-${animationKey}`} className={styles.gridListFade}>
               <div 
                 className={styles.gridList}
                 style={{ '--mobile-cols': mobileGridCols } as React.CSSProperties}
               >
                 {displayPosts.map(post => (
-                  <PosterCard key={post.id} {...post} />
+                  <PosterCard 
+                    key={post.id} 
+                    {...post} 
+                    aspectRatio="default" 
+                  />
                 ))}
               </div>
               
-              {/* Mobile Sentinel for Full Grid */}
-              {isMobile && displayPosts.length < paginatedData.length && (
-                <div id="mobile-scroll-sentinel" className={styles.sentinel}>
-                  <div className={styles.shimmer}>Loading more...</div>
+              {/* Unified Sentinel */}
+              {displayPosts.length < paginatedData.length && (
+                <div ref={sentinelRef} className={styles.sentinel}>
+                  <div className={styles.shimmer}>Loading...</div>
                 </div>
               )}
             </div>

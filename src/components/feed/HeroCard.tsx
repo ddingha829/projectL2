@@ -7,6 +7,7 @@ interface HeroCardProps {
   title: string;
   author: { id: string, name: string, color: string, avatar: string };
   likes: number;
+  comments: number;
   imageUrl: string;
   heightRatio?: '1/3' | '2/3' | 'full' | 'compact';
   onPrev?: (e: React.MouseEvent) => void;
@@ -19,7 +20,7 @@ interface HeroCardProps {
 }
 
 export default function HeroCard({ 
-  id, category, title, author, likes, imageUrl, 
+  id, category, title, author, likes, comments, imageUrl, 
   heightRatio = 'full', onPrev, onNext, showNav,
   currentIndex = 0, totalCount = 3, isEditorsPick,
   displayDate
@@ -34,32 +35,46 @@ export default function HeroCard({
       <img src={imageUrl} alt={title} className={styles.bgImage} />
       <div className={styles.overlay}>
         <Link href={`/post/${id}`} className={styles.contentLink}>
-          <div className={styles.content}>
-            {heightRatio === 'compact' ? (
-              <h2 className={styles.title}>{title}</h2>
-            ) : (
-              <>
-                <div className={styles.categoryAndBadge}>
-                  <span className={styles.category}>{category}</span>
-                  {isEditorsPick && (
-                    <div className={styles.editorsPickBadge}>
-                      <span className={styles.pickIcon}>🏆</span>
-                      공들여 씀
-                    </div>
-                  )}
+            <div className={styles.header}>
+              <div className={styles.categoryBadge}>{category}</div>
+              {isEditorsPick && (
+                <div className={styles.editorsPick}>
+                  🏆 공들여 씀
                 </div>
+              )}
+            </div>
+
+            <div className={styles.content}>
+              {heightRatio === 'compact' ? (
                 <h2 className={styles.title}>{title}</h2>
-                <div className={styles.meta}>
-                  <span className={styles.likes}><span className={styles.icon}>👍</span> {likes}</span>
-                  {/* Date and Author: inline within meta */}
-                  <div className={styles.metaInfo}>
-                    <span className={styles.date}>{displayDate}</span>
-                    <span className={styles.author}>{author.name}</span>
+              ) : (
+                <>
+                  <h2 className={styles.title}>{title}</h2>
+                  
+                  <div className={styles.footer}>
+                    <div className={styles.authorSection}>
+                      <div className={styles.avatarWrapper}>
+                        {author.avatar.startsWith("/") || author.avatar.startsWith("http") ? (
+                          <img src={author.avatar} alt={author.name} className={styles.avatarImg} />
+                        ) : (
+                          <span className={styles.avatarEmoji}>{author.avatar}</span>
+                        )}
+                      </div>
+                      <div className={styles.authorInfo}>
+                        <div className={styles.authorName}>{author.name}</div>
+                        <div className={styles.authorTitle}>Editor</div>
+                      </div>
+                    </div>
+                    
+                    <div className={styles.meta}>
+                      <span className={styles.likes}>👍 {likes}</span>
+                      <span className={styles.comments}>💬 {comments}</span>
+                      <span className={styles.date}>{displayDate}</span>
+                    </div>
                   </div>
-                </div>
-              </>
-            )}
-          </div>
+                </>
+              )}
+            </div>
         </Link>
       </div>
 

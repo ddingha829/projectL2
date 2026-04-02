@@ -7,28 +7,33 @@
   display: flex;
   align-items: center;
   gap: 12px; /* Reduced from 16px to bring elements closer */
-  margin-bottom: 7px;
+  margin-bottom: 48px !important; /* Doubled from previous level to ensure clear separation */
 }
 
-.sectionTitle {
-  font-family: var(--font-outfit), var(--font-noto-sans), sans-serif;
-  font-size: 1.57rem; 
-  font-weight: 800;
-  color: var(--text-primary); 
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  white-space: nowrap;
+.resultsHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 11px; /* Reduced by 30% from 16px */
+  margin-bottom: 12px; /* Reduced by 50% from 24px */
+  width: 100%;
+}
+
+.centeredGridControls {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
 }
 
-.sectionTitle::before {
-  content: '';
-  width: 4px;
-  height: 24px;
-  background-color: var(--divider-color);
-  border-radius: 2px;
+.sectionTitle {
+  font-family: var(--font-noto-sans), sans-serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  margin: 0;
 }
 
 .allPostsTitle {
@@ -47,7 +52,7 @@
   border-radius: 24px;
   overflow: hidden;
   background: #2C2C2C;
-  margin-bottom: 10px; /* Reduced to shrink gap with Other Reviews */
+  margin-bottom: 8px !important; /* Reduced by 20% to shrink gap with grid section below */
 }
 
 /* The fixed frame on top of the sliding tracks */
@@ -79,9 +84,6 @@
   width: 100%;
 }
 
-.gridListFade {
-  animation: pageFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-}
 
 .desktopOnly {
   display: block;
@@ -102,19 +104,6 @@
   .desktopOnly {
     display: none;
   }
-  .mobileOnly {
-    display: block; 
-    overflow: hidden;
-    position: relative;
-    width: 100%;
-    height: 280px !important;
-  }
-  .mobileHeroItem {
-    min-width: 100%;
-    width: 100%;
-    height: 280px !important;
-    flex-shrink: 0;
-  }
 }
 
 .noticeWrapper {
@@ -122,14 +111,69 @@
 }
 
 .gridSection {
-  margin-top: 10px; /* Reduced by 60% from original level */
+  margin-top: 8px !important; /* Reduced by 20% from 10px */
 }
 
 .gridList {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px; /* Reduced by 50% (32 -> 16) to enlarge cards */
-  margin-bottom: 8px; /* Further reduced by ~20% (10 -> 8) */
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+/* Category Navigation */
+.categoryNav {
+  margin: 32px 0;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.categoryPills {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: none;
+}
+
+.categoryPills::-webkit-scrollbar {
+  display: none;
+}
+
+.catPill {
+  background: #e9ecef; /* Slightly darker gray as requested */
+  border: 1px solid var(--border-light);
+  padding: 4px 12px;
+  border-radius: 40px;
+  font-size: 0.72rem;
+}
+
+.catPill:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--border-medium);
+}
+
+.activeCat {
+  background: var(--accent-primary) !important;
+  color: #fff !important;
+  border-color: var(--accent-primary) !important;
+}
+
+.viewAllLink {
+  background: none;
+  border: none;
+  color: var(--accent-primary);
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: gap 0.2s;
+}
+
+.viewAllLink:hover {
+  gap: 10px;
 }
 
 .viewMoreBtnInline {
@@ -410,6 +454,14 @@
   to { opacity: 1; transform: translateX(0); filter: blur(0); }
 }
 
+@media (min-width: 1025px) {
+  .mainGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+}
+
 @media (max-width: 1200px) {
   .gridList {
     grid-template-columns: repeat(3, 1fr);
@@ -451,7 +503,7 @@
   }
   
   .heroWrapper, .heroFrame {
-    margin-bottom: 12px !important; 
+    margin-bottom: 8px !important; /* Increased by ~30% as requested */
     border-radius: 10px !important; /* Slightly tighter radius for narrower margin */
     border: none !important;
     margin-left: 2px !important;
@@ -513,7 +565,7 @@
   }
 
   .gridSection {
-    margin-top: 12px !important; /* Reduced by 70% */
+    margin-top: 5px !important; /* Increased by ~20% (bringing total increase to 3px/30% with hero margin) */
   }
 
   .headerControls {
@@ -521,10 +573,18 @@
   }
 
   .heroTrack {
-    height: 280px !important;
+    height: 220px !important;
+    display: flex !important;
+    width: 100% !important;
+  }
+
+  .mobileHeroItem {
+    flex: 0 0 100%;
+    width: 100%;
+    min-width: 100%;
   }
   
-  .gridList {
+  .gridList, .mainGrid {
     display: grid !important;
     grid-template-columns: repeat(var(--mobile-cols, 2), 1fr) !important;
     gap: 2px !important; 
@@ -970,7 +1030,7 @@
 
 .fixedHeroNav {
   position: absolute;
-  bottom: 24px;
+  top: 24px;
   right: 24px;
   display: flex;
   align-items: center;
@@ -983,6 +1043,60 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   z-index: 10;
+}
+
+.mobileGridControls {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  width: 100% !important;
+  margin-top: -12px !important;
+  margin-bottom: 4px !important;
+  padding: 0 2px !important;
+  transform: translateX(10px) !important; /* Force move 10px right as requested */
+  background: transparent !important;
+  border: none !important;
+  box-sizing: border-box !important;
+}
+
+.mobileViewAllContainer {
+  display: flex !important;
+  justify-content: center !important;
+  width: 100% !important;
+  margin-top: 24px !important;
+  margin-bottom: 40px !important;
+}
+
+.mobileViewAllBtn {
+  background: var(--bg-secondary) !important;
+  border: 1px solid var(--border-light) !important;
+  color: var(--text-primary) !important;
+  padding: 10px 24px !important;
+  border-radius: 40px !important;
+  font-size: 0.85rem !important;
+  font-weight: 700 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.gridBtnIcon {
+  background: transparent;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  padding: 7px; /* Reduced by ~10% from 8px */
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.activeGridIcon {
+  background: var(--bg-primary);
+  color: var(--accent-primary);
+  box-shadow: var(--shadow-sm);
 }
 
 .slideNavBtn {
@@ -1024,4 +1138,56 @@
   background: rgba(255, 255, 255, 0.35);
   border-radius: 50%;
   transition: background 0.3s ease;
+}
+@media (max-width: 768px) {
+  .sectionHeader {
+    padding: 0 20px;
+    margin-top: 0 !important; /* Fixed overlap - no negative margin */
+    margin-bottom: 16px !important; /* Reduced gap with cards below by 50% as requested */
+    display: flex;
+    justify-content: center !important;
+    position: relative;
+    min-height: 0 !important;
+  }
+  
+  .sectionTitle {
+    font-size: 1.93rem;
+    text-align: center !important;
+    width: 100%;
+  }
+
+  .viewAllLink {
+    position: absolute !important;
+    right: 20px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    font-size: 0.78rem !important; /* Reduced to ~0.8rem as requested */
+    color: var(--accent-primary) !important;
+    font-weight: 700 !important;
+    background: none !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .categoryNav {
+    padding: 0 10px;
+    margin: 4px 0 !important;
+    display: flex;
+    justify-content: center;
+  }
+
+  .categoryPills {
+    justify-content: center !important;
+    padding-bottom: 4px;
+    width: 100%;
+  }
+
+  .desktopOnly {
+    display: none !important;
+  }
+
+  .mobileOnly {
+    display: block !important;
+  }
 }

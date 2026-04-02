@@ -2,40 +2,59 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.35s cubic-bezier(0.2, 0, 0, 1);
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+}
+
+.ratioCard45 {
+  aspect-ratio: 4/5 !important;
+  height: auto !important;
+}
+
+.ratioCard45 .link {
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.ratioCard45 .imageWrapper {
+  flex: 3 !important; /* Image takes even more space (3/4 of the card) */
+  padding-top: 0 !important; 
+}
+
+.ratioCard45 .contentArea {
+  flex: 1 !important; /* Content takes 1/4 of the card to maintain total 4/5 ratio */
+  height: auto !important; /* Override fixed height for card scaling */
+  min-height: 0 !important;
 }
 
 .card:hover {
-  transform: translateY(-8px);
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-medium);
 }
 
 .link {
   text-decoration: none;
   color: inherit;
-  display: block;
-}
-
-.cardMain {
-  position: relative;
-  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .imageWrapper {
   position: relative;
   width: 100%;
-  padding-top: 122.5%; /* Adjusted to half of recent reduction */
-  border-radius: 20px;
+  padding-top: 65%; /* Wider aspect ratio for editorial look */
   overflow: hidden;
-  border: 2px solid var(--divider-color); /* Matched with sidebar divider */
-  isolation: isolate;
   background-color: var(--bg-tertiary);
-  margin-bottom: 8px; /* Reduced since no title below */
-  box-shadow: var(--shadow-md);
-  transition: box-shadow 0.4s ease;
 }
 
-.card:hover .imageWrapper {
-  box-shadow: var(--shadow-lg);
+.ratio45 {
+  padding-top: 125% !important; /* 4:5 Ratio */
 }
 
 .posterImage {
@@ -45,205 +64,140 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: transform 0.8s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .card:hover .posterImage {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 .categoryBadge {
   position: absolute;
-  top: 10px;
-  left: 10px;
-  background-color: var(--glass-bg);
-  color: var(--text-primary);
-  height: 32px;
-  padding: 0 12px;
-  border-radius: var(--radius-sm);
-  font-size: 0.7rem;
+  top: 12px;
+  left: 12px;
+  background-color: var(--bg-primary);
+  color: var(--accent-primary);
+  height: 22px;
+  padding: 0 10px;
+  border-radius: 4px;
+  font-size: 0.62rem;
   font-weight: 800;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   z-index: 5;
-  border: 1px solid var(--glass-border);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-sizing: border-box;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border: 1px solid var(--border-light);
 }
 
 .pickBadgeInline {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 12px;
+  right: 12px;
   display: flex;
   align-items: center;
   gap: 4px;
   padding: 2px 8px;
   background-color: #ffd700;
   color: #000;
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   font-weight: 900;
   border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-  letter-spacing: 0.05em;
   z-index: 5;
 }
 
-.pickIcon {
-  font-size: 0.75rem; 
-}
-
-.titleOverlay {
-  position: absolute;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-  padding: 50px 21px 36px; /* Increased horizontal padding by ~30% (16 -> 21) */
-  background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0) 28%, rgba(0, 0, 0, 0.75) 65%, rgba(0, 0, 0, 0.95) 100%);
-  z-index: 3;
+.contentArea {
+  padding: 8px 14px 5px 14px; /* Reduced bottom padding by ~30% for closer metadata */
+  display: flex;
+  flex-direction: column;
+  flex: none !important;
+  height: 96px !important; 
+  box-sizing: border-box !important;
 }
 
 .title {
-  font-family: var(--font-outfit), var(--font-noto-sans), sans-serif;
-  font-size: 1.43rem; /* 1.3rem * 1.1 = 1.43rem */
+  font-family: var(--font-noto-sans), sans-serif;
+  font-size: clamp(1.0rem, 1.47vw, 1.31rem); /* Base size increased roughly 5% */
   font-weight: 700;
-  color: #fff;
+  color: var(--text-primary);
+  line-height: 1.3;
+  margin-bottom: auto; /* Pushes the meta layer down so title visually stays higher */
+  
+  /* 2-line truncation as requested */
   display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
-  overflow: hidden;
-  line-height: 1.25;
-  letter-spacing: -0.015em;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+  overflow: hidden; 
+
+  letter-spacing: -0.01em;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 .metaInfo {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Likes on left, others on right */
-  width: 100%;
-  z-index: 4;
-  font-family: var(--font-noto-sans), sans-serif;
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.85);
-  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-  margin-top: 6px;
+  justify-content: space-between;
+  margin-top: auto; /* Always stick to bottom */
+  font-size: 0.78rem;
+  color: var(--text-muted);
 }
 
-.metaRight {
+.metaLeft, .metaRight {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
 
-.likes {
-  font-weight: 700;
-  color: #fff;
-}
-
-.date {
-  opacity: 0.6;
-  font-weight: 400;
-}
-
-.date::before {
-  content: none; /* Removed dot */
+.likes, .comments {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
 }
 
 .author {
   font-weight: 700;
-  color: #fff;
+  color: var(--text-secondary);
 }
 
-.author::before {
-  content: none; /* Removed dot */
-}
-
-.metaRight {
-  display: flex;
-  gap: 8px; /* Tightened gap */
-  align-items: center;
+.date {
+  font-weight: 400;
 }
 
 @media (max-width: 768px) {
-  .card:hover {
-    transform: none !important;
-  }
   .card {
-     min-width: 0;
-     margin-bottom: 0px; 
+    border-radius: var(--radius-sm);
   }
+  
   .imageWrapper {
-    padding-top: 122.5%; 
-    margin-bottom: 0px; 
-    border-radius: 12px; 
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    overflow: hidden; 
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    padding-top: 60%;
   }
 
-  /* Dynamic font scaling based on parent variable --mobile-cols */
-  /* Slopes adjusted (0.60 for title, 0.80 for meta) for 5% reduction at 3 columns */
-  .titleOverlay {
-    /* Reduced horizontal baseline by 30% from 24px to 17px */
-    padding: calc(18px / (1 + (var(--mobile-cols, 2) - 1) * 0.6)) 
-             calc(17px / (1 + (var(--mobile-cols, 2) - 1) * 0.6)) 
-             calc(24px / (1 + (var(--mobile-cols, 2) - 1) * 0.6));
-    background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, 0.6) 65%, rgba(0, 0, 0, 0.95) 100%);
+  .contentArea {
+    padding: 10px;
+    min-height: 90px;
   }
 
   .title {
-    /* 1col: 1.65rem, 2col: 1.03rem, 3col: 0.75rem (5% smaller than the previous 0.78) */
-    font-size: calc(1.65rem / (1 + (var(--mobile-cols, 2) - 1) * 0.6)); 
-    line-height: 1.25;
-    font-weight: 800;
-    word-break: keep-all; /* Prevent syllable splitting in Korean headers */
-    overflow-wrap: break-word;
-  }
-
-  .categoryBadge {
-    /* Baseline 30px, slower slope 0.68 to boost 3rd column by ~10% more */
-    height: calc(30px / (1 + (var(--mobile-cols, 2) - 1) * 0.68));
-    padding: 0 calc(12px / (1 + (var(--mobile-cols, 2) - 1) * 0.68));
-    font-size: calc(0.9rem / (1 + (var(--mobile-cols, 2) - 1) * 0.68));
-    top: calc(12px / (1 + (var(--mobile-cols, 2) - 1) * 0.68));
-    left: calc(12px / (1 + (var(--mobile-cols, 2) - 1) * 0.68));
-    border-radius: 3px;
-    font-weight: 900;
-  }
-
-  .pickBadgeInline {
-    top: calc(12px / (1 + (var(--mobile-cols, 2) - 1) * 0.68));
-    right: calc(12px / (1 + (var(--mobile-cols, 2) - 1) * 0.68));
-    padding: calc(3px / (1 + (var(--mobile-cols, 2) - 1) * 0.68)) calc(7px / (1 + (var(--mobile-cols, 2) - 1) * 0.68));
-    font-size: calc(0.75rem / (1 + (var(--mobile-cols, 2) - 1) * 0.68));
-  }
-
-  .pickIcon {
-    font-size: calc(1rem / (1 + (var(--mobile-cols, 2) - 1) * 0.68));
+    font-size: 1.05rem; /* 5% increase from 1rem */
+    margin-bottom: 8px;
+    line-height: 1.3;
   }
 
   .metaInfo {
-    display: flex; 
-    justify-content: space-between;
-    width: 100%;
-    gap: 6px;
-    /* 1col: 0.85rem, 3col: 0.36rem (~10% boost from prior 0.33) */
-    font-size: calc(0.85rem / (1 + (var(--mobile-cols, 2) - 1) * 0.68)); 
-    margin-top: calc(8px / (1 + (var(--mobile-cols, 2) - 1) * 0.68));
+    font-size: 0.62rem;
+    letter-spacing: -0.02em;
   }
-
-  .date::before, .author::before {
-    display: none;
+  
+  .metaLeft, .metaRight {
+    gap: 4px;
   }
-  .metaRight {
-    display: flex;
-    gap: calc(10px / (1 + (var(--mobile-cols, 2) - 1) * 0.68)); /* Dynamic tightening */
-    align-items: center;
+  
+  .likes, .comments {
+    gap: 2px;
   }
 }

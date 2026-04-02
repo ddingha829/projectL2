@@ -10,14 +10,7 @@ import HeroCard from "@/components/feed/HeroCard";
 import { createClient } from "@/lib/supabase/client";
 
 const CATEGORIES = [
-  { id: "all", name: "모든 글", icon: "🏠" },
-  { id: "movie", name: "영화", icon: "🎬" },
-  { id: "book", name: "책", icon: "📚" },
-  { id: "game", name: "게임", icon: "🎮" },
-  { id: "restaurant", name: "맛집", icon: "🍱" },
-  { id: "travel", name: "여행", icon: "✈️" },
-  { id: "exhibition", name: "전시회", icon: "🖼️" },
-  { id: "other", name: "기타", icon: "✨" },
+  { id: "all", name: "전체 글 보기" },
 ];
 
 interface LeftSidebarProps {
@@ -231,39 +224,22 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
 
         <div className={styles.section}>
           <header className={styles.sidebarHeader}>
-            <h3 className={styles.sectionTitle}>Categories</h3>
-            <div className={styles.sidebarDivider}></div>
-          </header>
-          <ul className={styles.categoryGrid}>
-            <li className={styles.fullRow}>
-              <button 
-                onClick={() => handleFilter("category", "all")}
-                className={`${styles.menuBtn} ${currentView === "all" ? styles.active : ""}`}
-              >
-                <span className={styles.icon}>{CATEGORIES[0].icon}</span>
-                <span className={styles.name}>{CATEGORIES[0].name}</span>
-              </button>
-            </li>
-            {CATEGORIES.slice(1).map((cat) => (
-              <li key={cat.id} className={styles.menuItem}>
-                <button 
-                  onClick={() => handleFilter("category", cat.id)}
-                  className={`${styles.menuBtn} ${currentCategory === cat.id ? styles.active : ""}`}
-                >
-                  <span className={styles.icon}>{cat.icon}</span>
-                  <span className={styles.name}>{cat.name}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className={styles.section}>
-          <header className={styles.sidebarHeader}>
             <h3 className={styles.sectionTitle}>Editors</h3>
             <div className={styles.sidebarDivider}></div>
           </header>
           <ul className={styles.menuList}>
+            <li className={styles.userContainer}>
+              <button 
+                onClick={() => handleFilter("category", "all")}
+                className={`${styles.userBtn} ${currentView === "all" ? styles.active : ""}`}
+                style={{ borderStyle: 'dashed', opacity: 0.9, marginBottom: '8px' }}
+              >
+                <div className={styles.userInfo}>
+                   <div style={{ width: 40, height: 40, background: 'var(--bg-tertiary)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>All</div>
+                   <span className={styles.authorName}>전체 글 보기</span>
+                </div>
+              </button>
+            </li>
             {ALL_AUTHORS.map((author) => (
               <li 
                 key={author.id} 

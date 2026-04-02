@@ -261,17 +261,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 12px;
   background: transparent;
-  border: 1px solid var(--border-light); /* Adaptive border */
-  padding: 8px 12px;
-  border-radius: 8px; /* More rectangular R value */
+  border: 1px solid var(--border-light);
+  padding: 12px 20px;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   color: var(--text-primary);
   font-family: inherit;
-  font-size: 0.85rem;
-  font-weight: 700;
+  font-size: 1rem;
+  font-weight: 800;
 }
 
 .menuBtn:hover {
@@ -302,17 +302,17 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 16px;
   background: transparent;
-  border: 1px solid #e0e0e0; /* Gray border like categories */
-  padding: 8px 12px;
-  border-radius: 8px; /* More rectangular R value */
+  border: 1px solid var(--border-light);
+  padding: 12px 20px;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   color: var(--text-primary);
   font-family: inherit;
-  font-size: 0.85rem;
-  font-weight: 700;
+  font-size: 1rem;
+  font-weight: 800;
 }
 
 .userBtn:hover {
@@ -336,17 +336,17 @@
 }
 
 .avatarImg {
-  width: 24px !important;
-  height: 24px !important;
+  width: 40px !important;
+  height: 40px !important;
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
 }
 
 .avatarEmoji {
-  width: 24px;
-  height: 24px;
-  font-size: 1.1rem;
+  width: 40px;
+  height: 40px;
+  font-size: 1.5rem;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -10,36 +10,42 @@ interface PosterCardProps {
   isEditorsPick?: boolean;
   displayDate?: string;
   likes?: number;
+  comments?: number;
+  aspectRatio?: 'card45' | 'default';
 }
 
 export default function PosterCard({ 
-  id, category, title, author, imageUrl, isEditorsPick, displayDate, likes = 0 
+  id, category, title, author, imageUrl, isEditorsPick, displayDate, likes = 0, comments = 0,
+  aspectRatio = 'default' 
 }: PosterCardProps) {
   return (
-    <article className={styles.card}>
+    <article className={`${styles.card} ${aspectRatio === 'card45' ? styles.ratioCard45 : ''}`}>
       <Link href={`/post/${id}`} className={styles.link}>
-        <div className={styles.cardMain}>
-          <div className={styles.imageWrapper}>
-            <img src={imageUrl} alt={title} className={styles.posterImage} />
-            <div className={styles.categoryBadge}>{category}</div>
+        <div className={styles.imageWrapper}>
+          <img src={imageUrl} alt={title} className={styles.posterImage} />
+          <div className={styles.categoryBadge}>{category}</div>
 
-            {isEditorsPick && (
-              <div className={styles.pickBadgeInline}>
-                <span className={styles.pickIcon}>🏆</span>
-                PICK
-              </div>
-            )}
+          {isEditorsPick && (
+            <div className={styles.pickBadgeInline}>
+              <span className={styles.pickIcon}>🏆</span>
+              PICK
+            </div>
+          )}
+        </div>
 
-            <div className={styles.titleOverlay}>
-              <h3 className={styles.title}>{title}</h3>
-              {/* Metadata split: Likes on left, Date/Author on right */}
-              <div className={styles.metaInfo}>
-                <span className={styles.likes}>👍 {likes}</span>
-                <div className={styles.metaRight}>
-                  <span className={styles.date}>{displayDate}</span>
-                  <span className={styles.author}>{author.name}</span>
-                </div>
-              </div>
+        <div className={styles.contentArea}>
+          <h3 className={styles.title}>
+            {title}
+          </h3>
+          
+          <div className={styles.metaInfo}>
+            <div className={styles.metaLeft}>
+              <span className={styles.likes}>👍 {likes}</span>
+              <span className={styles.comments}>💬 {comments}</span>
+            </div>
+            <div className={styles.metaRight}>
+              <span className={styles.date}>{displayDate}</span>
+              <span className={styles.author}>{author.name}</span>
             </div>
           </div>
         </div>

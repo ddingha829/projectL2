@@ -75,10 +75,7 @@ export default function PostInteractions({ postId, authorId, initialLikes, initi
         <div className={styles.commentInputArea}>
           {!user && (
             <div className={styles.loginPrompt}>
-              <p>댓글 작성을 위해서는 로그인이 필요합니다. (비회원은 Like만 가능)</p>
-              <Link href="/login">
-                 <button className={styles.loginActionBtn}>Login to Comment</button>
-              </Link>
+              <p>댓글 작성을 위해서는 로그인이 필요합니다.<br />(비회원은 좋아요만 가능)</p>
             </div>
           )}
           

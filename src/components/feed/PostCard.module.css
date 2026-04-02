@@ -175,3 +175,22 @@
   background-color: var(--bg-hover);
   color: var(--text-main);
 }
+
+@media (max-width: 768px) {
+  .contentArea {
+    padding: 16px;
+    gap: 12px;
+  }
+  .title {
+    font-size: 1.3rem;
+  }
+  .footer {
+    padding-top: 12px;
+    margin-top: 4px;
+    gap: 12px;
+  }
+  .actionBtn {
+    padding: 4px 8px;
+    font-size: 0.85rem;
+  }
+}

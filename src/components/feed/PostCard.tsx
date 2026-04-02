@@ -36,6 +36,11 @@ export default function PostCard({
       </Link>
       
       <div className={styles.contentArea}>
+        <Link href={`/post/${id}`} className={styles.contentLink}>
+          <h2 className={styles.title}>{title}</h2>
+          <p className={styles.contentPreview}>{content}</p>
+        </Link>
+
         <div className={styles.header}>
           <div className={styles.authorBadge} style={{ borderColor: author.color }}>
             {author.avatar.startsWith('/') || author.avatar.startsWith('http') ? (
@@ -48,11 +53,6 @@ export default function PostCard({
           </div>
           <span className={styles.date}>{date}</span>
         </div>
-        
-        <Link href={`/post/${id}`} className={styles.contentLink}>
-          <h2 className={styles.title}>{title}</h2>
-          <p className={styles.contentPreview}>{content}</p>
-        </Link>
         
         <div className={styles.footer}>
           <button className={styles.actionBtn}>
