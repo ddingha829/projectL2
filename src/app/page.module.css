@@ -1,6 +1,8 @@
 .container {
   width: 100%;
   animation: fadeIn 0.8s ease-out;
+  background-color: #fbf9f8; /* Experimental off-white background */
+  min-height: 100vh;
 }
 
 .sectionHeader {
