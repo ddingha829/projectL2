@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   gap: 12px; /* Reduced from 16px to bring elements closer */
-  margin-bottom: 48px !important; /* Doubled from previous level to ensure clear separation */
+  margin-bottom: 15px !important; /* Reduced to ~30% of previous level for tight editorial fit */
 }
 
 .resultsHeader {
