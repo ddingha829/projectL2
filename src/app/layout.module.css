@@ -10,7 +10,8 @@
   flex: 1;
   display: flex;
   justify-content: center;
-  padding: 40px 0 40px 0; /* Increased top padding to 40px (2.5x of previous substantial feel) */
+  padding: 40px 0 20px 0; /* Reduced bottom padding by 50% as requested */
+
   width: 100%;
 }
 
@@ -55,8 +56,9 @@
   }
   .contentWrapper {
     background: var(--bg-primary);
-    padding: 8px 0;
+    padding: 24px 0 8px 0; /* Triple top padding from 8px to 24px */
   }
+
   .contentInner {
     padding: 0 8px;
     gap: 16px;

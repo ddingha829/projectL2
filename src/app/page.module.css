@@ -1467,7 +1467,8 @@
   display: grid;
   grid-template-columns: repeat(var(--desktop-cols, 4), 1fr);
   gap: 24px;
-  margin-bottom: 4px; /* Further reduced for extra tight fit */
+  margin-bottom: 2px; /* Tightest fit for PC footer */
+
 }
 
 
