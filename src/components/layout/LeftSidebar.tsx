@@ -196,80 +196,66 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
           </form>
         </div>
 
-        <div className={styles.section} style={{ marginBottom: '8px' }}>
-          <button 
-            onClick={() => handleFilter("category", "all")}
-            className={`${styles.viewAllMainBtn} ${currentView === "all" ? styles.active : ""}`}
-          >
-            <div className={styles.viewAllContent}>
-              <span className={styles.viewAllIcon}>📁</span>
-              <span className={styles.viewAllText}>전체 글 보기</span>
-            </div>
-            <span className={styles.viewAllArrow}>→</span>
-          </button>
-        </div>
-
-        <div className={styles.section}>
-          <header className={`${styles.sidebarHeader} ${styles.noticeHeader}`}>
-            <Link href="/notice" className={styles.sectionTitleLink}>
-              <h3 className={styles.sectionTitle}>Notice</h3>
-            </Link>
-            <div className={styles.sidebarDivider}></div>
-          </header>
-          <div className={styles.noticeList}>
-            {notices.length > 0 ? (
-              notices.map((n) => (
-                <Link key={n.id} href={`/post/db-${n.id}`} className={styles.noticeItem}>
-                  <span className={styles.noticeDot}>•</span>
-                  <span className={styles.noticeTitle}>{n.title}</span>
-                </Link>
-              ))
-            ) : (
-              [1, 2, 3].map((i) => (
-                <div key={i} className={styles.noticePlaceholder}>
-                  <span className={styles.placeholderDot}>•</span>
-                  <span className={styles.placeholderText}>공지사항이 없습니다.</span>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-
-        <div className={styles.section}>
-          <header className={styles.sidebarHeader}>
-            <h3 className={styles.sectionTitle}>Editors</h3>
-            <div className={styles.sidebarDivider}></div>
-          </header>
-          <ul className={styles.menuList}>
-            {ALL_AUTHORS.map((author) => (
-              <li 
-                key={author.id} 
-                className={styles.userContainer}
-                onMouseEnter={(e) => handleAuthorEnter(author, e)}
-                onMouseLeave={handleAuthorLeave}
-              >
-                <button 
-                  onClick={() => handleFilter("author", author.id)}
-                  className={`${styles.userBtn} ${currentAuthor === author.id ? styles.active : ""}`}
+        {/* New Mobile-Optimized Navigation Menu */}
+        <div className={styles.sidebarNav}>
+          <Link href="/?view=all" className={styles.sidebarLink} onClick={onClose}>
+            <span className={styles.sidebarIcon}>📁</span>
+            전체 포스팅
+          </Link>
+          
+          <details className={styles.sidebarDisclosure}>
+            <summary className={styles.sidebarSummary}>
+              <span className={styles.sidebarIcon}>📂</span>
+              카테고리 <span className={styles.disclosureArrow}>▼</span>
+            </summary>
+            <div className={styles.disclosureContent}>
+              {[
+                  { id: 'restaurant', name: '맛집' },
+                  { id: 'travel', name: '여행' },
+                  { id: 'movie', name: '영화' },
+                  { id: 'game', name: '게임' },
+                  { id: 'book', name: '책' },
+                  { id: 'exhibition', name: '전시회' },
+                  { id: 'other', name: '기타' }
+              ].map(cat => (
+                <Link 
+                  key={cat.id} 
+                  href={`/?category=${cat.id}`} 
+                  className={styles.disclosureLink}
+                  onClick={onClose}
                 >
-                  <div className={styles.userInfo}>
-                    {author.avatar.startsWith("/") || author.avatar.startsWith("http") ? (
-                      <img src={author.avatar} alt={author.name} className={styles.avatarImg} />
-                    ) : (
-                      <span className={styles.avatarEmoji}>{author.avatar}</span>
-                    )}
-                    <span className={styles.authorName}>{author.name}</span>
-                  </div>
-                  <div className={styles.colorLine} style={{ backgroundColor: author.color }}></div>
-                </button>
-              </li>
-            ))}
-          </ul>
+                  {cat.name}
+                </Link>
+              ))}
+            </div>
+          </details>
+
+          <details className={styles.sidebarDisclosure}>
+            <summary className={styles.sidebarSummary}>
+              <span className={styles.sidebarIcon}>✍️</span>
+              에디터 <span className={styles.disclosureArrow}>▼</span>
+            </summary>
+            <div className={styles.disclosureContent}>
+              {ALL_AUTHORS.map(editor => (
+                <Link 
+                  key={editor.id} 
+                  href={`/?author=${editor.id}`} 
+                  className={styles.disclosureLink}
+                  onClick={onClose}
+                >
+                  <img src={editor.avatar} alt={editor.name} className={styles.editorTinyAvatar} />
+                  {editor.name}
+                </Link>
+              ))}
+            </div>
+          </details>
         </div>
 
         <div className={styles.copyright}>
-          <p>Copyright 2026. Project L2.<br />All rights reserved.</p>
+          <p>Copyright 2026. Team L2.<br />All rights reserved.</p>
         </div>
+
+
       </aside>
 
       {mounted && hoveredAuthor && createPortal(

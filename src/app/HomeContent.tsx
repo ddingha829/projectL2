@@ -6,6 +6,7 @@ import styles from "./page.module.css";
 import HeroCard from "@/components/feed/HeroCard";
 import PosterCard from "@/components/feed/PosterCard";
 import { AUTHORS } from "@/lib/constants/authors";
+import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import ReviewRequest from "@/components/feed/ReviewRequest";
 
@@ -55,6 +56,8 @@ export default function HomeContent({
   const [touchStart, setTouchStart] = useState<number | null>(null);
    const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [showMobileFab, setShowMobileFab] = useState(false);
+  const [viewType, setViewType] = useState<'magazine' | 'card'>('card');
+  const [cardCols, setCardCols] = useState(4); // Default to 4 on PC as requested
   const sentinelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -86,8 +89,8 @@ export default function HomeContent({
   // Reset counters on filter change (Includes categoryFilter to ensure count resets even if animationKey is same)
   useEffect(() => {
     setCurrentPage(0);
-    setVisibleCount(6);
-  }, [animationKey, categoryFilter, authorFilter, searchFilter]);
+    setVisibleCount(isMobile ? 6 : (cardCols === 4 ? 8 : 6));
+  }, [animationKey, categoryFilter, authorFilter, searchFilter, isViewMore, cardCols, isMobile]);
 
   useEffect(() => {
     if (isInitialVisit && !isMobile) {
@@ -170,13 +173,30 @@ export default function HomeContent({
 
 
 
+  const CATEGORY_LABEL_MAP: Record<string, string> = {
+    'all': '전체',
+    'restaurant': '맛집',
+    'travel': '여행',
+    'movie': '영화',
+    'game': '게임',
+    'book': '책',
+    'exhibition': '전시회',
+    'other': '기타'
+  };
+
   // Unified Filtering for the grid
   let filteredPosts = allPosts;
   if (categoryFilter && categoryFilter !== 'all') {
-    filteredPosts = filteredPosts.filter(p => p.categoryId === categoryFilter);
+    const label = CATEGORY_LABEL_MAP[categoryFilter];
+    filteredPosts = filteredPosts.filter(p => 
+      p.categoryId === categoryFilter || 
+      p.category_id === categoryFilter || 
+      p.category === categoryFilter ||
+      (label && p.category === label)
+    );
   }
   if (authorFilter && authorFilter !== 'all') {
-    filteredPosts = filteredPosts.filter(p => p.author.id === authorFilter);
+    filteredPosts = filteredPosts.filter(p => p.author?.id === authorFilter || p.author_id === authorFilter);
   }
   if (searchFilter) {
     const lowerQuery = searchFilter.toLowerCase();
@@ -199,9 +219,10 @@ export default function HomeContent({
   useEffect(() => {
     if (!showFullGrid) return;
     
+    const pageSize = isMobile ? 6 : (cardCols === 4 ? 8 : 6);
     const observer = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
-        setVisibleCount(prev => Math.min(prev + 3, paginatedData.length));
+        setVisibleCount(prev => Math.min(prev + pageSize, paginatedData.length));
       }
     }, { 
       threshold: 0.1,
@@ -383,68 +404,194 @@ export default function HomeContent({
             )}
             <header className={styles.resultsHeader}>
               <h1 className={styles.sectionTitle}>
-                { isViewMore ? "전체 글 보기" : displayTitle}
+                { isViewMore ? "전체 포스팅" : displayTitle}
               </h1>
               
               {isMobile && (
                 <div className={styles.centeredGridControls}>
-                  <button 
-                    className={`${styles.gridBtnIcon} ${mobileGridCols === 1 ? styles.activeGridIcon : ''}`}
-                    onClick={() => setMobileGridCols(1)}
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="6" width="16" height="4" rx="1"/><rect x="4" y="14" width="16" height="4" rx="1"/></svg>
-                  </button>
-                  <button 
-                    className={`${styles.gridBtnIcon} ${mobileGridCols === 2 ? styles.activeGridIcon : ''}`}
-                    onClick={() => setMobileGridCols(2)}
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/></svg>
-                  </button>
+                  {/* View Type Icons */}
+                  <div className={styles.mobileControlGroup}>
+                    <button 
+                      className={`${styles.gridBtnIcon} ${viewType === 'card' ? styles.activeGridIcon : ''}`}
+                      onClick={() => setViewType('card')}
+                      title="카드형 보기"
+                    >
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+                    </button>
+                    <button 
+                      className={`${styles.gridBtnIcon} ${viewType === 'magazine' ? styles.activeGridIcon : ''}`}
+                      onClick={() => setViewType('magazine')}
+                      title="매거진형 보기"
+                    >
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="18" height="9" rx="1"/><rect x="3" y="15" width="8" height="6" rx="1"/><rect x="13" y="15" width="8" height="6" rx="1"/></svg>
+                    </button>
+                  </div>
+                  
+                  <div className={styles.mobileControlDivider}></div>
+
+                  {/* Grid Density Icons */}
+                  <div className={styles.mobileControlGroup}>
+                    <button 
+                      className={`${styles.gridBtnIcon} ${mobileGridCols === 1 ? styles.activeGridIcon : ''}`}
+                      onClick={() => setMobileGridCols(1)}
+                      title="1열로 보기"
+                    >
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="6" width="16" height="4" rx="1"/><rect x="4" y="14" width="16" height="4" rx="1"/></svg>
+                    </button>
+                    <button 
+                      className={`${styles.gridBtnIcon} ${mobileGridCols === 2 ? styles.activeGridIcon : ''}`}
+                      onClick={() => setMobileGridCols(2)}
+                      title="2열로 보기"
+                    >
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/></svg>
+                    </button>
+                    <button 
+                      className={`${styles.gridBtnIcon} ${mobileGridCols === 3 ? styles.activeGridIcon : ''}`}
+                      onClick={() => setMobileGridCols(3)}
+                      title="3열로 보기"
+                    >
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="4.5" height="16" rx="0.5"/><rect x="9.75" y="4" width="4.5" height="16" rx="0.5"/><rect x="15.5" y="4" width="4.5" height="16" rx="0.5"/></svg>
+                    </button>
+                  </div>
                 </div>
               )}
             </header>
 
-            <nav className={styles.categoryNav} style={{ borderBottom: 'none', margin: '8px 0', padding: 0 }}>
-              <div className={styles.categoryPills}>
-                {[
-                  { id: 'all', name: '전체' },
-                  { id: 'restaurant', name: '맛집' },
-                  { id: 'travel', name: '여행' },
-                  { id: 'movie', name: '영화' },
-                  { id: 'game', name: '게임' },
-                  { id: 'book', name: '책' },
-                  { id: 'other', name: '기타' }
-                ].map(cat => (
-                  <button
-                    key={cat.id}
-                    onClick={() => {
-                       const params = new URLSearchParams(searchParams.toString());
-                       if (cat.id === 'all') params.delete('category');
-                       else params.set('category', cat.id);
-                       router.push(`/?${params.toString()}`);
-                    }}
-                    className={`${styles.catPill} ${ (categoryFilter === cat.id || (!categoryFilter && cat.id === 'all')) ? styles.activeCat : ''}`}
+            {/* Unified Control Bar for Results View */}
+            <div className={styles.resultsControlsBar}>
+              {/* Left Group (Hidden on mobile if icons used above) */}
+              <div className={`${styles.controlsLeft} ${styles.desktopOnly}`}>
+                <div className={styles.pillContainer}>
+                  <button 
+                    className={`${styles.pillBtn} ${viewType === 'card' ? styles.pillActive : ''}`}
+                    onClick={() => setViewType('card')}
                   >
-                    {cat.name}
+                    카드형
                   </button>
-                ))}
+                  <button 
+                    className={`${styles.pillBtn} ${viewType === 'magazine' ? styles.pillActive : ''}`}
+                    onClick={() => setViewType('magazine')}
+                  >
+                    매거진형
+                  </button>
+                </div>
               </div>
-            </nav>
 
-            <div key={isMobile ? 'mobile-grid' : `grid-${animationKey}`} className={styles.gridListFade}>
-              <div 
-                className={styles.gridList}
-                style={{ '--mobile-cols': mobileGridCols } as React.CSSProperties}
-              >
-                {displayPosts.map(post => (
-                  <PosterCard 
-                    key={post.id} 
-                    {...post} 
-                    aspectRatio="default" 
-                    isOneCol={isMobile && mobileGridCols === 1}
-                  />
-                ))}
+              {/* Center Group: Category Filter Pills */}
+              <nav className={styles.categoryPillNav}>
+                <div className={styles.pillContainer}>
+                  {[
+                    { id: 'all', name: '전체' },
+                    { id: 'restaurant', name: '맛집' },
+                    { id: 'travel', name: '여행' },
+                    { id: 'movie', name: '영화' },
+                    { id: 'game', name: '게임' },
+                    { id: 'book', name: '책' },
+                    { id: 'exhibition', name: '전시' },
+                    { id: 'other', name: '기타' }
+                  ].map(cat => (
+                    <button
+                      key={cat.id}
+                      onClick={() => {
+                        const params = new URLSearchParams(searchParams.toString());
+                        if (cat.id === 'all') params.delete('category');
+                        else params.set('category', cat.id);
+                        router.push(`/?${params.toString()}`);
+                      }}
+                      className={`${styles.pillBtn} ${ (categoryFilter === cat.id || (!categoryFilter && cat.id === 'all')) ? styles.pillActive : ''}`}
+                    >
+                      {cat.name}
+                    </button>
+                  ))}
+                </div>
+              </nav>
+
+              {/* Right Group: Grid Density */}
+              <div className={styles.controlsRight}>
+                {viewType === 'card' && (
+                  <div className={styles.pillContainer}>
+                    {isMobile ? null : [3, 4].map(num => (
+                      <button 
+                        key={num}
+                        className={`${styles.pillBtn} ${cardCols === num ? styles.pillActive : ''}`}
+                        onClick={() => setCardCols(num)}
+                      >
+                        {num}열
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
+            </div>
+
+
+            <div key={isMobile ? 'mobile-grid' : `grid-${viewType}-${cardCols}`} className={styles.gridListFade}>
+              {viewType === 'card' ? (
+                <div 
+                  className={styles.gridList}
+                  style={{ 
+                    '--mobile-cols': mobileGridCols,
+                    '--desktop-cols': cardCols 
+                  } as React.CSSProperties}
+                >
+                  {displayPosts.map(post => (
+                    <PosterCard 
+                      key={post.id} 
+                      {...post} 
+                      aspectRatio="default" 
+                      isOneCol={(isMobile && mobileGridCols === 1) || (!isMobile && cardCols === 1)}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className={styles.magazineLayout}>
+                  {/* Hero Row: Top 2 posts large */}
+                  <div className={styles.magHeroRow}>
+                    {displayPosts.slice(0, 2).map(post => (
+                      <div key={post.id} className={styles.magHeroItem}>
+                        <PosterCard {...post} aspectRatio="mag54" />
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Body: Group by categories */}
+                  <div className={styles.magBody}>
+                    {['restaurant', 'travel', 'movie', 'game', 'book', 'exhibition', 'other'].map(catId => {
+                      const label = CATEGORY_LABEL_MAP[catId];
+                      // Filter by category and exclude head posts for uniqueness
+                      const heroIds = paginatedData.slice(0, 2).map(p => p.id);
+                      const catPosts = paginatedData.filter(p => (
+                        p.category_id === catId || 
+                        p.categoryId === catId ||
+                        p.category === catId || 
+                        (label && p.category === label)
+                      ) && !heroIds.includes(p.id)).slice(0, 5);
+                      
+                      if (catPosts.length === 0) return null;
+                      const catName = label || catPosts[0].category;
+
+                      return (
+                        <div key={catId} className={styles.magSection}>
+                          <h3 className={styles.magSecTitle}>{catName}</h3>
+                          <div className={styles.magList}>
+                            {catPosts.map(post => (
+                              <Link href={`/post/${post.id}`} key={post.id} className={styles.magListItem}>
+                                <div className={styles.magThumbWrap}>
+                                  <img src={post.imageUrl} alt={post.title} className={styles.magThumb} />
+                                </div>
+                                <div className={styles.magListInfo}>
+                                  <h4 className={styles.magListTitle}>{post.title}</h4>
+                                  <p className={styles.magListAuthor}>{post.author.name} · {post.displayDate}</p>
+                                </div>
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
               
               {/* Unified Sentinel */}
               {displayPosts.length < paginatedData.length && (
@@ -472,7 +619,7 @@ function MobileScrollFab({ isMobile, isViewMore, showMobileFab }: { isMobile: bo
         className={styles.mobileViewAllBtn}
         onClick={() => router.push('/?view=all')}
       >
-        전체 글 더보기
+        전체 포스팅 더보기
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
           <polyline points="9 18 15 12 9 6"></polyline>
         </svg>

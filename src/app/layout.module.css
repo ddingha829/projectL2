@@ -10,7 +10,7 @@
   flex: 1;
   display: flex;
   justify-content: center;
-  padding: 6px 0 40px 0;
+  padding: 40px 0 40px 0; /* Increased top padding to 40px (2.5x of previous substantial feel) */
   width: 100%;
 }
 

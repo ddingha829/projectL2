@@ -9,6 +9,7 @@ import { FrozenRoute } from "@/components/common/FrozenRoute";
 import TopNavbar from "./TopNavbar";
 import LeftSidebar from "./LeftSidebar";
 import gridStyles from "@/app/layout.module.css";
+import Footer from "./Footer";
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -110,7 +111,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       />
       <div className={gridStyles.mainContainer}>
         <LeftSidebar 
-          key={`sidebar-${user?.id || 'guest'}-${isLoading}`}
           isOpen={isMobileOpen} 
           onClose={() => setIsMobileOpen(false)} 
           user={user}
@@ -121,33 +121,12 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           <div className={gridStyles.mobileOverlay} onClick={() => setIsMobileOpen(false)}></div>
         )}
         <main className={gridStyles.contentWrapper} style={{ position: 'relative', overflowX: 'hidden' }}>
-          {isMobileScreen ? (
-            <div className={gridStyles.contentInner} style={{ width: '100%' }}>
-              {children}
-            </div>
-          ) : (
-            <AnimatePresence mode="popLayout" initial={false}>
-              <motion.div
-                key={key}
-                className={gridStyles.contentInner}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ 
-                  duration: 0.5, 
-                  ease: "easeInOut" 
-                }}
-                style={{ width: '100%' }}
-              >
-                <FrozenRoute>
-                  {children}
-                </FrozenRoute>
-              </motion.div>
-            </AnimatePresence>
-          )}
+          <div className={gridStyles.contentInner} style={{ width: '100%' }}>
+            {children}
+          </div>
         </main>
       </div>
-
+      <Footer />
     </>
   );
 }

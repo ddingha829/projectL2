@@ -11,7 +11,7 @@ interface PosterCardProps {
   displayDate?: string;
   likes?: number;
   comments?: number;
-  aspectRatio?: 'card45' | 'default';
+  aspectRatio?: 'card45' | 'mag54' | 'default';
   isOneCol?: boolean;
 }
 
@@ -20,11 +20,15 @@ export default function PosterCard({
   aspectRatio = 'default', isOneCol = false 
 }: PosterCardProps) {
   return (
-    <article className={`${styles.card} ${aspectRatio === 'card45' ? styles.ratioCard45 : ''} ${isOneCol ? styles.oneColCard : ''}`}>
+    <article className={`${styles.card} ${aspectRatio === 'card45' ? styles.ratioCard45 : ''} ${aspectRatio === 'mag54' ? styles.ratioMag54 : ''} ${isOneCol ? styles.oneColCard : ''}`}>
       <Link href={`/post/${id}`} className={styles.link}>
-        <div className={styles.imageWrapper}>
+        <div className={`${styles.imageWrapper} ${aspectRatio === 'mag54' ? styles.ratioMag54Wrap : ''}`}>
           <img src={imageUrl} alt={title} className={styles.posterImage} />
           <div className={styles.categoryBadge}>{category}</div>
+          
+          {/* Unified Author Badge */}
+          <div className={styles.authorBadge}>{author.name}</div>
+
 
           {isEditorsPick && (
             <div className={styles.pickBadgeInline}>
@@ -41,8 +45,8 @@ export default function PosterCard({
           
           <div className={styles.metaInfo}>
             <div className={styles.metaLeft}>
-              <span className={styles.likes}>👍 {likes}</span>
-              <span className={styles.comments}>💬 {comments}</span>
+              <span className={styles.likes}>{likes}</span>
+              <span className={styles.comments}>{comments}</span>
             </div>
             <div className={styles.metaRight}>
               <span className={styles.date}>{displayDate}</span>
@@ -50,6 +54,7 @@ export default function PosterCard({
             </div>
           </div>
         </div>
+
       </Link>
     </article>
   );

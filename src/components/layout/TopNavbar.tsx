@@ -21,11 +21,26 @@ export default function TopNavbar({
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
-
-  const router = useRouter();
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [isEditorsOpen, setIsEditorsOpen] = useState(false);
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const [editors, setEditors] = useState<any[]>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const editorsRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const supabaseClient = createClient();
+
+  useEffect(() => {
+    const fetchEditors = async () => {
+      const { data } = await supabaseClient
+        .from('profiles')
+        .select('id, display_name, role')
+        .in('role', ['admin', 'editor'])
+        .order('display_name');
+      if (data) setEditors(data);
+    };
+    fetchEditors();
+  }, []);
 
   // Close menu on click outside
   useEffect(() => {
@@ -80,6 +95,70 @@ export default function TopNavbar({
             <span className={styles.logoSub}>WoogaWooga</span>
           </Link>
         </div>
+
+        <nav className={styles.mainNav}>
+          <Link href="/?view=all" className={styles.navLink}>전체 포스팅</Link>
+          
+          <div 
+            className={styles.dropdownContainer}
+            onMouseEnter={() => setIsCategoryOpen(true)}
+            onMouseLeave={() => setIsCategoryOpen(false)}
+          >
+            <span className={styles.navLink}>
+              카테고리 <span className={styles.miniArrow}>▼</span>
+            </span>
+            {isCategoryOpen && (
+              <div className={styles.navDropdown}>
+                {[
+                  { id: 'restaurant', name: '맛집' },
+                  { id: 'travel', name: '여행' },
+                  { id: 'movie', name: '영화' },
+                  { id: 'game', name: '게임' },
+                  { id: 'book', name: '책' },
+                  { id: 'exhibition', name: '전시회' },
+                  { id: 'other', name: '기타' }
+                ].map(cat => (
+                  <Link 
+                    key={cat.id} 
+                    href={`/?category=${cat.id}`} 
+                    className={styles.dropdownItem}
+                    onClick={() => setIsCategoryOpen(false)}
+                  >
+                    <span className={styles.edName}>{cat.name}</span>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+
+
+
+          <div 
+            className={styles.dropdownContainer}
+            onMouseEnter={() => setIsEditorsOpen(true)}
+            onMouseLeave={() => setIsEditorsOpen(false)}
+          >
+            <span className={styles.navLink}>
+              에디터 <span className={styles.miniArrow}>▼</span>
+            </span>
+            {isEditorsOpen && (
+              <div className={styles.navDropdown}>
+                {editors.map(ed => (
+                  <Link 
+                    key={ed.id} 
+                    href={`/?author=${ed.id}`} 
+                    className={styles.dropdownItem}
+                    onClick={() => setIsEditorsOpen(false)}
+                  >
+                    <span className={styles.edName}>{ed.display_name}</span>
+                    <span className={styles.edRole}>{ed.role === 'admin' ? '운영자' : '에디터'}</span>
+                  </Link>
+                ))}
+                {editors.length === 0 && <div className={styles.emptyEds}>에디터가 없습니다.</div>}
+              </div>
+            )}
+          </div>
+        </nav>
 
         {/* Right: Search + Icons + Auth */}
         <div className={styles.rightGroup}>
