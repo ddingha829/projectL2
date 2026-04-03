@@ -57,9 +57,10 @@
 
 @media (max-width: 768px) {
   .footer {
-    padding: 30px 0;
-    margin-top: 60px;
+    padding: 12px 0; /* Reduced as requested */
+    margin-top: 2px; /* Fixed: Was 60px, now 2px (Reduction of 50% from global 4px) */
   }
+
   .container {
     flex-direction: column;
     gap: 16px;

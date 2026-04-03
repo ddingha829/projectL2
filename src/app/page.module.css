@@ -1413,6 +1413,12 @@
   overflow: hidden;
 }
 
+@media (max-width: 768px) {
+  .gridSection {
+    margin-top: 48px !important; /* ~3x increase for hero-grid gap as requested */
+  }
+}
+
 
 .magListAuthor {
   font-size: 0.75rem;
