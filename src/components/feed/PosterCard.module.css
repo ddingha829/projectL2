@@ -171,33 +171,54 @@
 @media (max-width: 768px) {
   .card {
     border-radius: var(--radius-sm);
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+  }
+  
+  .link {
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
   }
   
   .imageWrapper {
-    padding-top: 60%;
+    padding-top: 0 !important;
+    flex: 1 !important; /* Image takes remaining space */
+    min-height: 140px;
   }
 
   .contentArea {
-    padding: 10px;
-    min-height: 90px;
+    padding: 8px 10px 6px 10px !important;
+    height: 86px !important; /* Base mobile height */
+    flex: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    box-sizing: border-box !important;
   }
 
-  .title {
-    font-size: 1.05rem; /* 5% increase from 1rem */
-    margin-bottom: 8px;
-    line-height: 1.3;
+  /* 1-column specific: +10% font size */
+  .oneColCard .title {
+    font-size: 1.15rem !important; 
+  }
+  
+  /* 2-column specific: Decrease font and -20% content area height */
+  /* If not oneCol, it's 2-col on mobile */
+  .card:not(.oneColCard) .title {
+    font-size: 0.92rem !important; /* Reduced for 2-col */
+  }
+  
+  .card:not(.oneColCard) .contentArea {
+    height: 68px !important; /* ~20% reduction from 86px */
   }
 
   .metaInfo {
     font-size: 0.62rem;
     letter-spacing: -0.02em;
+    margin-top: auto !important;
   }
   
   .metaLeft, .metaRight {
     gap: 4px;
-  }
-  
-  .likes, .comments {
-    gap: 2px;
   }
 }

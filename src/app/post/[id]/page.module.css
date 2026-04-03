@@ -99,6 +99,10 @@
   .title {
     font-size: 1.75rem; /* Slightly smaller for mobile */
   }
+  .content {
+    font-size: 1rem; /* 10% reduction from 1.1rem as requested */
+    line-height: 1.7; /* Slightly tighter leading for balanced look */
+  }
   .mainImage {
     max-height: 350px;
     border-radius: 12px;

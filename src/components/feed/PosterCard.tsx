@@ -12,14 +12,15 @@ interface PosterCardProps {
   likes?: number;
   comments?: number;
   aspectRatio?: 'card45' | 'default';
+  isOneCol?: boolean;
 }
 
 export default function PosterCard({ 
   id, category, title, author, imageUrl, isEditorsPick, displayDate, likes = 0, comments = 0,
-  aspectRatio = 'default' 
+  aspectRatio = 'default', isOneCol = false 
 }: PosterCardProps) {
   return (
-    <article className={`${styles.card} ${aspectRatio === 'card45' ? styles.ratioCard45 : ''}`}>
+    <article className={`${styles.card} ${aspectRatio === 'card45' ? styles.ratioCard45 : ''} ${isOneCol ? styles.oneColCard : ''}`}>
       <Link href={`/post/${id}`} className={styles.link}>
         <div className={styles.imageWrapper}>
           <img src={imageUrl} alt={title} className={styles.posterImage} />

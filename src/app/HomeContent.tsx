@@ -304,6 +304,7 @@ export default function HomeContent({
                     key={post.id} 
                     {...post} 
                     aspectRatio={isMobile ? 'default' : 'card45'} 
+                    isOneCol={isMobile && mobileGridCols === 1}
                   />
                 ))}
               </div>
@@ -440,6 +441,7 @@ export default function HomeContent({
                     key={post.id} 
                     {...post} 
                     aspectRatio="default" 
+                    isOneCol={isMobile && mobileGridCols === 1}
                   />
                 ))}
               </div>
