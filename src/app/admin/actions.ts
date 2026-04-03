@@ -36,12 +36,15 @@ export async function updateUserRole(userId: string, newRole: 'user' | 'editor' 
   const { supabase, error } = await checkAdmin()
   if (error) return { success: false, error }
 
-  const { error: updateError } = await supabase
+  const { data, error: updateError } = await supabase
     .from('profiles')
     .update({ role: newRole })
     .eq('id', userId)
+    .select()
 
   if (updateError) return { success: false, error: updateError.message }
+  if (!data || data.length === 0) return { success: false, error: 'DB Policy Error: Check RLS settings.' }
+  
   revalidatePath('/admin')
   return { success: true }
 }

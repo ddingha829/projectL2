@@ -45,14 +45,15 @@ export async function updatePost(postId: string, formData: FormData) {
     updateData.is_editors_pick = isEditorsPick
   }
 
-  const { error: updateError } = await supabase
+  const { data: updatedData, error: updateError } = await supabase
     .from('posts')
     .update(updateData)
     .eq('id', postId)
+    .select()
 
-  if (updateError) {
-    console.error('Update post error:', updateError)
-    redirect(`/post/db-${postId}?error=update_failed`)
+  if (updateError || !updatedData || updatedData.length === 0) {
+    console.error('Update post error (Policy or DB):', updateError)
+    redirect(`/post/db-${postId}?error=update_failed_policy`)
   }
 
   revalidatePath('/', 'layout')
