@@ -150,10 +150,11 @@
   border: 1px solid var(--border-light);
   border-radius: 40px;
   padding: 0 16px;
-  height: 34px; /* Reduced from 36px */
+  height: 34px; 
   width: 100%;
-  max-width: 300px;
+  max-width: 220px; /* Reduced from 300px as requested */
 }
+
 
 .searchInput {
   flex: 1;
@@ -199,13 +200,15 @@
 .writeButton {
   background: var(--text-primary);
   color: var(--bg-primary);
-  padding: 8px 16px;
+  padding: 6px 14px; /* Reduced from 8px 16px */
   border-radius: 30px;
-  font-size: 0.85rem;
+  font-size: 0.78rem; /* Reduced from 0.85rem */
   font-weight: 800;
   text-decoration: none;
   transition: all 0.2s;
+  white-space: nowrap;
 }
+
 
 .writeButton:hover {
   background: #333;
@@ -221,14 +224,16 @@
 .adminButton {
   background: var(--bg-secondary);
   color: var(--text-secondary);
-  padding: 8px 14px;
+  padding: 6px 12px; /* Adjusted padding */
   border-radius: 30px;
-  font-size: 0.85rem;
+  font-size: 0.78rem; /* Consistent with writeButton */
   font-weight: 700;
   text-decoration: none;
   border: 1px solid var(--border-light);
   transition: all 0.2s;
+  white-space: nowrap;
 }
+
 
 .adminButton:hover {
   background: var(--bg-hover);
@@ -239,16 +244,18 @@
 .userNameDisplay {
   display: flex;
   align-items: center;
+  white-space: nowrap; /* Prevent vertical wrapping */
   gap: 8px;
   font-family: var(--font-outfit), var(--font-noto-sans), sans-serif;
   font-weight: 800;
-  color: #204bb8; /* Matching logo color for consistency */
-  font-size: 1.45rem;
+  color: #204bb8;
+  font-size: 1.1rem; /* Significantly reduced to prevent layout breaks */
   letter-spacing: -0.04em;
   transition: all 0.2s;
   cursor: pointer;
-  line-height: 1;
+  line-height: 1.2;
 }
+
 
 .roleLabel {
   font-size: 0.75rem;
