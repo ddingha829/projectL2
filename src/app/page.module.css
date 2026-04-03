@@ -2,8 +2,8 @@
   width: 100%;
   animation: fadeIn 0.8s ease-out;
   background-color: transparent;
-  min-height: 100vh;
 }
+
 
 .sectionHeader {
   display: flex;
