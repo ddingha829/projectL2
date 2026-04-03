@@ -11,6 +11,9 @@ const CATEGORY_MAP: Record<string, string> = {
 
 export default async function EditPostPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
+  const isDbPost = id.startsWith('db-');
+  const actualId = isDbPost ? id.replace('db-', '') : id;
+  
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -22,7 +25,7 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
   const { data: post, error } = await supabase
     .from('posts')
     .select('*')
-    .eq('id', id)
+    .eq('id', actualId)
     .single()
 
   if (error || !post) notFound()
@@ -64,7 +67,7 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
         <h1 className={styles.title}>글 수정</h1>
       </header>
       <EditPostForm
-        postId={id}
+        postId={actualId}
         initialTitle={post.title}
         initialContent={post.content}
         initialCategory={post.category}
