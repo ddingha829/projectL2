@@ -59,7 +59,7 @@ export default function HomeContent({
 
   useEffect(() => {
     const handleScroll = () => {
-      setShowMobileFab(window.scrollY > 100);
+      setShowMobileFab(window.scrollY > 15);
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
