@@ -32,20 +32,37 @@
 .meta {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.9rem;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 1rem; /* Increased 10% from 0.9rem */
   color: var(--text-muted);
-  margin-bottom: 12px;
+  margin-bottom: 20px;
 }
 
+
 .category {
-  font-weight: 700;
-  color: var(--text-main);
+  font-weight: 800;
+  color: var(--text-primary);
+  font-size: 1rem; /* Increased 10% from 0.9rem */
 }
 
 .author {
+  font-weight: 800;
+  background-color: #204bb8;
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 40px;
+  font-size: 0.88rem; /* Scaled slightly for badge proportion, but bold and crisp */
+  display: inline-flex;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(32, 75, 184, 0.15);
+}
+
+.date {
+  font-size: 1rem; /* Increased 10% from 0.9rem */
   font-weight: 500;
 }
+
 
 .title {
   font-size: 2.2rem;
