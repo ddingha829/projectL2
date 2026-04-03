@@ -97,6 +97,12 @@ body {
   background-color: var(--bg-primary);
 }
 
+@media (max-width: 768px) {
+  body {
+    background-attachment: scroll; /* Fixes "sticky" scroll on mobile */
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   body {
     background: radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.05), transparent 80%),

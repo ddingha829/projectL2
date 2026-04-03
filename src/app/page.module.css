@@ -18,8 +18,17 @@
   align-items: center;
   justify-content: center;
   gap: 11px; /* Reduced by 30% from 16px */
-  margin-bottom: 12px; /* Reduced by 50% from 24px */
+  margin-bottom: 24px; /* Increased back for better separation in full grid */
   width: 100%;
+  margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+  .resultsHeader {
+    margin-top: 15px !important;
+    margin-bottom: 12px !important;
+    padding-top: 10px; /* Safe padding for mobile header */
+  }
 }
 
 .centeredGridControls {

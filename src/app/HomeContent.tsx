@@ -100,8 +100,8 @@ export default function HomeContent({
 
   // Scroll to top when view or page changes
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [isViewMore, currentPage]);
+    window.scrollTo({ top: 0, behavior: isMobile ? 'instant' as ScrollBehavior : 'smooth' });
+  }, [isViewMore, currentPage, isMobile]);
 
   // Hero auto-slide functionality for all devices (Mobile & PC)
   useEffect(() => {

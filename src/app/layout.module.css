@@ -47,11 +47,11 @@
 
 @media (max-width: 768px) {
   .mainContainer {
-    height: calc(100vh - 54px);
+    min-height: calc(100vh - 54px);
   }
   .mobileOverlay {
     top: 54px;
-    height: calc(100vh - 54px);
+    min-height: calc(100vh - 54px);
   }
   .contentWrapper {
     background: var(--bg-primary);
