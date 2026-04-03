@@ -17,9 +17,9 @@ async function getProfileAndPost(postId: string) {
   return { supabase, user, profile, post, error: null }
 }
 
-function canEdit(role: string, userId: string, authorId: string) {
-  if (role === 'admin') return true               // admin: 모든 글
-  if (role === 'editor' && userId === authorId) return true  // editor: 본인 글만
+function canModify(role: string, userId: string, authorId: string) {
+  if (role === 'admin') return true                                // admin: 모든 글
+  if ((role === 'editor' || role === 'user') && userId === authorId) return true // 본인 글
   return false
 }
 
@@ -28,7 +28,7 @@ export async function updatePost(postId: string, formData: FormData) {
   const { supabase, user, profile, post, error } = await getProfileAndPost(postId)
   if (error || !user || !profile || !post) redirect('/login')
 
-  if (!canEdit(profile.role, user.id, post.author_id)) {
+  if (!canModify(profile.role, user.id, post.author_id)) {
     redirect(`/post/db-${postId}?error=no_permission`)
   }
 
@@ -61,10 +61,10 @@ export async function updatePost(postId: string, formData: FormData) {
 
 /** 게시물 삭제 (admin만 가능) */
 export async function deletePost(postId: string) {
-  const { supabase, user, profile, error } = await getProfileAndPost(postId)
-  if (error || !user || !profile) redirect('/login')
+  const { supabase, user, profile, post, error } = await getProfileAndPost(postId)
+  if (error || !user || !profile || !post) redirect('/login')
 
-  if (profile.role !== 'admin') {
+  if (!canModify(profile.role, user.id, post.author_id)) {
     redirect(`/post/db-${postId}?error=no_permission`)
   }
 

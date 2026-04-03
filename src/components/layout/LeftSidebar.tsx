@@ -196,6 +196,19 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
           </form>
         </div>
 
+        <div className={styles.section} style={{ marginBottom: '8px' }}>
+          <button 
+            onClick={() => handleFilter("category", "all")}
+            className={`${styles.viewAllMainBtn} ${currentView === "all" ? styles.active : ""}`}
+          >
+            <div className={styles.viewAllContent}>
+              <span className={styles.viewAllIcon}>📁</span>
+              <span className={styles.viewAllText}>전체 글 보기</span>
+            </div>
+            <span className={styles.viewAllArrow}>→</span>
+          </button>
+        </div>
+
         <div className={styles.section}>
           <header className={`${styles.sidebarHeader} ${styles.noticeHeader}`}>
             <Link href="/notice" className={styles.sectionTitleLink}>
@@ -228,18 +241,6 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
             <div className={styles.sidebarDivider}></div>
           </header>
           <ul className={styles.menuList}>
-            <li className={styles.userContainer}>
-              <button 
-                onClick={() => handleFilter("category", "all")}
-                className={`${styles.userBtn} ${currentView === "all" ? styles.active : ""}`}
-                style={{ borderStyle: 'dashed', opacity: 0.9, marginBottom: '8px' }}
-              >
-                <div className={styles.userInfo}>
-                   <div style={{ width: 40, height: 40, background: 'var(--bg-tertiary)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>All</div>
-                   <span className={styles.authorName}>전체 글 보기</span>
-                </div>
-              </button>
-            </li>
             {ALL_AUTHORS.map((author) => (
               <li 
                 key={author.id} 

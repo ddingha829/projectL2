@@ -28,20 +28,29 @@ export default function AdminDashboard({ initialPosts, initialProfiles }: AdminD
   const handleDeletePost = async (id: string, title: string) => {
     if (confirm(`게시물 [${title}]을 정말로 삭제하시겠습니까?`)) {
       const res = await deletePostAdmin(id)
-      if (res.success) alert('삭제되었습니다.')
-      else alert('삭제 실패: ' + res.error)
+      if (res.success) {
+        alert('삭제되었습니다.')
+        router.refresh()
+      } else {
+        alert('삭제 실패: ' + res.error)
+      }
     }
   }
 
   const handleToggleEditorsPick = async (id: string, status: boolean) => {
-    await toggleEditorsPick(id, status)
+    const res = await toggleEditorsPick(id, status)
+    if (res.success) router.refresh()
   }
 
   const handleRoleChange = async (userId: string, newRole: 'user' | 'editor' | 'admin') => {
     if (confirm(`유저 권한을 ${newRole}(으)로 변경하시겠습니까?`)) {
       const res = await updateUserRole(userId, newRole)
-      if (res.success) alert('권한이 변경되었습니다.')
-      else alert('변경 실패: ' + res.error)
+      if (res.success) {
+        alert('권한이 변경되었습니다.')
+        router.refresh()
+      } else {
+        alert('변경 실패: ' + res.error)
+      }
     }
   }
 
@@ -95,8 +104,8 @@ export default function AdminDashboard({ initialPosts, initialProfiles }: AdminD
             <tbody>
               {posts.length > 0 ? posts.map((post) => (
                 <tr key={post.id}>
-                  <td>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <td data-label="작가">
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
                       <img 
                         src={post.author?.avatar_url || "/avatars/default.png"} 
                         className={styles.authorAvatar} 
@@ -106,15 +115,15 @@ export default function AdminDashboard({ initialPosts, initialProfiles }: AdminD
                       {post.author?.display_name || "Unknown"}
                     </div>
                   </td>
-                  <td>
+                  <td data-label="제목">
                     <div className={styles.postTitle} title={post.title}>{post.title}</div>
                   </td>
-                  <td>
+                  <td data-label="카테고리">
                     <span className={styles.badge} style={{ background: 'var(--bg-tertiary)', color: 'var(--text-primary)' }}>
                       {post.category}
                     </span>
                   </td>
-                  <td>
+                  <td data-label="픽">
                     <button 
                       className={styles.actionBtn} 
                       onClick={() => handleToggleEditorsPick(post.id, post.is_editors_pick)}
@@ -123,9 +132,9 @@ export default function AdminDashboard({ initialPosts, initialProfiles }: AdminD
                       {post.is_editors_pick ? "⭐" : "☆"}
                     </button>
                   </td>
-                  <td>{new Date(post.created_at).toLocaleDateString()}</td>
-                  <td>
-                    <div style={{ display: 'flex', gap: '10px' }}>
+                  <td data-label="날짜">{new Date(post.created_at).toLocaleDateString()}</td>
+                  <td data-label="관리">
+                    <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
                       <button className={`${styles.actionBtn} ${styles.editBtn}`} onClick={() => router.push(`/post/db-${post.id}`)}>👁️</button>
                       <button className={`${styles.actionBtn} ${styles.deleteBtn}`} onClick={() => handleDeletePost(post.id, post.title)}>🗑️</button>
                     </div>
@@ -154,8 +163,8 @@ export default function AdminDashboard({ initialPosts, initialProfiles }: AdminD
             <tbody>
               {users.length > 0 ? users.map((user) => (
                 <tr key={user.id}>
-                  <td>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <td data-label="유저 정보">
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
                       <img 
                         src={user.avatar_url || "/avatars/default.png"} 
                         className={styles.authorAvatar} 
@@ -165,14 +174,14 @@ export default function AdminDashboard({ initialPosts, initialProfiles }: AdminD
                       {user.display_name || "Anonymous"}
                     </div>
                   </td>
-                  <td>{user.email}</td>
-                  <td>
+                  <td data-label="이메일">{user.email}</td>
+                  <td data-label="권한">
                     <span className={`${styles.badge} ${user.role === 'admin' ? styles.badgeAdmin : user.role === 'editor' ? styles.badgeEditor : styles.badgeUser}`}>
                       {user.role}
                     </span>
                   </td>
-                  <td>{new Date(user.created_at).toLocaleDateString()}</td>
-                  <td>
+                  <td data-label="가입일">{new Date(user.created_at).toLocaleDateString()}</td>
+                  <td data-label="등급 관리">
                     <select 
                       className={styles.tabBtn} 
                       style={{ padding: '6px 12px', fontSize: '0.8rem' }}

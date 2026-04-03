@@ -1,6 +1,6 @@
 .adminContainer {
   min-height: 100vh;
-  background-color: var(--bg-primary);
+  background-color: transparent;
   color: var(--text-primary);
   padding: 40px;
   font-family: var(--font-outfit), sans-serif;
@@ -259,3 +259,108 @@
 .backBtn:hover {
   transform: translateY(-2px);
 }
+
+/* Mobile Optimizations for Admin Dashboard */
+@media (max-width: 768px) {
+  .adminContainer {
+    padding: 16px 12px;
+  }
+
+  .glassCard {
+    padding: 18px 12px;
+    border-radius: 16px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+    letter-spacing: -0.01em;
+  }
+
+  .tabs {
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+
+  .tabBtn {
+    padding: 8px 14px;
+    font-size: 0.8rem;
+    border-radius: 10px;
+    flex: 1;
+    min-width: 120px;
+    text-align: center;
+  }
+
+  .searchInput {
+    padding: 12px 12px 12px 40px;
+    font-size: 0.85rem;
+  }
+
+  .adminTable, .adminTable thead, .adminTable tbody, .adminTable th, .adminTable td, .adminTable tr {
+    display: block;
+  }
+
+  .adminTable thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  .adminTable tr {
+    margin-bottom: 12px;
+    border-radius: 14px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-light);
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .adminTable tr:hover {
+    transform: none;
+  }
+
+  .adminTable td {
+    border: none !important;
+    padding: 6px 0 !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: right;
+    font-size: 0.9rem;
+  }
+
+  .adminTable td::before {
+    content: attr(data-label);
+    float: left;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 0.65rem;
+    color: var(--text-tertiary);
+  }
+
+  .postTitle {
+    max-width: 200px;
+    text-align: right;
+  }
+
+  .authorAvatar {
+    width: 20px;
+    height: 20px;
+    margin-right: 0;
+    margin-left: 6px;
+  }
+
+  .categoryGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+

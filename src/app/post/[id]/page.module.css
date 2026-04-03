@@ -85,8 +85,19 @@
 
 @media (max-width: 768px) {
   .container {
+    padding-top: 20px; /* Reduced from 40px */
     padding-left: 11px;
     padding-right: 11px;
+  }
+  .backBtn {
+    margin-bottom: 12px; /* Reduced from 24px */
+    font-size: 0.85rem;
+  }
+  .header {
+    margin-bottom: 15px; /* Reduced from 30px */
+  }
+  .title {
+    font-size: 1.75rem; /* Slightly smaller for mobile */
   }
   .mainImage {
     max-height: 350px;

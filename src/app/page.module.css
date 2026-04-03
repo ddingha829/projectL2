@@ -1,7 +1,7 @@
 .container {
   width: 100%;
   animation: fadeIn 0.8s ease-out;
-  background-color: #fbf9f8; /* Experimental off-white background */
+  background-color: transparent;
   min-height: 100vh;
 }
 
@@ -165,13 +165,15 @@
   background: none;
   border: none;
   color: var(--accent-primary);
-  font-weight: 700;
+  font-weight: 800;
   font-size: 0.95rem;
   cursor: pointer;
-  display: flex;
+  display: flex !important;
   align-items: center;
   gap: 6px;
-  transition: gap 0.2s;
+  margin-left: auto; /* Pushes to the right in flex container */
+  transition: all 0.2s;
+  margin-top: -12px; /* Pulled up closer to the hero section */
 }
 
 .viewAllLink:hover {
@@ -1063,23 +1065,46 @@
 
 .mobileViewAllContainer {
   display: flex !important;
-  justify-content: center !important;
-  width: 100% !important;
-  margin-top: 24px !important;
-  margin-bottom: 40px !important;
+  justify-content: flex-end !important;
+  width: auto !important;
+  position: fixed !important;
+  bottom: 24px !important;
+  right: 14px !important;
+  z-index: 2500 !important;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(30px) scale(0.85); /* Slightly lower and smaller initial state */
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1); /* Quicker elastic-feel transition */
+}
+
+.visibleFab {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateY(0) scale(1) !important;
+  pointer-events: auto !important;
 }
 
 .mobileViewAllBtn {
-  background: var(--bg-secondary) !important;
-  border: 1px solid var(--border-light) !important;
-  color: var(--text-primary) !important;
-  padding: 10px 24px !important;
+  background: var(--accent-primary) !important;
+  border: none !important;
+  color: #fff !important;
+  padding: 8px 24px !important;
   border-radius: 40px !important;
-  font-size: 0.85rem !important;
-  font-weight: 700 !important;
+  font-size: 0.82rem !important;
+  font-weight: 800 !important;
   display: flex !important;
   align-items: center !important;
   gap: 8px !important;
+  box-shadow: 0 8px 25px rgba(32, 75, 184, 0.4) !important;
+  pointer-events: auto;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+@keyframes slideUpFloating {
+  from { transform: translateY(40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
 .gridBtnIcon {
@@ -1143,19 +1168,21 @@
 }
 @media (max-width: 768px) {
   .sectionHeader {
-    padding: 0 20px;
-    margin-top: 0 !important; /* Fixed overlap - no negative margin */
-    margin-bottom: 16px !important; /* Reduced gap with cards below by 50% as requested */
+    padding: 0 8px 0 6px !important; /* Shifting left by reducing left padding */
+    margin-top: 0 !important;
+    margin-bottom: 12px !important; 
     display: flex;
-    justify-content: center !important;
+    justify-content: flex-start !important;
     position: relative;
     min-height: 0 !important;
   }
   
   .sectionTitle {
-    font-size: 1.93rem;
-    text-align: center !important;
-    width: 100%;
+    font-size: 1.47rem; /* Additional 10% reduction from 1.64rem (Total ~25% from original) */
+    text-align: left !important;
+    width: auto;
+    letter-spacing: -0.02em;
+    font-weight: 800;
   }
 
   .viewAllLink {

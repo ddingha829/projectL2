@@ -16,8 +16,9 @@ export default function PostManageBtns({ postId, authorId, currentUserId, role }
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
-  const canEdit = role === 'admin' || (role === 'editor' && currentUserId === authorId)
-  const canDelete = role === 'admin'
+  const isAuthor = currentUserId === authorId
+  const canEdit = role === 'admin' || isAuthor
+  const canDelete = role === 'admin' || isAuthor
 
   if (!canEdit && !canDelete) return null
 

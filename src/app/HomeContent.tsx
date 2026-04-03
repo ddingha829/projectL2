@@ -53,8 +53,17 @@ export default function HomeContent({
   const [mobileGridCols, setMobileGridCols] = useState(2);
   const [isHeroPaused, setIsHeroPaused] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
-  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+   const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [showMobileFab, setShowMobileFab] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowMobileFab(window.scrollY > 100);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // UseEffect to set default cols based on view mode (Main: 2, ViewAll: 3)
   useEffect(() => {
@@ -299,21 +308,7 @@ export default function HomeContent({
                 ))}
               </div>
 
-              {/* 모바일 하단 전체보기 버튼 (메인 페이지 전용) */}
-              {isMobile && !showFullGrid && (
-                <div className={styles.mobileViewAllContainer}>
-                  <button 
-                    className={styles.mobileViewAllBtn}
-                    onClick={() => router.push('/?view=all')}
-                  >
-                    전체 글 더보기
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                      <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
-                  </button>
-                </div>
-              )}
+
               
               {/* Sentinel (Unified) */}
               {showFullGrid && displayPosts.length < paginatedData.length && (
@@ -458,7 +453,28 @@ export default function HomeContent({
             </div>
           </div>
         )}
+        <MobileScrollFab isMobile={isMobile} isViewMore={isViewMore} showMobileFab={showMobileFab} />
       </div>
     </>
+  );
+}
+
+// Separate component for the Floating FAB to avoid unnecessary re-renders of the whole page
+function MobileScrollFab({ isMobile, isViewMore, showMobileFab }: { isMobile: boolean, isViewMore: boolean, showMobileFab: boolean }) {
+  const router = useRouter();
+  if (!isMobile || isViewMore) return null;
+  
+  return (
+    <div className={`${styles.mobileViewAllContainer} ${showMobileFab ? styles.visibleFab : ""}`}>
+      <button 
+        className={styles.mobileViewAllBtn}
+        onClick={() => router.push('/?view=all')}
+      >
+        전체 글 더보기
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    </div>
   );
 }

@@ -19,7 +19,18 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
   const { data: profile } = await supabase
     .from('profiles').select('role').eq('id', user.id).single()
 
-  if (!profile || (profile.role !== 'admin' && profile.role !== 'editor')) {
+  const { data: post, error } = await supabase
+    .from('posts')
+    .select('*')
+    .eq('id', id)
+    .single()
+
+  if (error || !post) notFound()
+
+  const isAuthor = post.author_id === user.id
+  const canAccess = profile?.role === 'admin' || isAuthor
+
+  if (!canAccess) {
     return (
       <div className={styles.container}>
         <div className={styles.emptyState}>
@@ -31,16 +42,8 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
     )
   }
 
-  const { data: post, error } = await supabase
-    .from('posts')
-    .select('*')
-    .eq('id', id)
-    .single()
-
-  if (error || !post) notFound()
-
   // editor는 본인 글만 수정 가능
-  if (profile.role === 'editor' && post.author_id !== user.id) {
+  if (profile?.role === 'editor' && post.author_id !== user.id) {
     return (
       <div className={styles.container}>
         <div className={styles.emptyState}>
@@ -67,7 +70,7 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
         initialCategory={post.category}
         initialImageUrl={post.image_url || ''}
         initialIsEditorsPick={post.is_editors_pick || false}
-        isAdmin={profile.role === 'admin'}
+        isAdmin={profile?.role === 'admin'}
       />
     </div>
   )
