@@ -152,12 +152,16 @@
 }
 
 .catPill {
-  background: #e9ecef; /* Slightly darker gray as requested */
+  background: var(--bg-secondary);
   border: 1px solid var(--border-light);
-  padding: 4px 12px;
-  border-radius: 40px;
-  font-size: 0.72rem;
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  white-space: nowrap;
 }
+
 
 .catPill:hover {
   background: var(--bg-tertiary);
@@ -1121,13 +1125,14 @@
   border: none;
   color: var(--text-tertiary);
   cursor: pointer;
-  padding: 7px; /* Reduced by ~10% from 8px */
-  border-radius: 8px;
+  padding: 6px 12px;
+  border-radius: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 
 .activeGridIcon {
   background: var(--bg-primary);
@@ -1435,13 +1440,20 @@
 .centeredGridControls {
   display: flex !important;
   align-items: center;
-  gap: 12px;
-  background: var(--bg-secondary);
-  padding: 4px 12px;
+  gap: 4px; /* Tightened gap for unified block feel */
+  background: var(--bg-tertiary);
+  padding: 3px;
   border-radius: 40px;
   border: 1px solid var(--border-light);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
+
+.mobileControlDivider {
+  width: 1px;
+  height: 14px;
+  background: var(--border-medium);
+  margin: 0 4px;
+}
+
 
 .mobileControlGroup {
   display: flex;

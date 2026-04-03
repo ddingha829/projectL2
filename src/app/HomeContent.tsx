@@ -423,52 +423,51 @@ export default function HomeContent({
               
               {isMobile && (
                 <div className={styles.centeredGridControls}>
-                  {/* View Type Icons */}
-                  <div className={styles.mobileControlGroup}>
-                    <button 
-                      className={`${styles.gridBtnIcon} ${viewType === 'card' ? styles.activeGridIcon : ''}`}
-                      onClick={() => setViewType('card')}
-                      title="카드형 보기"
-                    >
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
-                    </button>
-                    <button 
-                      className={`${styles.gridBtnIcon} ${viewType === 'magazine' ? styles.activeGridIcon : ''}`}
-                      onClick={() => setViewType('magazine')}
-                      title="매거진형 보기"
-                    >
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="18" height="9" rx="1"/><rect x="3" y="15" width="8" height="6" rx="1"/><rect x="13" y="15" width="8" height="6" rx="1"/></svg>
-                    </button>
-                  </div>
-                  
-                  <div className={styles.mobileControlDivider}></div>
+                  {/* View Type Icons (Only on ViewAll) */}
+                  {isViewMore && (
+                    <>
+                      <div className={styles.mobileControlGroup}>
+                        <button 
+                          className={`${styles.gridBtnIcon} ${viewType === 'card' ? styles.activeGridIcon : ''}`}
+                          onClick={() => setViewType('card')}
+                        >
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+                        </button>
+                        <button 
+                          className={`${styles.gridBtnIcon} ${viewType === 'magazine' ? styles.activeGridIcon : ''}`}
+                          onClick={() => setViewType('magazine')}
+                        >
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="18" height="9" rx="1"/><rect x="3" y="15" width="8" height="6" rx="1"/><rect x="13" y="15" width="8" height="6" rx="1"/></svg>
+                        </button>
+                      </div>
+                      <div className={styles.mobileControlDivider}></div>
+                    </>
+                  )}
 
                   {/* Grid Density Icons */}
                   <div className={styles.mobileControlGroup}>
                     <button 
                       className={`${styles.gridBtnIcon} ${mobileGridCols === 1 ? styles.activeGridIcon : ''}`}
                       onClick={() => setMobileGridCols(1)}
-                      title="1열로 보기"
                     >
                       <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="6" width="16" height="4" rx="1"/><rect x="4" y="14" width="16" height="4" rx="1"/></svg>
                     </button>
                     <button 
                       className={`${styles.gridBtnIcon} ${mobileGridCols === 2 ? styles.activeGridIcon : ''}`}
                       onClick={() => setMobileGridCols(2)}
-                      title="2열로 보기"
                     >
                       <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/></svg>
                     </button>
                     <button 
                       className={`${styles.gridBtnIcon} ${mobileGridCols === 3 ? styles.activeGridIcon : ''}`}
                       onClick={() => setMobileGridCols(3)}
-                      title="3열로 보기"
                     >
                       <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="4.5" height="16" rx="0.5"/><rect x="9.75" y="4" width="4.5" height="16" rx="0.5"/><rect x="15.5" y="4" width="4.5" height="16" rx="0.5"/></svg>
                     </button>
                   </div>
                 </div>
               )}
+
             </header>
 
             {/* Unified Control Bar for Results View */}
