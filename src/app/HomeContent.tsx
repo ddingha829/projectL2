@@ -110,13 +110,15 @@ export default function HomeContent({
   useEffect(() => {
     if (!heroPosts || heroPosts.length <= 1 || isHeroPaused) return;
     
+    // 1초 감소된 시간 적용 (모바일 4초, PC 5초)
     const interval = setInterval(() => {
       setSlideDir('next');
       setHeroIndex((prev) => (prev + 1) % heroPosts.length || 0);
-    }, 5000); // 5 seconds
+    }, isMobile ? 4000 : 5000); 
     
     return () => clearInterval(interval);
-  }, [heroPosts?.length, isHeroPaused]);
+  }, [heroPosts?.length, isHeroPaused, isMobile]);
+
 
   const handleIntroComplete = useCallback(() => {
     setShowIntro(false);
@@ -299,7 +301,19 @@ export default function HomeContent({
                     </div>
                   ))}
                 </div>
+                {/* Mobile Hero Pagination Hints */}
+                {heroPosts.length > 1 && (
+                  <div className={styles.mobileHeroDots}>
+                    {heroPosts.map((_, idx) => (
+                      <span 
+                        key={idx} 
+                        className={idx === heroIndex ? styles.activeHeroDot : styles.inactiveHeroDot}
+                      ></span>
+                    ))}
+                  </div>
+                )}
               </div>
+
             </div>
 
             <div className={styles.gridSection}>

@@ -20,7 +20,21 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   title: "WoogaWooga 우가우가",
   description: "평범한 사람들이 써나가는 위대한 일상",
+  openGraph: {
+    title: "WoogaWooga 우가우가",
+    description: "평범한 사람들이 써나가는 위대한 일상",
+    url: "https://project-l2.vercel.app",
+    siteName: "WoogaWooga",
+    locale: "ko_KR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "WoogaWooga 우가우가",
+    description: "평범한 사람들이 써나가는 위대한 일상",
+  },
 };
+
 
 export default function RootLayout({
   children,

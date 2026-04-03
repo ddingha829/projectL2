@@ -1443,11 +1443,18 @@
   gap: 8px;
 }
 
-.mobileControlDivider {
-  width: 1px;
-  height: 16px;
-  background: var(--border-light);
+.mobileHeroDots {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  display: flex !important;
+  justify-content: center;
+  gap: 8px;
+  z-index: 10;
+  pointer-events: none;
 }
+
 
 
 .gridList, .mainGrid {
