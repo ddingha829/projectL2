@@ -522,7 +522,7 @@
 .vMenuTitle {
   font-size: 0.72rem;
   font-weight: 900;
-  color: var(--text-tertiary);
+  color: var(--text-primary); /* Changed to primary for better visibility */
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
@@ -558,7 +558,7 @@
 .vLabel {
   display: block;
   font-size: 0.65rem;
-  color: var(--text-tertiary);
+  color: var(--text-secondary); /* Darker than tertiary */
   margin-bottom: 10px;
   font-weight: 800;
   text-transform: uppercase;
@@ -586,13 +586,13 @@
 
 .vOptIcon {
   font-size: 1.1rem;
-  color: var(--text-secondary);
+  color: var(--text-primary); /* Visible icons */
 }
 
 .vOptLabel {
   font-size: 0.7rem;
-  font-weight: 700;
-  color: var(--text-secondary);
+  font-weight: 800; /* Bolder label */
+  color: var(--text-primary); /* High contrast */
 }
 
 .vActive {
@@ -623,7 +623,7 @@
   justify-content: center;
   font-size: 0.8rem;
   font-weight: 800;
-  color: var(--text-tertiary);
+  color: var(--text-secondary); /* Balanced visibility */
   border-radius: 40px;
   cursor: pointer;
   transition: all 0.2s;
