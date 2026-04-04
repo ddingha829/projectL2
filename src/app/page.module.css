@@ -44,9 +44,9 @@
     padding: 4px 2px 0 !important; 
   }
   .resultsTitle {
-    font-size: 1.53rem; /* Increased additional 5% from 1.45rem */
+    font-size: 1.53rem; 
     text-align: left !important;
-    padding: 0 0 12px 0 !important; /* Bottom padding for the bar */
+    padding: 0 0 12px 0 !important; 
     font-weight: 900; 
     letter-spacing: -0.03em;
     position: relative;
@@ -56,11 +56,20 @@
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 40px;
+    width: 60px; /* Increased 50% from 40px */
     height: 5px;
     background-color: var(--accent-primary);
     border-radius: 10px;
   }
+}
+
+.resultsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0; /* Aligned with grid */
+  margin-bottom: 24px;
 }
 
 .controlsLeft, .controlsRight {
@@ -129,13 +138,13 @@
 
 .sectionTitle {
   font-family: var(--font-noto-sans), sans-serif;
-  font-size: 2.22rem; /* Reduced by 10% from 2.47rem */
+  font-size: 2.22rem; 
   font-weight: 800;
   color: var(--text-primary);
   letter-spacing: -0.03em;
   margin: 0;
   flex: 0 0 auto;
-  text-align: center;
+  text-align: left; /* Alignment fix for PC */
   position: relative;
   padding-bottom: 12px;
 }
@@ -144,8 +153,8 @@
   content: '';
   position: absolute;
   bottom: 0;
-  left: 0; /* Default to left for editorial style */
-  width: 40px;
+  left: 0; 
+  width: 60px; /* Increased 50% from 40px */
   height: 5px;
   background-color: var(--accent-primary);
   border-radius: 10px;
@@ -609,18 +618,18 @@
   .sectionTitle {
     font-size: 1.3rem; 
     white-space: nowrap;
-    text-align: left; /* Left align explicitly */
+    text-align: left; 
     margin: 0;
-    padding: 0 0 10px 0 !important; /* Bottom padding for bar */
+    padding: 0 0 10px 0 !important; 
     line-height: 1;
     position: relative;
   }
   .sectionTitle::after {
     content: '';
     position: absolute;
-    bottom: -2px; /* Slight offset for mobile */
+    bottom: -2px; 
     left: 0;
-    width: 32px;
+    width: 48px; /* Increased 50% from 32px */
     height: 4px;
     background-color: var(--accent-primary);
     border-radius: 10px;
@@ -1347,6 +1356,19 @@
   .mobileOnly {
     display: block !important;
   }
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 30px;
+  padding: 0;
+}
+
+.sectionTitle, .resultsTitle {
+  text-align: left;
 }
 
 .categoryPillRow {
