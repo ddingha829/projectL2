@@ -155,24 +155,24 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
           {user ? (
             <div className={styles.mobileUserInfo}>
               <div className={styles.mobileUserHeader}>
-                <div className={styles.nameAndWrite}>
+                <div className={styles.nameGroup}>
                   <span className={styles.mobileNickname}>{displayName || user.email?.split('@')[0]}</span>
-                  <div className={styles.mobileActionButtons}>
-                    {role === 'admin' && (
-                      <Link href="/admin" className={styles.mobileAdminBtn} onClick={onClose}>
-                        ⚙️ 관리
-                      </Link>
-                    )}
-                    {(role === 'admin' || role === 'editor') && (
-                      <Link href="/write" className={styles.mobileWriteBtn} onClick={onClose}>
-                        ✍️ 글쓰기
-                      </Link>
-                    )}
-                  </div>
+                  <span className={styles.mobileRole}>
+                    {role === 'admin' ? '운영자' : role === 'editor' ? '에디터' : '방문객'}
+                  </span>
                 </div>
-                <span className={styles.mobileRole}>
-                  [{role === 'admin' ? '운영자' : role === 'editor' ? '에디터' : '방문객'}]
-                </span>
+                <div className={styles.mobileActionButtons}>
+                  {role === 'admin' && (
+                    <Link href="/admin" className={styles.mobileAdminBtn} onClick={onClose}>
+                      ⚙️ 관리
+                    </Link>
+                  )}
+                  {(role === 'admin' || role === 'editor') && (
+                    <Link href="/write" className={styles.mobileWriteBtn} onClick={onClose}>
+                      ✍️ 글쓰기
+                    </Link>
+                  )}
+                </div>
               </div>
               <div className={styles.mobileUserLinks}>
                 <Link href="/notice" className={styles.mobileLink} onClick={onClose}>알림 설정</Link>

@@ -108,7 +108,7 @@
 .title {
   color: #ffffff;
   font-family: var(--font-noto-sans), sans-serif;
-  font-size: clamp(1.8rem, 5vw, 4.025rem); /* Auto scaling font size */
+  font-size: clamp(1.61rem, 4.5vw, 3.63rem); /* Further reduced by 5% for optimal fit */
   font-weight: 900;
   line-height: 1.15;
   margin-bottom: 32px;

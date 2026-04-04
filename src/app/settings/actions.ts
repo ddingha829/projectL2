@@ -18,6 +18,10 @@ export async function updateProfile(formData: FormData) {
   const bulletsRaw = formData.get('bullets') as string
   const bullets = bulletsRaw ? bulletsRaw.split('\n').filter(b => b.trim() !== '') : []
 
+  // Get current profile for better data integrity
+  const { data: profile } = await supabase.from('profiles').select('role, bullets').eq('id', user.id).single()
+  const isWriter = profile?.role === "admin" || profile?.role === "editor"
+
   // Update profile
   const { error: profileError } = await supabase
     .from('profiles')
@@ -26,16 +30,27 @@ export async function updateProfile(formData: FormData) {
       bio: bio,
       avatar_url: avatarUrl,
       color: color,
-      bullets: bullets,
+      bullets: (isWriter && bulletsRaw) ? bullets : (profile?.bullets || []),
       updated_at: new Date().toISOString(),
     })
     .eq('id', user.id)
 
   if (profileError) {
     console.error('Profile update error:', profileError)
-    // If table schema is different, we might get an error here.
-    // However, we'll try to be robust.
     return { success: false, error: '프로필 업데이트 중 오류가 발생했습니다: ' + profileError.message }
+  }
+
+  // ALSO update Auth metadata for immediate global sync
+  const { error: authUpdateError } = await supabase.auth.updateUser({
+    data: { 
+      display_name: displayName,
+      full_name: displayName 
+    }
+  })
+
+  if (authUpdateError) {
+    console.warn('Auth metadata sync failed', authUpdateError)
+    // Non-critical, so we still return success if DB profile was updated
   }
 
   revalidatePath('/', 'layout')

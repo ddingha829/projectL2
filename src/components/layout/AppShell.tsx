@@ -13,58 +13,89 @@ import Footer from "./Footer";
 
 // --- Caveman Easter Egg Component ---
 function CavemanStickman() {
-  const [cavemen, setCavemen] = useState<{ id: number; top: number; speed: number; delay: number }[]>([]);
+  const [entities, setEntities] = useState<{ id: number; top: number; speed: number; delay: number; type: 'stickman' | 'mammoth' }[]>([]);
   
   useEffect(() => {
-    // Generate some random cavemen
-    const newCavemen = Array.from({ length: 5 }, (_, i) => ({
+    // Generate entities (10% mammoths)
+    const newEntities = Array.from({ length: 10 }, (_, i) => ({
       id: i,
+      // 10% mammoths
+      type: (i === 0) ? 'mammoth' as const : 'stickman' as const,
       top: Math.random() * 80 + 10,
-      speed: Math.random() * 10 + 15, // 15-25s
-      delay: Math.random() * 20
+      // Stickmen slightly faster to "chase"
+      speed: (i === 0) ? 22 + Math.random() * 5 : 18 + Math.random() * 5, 
+      delay: Math.random() * 25
     }));
-    setCavemen(newCavemen);
+    setEntities(newEntities);
   }, []);
 
   return (
-    <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0, overflow: 'hidden', opacity: 0.1 }}>
+    <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0, overflow: 'hidden', opacity: 0.25 }}>
 
       <style>{`
-        @keyframes cavemanRun {
-          from { transform: translateX(-100px) rotate(0deg); }
+        @keyframes entityRun {
+          from { transform: translateX(-150px) rotate(0deg); }
           25% { transform: translateX(25vw) rotate(10deg); }
           50% { transform: translateX(50vw) rotate(-10deg); }
           75% { transform: translateX(75vw) rotate(10deg); }
-          to { transform: translateX(110vw) rotate(0deg); }
+          to { transform: translateX(115vw) rotate(0deg); }
+        }
+        @keyframes entityRunMammoth {
+          from { transform: translateX(-50px) rotate(0deg); }
+          25% { transform: translateX(25vw) rotate(2deg); }
+          50% { transform: translateX(50vw) rotate(-2deg); }
+          75% { transform: translateX(75vw) rotate(2deg); }
+          to { transform: translateX(115vw) rotate(0deg); }
         }
         @keyframes runWobble {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-10px); }
         }
       `}</style>
-      {cavemen.map((c) => (
+      {entities.map((e) => (
         <div 
-          key={c.id}
+          key={e.id}
           style={{
             position: 'absolute',
-            top: `${c.top}%`,
-            left: '-100px',
-            animation: `cavemanRun ${c.speed}s linear ${c.delay}s infinite`,
+            top: `${e.top}%`,
+            left: '-150px',
+            animation: `${e.type === 'mammoth' ? 'entityRunMammoth' : 'entityRun'} ${e.speed}s linear ${e.delay}s infinite`,
           }}
         >
           <div style={{ animation: 'runWobble 0.4s ease-in-out infinite' }}>
-            <svg width="60" height="60" viewBox="0 0 100 100">
-              {/* Stickman Body */}
-              <circle cx="40" cy="25" r="8" fill="currentColor" /> {/* Head */}
-              <line x1="40" y1="33" x2="40" y2="65" stroke="currentColor" strokeWidth="4" /> {/* Spine */}
-              <line x1="40" y1="40" x2="60" y2="45" stroke="currentColor" strokeWidth="4" /> {/* Arm 1 */}
-              <line x1="40" y1="40" x2="25" y2="55" stroke="currentColor" strokeWidth="4" /> {/* Arm 2 */}
-              <line x1="40" y1="65" x2="25" y2="85" stroke="currentColor" strokeWidth="4" /> {/* Leg 1 */}
-              <line x1="40" y1="65" x2="55" y2="85" stroke="currentColor" strokeWidth="4" /> {/* Leg 2 */}
-              {/* Axe */}
-              <line x1="60" y1="45" x2="65" y2="20" stroke="#5d4037" strokeWidth="3" /> {/* Handle */}
-              <path d="M55 15 L75 20 L60 30 Z" fill="#757575" /> {/* Stone Blade */}
-            </svg>
+            {e.type === 'mammoth' ? (
+              <svg width="100" height="100" viewBox="0 0 100 100">
+                {/* Mammoth Body */}
+                <ellipse cx="55" cy="55" rx="35" ry="25" fill="#5d4037" />
+                <circle cx="30" cy="45" r="18" fill="#5d4037" />
+                {/* Trunk */}
+                <path d="M15 45 Q 5 45 5 65" stroke="#5d4037" strokeWidth="6" fill="none" />
+                {/* Tusk */}
+                <path d="M18 52 Q 8 52 6 35" stroke="#f5f5f5" strokeWidth="3" fill="none" />
+                {/* Ears */}
+                <ellipse cx="40" cy="40" rx="8" ry="12" fill="#4e342e" />
+                {/* Eye */}
+                <circle cx="25" cy="42" r="2" fill="black" />
+                {/* Legs */}
+                <rect x="40" y="75" width="12" height="15" fill="#5d4037" />
+                <rect x="65" y="75" width="12" height="15" fill="#5d4037" />
+                {/* Tail */}
+                <path d="M90 55 Q 98 60 95 70" stroke="#5d4037" strokeWidth="2" fill="none" />
+              </svg>
+            ) : (
+              <svg width="60" height="60" viewBox="0 0 100 100">
+                {/* Stickman Body */}
+                <circle cx="40" cy="25" r="8" fill="currentColor" />
+                <line x1="40" y1="33" x2="40" y2="65" stroke="currentColor" strokeWidth="4" />
+                <line x1="40" y1="40" x2="60" y2="45" stroke="currentColor" strokeWidth="4" /> {/* Spear Arm */}
+                <line x1="40" y1="40" x2="25" y2="55" stroke="currentColor" strokeWidth="4" />
+                <line x1="40" y1="65" x2="25" y2="85" stroke="currentColor" strokeWidth="4" />
+                <line x1="40" y1="65" x2="55" y2="85" stroke="currentColor" strokeWidth="4" />
+                {/* Long Spear */}
+                <line x1="60" y1="45" x2="85" y2="15" stroke="#5d4037" strokeWidth="3" />
+                <path d="M82 18 L90 10 L85 22 Z" fill="#757575" />
+              </svg>
+            )}
           </div>
         </div>
       ))}
@@ -109,6 +140,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       document.body.style.overscrollBehavior = "unset";
     }
   }, [isMobileOpen]);
+
+  // Force scroll to top on navigation change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname, searchParams]);
 
   // Optimized Sync Logic (Bypass DB lag with metadata)
   useEffect(() => {

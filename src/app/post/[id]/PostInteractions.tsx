@@ -6,7 +6,17 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "./page.module.css";
 
-export default function PostInteractions({ postId, authorId, initialLikes, initialComments, user }: { postId: string, authorId: string, initialLikes: number, initialComments: any[], user: any }) {
+export default function PostInteractions({ 
+  postId, authorId, initialLikes, initialComments, user, prevId, nextId 
+}: { 
+  postId: string, 
+  authorId: string, 
+  initialLikes: number, 
+  initialComments: any[], 
+  user: any,
+  prevId?: string,
+  nextId?: string
+}) {
   const [likes, setLikes] = useState(initialLikes);
   const [comments, setComments] = useState(initialComments);
   const [newComment, setNewComment] = useState("");
@@ -59,18 +69,40 @@ export default function PostInteractions({ postId, authorId, initialLikes, initi
   
   return (
     <>
-      <div className={styles.evaluation}>
+      <div className={styles.interactionBar}>
+        <div className={styles.navArrowArea}>
+          {prevId ? (
+            <Link href={`/post/db-${prevId}`} className={styles.navArrow} title="이전 글">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </Link>
+          ) : <div className={styles.navArrowDisabled} />}
+        </div>
+
         <button 
           onClick={handleLike} 
-          className={`${styles.evalBtn} ${styles.likeBtn} ${isLikedLocally ? styles.liked : ""}`}
-          style={isLikedLocally ? { backgroundColor: 'transparent', color: 'var(--text-main)' } : {}}
+          className={`${styles.likeBtnModern} ${isLikedLocally ? styles.liked : ""}`}
         >
-          👍 Like ({likes})
+          <svg width="20" height="20" viewBox="0 0 24 24" fill={isLikedLocally ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={styles.likeIcon}>
+            <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+          </svg>
+          <span className={styles.likeLabel}>좋아요 {likes}</span>
         </button>
+
+        <div className={styles.navArrowArea}>
+          {nextId ? (
+            <Link href={`/post/db-${nextId}`} className={styles.navArrow} title="다음 글">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </Link>
+          ) : <div className={styles.navArrowDisabled} />}
+        </div>
       </div>
 
       <section id="comments" className={styles.commentsSection}>
-        <h2 className={styles.commentsTitle}>Comments ({comments.length})</h2>
+        <h2 className={styles.commentsTitle}>댓글 ({comments.length})</h2>
         
         <div className={styles.commentInputArea}>
           {!user && (
@@ -89,7 +121,7 @@ export default function PostInteractions({ postId, authorId, initialLikes, initi
               required
             />
             <button type="submit" className={styles.submitBtn} disabled={!user || isSubmitting || !newComment.trim()}>
-              {isSubmitting ? "Submitting..." : "Submit"}
+              {isSubmitting ? "등록 중..." : "등록"}
             </button>
           </form>
         </div>
@@ -102,7 +134,7 @@ export default function PostInteractions({ postId, authorId, initialLikes, initi
                 <div className={styles.commentMeta}>
                   <div className={styles.commentAuthorInfo}>
                     <span className={styles.commentAuthor}>{c.user?.display_name || c.user?.name || '익명 작가'}</span>
-                    {isAuthor && <span className={styles.writerBadge}>Writer</span>}
+                    {isAuthor && <span className={styles.writerBadge}>에디터</span>}
                   </div>
                   <span className={styles.commentDate}>{new Date(c.created_at).toLocaleDateString()}</span>
                 </div>

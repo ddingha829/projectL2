@@ -84,6 +84,35 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
       .order('created_at', { ascending: false });
       
     if (dbComments) commentsData = dbComments;
+    
+    // Fetch Prev/Next Posts
+    const { data: prevPost } = await supabase
+      .from('posts')
+      .select('id')
+      .lt('created_at', post.created_at)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+      
+    const { data: nextPost } = await supabase
+      .from('posts')
+      .select('id')
+      .gt('created_at', post.created_at)
+      .order('created_at', { ascending: true })
+      .limit(1)
+      .single();
+      
+    post.prevId = prevPost?.id;
+    post.nextId = nextPost?.id;
+
+    // Fetch full author profile for the card
+    const { data: authorProfile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', post.author?.id)
+      .single();
+    
+    post.authorProfile = authorProfile;
   }
 
   const { data: { user } } = await supabase.auth.getUser();
@@ -106,9 +135,10 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
           <div className={styles.meta}>
             <span className={styles.category}>{post.category}</span>
             <span className={styles.dot}>•</span>
-            <span className={styles.author}>{post.author?.display_name || post.author?.name || '익명 작가'}</span>
-            <span className={styles.dot}>•</span>
             <span className={styles.date}>{new Date(post.created_at).toLocaleDateString('ko-KR')}</span>
+            <Link href={`/?author=${post.author?.id}`} className={styles.authorBadgeDetail}>
+              {post.author?.display_name || post.author?.name || '익명 작가'}
+            </Link>
           </div>
           <h1 className={styles.title}>{post.title}</h1>
         </header>
@@ -121,29 +151,50 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
         
         <div className={styles.content} dangerouslySetInnerHTML={{ __html: post.content }} />
         
+        {/* Editor Profile Card - New Position */}
+        {post.authorProfile && (
+          <Link href={`/?author=${post.authorProfile.id}`} className={styles.authorCardLinkWrapper}>
+            <div className={styles.authorCardWrapper}>
+              <div className={styles.authorCardHeader} style={{ background: post.authorProfile.color || '#204bb8' }}>
+                EDITOR
+              </div>
+              <div className={styles.authorCardContent}>
+                <div className={styles.authorAvatarArea}>
+                  <div className={styles.authorAvatarLarge}>
+                     {post.authorProfile.avatar_url ? (
+                       <img src={post.authorProfile.avatar_url} alt={post.authorProfile.display_name} />
+                     ) : "👤"}
+                  </div>
+                </div>
+                <div className={styles.authorDetailsArea}>
+                  <div className={styles.authorNameLink}>
+                    {post.authorProfile.display_name}
+                  </div>
+                  <p className={styles.authorBio}>{post.authorProfile.bio || "생동감 넘치는 리뷰를 작성하는 에디터입니다."}</p>
+                  {post.authorProfile.bullets && post.authorProfile.bullets.length > 0 && (
+                    <div className={styles.authorBullets}>
+                      {post.authorProfile.bullets.map((b: string, i: number) => (
+                        <span key={i} className={styles.authorBullet}># {b}</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </Link>
+        )}
+
         <div className={styles.separator} />
 
-        {/* Admin-only: Hero designation button (DB posts only) */}
-        {isAdmin && isDbPost && (
-          <HeroToggleBtn postId={actualId} initialIsHero={post.is_hero || false} />
-        )}
-
-        {/* 수정/삭제 버튼 (DB 게시물 + 권한 있는 유저만) */}
-        {isDbPost && user && (currentUserRole === 'admin' || currentUserRole === 'editor') && (
-          <PostManageBtns
-            postId={actualId}
-            authorId={post.author?.id || post.author_id || ''}
-            currentUserId={user.id}
-            role={currentUserRole}
-          />
-        )}
-
+        {/* Interaction Bar with Prev/Next Navigation */}
         <PostInteractions 
           postId={actualId} 
           authorId={post.author?.id || post.author_id}
           initialLikes={post.likes_count || 0} 
           initialComments={commentsData} 
           user={user} 
+          prevId={post.prevId}
+          nextId={post.nextId}
         />
       </article>
     </div>

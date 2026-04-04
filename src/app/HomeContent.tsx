@@ -416,73 +416,18 @@ export default function HomeContent({
                 </div>
               </div>
             )}
-            <header className={styles.resultsHeader}>
-              <h1 className={styles.sectionTitle}>
-                { isViewMore ? "전체 포스팅" : displayTitle}
-              </h1>
-              
-              {isMobile && (
-                <div className={styles.centeredGridControls}>
-                  {/* View Type Icons (Only on ViewAll) */}
-                  {isViewMore && (
-                    <>
-                      <div className={styles.mobileControlGroup}>
-                        <button 
-                          className={`${styles.gridBtnIcon} ${viewType === 'card' ? styles.activeGridIcon : ''}`}
-                          onClick={() => setViewType('card')}
-                        >
-                          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
-                        </button>
-                        <button 
-                          className={`${styles.gridBtnIcon} ${viewType === 'magazine' ? styles.activeGridIcon : ''}`}
-                          onClick={() => setViewType('magazine')}
-                        >
-                          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="18" height="9" rx="1"/><rect x="3" y="15" width="8" height="6" rx="1"/><rect x="13" y="15" width="8" height="6" rx="1"/></svg>
-                        </button>
-                      </div>
-                      <div className={styles.mobileControlDivider}></div>
-                    </>
-                  )}
 
-                  {/* Grid Density Icons */}
-                  <div className={styles.mobileControlGroup}>
-                    <button 
-                      className={`${styles.gridBtnIcon} ${mobileGridCols === 1 ? styles.activeGridIcon : ''}`}
-                      onClick={() => setMobileGridCols(1)}
-                    >
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="6" width="16" height="4" rx="1"/><rect x="4" y="14" width="16" height="4" rx="1"/></svg>
-                    </button>
-                    <button 
-                      className={`${styles.gridBtnIcon} ${mobileGridCols === 2 ? styles.activeGridIcon : ''}`}
-                      onClick={() => setMobileGridCols(2)}
-                    >
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/></svg>
-                    </button>
-                    <button 
-                      className={`${styles.gridBtnIcon} ${mobileGridCols === 3 ? styles.activeGridIcon : ''}`}
-                      onClick={() => setMobileGridCols(3)}
-                    >
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="4.5" height="16" rx="0.5"/><rect x="9.75" y="4" width="4.5" height="16" rx="0.5"/><rect x="15.5" y="4" width="4.5" height="16" rx="0.5"/></svg>
-                    </button>
-                  </div>
-                </div>
-              )}
-
-            </header>
-
-            {/* Unified Control Bar for Results View */}
-            <div className={styles.resultsControlsBar}>
-              {/* Left Group (Hidden on mobile if icons used above) */}
-              <div className={`${styles.controlsLeft} ${styles.desktopOnly}`}>
-                <div className={styles.pillContainer}>
+            <div className={styles.resultsHeader}>
+              <div className={styles.controlsLeft}>
+                <div className={styles.pillContainerCompact}>
                   <button 
-                    className={`${styles.pillBtn} ${viewType === 'card' ? styles.pillActive : ''}`}
+                    className={`${styles.pillBtnSmall} ${viewType === 'card' ? styles.pillActive : ''}`}
                     onClick={() => setViewType('card')}
                   >
                     카드형
                   </button>
                   <button 
-                    className={`${styles.pillBtn} ${viewType === 'magazine' ? styles.pillActive : ''}`}
+                    className={`${styles.pillBtnSmall} ${viewType === 'magazine' ? styles.pillActive : ''}`}
                     onClick={() => setViewType('magazine')}
                   >
                     매거진형
@@ -490,7 +435,29 @@ export default function HomeContent({
                 </div>
               </div>
 
-              {/* Center Group: Category Filter Pills */}
+              <h1 className={styles.sectionTitle}>
+                { isViewMore ? "전체 포스팅" : displayTitle}
+              </h1>
+
+              <div className={styles.controlsRight}>
+                {viewType === 'card' && (
+                  <div className={styles.pillContainerCompact}>
+                    {(isMobile ? [1, 2, 3] : [3, 4]).map(num => (
+                      <button 
+                        key={num}
+                        className={`${styles.pillBtnSmall} ${ (isMobile ? mobileGridCols === num : cardCols === num) ? styles.pillActive : ''}`}
+                        onClick={() => isMobile ? setMobileGridCols(num) : setCardCols(num)}
+                      >
+                        {num}열
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Unified Control Bar for Results View */}
+            <div className={styles.categoryPillRow}>
               <nav className={styles.categoryPillNav}>
                 <div className={styles.pillContainer}>
                   {[
@@ -518,23 +485,6 @@ export default function HomeContent({
                   ))}
                 </div>
               </nav>
-
-              {/* Right Group: Grid Density */}
-              <div className={styles.controlsRight}>
-                {viewType === 'card' && (
-                  <div className={styles.pillContainer}>
-                    {isMobile ? null : [3, 4].map(num => (
-                      <button 
-                        key={num}
-                        className={`${styles.pillBtn} ${cardCols === num ? styles.pillActive : ''}`}
-                        onClick={() => setCardCols(num)}
-                      >
-                        {num}열
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
             </div>
 
 
@@ -553,6 +503,7 @@ export default function HomeContent({
                       {...post} 
                       aspectRatio="default" 
                       isOneCol={(isMobile && mobileGridCols === 1) || (!isMobile && cardCols === 1)}
+                      isDense={!isMobile && cardCols === 4}
                     />
                   ))}
                 </div>
@@ -562,7 +513,7 @@ export default function HomeContent({
                   <div className={styles.magHeroRow}>
                     {displayPosts.slice(0, 2).map(post => (
                       <div key={post.id} className={styles.magHeroItem}>
-                        <PosterCard {...post} aspectRatio="mag54" />
+                        <PosterCard {...post} aspectRatio="mag53" />
                       </div>
                     ))}
                   </div>
@@ -594,7 +545,10 @@ export default function HomeContent({
                                 </div>
                                 <div className={styles.magListInfo}>
                                   <h4 className={styles.magListTitle}>{post.title}</h4>
-                                  <p className={styles.magListAuthor}>{post.author.name} · {post.displayDate}</p>
+                                  <div className={styles.magMetaRow}>
+                                    <span className={styles.magListAuthor}>{post.author.name}</span>
+                                    <span className={styles.magListDate}>{post.displayDate}</span>
+                                  </div>
                                 </div>
                               </Link>
                             ))}

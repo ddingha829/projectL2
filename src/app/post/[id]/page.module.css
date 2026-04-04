@@ -2,7 +2,7 @@
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 0;
+  padding: 12px 0 40px 0; /* Reduced top padding by 70% from 40px */
   animation: fadeIn 0.4s ease-out;
 }
 
@@ -16,7 +16,7 @@
 }
 
 .backBtn:hover {
-  color: var(--text-main);
+  color: var(--text-primary);
 }
 
 .post {
@@ -32,13 +32,9 @@
 .meta {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
   gap: 12px;
-  font-size: 1rem; /* Increased 10% from 0.9rem */
-  color: var(--text-muted);
   margin-bottom: 20px;
 }
-
 
 .category {
   font-weight: 800;
@@ -46,16 +42,23 @@
   font-size: 1rem; /* Increased 10% from 0.9rem */
 }
 
-.author {
-  font-weight: 800;
+.authorBadgeDetail {
   background-color: #204bb8;
   color: #fff;
   padding: 4px 12px;
-  border-radius: 40px;
-  font-size: 0.88rem; /* Scaled slightly for badge proportion, but bold and crisp */
+  border-radius: 4px;
+  font-size: 0.75rem; 
+  font-weight: 800;
   display: inline-flex;
   align-items: center;
+  text-decoration: none;
+  transition: all 0.2s;
   box-shadow: 0 4px 12px rgba(32, 75, 184, 0.15);
+}
+
+.authorBadgeDetail:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
 }
 
 .date {
@@ -70,11 +73,20 @@
   line-height: 1.3;
 }
 
+.dot {
+  color: var(--text-tertiary);
+  margin: 0 4px;
+}
+
 .content {
-  font-size: 1.1rem;
+  font-size: 1.09rem; /* Increased by 3% from 1.06rem */
   line-height: 1.8;
-  color: var(--text-main);
-  margin-bottom: 40px;
+  color: var(--text-primary);
+  margin-bottom: 30px; /* Reduced from 40px */
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 .mainImageWrapper {
@@ -117,8 +129,8 @@
     font-size: 1.75rem; /* Slightly smaller for mobile */
   }
   .content {
-    font-size: 1rem; /* 10% reduction from 1.1rem as requested */
-    line-height: 1.7; /* Slightly tighter leading for balanced look */
+    font-size: 0.98rem; /* Increased by 3% from 0.95rem */
+    line-height: 1.7;
   }
   .mainImage {
     max-height: 350px;
@@ -127,6 +139,219 @@
   .mainImageWrapper {
     border-radius: 12px;
     margin-bottom: 24px;
+  }
+}
+
+/* ============================
+   New Author Card & Interaction Bar
+   ============================ */
+
+.authorCardWrapper {
+  background: var(--bg-primary-rgb) 0.5;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-light);
+  border-radius: 20px;
+  overflow: hidden;
+  margin: 60px 0 30px 0;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.authorCardWrapper:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 15px 50px rgba(0,0,0,0.1);
+  border-color: var(--accent-primary-light);
+}
+
+.authorCardHeader {
+  color: #fff;
+  padding: 8px 20px;
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.authorCardContent {
+  display: flex;
+  padding: 32px;
+  gap: 32px;
+  align-items: center;
+}
+
+.authorAvatarArea {
+  flex-shrink: 0;
+}
+
+.authorAvatarLarge {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: var(--bg-tertiary);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  border: 2px solid var(--bg-primary);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.authorAvatarLarge img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.authorDetailsArea {
+  flex: 1;
+}
+
+.authorNameLink {
+  display: inline-block;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+
+.authorNameLink:hover {
+  color: var(--accent-primary);
+}
+
+.authorBio {
+  font-size: 0.98rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 18px;
+  font-weight: 500;
+}
+
+.authorBullets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.authorBullet {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+  padding: 5px 12px;
+  border-radius: 50px;
+  border: 1px solid var(--border-light);
+  transition: all 0.2s;
+}
+
+.authorBullet:hover {
+  background: var(--bg-secondary);
+  border-color: var(--border-medium);
+}
+
+.interactionBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.navArrowArea {
+  width: 50px;
+  display: flex;
+  justify-content: center;
+}
+
+.navArrow {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  border: 1.5px solid var(--border-medium);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.navArrow:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--text-primary);
+  transform: translateY(-2px);
+}
+
+.navArrowDisabled {
+  width: 44px;
+  height: 44px;
+  opacity: 0.1;
+}
+
+.likeBtnModern {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 30px;
+  border-radius: 50px;
+  border: 2px solid var(--text-primary);
+  background: transparent;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+  font-weight: 800;
+}
+
+.likeBtnModern:hover {
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.likeBtnModern.liked {
+  background: #f03e3e;
+  border-color: #f03e3e;
+  color: #fff;
+}
+
+.likeIcon {
+  transition: transform 0.3s;
+}
+
+.likeBtnModern:hover .likeIcon {
+  transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+  .authorCardContent {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+  }
+  .authorAvatarLarge {
+    width: 60px;
+    height: 60px;
+  }
+  .authorDetailsArea {
+    width: 100%;
+  }
+  .authorBullets {
+    justify-content: center;
+  }
+  .likeBtnModern {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+  .navArrow {
+    width: 36px;
+    height: 36px;
   }
 }
 
@@ -145,7 +370,7 @@
   height: 1px;
   background-color: var(--border);
   width: 100%;
-  margin: 48px 0;
+  margin: 9px 0 24px 0; /* Reduced margin by 50% top, 30% bottom */
   opacity: 0.6;
 }
 

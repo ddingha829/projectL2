@@ -13,12 +13,12 @@
 }
 
 /* All cards follow global 4:5 aspect ratio */
-.ratioMag54 {
-  aspect-ratio: 5/4 !important;
+.ratioMag53 {
+  aspect-ratio: 5/3 !important;
 }
 
-.ratioMag54 .contentArea {
-  height: 45% !important; /* Slightly smaller overlay for landscape */
+.ratioMag53 .contentArea {
+  height: 48% !important; /* Adjusted for 5:3 ratio */
 }
 
 
@@ -67,10 +67,10 @@
   left: 12px;
   background: rgba(255, 255, 255, 0.95);
   color: #333;
-  height: 20px;
-  padding: 0 8px;
+  height: 22px; /* Increased 10% for PC */
+  padding: 0 10px;
   border-radius: 4px;
-  font-size: 0.6rem;
+  font-size: 0.66rem; /* Increased 10% for PC */
   font-weight: 800;
   z-index: 10;
   display: flex;
@@ -96,7 +96,7 @@
   left: 0;
   width: 100%;
   height: 55%; /* Covers bottom half of the card */
-  padding: 20px 14px 12px 14px;
+  padding: 20px 14px 10px 14px; /* Reduced bottom padding to 10px as requested */
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -109,11 +109,11 @@
 .title {
   font-family: var(--font-noto-sans), sans-serif;
   font-size: 1.56rem; /* Reduced by 10% from 1.73rem for optimal balance */
-  font-weight: 800;
+  font-weight: 700; /* Slightly leaner thickness as requested */
   color: #ffffff;
   line-height: 1.25;
-  margin-bottom: 20px; /* Positioned slightly higher as requested */
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  margin-bottom: 20px; /* Increased back to 20px as requested for better spacing */
+  text-shadow: 0 1.35px 3.15px rgba(0,0,0,0.4);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
@@ -126,23 +126,39 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
   font-size: 0.72rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: #ffffff;
   font-weight: 500;
+  margin-top: 0;
 }
 
 .metaLeft, .metaRight {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
 
-.likes::before { content: '👍 '; }
-.comments::before { content: '💬 '; }
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.metaIcon {
+  color: #fff;
+  opacity: 0.95;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4));
+}
 
 .author {
   font-weight: 700;
-  color: #ffffff;
+  color: #fff;
+  opacity: 0.85;
+}
+
+.denseCard .title {
+  font-size: 1.45rem; /* Reduced by additional 2% (Total ~7%) from original */
 }
 
 @media (max-width: 768px) {
@@ -151,14 +167,14 @@
   }
   
   .title {
-    font-size: 0.95rem; /* Matches image 2-col look */
-    margin-bottom: 8px;
+    font-size: 1.05rem; /* Increased (+10%) from 0.95rem */
+    margin-bottom: 10px; /* Positioned slightly higher (+10/20%) */
     letter-spacing: -0.02em;
   }
 
   .oneColCard .title {
-    font-size: 1.1rem;
-    margin-bottom: 12px;
+    font-size: 1.32rem; /* Increased (+20%) from 1.1rem */
+    margin-bottom: 15px; /* Positioned higher */
   }
 
   .contentArea {
@@ -172,27 +188,23 @@
 
 
 .authorBadge {
-
   display: flex !important;
   position: absolute;
   top: 12px;
   right: 12px;
   background: #204bb8; /* Logo blue */
   color: #ffffff;
-  height: 20px;
-  padding: 0 8px;
+  height: 22px; /* Increased 10% for PC */
+  padding: 0 10px;
   border-radius: 4px;
-  font-size: 0.6rem; /* Match category font size */
+  font-size: 0.72rem; /* Increased (+10%) from 0.66rem */
   font-weight: 800;
   z-index: 15;
-  display: flex;
   align-items: center;
+  text-decoration: none;
 }
 
-/* Hide legacy author to focus on the new badge */
-.author {
-  display: none !important;
-}
+/* Hide legacy author inside contentArea if necessary, but we restored it in meta info */
 
 /* Ensure PICK badge doesn't overlap with author name badge globally */
 .pickBadgeInline {
