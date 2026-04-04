@@ -183,7 +183,7 @@ export default async function Home({
     );
   }
 
-  const animationKey = `${authorFilter || 'all'}-${searchFilter || 'all'}`;
+  const animationKey = `${categoryFilter || 'all'}-${authorFilter || 'all'}-${searchFilter || 'all'}`;
   const isInitialVisit = !categoryFilter && !authorFilter && !searchFilter;
 
   // Title Logic

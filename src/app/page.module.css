@@ -15,11 +15,52 @@
 .resultsHeader {
   display: flex !important;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   width: 100%;
-  margin-top: 10px;
+  margin-top: 15px; /* Reduced to pull content up */
   padding: 0 4px;
-  margin-bottom: 24px;
+  margin-bottom: 2px; /* Pull category pills up */
+}
+
+.resultsTitle {
+  font-family: var(--font-noto-sans), sans-serif;
+  font-size: 1.8rem; /* Leaner than sectionTitle */
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  margin: 0;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .resultsHeader {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+    text-align: left;
+    margin-top: 2px !important;
+    margin-bottom: 8px !important;
+    padding: 4px 2px 0 !important; 
+  }
+  .resultsTitle {
+    font-size: 1.53rem; /* Increased additional 5% from 1.45rem */
+    text-align: left !important;
+    padding: 0 0 12px 0 !important; /* Bottom padding for the bar */
+    font-weight: 900; 
+    letter-spacing: -0.03em;
+    position: relative;
+  }
+  .resultsTitle::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 5px;
+    background-color: var(--accent-primary);
+    border-radius: 10px;
+  }
 }
 
 .controlsLeft, .controlsRight {
@@ -77,13 +118,7 @@
   color: var(--text-primary);
 }
 
-@media (max-width: 768px) {
-  .resultsHeader {
-    margin-top: 15px !important;
-    margin-bottom: 12px !important;
-    padding-top: 10px; /* Safe padding for mobile header */
-  }
-}
+/* Handled above for consistency */
 
 .centeredGridControls {
   display: flex;
@@ -94,13 +129,26 @@
 
 .sectionTitle {
   font-family: var(--font-noto-sans), sans-serif;
-  font-size: 2.16rem; /* Increased by 20% from 1.8rem */
+  font-size: 2.22rem; /* Reduced by 10% from 2.47rem */
   font-weight: 800;
   color: var(--text-primary);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.03em;
   margin: 0;
   flex: 0 0 auto;
   text-align: center;
+  position: relative;
+  padding-bottom: 12px;
+}
+
+.sectionTitle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0; /* Default to left for editorial style */
+  width: 40px;
+  height: 5px;
+  background-color: var(--accent-primary);
+  border-radius: 10px;
 }
 
 /* Removed legacy .allPostsTitle margin */
@@ -559,11 +607,23 @@
     gap: 12px;
   }
   .sectionTitle {
-    font-size: 1.3rem; /* 1.375rem * 0.95 = 1.3rem */
+    font-size: 1.3rem; 
     white-space: nowrap;
-    text-align: left;
-    margin-left: 0; /* Pulled left as requested */
+    text-align: left; /* Left align explicitly */
+    margin: 0;
+    padding: 0 0 10px 0 !important; /* Bottom padding for bar */
     line-height: 1;
+    position: relative;
+  }
+  .sectionTitle::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; /* Slight offset for mobile */
+    left: 0;
+    width: 32px;
+    height: 4px;
+    background-color: var(--accent-primary);
+    border-radius: 10px;
   }
   .allPostsTitle {
     margin-left: 0; 
@@ -1236,9 +1296,9 @@
 }
 @media (max-width: 768px) {
   .sectionHeader {
-    padding: 0 8px 0 5px !important; /* Slight shift to left */
+    padding: 0 8px 0 2px !important; /* Matched 2px margin of cards */
     margin-top: 0 !important;
-    margin-bottom: 12px !important; 
+    margin-bottom: 6px !important; 
     display: flex;
     justify-content: flex-start !important;
     position: relative;
@@ -1246,8 +1306,8 @@
   }
   
   .sectionTitle {
-    font-size: 1.47rem; /* Additional 10% reduction from 1.64rem (Total ~25% from original) */
-    text-align: left !important;
+    font-size: 1.47rem; 
+    text-align: left !important; /* Left aligned again as requested */
     width: auto;
     letter-spacing: -0.02em;
     font-weight: 800;
@@ -1294,7 +1354,7 @@
   justify-content: center;
   align-items: center;
   gap: 16px;
-  margin: 16px 0 15px 0; /* Reduced bottom margin by another 30% (22 -> 15) */
+  margin: 8px 0 12px 0; /* Tighter vertical stack */
   width: 100%;
 }
 
@@ -1319,24 +1379,35 @@
 
 .pillContainer {
   display: flex;
-  background: var(--bg-tertiary);
-  padding: 3px; /* Reduced by ~20% from 4px */
-  border-radius: 50px;
-  border: 1px solid var(--border-light);
-  box-shadow: var(--shadow-sm);
+  gap: 10px; /* Separated pills as requested */
+  padding: 4px 0;
 }
 
 .pillBtn {
-  padding: 5px 16px; /* Reduced vertical padding by ~15% for compact height */
-  border-radius: 40px;
-  border: none;
-  background: none;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--text-muted);
+  padding: 6px 18px;
+  border-radius: 50px;
+  border: 1px solid var(--border-light); /* Individual border */
+  background: var(--bg-primary);
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--text-secondary);
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.03); /* Subtle depth */
+}
+
+.pillBtn:hover:not(.pillActive) {
+  border-color: var(--text-tertiary);
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+}
+
+.pillActive {
+  background: var(--accent-primary) !important; /* Branded blue */
+  color: #ffffff !important;
+  border-color: var(--accent-primary) !important;
+  box-shadow: 0 4px 12px rgba(32, 75, 184, 0.2);
 }
 
 .pillBtn:hover:not(.pillActive) {
@@ -1361,24 +1432,34 @@
   }
   .controlsLeft, .controlsRight, .categoryPillNav {
     width: 100%;
-    justify-content: center;
+    max-width: 1200px;
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    padding-bottom: 4px;
   }
   .controlsLeft::-webkit-scrollbar, .controlsRight::-webkit-scrollbar, .categoryPillNav::-webkit-scrollbar {
     display: none;
   }
   
   .pillContainer {
-    min-width: max-content; /* Prevent squishing of buttons */
-    padding: 2px; /* Tighten container padding */
+    gap: 6px; /* Tightened gap further */
+    justify-content: flex-start; /* Start from left for scrolling */
+    padding: 2px 8px;
+    width: max-content; /* Ensure container expands to hold all pills */
   }
 
   .pillBtn {
-    padding: 4px 10px; /* Reduced from 6px 12px (~30% height reduction) */
-    font-size: 0.72rem; 
+    padding: 5px 12px; /* Even more compact */
+    font-size: 0.7rem; 
+    letter-spacing: -0.01em;
+  }
+
+  .pillBtnSmall {
+    padding: 3px 8px !important; /* ~20% reduction from 4px 10px */
+    font-size: 0.62rem !important; /* ~15% reduction from 0.72rem */
+  }
+
+  .pillContainerCompact {
+    padding: 2px !important;
+    scale: 0.88; /* Subtle scale down for unified mobile look */
   }
 
 }
@@ -1398,6 +1479,14 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .magHeroRow {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 0 4px;
+  }
 }
 
 .magBody {
@@ -1473,7 +1562,7 @@
 
 @media (max-width: 768px) {
   .gridSection {
-    margin-top: 48px !important; /* ~3x increase for hero-grid gap as requested */
+    margin-top: 24px !important; /* Reduced 50% from 48px to 24px as requested */
   }
 }
 

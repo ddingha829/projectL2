@@ -50,14 +50,17 @@ export default function HomeContent({
   const [currentPage, setCurrentPage] = useState(0);
   const POSTS_PER_PAGE = 8;
   const [visibleCount, setVisibleCount] = useState(6);
+  
+  // Derived from searchParams for global control
+  const viewType = (searchParams.get("viewType") as 'magazine' | 'card') || 'card';
+  const mobileGridCols = parseInt(searchParams.get("mCols") || "2");
+  const cardCols = parseInt(searchParams.get("dCols") || "4");
+
   const [isMobile, setIsMobile] = useState(false);
-  const [mobileGridCols, setMobileGridCols] = useState(2);
   const [isHeroPaused, setIsHeroPaused] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
-   const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [showMobileFab, setShowMobileFab] = useState(false);
-  const [viewType, setViewType] = useState<'magazine' | 'card'>('card');
-  const [cardCols, setCardCols] = useState(4); // Default to 4 on PC as requested
   const sentinelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -68,14 +71,10 @@ export default function HomeContent({
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // UseEffect to set default cols based on view mode (Main: 2, ViewAll: 3)
+  // UseEffect to sync grid cols based on URL params (removed setters from local use)
   useEffect(() => {
-    // If not in View All mode, force 2 columns
-    if (!isViewMore && !isFiltered) {
-      setMobileGridCols(2);
-    } else {
-      setMobileGridCols(2); // Default to 2 for all views as requested
-    }
+    // We can no longer 'set' here, but we can redirect if needed. 
+    // For now, these effects are mostly for page resets.
   }, [isViewMore, isFiltered]);
 
   // Detect mobile environment (Client-side)
@@ -165,14 +164,11 @@ export default function HomeContent({
     setHeroIndex((prev) => (prev - 1 + heroPosts.length) % heroPosts.length);
   };
 
-  const changeGridCols = (delta: number) => {
-    setMobileGridCols(prev => {
-      const next = prev + delta;
-      if (next >= 1 && next <= 3) return next;
-      return prev;
-    });
+  const updateParam = (key: string, val: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set(key, val);
+    router.replace(`?${params.toString()}`, { scroll: false });
   };
-
 
 
   const CATEGORY_LABEL_MAP: Record<string, string> = {
@@ -418,45 +414,12 @@ export default function HomeContent({
             )}
 
             <div className={styles.resultsHeader}>
-              <div className={styles.controlsLeft}>
-                <div className={styles.pillContainerCompact}>
-                  <button 
-                    className={`${styles.pillBtnSmall} ${viewType === 'card' ? styles.pillActive : ''}`}
-                    onClick={() => setViewType('card')}
-                  >
-                    카드형
-                  </button>
-                  <button 
-                    className={`${styles.pillBtnSmall} ${viewType === 'magazine' ? styles.pillActive : ''}`}
-                    onClick={() => setViewType('magazine')}
-                  >
-                    매거진형
-                  </button>
-                </div>
-              </div>
-
-              <h1 className={styles.sectionTitle}>
+              <h1 className={styles.resultsTitle}>
                 { isViewMore ? "전체 포스팅" : displayTitle}
               </h1>
-
-              <div className={styles.controlsRight}>
-                {viewType === 'card' && (
-                  <div className={styles.pillContainerCompact}>
-                    {(isMobile ? [1, 2, 3] : [3, 4]).map(num => (
-                      <button 
-                        key={num}
-                        className={`${styles.pillBtnSmall} ${ (isMobile ? mobileGridCols === num : cardCols === num) ? styles.pillActive : ''}`}
-                        onClick={() => isMobile ? setMobileGridCols(num) : setCardCols(num)}
-                      >
-                        {num}열
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
             </div>
 
-            {/* Unified Control Bar for Results View */}
+            {/* Unified Control Bar for Results View - Made more compact */}
             <div className={styles.categoryPillRow}>
               <nav className={styles.categoryPillNav}>
                 <div className={styles.pillContainer}>

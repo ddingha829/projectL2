@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useTransition } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { logout } from "@/app/login/actions";
 import styles from "./TopNavbar.module.css";
@@ -29,6 +29,7 @@ export default function TopNavbar({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const supabaseClient = createClient();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     const fetchEditors = async () => {
@@ -79,10 +80,88 @@ export default function TopNavbar({
     }
   };
 
+  const ViewSettingsDropdown = ({ isPC = false }: { isPC?: boolean }) => {
+    const vType = searchParams.get("viewType") || "card";
+    const mCols = searchParams.get("mCols") || "2";
+    const dCols = searchParams.get("dCols") || "4";
+    const [isOpen, setIsOpen] = useState(false);
+    const viewRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+      function handleClickOutside(e: MouseEvent) {
+        if (viewRef.current && !viewRef.current.contains(e.target as Node)) setIsOpen(false);
+      }
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const updateParam = (key: string, val: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(key, val);
+      router.replace(`?${params.toString()}`, { scroll: false });
+      setIsOpen(false);
+    };
+
+    return (
+      <div className={styles.vDropdownWrap} ref={viewRef}>
+        <button 
+          className={`${styles.vBtn} ${isOpen ? styles.vBtnActive : ''}`} 
+          onClick={() => setIsOpen(!isOpen)} 
+          aria-label="필터 및 보기 설정"
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+        </button>
+        {isOpen && (
+          <div className={`${styles.vMenu} ${styles.vMenuRight} ${!isPC ? styles.vMobileMenu : ''}`}>
+            <div className={styles.vMenuHeader}>
+              <span className={styles.vMenuTitle}>디스플레이 설정</span>
+              <button className={styles.vCloseSmall} onClick={() => setIsOpen(false)}>✕</button>
+            </div>
+            <div className={styles.vGroup}>
+              <span className={styles.vLabel}>레이아웃 모드</span>
+              <div className={styles.vOptionsGrid}>
+                <button 
+                  className={`${styles.vCardOpt} ${vType === 'card' ? styles.vActive : ''}`}
+                  onClick={() => updateParam("viewType", "card")}
+                >
+                  <div className={styles.vOptIcon}>🏙️</div>
+                  <div className={styles.vOptLabel}>그리드</div>
+                </button>
+                <button 
+                  className={`${styles.vCardOpt} ${vType === 'magazine' ? styles.vActive : ''}`}
+                  onClick={() => updateParam("viewType", "magazine")}
+                >
+                  <div className={styles.vOptIcon}>📰</div>
+                  <div className={styles.vOptLabel}>매거진</div>
+                </button>
+              </div>
+            </div>
+            {vType === 'card' && (
+              <div className={styles.vGroup}>
+                <span className={styles.vLabel}>{isPC ? '데스크탑' : '모바일'} 컬럼 수</span>
+                <div className={styles.vColSelector}>
+                  {(isPC ? ['2', '3', '4'] : ['1', '2', '3']).map(n => (
+                    <button 
+                      key={n}
+                      className={`${styles.vColBtn} ${ (isPC ? dCols : mCols) === n ? styles.vColActive : ''}`}
+                      onClick={() => updateParam(isPC ? "dCols" : "mCols", n)}
+                    >
+                      {n}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <header className={styles.header}>
       <div className={styles.navContent}>
-        {/* Left: Hamburger + Logo */}
+        {/* Left: Hamburger + Logo + Mobile View Settings */}
         <div className={styles.leftGroup}>
           <button className={styles.hamburgerBtn} onClick={onMobileToggle}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -91,9 +170,15 @@ export default function TopNavbar({
               <line x1="3" y1="18" x2="21" y2="18"></line>
             </svg>
           </button>
+          
           <Link href="/" className={styles.logoText}>
             <span className={styles.logoSub}>WoogaWooga</span>
           </Link>
+
+          {/* Mobile Only: View Settings Button */}
+          <div className={styles.mobileViewToggleWrap}>
+            <ViewSettingsDropdown />
+          </div>
         </div>
 
         <nav className={styles.mainNav}>
@@ -160,7 +245,7 @@ export default function TopNavbar({
           </div>
         </nav>
 
-        {/* Right: Search + Icons + Auth */}
+        {/* Right: Search + Icons + Auth + View Settings */}
         <div className={styles.rightGroup}>
           <form onSubmit={handleSearch} className={styles.searchBar}>
             <input
@@ -242,6 +327,11 @@ export default function TopNavbar({
             ) : (
               <Link href="/login" className={styles.loginButton}>Login</Link>
             )}
+          </div>
+
+          {/* PC Only View Settings */}
+          <div className={styles.pcViewToggleWrap}>
+            <ViewSettingsDropdown isPC={true} />
           </div>
         </div>
       </div>

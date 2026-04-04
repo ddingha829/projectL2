@@ -14,7 +14,13 @@
 
 /* All cards follow global 4:5 aspect ratio */
 .ratioMag53 {
-  aspect-ratio: 5/3 !important;
+  aspect-ratio: 5 / 3 !important;
+}
+
+@media (max-width: 768px) {
+  .ratioMag53 {
+    aspect-ratio: 1.5 / 1 !important; /* Slightly taller for mobile single-col */
+  }
 }
 
 .ratioMag53 .contentArea {

@@ -432,3 +432,226 @@
     font-size: 1.5rem;
   }
 }
+
+.mobileViewToggleWrap {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobileViewToggleWrap {
+    display: flex;
+    margin-left: 12px;
+    align-items: center;
+    position: absolute;
+    right: 16px;
+  }
+}
+
+.vDropdownWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.vBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid transparent;
+}
+
+.vBtnActive {
+  background: var(--bg-tertiary);
+  color: var(--accent-primary);
+  border-color: var(--border-light);
+  box-shadow: var(--shadow-sm);
+}
+
+.vBtn:active {
+  transform: scale(0.92);
+}
+
+.vMenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: var(--glass-bg);
+  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  border: 1px solid var(--border-light);
+  border-radius: 24px;
+  box-shadow: 0 25px 80px rgba(0,0,0,0.22);
+  padding: 24px;
+  width: 240px;
+  z-index: 2500;
+  margin-top: 15px;
+  animation: slidePanelIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+}
+
+.vMobileMenu {
+  position: fixed !important;
+  top: 60px !important;
+  right: 12px !important;
+  width: calc(100% - 24px) !important;
+  max-width: 320px !important;
+  margin-top: 0 !important;
+}
+
+@keyframes slidePanelIn {
+  from { opacity: 0; transform: translateY(-20px) scale(0.92); filter: blur(4px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+.vMenuHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.vMenuTitle {
+  font-size: 0.85rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.vCloseSmall {
+  background: var(--bg-tertiary);
+  border: none;
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.vCloseSmall:hover {
+  background: var(--text-primary);
+  color: var(--bg-primary);
+}
+
+.vGroup {
+  margin-bottom: 24px;
+}
+
+.vGroup:last-child {
+  margin-bottom: 0;
+}
+
+.vLabel {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  margin-bottom: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.vOptionsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.vCardOpt {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  padding: 16px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.vOptIcon {
+  font-size: 1.5rem;
+}
+
+.vOptLabel {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--text-secondary);
+}
+
+.vActive {
+  background: var(--bg-primary);
+  border-color: var(--accent-primary);
+  box-shadow: 0 8px 24px rgba(32, 75, 184, 0.15);
+}
+
+.vActive .vOptLabel {
+  color: var(--accent-primary);
+}
+
+.vColSelector {
+  display: flex;
+  background: var(--bg-tertiary);
+  padding: 4px;
+  border-radius: 40px;
+  gap: 4px;
+}
+
+.vColBtn {
+  flex: 1;
+  border: none;
+  background: none;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--text-tertiary);
+  border-radius: 40px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.vColActive {
+  background: var(--bg-primary);
+  color: var(--accent-primary);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.pcViewToggleWrap {
+  display: flex;
+  align-items: center;
+  margin-left: 8px;
+}
+
+@media (max-width: 768px) {
+  .pcViewToggleWrap {
+    display: none;
+  }
+}
+
+.vMenuLeft {
+  left: 0;
+  right: auto;
+}
+
+.vMenuRight {
+  right: 0;
+  left: auto;
+}
