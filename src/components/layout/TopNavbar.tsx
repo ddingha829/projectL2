@@ -124,14 +124,18 @@ export default function TopNavbar({
                   className={`${styles.vCardOpt} ${vType === 'card' ? styles.vActive : ''}`}
                   onClick={() => updateParam("viewType", "card")}
                 >
-                  <div className={styles.vOptIcon}>🏙️</div>
+                  <div className={styles.vOptIcon}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                  </div>
                   <div className={styles.vOptLabel}>그리드</div>
                 </button>
                 <button 
                   className={`${styles.vCardOpt} ${vType === 'magazine' ? styles.vActive : ''}`}
                   onClick={() => updateParam("viewType", "magazine")}
                 >
-                  <div className={styles.vOptIcon}>📰</div>
+                  <div className={styles.vOptIcon}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                  </div>
                   <div className={styles.vOptLabel}>매거진</div>
                 </button>
               </div>

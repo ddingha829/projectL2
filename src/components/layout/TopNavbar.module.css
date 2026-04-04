@@ -488,8 +488,8 @@
   border: 1px solid var(--border-light);
   border-radius: 24px;
   box-shadow: 0 25px 80px rgba(0,0,0,0.22);
-  padding: 24px;
-  width: 240px;
+  padding: 16px;
+  width: 200px;
   z-index: 2500;
   margin-top: 15px;
   animation: slidePanelIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -514,17 +514,17 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
-  padding-bottom: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
   border-bottom: 1px solid var(--border-light);
 }
 
 .vMenuTitle {
-  font-size: 0.85rem;
+  font-size: 0.72rem;
   font-weight: 900;
-  color: var(--text-primary);
+  color: var(--text-tertiary);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
 }
 
 .vCloseSmall {
@@ -548,7 +548,7 @@
 }
 
 .vGroup {
-  margin-bottom: 24px;
+  margin-bottom: 18px;
 }
 
 .vGroup:last-child {
@@ -557,9 +557,9 @@
 
 .vLabel {
   display: block;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   color: var(--text-tertiary);
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -568,29 +568,30 @@
 .vOptionsGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 8px;
 }
 
 .vCardOpt {
   background: var(--bg-secondary);
   border: 1px solid var(--border-light);
-  border-radius: 16px;
-  padding: 16px 8px;
+  border-radius: 12px;
+  padding: 10px 4px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .vOptIcon {
-  font-size: 1.5rem;
+  font-size: 1.1rem;
+  color: var(--text-secondary);
 }
 
 .vOptLabel {
-  font-size: 0.75rem;
-  font-weight: 800;
+  font-size: 0.7rem;
+  font-weight: 700;
   color: var(--text-secondary);
 }
 
@@ -616,11 +617,11 @@
   flex: 1;
   border: none;
   background: none;
-  height: 36px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 800;
   color: var(--text-tertiary);
   border-radius: 40px;
