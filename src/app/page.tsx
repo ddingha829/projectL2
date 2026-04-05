@@ -94,7 +94,8 @@ export default async function Home({
     restaurant: "맛집",
     other: "기타",
     travel: "여행",
-    exhibition: "전시회"
+    exhibition: "전시회",
+    notice: "공지사항"
   };
 
   const supabase = await createClient();

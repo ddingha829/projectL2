@@ -18,6 +18,21 @@ const MOCK_REVIEWS = [
   { id: 'm5', subject: '서울의 봄', rating: 9, comment: '실화의 묵직한 울림, 긴장감 최고', authorName: 'cho***' }
 ];
 
+const stripHtml = (html: string) => {
+  if (!html) return "";
+  return html
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/p>/gi, '\n')
+    .replace(/<[^>]*>?/gm, '')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/&amp;/gi, '&')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
+    .trim();
+};
+
 interface HomeContentProps {
   heroPosts: any[];
   otherPosts: any[];
@@ -54,7 +69,6 @@ export default function HomeContent({
   
   const isViewMore = searchParams.get("view") === "all";
   const isFiltered = displayTitle !== "Home";
-  
   const reviewRef = useRef<HTMLDivElement>(null);
   const scrollReviews = (direction: 'left' | 'right') => {
     if (!reviewRef.current) return;
@@ -77,20 +91,45 @@ export default function HomeContent({
   const [heroIndex, setHeroIndex] = useState(0);
   const [slideDir, setSlideDir] = useState<'next' | 'prev'>('next');
   const [currentPage, setCurrentPage] = useState(0);
-  const POSTS_PER_PAGE = 8;
-  const [visibleCount, setVisibleCount] = useState(6);
-  
-  // Derived from searchParams for global control
-  const viewType = (searchParams.get("viewType") as 'magazine' | 'card') || 'card';
-  const mobileGridCols = parseInt(searchParams.get("mCols") || "2");
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobileAndSetView = () => {
+      const isMob = window.innerWidth <= 768;
+      setIsMobile(isMob);
+      
+      const storedView = localStorage.getItem('viewType');
+      const currentView = searchParams.get('viewType');
+      
+      if (!currentView) {
+        const defaultView = isMob ? 'card' : 'magazine';
+        const finalView = storedView || defaultView;
+        
+        const params = new URLSearchParams(window.location.search);
+        params.set('viewType', finalView);
+        if (window.location.pathname === '/' || window.location.search.includes('view=all')) {
+          router.replace(`?${params.toString()}`, { scroll: false });
+        }
+      } else {
+        localStorage.setItem('viewType', currentView);
+      }
+    };
+    
+    checkMobileAndSetView();
+    window.addEventListener("resize", checkMobileAndSetView);
+    return () => window.removeEventListener("resize", checkMobileAndSetView);
+  }, [searchParams, router]);
+
+  const vType = (searchParams.get("viewType") || (isMobile ? "card" : "magazine")) as "card" | "magazine";
+  const mobileGridCols = vType === 'magazine' ? 1 : parseInt(searchParams.get("mCols") || "2");
   const cardCols = parseInt(searchParams.get("dCols") || "4");
 
-  const [isMobile, setIsMobile] = useState(false);
   const [isHeroPaused, setIsHeroPaused] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [showMobileFab, setShowMobileFab] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
+  const [visibleCount, setVisibleCount] = useState(6);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -276,44 +315,44 @@ export default function HomeContent({
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
             >
+            <>
               <div className={styles.desktopOnly}>
-                <div 
-                  className={styles.heroTrack} 
-                  style={{ transform: `translateX(-${heroIndex * 100}%)` }}
-                >
-                  {heroPosts.map((post) => (
-                    <div key={post.id} className={styles.heroSlideItem}>
-                      <HeroCard 
-                        {...post} 
-                        heightRatio="2/3" 
-                        showNav={false}
-                      />
-                    </div>
-                  ))}
-                </div>
-                
-                {heroPosts.length > 1 && (
-                  <div className={styles.fixedHeroNav}>
-                    <button className={styles.slideNavBtn} onClick={prevHero}>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="15 18 9 12 15 6"></polyline>
-                      </svg>
-                    </button>
-                    <div className={styles.heroDotsView}>
-                      {heroPosts.map((_, idx) => (
-                        <span 
-                          key={idx} 
-                          className={idx === heroIndex ? styles.activeHeroDot : styles.inactiveHeroDot}
-                        ></span>
-                      ))}
-                    </div>
-                    <button className={styles.slideNavBtn} onClick={nextHero}>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="9 18 15 12 9 6"></polyline>
-                      </svg>
-                    </button>
+                <div className={styles.heroWrapper}>
+                  <div className={styles.heroFrame}></div>
+                  <div 
+                    className={styles.heroTrack} 
+                    style={{ transform: `translateX(-${heroIndex * 100}%)` }}
+                  >
+                    {heroPosts.map((post) => (
+                      <div key={post.id} className={styles.heroSlideItem}>
+                        <HeroCard {...post} heightRatio="2/3" showNav={false} />
+                      </div>
+                    ))}
                   </div>
-                )}
+                  
+                  {heroPosts.length > 1 && (
+                    <div className={styles.heroNavFloating}>
+                      <button className={styles.slideNavBtn} onClick={prevHero}>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                      </button>
+                      <div className={styles.heroDotsView}>
+                        {heroPosts.map((_, idx) => (
+                          <span 
+                            key={idx} 
+                            className={idx === heroIndex ? styles.activeHeroDot : styles.inactiveHeroDot}
+                          ></span>
+                        ))}
+                      </div>
+                      <button className={styles.slideNavBtn} onClick={nextHero}>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
               <div className={styles.mobileOnly}>
                 <div 
@@ -321,12 +360,11 @@ export default function HomeContent({
                   style={{ transform: `translateX(-${heroIndex * 100}%)` }}
                 >
                   {heroPosts.map((post) => (
-                    <div key={post.id} className={styles.mobileHeroItem}>
+                    <div key={post.id} className={styles.heroSlideItem}>
                       <HeroCard {...post} heightRatio="2/3" />
                     </div>
                   ))}
                 </div>
-                {/* Mobile Hero Pagination Hints */}
                 {heroPosts.length > 1 && (
                   <div className={styles.mobileHeroDots}>
                     {heroPosts.map((_, idx) => (
@@ -338,7 +376,7 @@ export default function HomeContent({
                   </div>
                 )}
               </div>
-
+            </>
             </div>
 
             <div className={styles.gridSection}>
@@ -356,18 +394,23 @@ export default function HomeContent({
                {/* Removed mobile grid controls on main screen as requested */}
                 
               <div 
-                className={`${styles.mainGrid} ${!showFullGrid ? styles.horizontalScrollGrid : ''}`}
+                className={`${vType === 'magazine' ? styles.magMainGrid : styles.mainGrid} ${!showFullGrid ? styles.horizontalScrollGrid : ''} ${(isFiltered || isViewMore) && vType === 'card' ? styles.mixedGrid : ''}`}
                 style={{ '--mobile-cols': mobileGridCols } as React.CSSProperties}
               >
-                {displayPosts.map(post => (
-                  <PosterCard 
-                    key={post.id} 
-                    {...post} 
-                    aspectRatio={isMobile ? 'default' : 'card45'} 
-                    isOneCol={isMobile && mobileGridCols === 1}
-                    isMinimal={false} 
-                  />
-                ))}
+                 {displayPosts.map(post => {
+                   const excerpt = stripHtml(post.content).slice(0, 160) + (stripHtml(post.content).length > 160 ? '...' : '');
+                   return (
+                     <PosterCard 
+                       key={post.id} 
+                       {...post} 
+                       aspectRatio={isMobile ? 'default' : 'card45'} 
+                       isOneCol={isMobile && mobileGridCols === 1}
+                       isMinimal={false} 
+                       viewType={vType}
+                       excerpt={excerpt}
+                     />
+                   );
+                 })}
               </div>
 
               {/* [신규] 기획전 섹션 - 홈 메인에서만 노출 */}
@@ -380,7 +423,7 @@ export default function HomeContent({
                   
                   <div className={styles.featureGrid}>
                     {(featurePosts.length > 0 ? featurePosts : [
-                      { id: 'f1', title: '2026 올해의 영화 10선', imageUrl: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1600&q=80' }
+                      { id: 'f1', title: '에디터 선정 2026.4 최고의 점심메뉴', imageUrl: 'https://images.unsplash.com/photo-1525648199074-cee30ba79a4a?auto=format&fit=crop&w=1600&q=80' }
                     ]).map((feature: any) => (
                       <Link key={feature.id} href={feature.id.startsWith('db-') ? `/post/${feature.id.replace('db-','')}` : '#'} className={styles.featureBanner}>
                         <img src={feature.imageUrl} alt={feature.title} className={styles.featureImage} />
@@ -550,8 +593,8 @@ export default function HomeContent({
             </div>
 
 
-            <div key={isMobile ? 'mobile-grid' : `grid-${viewType}-${cardCols}`} className={styles.gridListFade}>
-              {viewType === 'card' ? (
+            <div key={isMobile ? 'mobile-grid' : `grid-${vType}-${cardCols}`} className={styles.gridListFade}>
+              {vType === 'card' ? (
                 <div 
                   className={styles.gridList}
                   style={{ 
@@ -592,7 +635,7 @@ export default function HomeContent({
                         p.categoryId === catId ||
                         p.category === catId || 
                         (label && p.category === label)
-                      ) && !heroIds.includes(p.id)).slice(0, 5);
+                      ) && !heroIds.includes(p.id)).slice(0, 3);
                       
                       if (catPosts.length === 0) return null;
                       const catName = label || catPosts[0].category;

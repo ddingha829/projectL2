@@ -2,10 +2,12 @@
   position: relative;
   width: 100%;
   display: block;
-  background-color: #111;
+  background-color: transparent; /* Remove to avoid edge bleeding */
   height: 100%;
   overflow: hidden;
-  border-radius: var(--radius-md);
+  height: calc(100% + 2px);
+  width: calc(100% + 2px);
+  margin: -1px;
 }
 
 .heightFull { height: min(657px, 65vh); }
@@ -76,13 +78,13 @@
 }
 
 .categoryBadge {
-  background-color: var(--bg-primary);
-  color: var(--accent-primary);
-  height: 26px; /* Increased height accordingly */
-  padding: 0 12px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #333;
+  height: 22px; 
+  padding: 0 10px;
   border-radius: 4px;
   font-weight: 800;
-  font-size: 0.72rem; /* Increased roughly 15% as per request */
+  font-size: 0.66rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   display: flex;
@@ -266,14 +268,12 @@
 }
 
 @media (max-width: 768px) {
-  .heightFull { height: min(590px, 58vh) !important; }
-  .heightTwoThird { height: min(400px, 40vh) !important; }
-  .heightOneThird { height: min(215px, 20vh) !important; }
+  .heightFull { height: min(530px, 52vh) !important; }
+  .heightTwoThird { height: min(360px, 36vh) !important; }
+  .heightOneThird { height: min(195px, 18vh) !important; }
 
   .hero {
-    border-radius: 0;
-    aspect-ratio: 5 / 4;
-    height: auto !important; 
+    border-radius: 12px !important;
   }
 
   .hero:hover .bgImage {
@@ -304,11 +304,11 @@
   }
 
   .contentLink {
-    padding: 12px 16px !important; /* Tighter bottom padding */
+    padding: 20px 16px !important; /* Restored safe 16px inset */
   }
 
   .title {
-    font-size: clamp(1.2rem, 7vw, 1.55rem) !important; /* Scalable font */
+    font-size: clamp(1.2rem, 7vw, 1.55rem) !important;
     margin-bottom: 8px !important;
     line-height: 1.25;
     display: block !important;
@@ -318,7 +318,7 @@
   .header {
     position: absolute !important;
     top: 12px !important;
-    left: 16px !important;
+    left: 16px !important; /* Restored safe 16px inset */
     margin-bottom: 0 !important;
   }
 

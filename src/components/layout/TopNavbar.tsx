@@ -24,6 +24,7 @@ export default function TopNavbar({
   const [isEditorsOpen, setIsEditorsOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [editors, setEditors] = useState<any[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const editorsRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -42,6 +43,33 @@ export default function TopNavbar({
     };
     fetchEditors();
   }, []);
+
+  useEffect(() => {
+    const checkMobileAndSetView = () => {
+      const isMob = window.innerWidth <= 768;
+      setIsMobile(isMob);
+      
+      const storedView = localStorage.getItem('viewType');
+      const currentView = searchParams.get('viewType');
+      
+      if (!currentView) {
+        const defaultView = isMob ? 'card' : 'magazine';
+        const finalView = storedView || defaultView;
+        
+        const params = new URLSearchParams(window.location.search);
+        params.set('viewType', finalView);
+        if (window.location.pathname === '/' || window.location.search.includes('view=all')) {
+          router.replace(`?${params.toString()}`, { scroll: false });
+        }
+      } else {
+        localStorage.setItem('viewType', currentView);
+      }
+    };
+    
+    checkMobileAndSetView();
+    window.addEventListener("resize", checkMobileAndSetView);
+    return () => window.removeEventListener("resize", checkMobileAndSetView);
+  }, [searchParams, router]);
 
   // Close menu on click outside
   useEffect(() => {
@@ -74,14 +102,12 @@ export default function TopNavbar({
         } catch (err) {
           console.error("Logout error:", err);
         }
-        // 확실한 상태 반영을 위해 메인으로 강제 이동하며 페이지 새로고침
         window.location.href = "/";
       });
     }
   };
 
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
-  const isHomePage = !searchParams.get("view") && !searchParams.get("category") && !searchParams.get("author") && !searchParams.get("search");
 
   const ViewSettingsDropdown = ({ isPC = false }: { isPC?: boolean }) => {
     const vType = searchParams.get("viewType") || "card";
@@ -89,9 +115,6 @@ export default function TopNavbar({
     const dCols = searchParams.get("dCols") || "4";
     const [isOpen, setIsOpen] = useState(false);
     const viewRef = useRef<HTMLDivElement>(null);
-
-    // [New] Hide ONLY on Home Page
-    if (isHomePage) return <div className={styles.viewSettingsPlaceholder} />;
 
     useEffect(() => {
       function handleClickOutside(e: MouseEvent) {
@@ -104,6 +127,9 @@ export default function TopNavbar({
     const updateParam = (key: string, val: string) => {
       const params = new URLSearchParams(searchParams.toString());
       params.set(key, val);
+      if (key === 'viewType') {
+        localStorage.setItem('viewType', val);
+      }
       router.replace(`?${params.toString()}`, { scroll: false });
       setIsOpen(false);
     };
@@ -131,7 +157,7 @@ export default function TopNavbar({
                   onClick={() => updateParam("viewType", "card")}
                 >
                   <div className={styles.vOptIcon}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
                   </div>
                   <div className={styles.vOptLabel}>그리드</div>
                 </button>
@@ -140,7 +166,7 @@ export default function TopNavbar({
                   onClick={() => updateParam("viewType", "magazine")}
                 >
                   <div className={styles.vOptIcon}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 6h16M4 12h10M4 18h16"></path><path d="M14 12l2 2 4-4"></path></svg>
                   </div>
                   <div className={styles.vOptLabel}>매거진</div>
                 </button>
@@ -171,7 +197,6 @@ export default function TopNavbar({
   return (
     <header className={styles.header}>
       <div className={styles.navContent}>
-        {/* Left: Hamburger + Logo + Mobile View Settings */}
         <div className={styles.leftGroup}>
           <button className={styles.hamburgerBtn} onClick={onMobileToggle}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -185,7 +210,6 @@ export default function TopNavbar({
             <span className={styles.logoSub}>WoogaWooga</span>
           </Link>
 
-          {/* Mobile Only: View Settings Button */}
           <div className={styles.mobileViewToggleWrap}>
             <ViewSettingsDropdown />
           </div>

@@ -101,34 +101,6 @@
   box-sizing: border-box;
 }
 
-.mobileHeroDots {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  display: flex !important;
-  gap: 6px;
-  z-index: 100;
-  padding: 6px 12px;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 100px;
-  backdrop-filter: blur(12px) saturate(180%);
-}
-
-.fixedHeroNav {
-  position: absolute;
-  top: 24px;
-  right: 24px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: rgba(255, 255, 255, 0.15);
-  padding: 8px 16px;
-  border-radius: 40px;
-  backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  z-index: 10;
-}
 
 .slideNavBtn {
   background: rgba(255, 255, 255, 0.1);
@@ -318,17 +290,20 @@
 .heroWrapper {
   position: relative;
   width: 100%;
+  height: min(445px, 44vh);
   border-radius: 24px;
   overflow: hidden;
-  background: #2C2C2C;
-  margin-bottom: 8px !important; /* Reduced by 20% to shrink gap with grid section below */
+  background: transparent; /* Remove background to avoid edge bleeding */
+  margin-bottom: 8px !important;
+  isolation: isolate;
+  /* Removal of radial masks to ensure visibility across all mobile browsers */
 }
 
 /* The fixed frame on top of the sliding tracks */
 .heroFrame {
   position: absolute;
-  inset: 0;
-  border: 2px solid var(--divider-color); /* Matched with sidebar divider */
+  inset: -1px; /* Overlap slightly to hide aliasing boundaries */
+  border: 2px solid var(--divider-color);
   border-radius: 24px;
   z-index: 20;
   pointer-events: none;
@@ -351,6 +326,7 @@
 .heroSlideItem {
   flex: 0 0 100%;
   width: 100%;
+  height: 100%;
 }
 
 
@@ -363,6 +339,9 @@
 }
 
 @media (max-width: 768px) {
+  .heroWrapper {
+    height: min(360px, 36vh) !important;
+  }
   .container,
   .gridListFade,
   .authorProfileCard,
@@ -376,6 +355,9 @@
   
   .mobileOnly {
     display: block;
+    position: relative;
+    border-radius: 24px;
+    overflow: hidden;
   }
 
   .catPill, .pillBtn {
@@ -453,7 +435,7 @@
 .viewAllLink {
   background: none;
   border: none;
-  color: var(--accent-primary);
+  color: #204bb8; /* Updated to logo blue */
   font-weight: 800;
   font-size: 0.95rem;
   cursor: pointer;
@@ -771,7 +753,7 @@
     width: 100%;
     margin-left: 0;
     margin-right: 0;
-    padding: 2px 2px 8px; /* Dramatically reduced top padding (16->2) to hit desired gap */
+    padding: 2px 0 8px; /* Perfectly aligned to 8px base padding */
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -799,12 +781,12 @@
   }
   
   .heroWrapper, .heroFrame {
-    margin-bottom: 0 !important; /* Gap now handled by gridSection marginTop */
-    border-radius: 10px !important; /* Slightly tighter radius for narrower margin */
+    margin-bottom: 0 !important;
+    border-radius: 10px !important;
     border: none !important;
-    margin-left: 2px !important;
-    margin-right: 2px !important;
-    width: calc(100% - 4px) !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
     box-shadow: 0 6px 20px rgba(0,0,0,0.12) !important;
     overflow: hidden !important;
   }
@@ -867,11 +849,10 @@
   .gridList, .mainGrid {
     display: grid !important;
     grid-template-columns: repeat(var(--mobile-cols, 2), 1fr) !important;
-    gap: 1.6px !important; 
-    padding: 0 1.6px !important; /* Unified side margin */
+    gap: 12px !important; 
+    padding: 0 !important; 
     width: 100% !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
+    margin: 0 !important;
     overflow-x: hidden;
   }
 
@@ -881,12 +862,18 @@
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch;
     gap: 16px !important; /* ~50% increase from 11px */
-    padding: 0 16px 4px 16px !important; /* Reduced bottom padding (20->4) to hit desired gap */
+    padding: 0 !important; /* Removed side padding so it defaults to container margin */
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
-    width: auto !important;
-    margin-left: -16px;
-    margin-right: -16px;
+    width: 100% !important;
+    margin-left: 0 !important; /* Removed -16px screen breakout */
+    margin-right: 0 !important;
+  }
+
+  .horizontalScrollGrid > article {
+    flex: 0 0 53% !important;
+    scroll-snap-align: start;
+    width: 53% !important;
   }
 
   .horizontalScrollGrid::-webkit-scrollbar {
@@ -1127,7 +1114,13 @@
     border-radius: 8px;
   }
   .featureTitle {
-    font-size: 1.4rem;
+    font-size: clamp(0.92rem, 5.06vw, 1.6rem); /* Increased 15% from clamp(0.8rem, 4.4vw, 1.4rem) */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 90%; /* Buffer for safe side margins */
+    margin: 0 auto;
+    padding: 0 5px;
   }
 }
 
@@ -1245,11 +1238,8 @@
 
 .miniRevCommunityScore {
   font-size: 0.65rem;
-  color: var(--text-muted);
+  color: var(--text-tertiary); /* Slightly darker than muted for visibility as it's now unboxed */
   font-weight: 700;
-  background: var(--bg-tertiary);
-  padding: 2px 8px;
-  border-radius: 4px;
   white-space: nowrap; /* Prevent wrapping */
   flex-shrink: 0;
 }
@@ -1299,10 +1289,10 @@
     margin-right: 0;
     padding-left: 16px; /* Start aligned with header */
     padding-right: 16px;
-    gap: 8px; /* Reduced 50% from 16px */
+    gap: 10px; /* Increased by ~20% for more breathing room */
   }
   .miniReviewCard {
-    flex: 0 0 60%; /* Reduced back to 60% to match magazine cards */
+    flex: 0 0 64% !important; /* Increased twice to reach ~64% as requested */
     aspect-ratio: 1 / 1;
     padding: 16px;
     gap: 6px; /* Reduced from 8px to save vertical space */
@@ -1337,5 +1327,159 @@
   }
   .scrollBtn {
     display: none;
+  }
+}
+
+/* Floating Hero Remote Styles (Restored Top-Right) */
+.heroNavFloating {
+  position: absolute;
+  top: 30px;
+  right: 50px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: 50; /* Above slide frames */
+}
+
+.slideNavBtn {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.25s ease;
+  padding: 0;
+}
+
+.slideNavBtn:hover {
+  background: rgba(255, 255, 255, 0.35);
+  transform: scale(1.08);
+}
+
+.heroDotsView {
+  display: flex;
+  gap: 8px;
+}
+
+.activeHeroDot {
+  width: 24px;
+  height: 6px;
+  background: #fff;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.inactiveHeroDot {
+  width: 6px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+}
+
+@media (max-width: 1024px) {
+  .heroNavFloating {
+    top: 24px;
+    right: 30px;
+  }
+}
+
+.mobileHeroDots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  z-index: 50;
+}
+
+.magHeroGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px; /* Reduced by 50% from 32px */
+  margin-bottom: 32px;
+}
+
+.magHeroGridMobile {
+  grid-template-columns: 1fr;
+  gap: 12px !important; /* Half gap between top 2 images on mobile */
+}
+
+.magMainGrid {
+  display: grid;
+  grid-template-columns: repeat(var(--desktop-cols, 4), 1fr);
+  gap: 16px !important; /* Reduced by 50% from 32px */
+}
+
+@media (max-width: 768px) {
+  .magMainGrid:not(.horizontalScrollGrid) {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Missing grid classes for Home sections */
+  .mixedGrid, .featureGrid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .featureBanner {
+    display: block;
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Magazine Section Grouping Fix */
+  .magazineLayout {
+    gap: 8px !important; /* Reduced from 48px to ~30% of total footprint */
+  }
+
+  .magHeroRow {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+    margin-bottom: 0px !important; /* Gap handled by parent now */
+  }
+
+  .magBody {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+
+  .magSecTitle {
+    font-size: 1.25rem !important;
+    margin-bottom: 16px !important;
+    padding-bottom: 8px !important;
+  }
+
+  .magListItem {
+    gap: 12px !important;
+    padding: 4px 0 !important;
+  }
+
+  .magThumbWrap {
+    width: 85px !important;
+    height: 60px !important;
+  }
+
+  .magListTitle {
+    font-size: 0.95rem !important;
   }
 }

@@ -60,7 +60,7 @@
   }
 
   .contentInner {
-    padding: 0 8px;
+    padding: 0 16px; /* Premium 16px safe zone for all content */
     gap: 16px;
   }
   

@@ -36,7 +36,9 @@ export default function HeroCard({
       <div className={styles.overlay}>
         <Link href={`/post/${id}`} className={styles.contentLink}>
             <div className={styles.header}>
-              <div className={styles.categoryBadge}>{category}</div>
+              <div className={styles.categoryBadge}>
+                {category?.toUpperCase() === "NOTICE" || category === "공지사항" ? "공지사항" : category}
+              </div>
               {isEditorsPick && (
                 <div className={styles.editorsPick}>
                   🏆 공들여 씀
