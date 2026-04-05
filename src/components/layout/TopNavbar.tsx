@@ -80,12 +80,18 @@ export default function TopNavbar({
     }
   };
 
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const isHomePage = !searchParams.get("view") && !searchParams.get("category") && !searchParams.get("author") && !searchParams.get("search");
+
   const ViewSettingsDropdown = ({ isPC = false }: { isPC?: boolean }) => {
     const vType = searchParams.get("viewType") || "card";
     const mCols = searchParams.get("mCols") || "2";
     const dCols = searchParams.get("dCols") || "4";
     const [isOpen, setIsOpen] = useState(false);
     const viewRef = useRef<HTMLDivElement>(null);
+
+    // [New] Hide ONLY on Home Page
+    if (isHomePage) return <div className={styles.viewSettingsPlaceholder} />;
 
     useEffect(() => {
       function handleClickOutside(e: MouseEvent) {
@@ -186,7 +192,7 @@ export default function TopNavbar({
         </div>
 
         <nav className={styles.mainNav}>
-          <Link href="/?view=all" className={styles.navLink}>전체 포스팅</Link>
+          <Link href="/?view=all" className={styles.navLink}>모든 게시물</Link>
           
           <div 
             className={styles.dropdownContainer}
@@ -220,10 +226,8 @@ export default function TopNavbar({
             )}
           </div>
 
-
-
           <div 
-            className={styles.dropdownContainer}
+            className={`${styles.dropdownContainer} ${styles.editorBtnWrap}`}
             onMouseEnter={() => setIsEditorsOpen(true)}
             onMouseLeave={() => setIsEditorsOpen(false)}
           >
@@ -247,20 +251,37 @@ export default function TopNavbar({
               </div>
             )}
           </div>
+
+          <Link href="/reviews" className={styles.navLink}>리뷰 아카이브</Link>
         </nav>
 
         {/* Right: Search + Icons + Auth + View Settings */}
         <div className={styles.rightGroup}>
-          <form onSubmit={handleSearch} className={styles.searchBar}>
+          <form 
+            onSubmit={handleSearch} 
+            className={`${styles.searchBar} ${isSearchExpanded ? styles.searchBarExpanded : ''}`}
+          >
             <input
               type="text"
-              placeholder="게시물 검색..."
+              placeholder="검색..."
               className={styles.searchInput}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              ref={(input) => { if (isSearchExpanded) input?.focus(); }}
             />
-            <button type="submit" className={styles.searchBtn}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <button 
+              type="button" 
+              className={styles.searchBtn} 
+              onClick={() => {
+                if (isSearchExpanded && searchQuery.trim()) {
+                  const form = document.querySelector(`.${styles.searchBar}`) as HTMLFormElement;
+                  form?.requestSubmit();
+                } else {
+                  setIsSearchExpanded(!isSearchExpanded);
+                }
+              }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
               </svg>
@@ -273,9 +294,6 @@ export default function TopNavbar({
               <div className={styles.authInfo}>
                 {(role === 'admin' || role === 'editor') && (
                   <div className={styles.navActions}>
-                    {role === 'admin' && (
-                      <Link href="/admin" className={styles.adminButton}>⚙️ 관리</Link>
-                    )}
                     <Link href="/write" className={styles.writeButton}>✍️ 쓰기</Link>
                   </div>
                 )}

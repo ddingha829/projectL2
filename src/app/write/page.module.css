@@ -75,7 +75,7 @@
 }
 
 .submitBtn {
-  margin-top: 20px;
+  flex: 1;
   padding: 16px;
   background-color: #0a467d;
   color: white;
@@ -97,18 +97,40 @@
   transform: translateY(0);
 }
 
-.emptyState {
+.actionsFooter {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 100px 0;
-  text-align: center;
+  gap: 16px;
+  margin-top: 24px;
 }
 
-.emptyIcon {
-  font-size: 4rem;
-  margin-bottom: 20px;
+.draftBtn {
+  flex: 0.4;
+  padding: 16px;
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.draftBtn:hover:not(:disabled) {
+  background-color: var(--bg-hover);
+  border-color: var(--border-medium);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+}
+
+.submitBtn:disabled, .draftBtn:disabled {
+  background-color: #ccc !important;
+  color: #888 !important;
+  border-color: #ddd !important;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+  opacity: 0.7;
 }
 
 .checkboxGroup {
@@ -184,8 +206,79 @@
   display: none;
 }
 
-.submitBtn:disabled {
-  background-color: #ccc !important;
-  cursor: not-allowed;
-  transform: none;
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 0;
+  text-align: center;
 }
+
+.emptyIcon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+}
+
+.reviewEditorBox {
+  background: var(--bg-hover);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.starRatingRow {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.star {
+  font-size: 1.8rem;
+  color: #ddd;
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.starActive {
+  color: #ff4d4d; /* Red highlights as requested */
+}
+
+.autocompleteWrapper {
+  position: relative;
+}
+
+.suggestionsList {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-medium);
+  border-radius: 10px;
+  box-shadow: var(--shadow-md);
+  z-index: 1000;
+  list-style: none;
+  padding: 8px 0;
+  margin-top: 6px;
+  overflow: hidden;
+}
+
+.suggestionsList li {
+  padding: 12px 18px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.2s;
+}
+
+.suggestionsList li:hover {
+  background: var(--bg-hover);
+  color: var(--accent-primary);
+}
+
+

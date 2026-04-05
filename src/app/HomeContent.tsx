@@ -10,6 +10,14 @@ import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import ReviewRequest from "@/components/feed/ReviewRequest";
 
+const MOCK_REVIEWS = [
+  { id: 'm1', subject: '크라임 101', rating: 6, comment: '반전은 보이나 몰입감 부족', authorName: 'hwa***' },
+  { id: 'm2', subject: '샷 콜러', rating: 7, comment: '연기가 돋보이는 처절한 사투', authorName: 'pen***' },
+  { id: 'm3', subject: '파묘', rating: 8, comment: '한국적 오컬트 정수, 사운드 압권', authorName: 'kim***' },
+  { id: 'm4', subject: '듄: 파트 2', rating: 10, comment: '장엄한 아이맥스 시각적 황홀경', authorName: 'lee***' },
+  { id: 'm5', subject: '서울의 봄', rating: 9, comment: '실화의 묵직한 울림, 긴장감 최고', authorName: 'cho***' }
+];
+
 interface HomeContentProps {
   heroPosts: any[];
   otherPosts: any[];
@@ -17,6 +25,15 @@ interface HomeContentProps {
   displayTitle: string;
   animationKey: string;
   isInitialVisit: boolean;
+  recentReviews?: {
+    id: string;
+    subject: string;
+    rating: number;
+    comment: string;
+    date: string;
+    authorName: string;
+  }[];
+  featurePosts?: any[];
 }
 
 export default function HomeContent({ 
@@ -25,7 +42,9 @@ export default function HomeContent({
   allPosts,
   displayTitle, 
   animationKey,
-  isInitialVisit 
+  isInitialVisit,
+  recentReviews = [],
+  featurePosts = []
 }: HomeContentProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -35,6 +54,16 @@ export default function HomeContent({
   
   const isViewMore = searchParams.get("view") === "all";
   const isFiltered = displayTitle !== "Home";
+  
+  const reviewRef = useRef<HTMLDivElement>(null);
+  const scrollReviews = (direction: 'left' | 'right') => {
+    if (!reviewRef.current) return;
+    const scrollAmount = 350;
+    reviewRef.current.scrollBy({ 
+      left: direction === 'left' ? -scrollAmount : scrollAmount, 
+      behavior: 'smooth' 
+    });
+  };
   
   // Find author data from static list OR from the actual posts (for live DB users)
   const staticAuthor = AUTHORS.find(a => a.id === authorFilter);
@@ -313,8 +342,8 @@ export default function HomeContent({
             </div>
 
             <div className={styles.gridSection}>
-              <header className={styles.sectionHeader}>
-                <h2 className={styles.sectionTitle}>최신 글</h2>
+              <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '0' }}>
+                <h2 className={styles.sectionTitle}>새로운 포스팅</h2>
                 <div className={styles.headerSpacer}></div>
                 
                 {filteredPosts.length > 0 && (
@@ -327,7 +356,7 @@ export default function HomeContent({
                {/* Removed mobile grid controls on main screen as requested */}
                 
               <div 
-                className={styles.mainGrid}
+                className={`${styles.mainGrid} ${!showFullGrid ? styles.horizontalScrollGrid : ''}`}
                 style={{ '--mobile-cols': mobileGridCols } as React.CSSProperties}
               >
                 {displayPosts.map(post => (
@@ -336,9 +365,79 @@ export default function HomeContent({
                     {...post} 
                     aspectRatio={isMobile ? 'default' : 'card45'} 
                     isOneCol={isMobile && mobileGridCols === 1}
+                    isMinimal={false} 
                   />
                 ))}
               </div>
+
+              {/* [신규] 기획전 섹션 - 홈 메인에서만 노출 */}
+              {!isFiltered && (
+                <div className={styles.featureSection}>
+                  <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '25px' }}>
+                    <h2 className={styles.sectionTitle}>기획전</h2>
+                    <div className={styles.headerSpacer}></div>
+                  </header>
+                  
+                  <div className={styles.featureGrid}>
+                    {(featurePosts.length > 0 ? featurePosts : [
+                      { id: 'f1', title: '2026 올해의 영화 10선', imageUrl: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1600&q=80' }
+                    ]).map((feature: any) => (
+                      <Link key={feature.id} href={feature.id.startsWith('db-') ? `/post/${feature.id.replace('db-','')}` : '#'} className={styles.featureBanner}>
+                        <img src={feature.imageUrl} alt={feature.title} className={styles.featureImage} />
+                        <div className={styles.featureOverlay}>
+                          <h3 className={styles.featureTitle}>{feature.title}</h3>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* [신규] 한줄 평 섹션 - 홈 메인에서만 노출 */}
+              {!isFiltered && (
+                <div className={styles.recentReviewsSection}>
+                  <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '15px' }}>
+                    <h2 className={styles.sectionTitle}>한줄 평</h2>
+                    <div className={styles.headerSpacer}></div>
+                  </header>
+                  
+                  <div className={styles.recentReviewsWrapper}>
+                    <button className={`${styles.scrollBtn} ${styles.scrollBtnLeft}`} onClick={() => scrollReviews('left')}>
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    </button>
+
+                    <div className={styles.reviewHorizontalGrid} ref={reviewRef}>
+                      {(recentReviews && recentReviews.length > 0 ? recentReviews : MOCK_REVIEWS).slice(0, 7).map((rev) => (
+                        <div key={rev.id} className={styles.miniReviewCard} onClick={() => router.push(`/reviews?search=${encodeURIComponent(rev.subject)}`)}>
+                          <h4 className={styles.miniRevSubject}>{rev.subject}</h4>
+                          <div className={styles.miniRevRating}>
+                            <div className={styles.miniRevInnerRow}>
+                              <div className={styles.miniRevStars}>
+                                {[1, 2, 3, 4, 5].map(i => (
+                                  <span key={i} style={{ color: (rev.rating >= i * 2) ? '#ff4d4d' : '#ddd' }}>★</span>
+                                ))}
+                              </div>
+                              <span className={styles.miniRevScore}>{rev.rating}</span>
+                              <span className={styles.miniRevCommunityScore}>유저 {(rev.rating * 0.7 + 1.5).toFixed(1)}</span>
+                            </div>
+                          </div>
+                          <p className={styles.miniRevText}>{rev.comment}</p>
+                          <div className={styles.miniRevFooter}>
+                            <span className={styles.miniRevAuthor}>{rev.authorName}</span>
+                            {(rev.id && !String(rev.id).startsWith('m')) && (
+                              <Link href={`/post/${rev.id}`} className={styles.miniRevLink} onClick={(e) => e.stopPropagation()}>리뷰 보기 →</Link>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <button className={`${styles.scrollBtn} ${styles.scrollBtnRight}`} onClick={() => scrollReviews('right')}>
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
+                  </div>
+                </div>
+              )}
 
 
               
@@ -467,6 +566,7 @@ export default function HomeContent({
                       aspectRatio="default" 
                       isOneCol={(isMobile && mobileGridCols === 1) || (!isMobile && cardCols === 1)}
                       isDense={!isMobile && cardCols === 4}
+                      isMinimal={(isMobile && mobileGridCols === 3) || (!isMobile && cardCols === 4)}
                     />
                   ))}
                 </div>

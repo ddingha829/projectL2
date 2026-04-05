@@ -30,6 +30,11 @@ export async function createPost(formData: FormData) {
   const content = (formData.get('content') as string || '').trim();
   const isEditorsPick = formData.get('isEditorsPick') === 'on';
 
+  // [신규] 한줄평 평가 항목
+  const reviewSubject = (formData.get('reviewSubject') as string || '').trim();
+  const reviewRating = parseInt(formData.get('reviewRating') as string || '0');
+  const reviewComment = (formData.get('reviewComment') as string || '').trim();
+
   if (!title || !content) {
     redirect('/write?error=Title and content are required');
   }
@@ -51,7 +56,10 @@ export async function createPost(formData: FormData) {
           title,
           image_url: imageUrl || 'https://images.unsplash.com/photo-1542204165-65bf26472b9b?auto=format&fit=crop&w=1600&q=80',
           content,
-          is_editors_pick: isEditorsPick
+          is_editors_pick: isEditorsPick,
+          review_subject: reviewSubject || null,
+          review_rating: reviewRating || 0,
+          review_comment: reviewComment || null
         }
       ]);
 
@@ -59,6 +67,9 @@ export async function createPost(formData: FormData) {
       console.error('Insert post error:', error);
       redirect(`/write?error=${encodeURIComponent(error.message)}`);
     }
+
+    // 5. 임시저장 데이터 삭제
+    await supabase.from('drafts').delete().eq('user_id', user.id);
 
     revalidatePath('/', 'layout');
     redirect('/');
@@ -70,3 +81,69 @@ export async function createPost(formData: FormData) {
     redirect(`/write?error=Unexpected failure: ${encodeURIComponent(err.message || 'Unknown error')}`);
   }
 }
+
+/** 평가 항목 중복 조회를 위한 자동완성 목록용 액션 */
+export async function getUniqueReviewSubjects(query: string) {
+  if (!query || query.length < 1) return [];
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('posts')
+    .select('review_subject')
+    .ilike('review_subject', `%${query}%`)
+    .not('review_subject', 'is', null)
+    .limit(10);
+
+  if (error || !data) return [];
+  // 중복 제거 후 반환
+  const subjects = data
+    .map((d: any) => d.review_subject as string)
+    .filter((s, i, arr) => s && arr.indexOf(s) === i);
+  return subjects;
+}
+
+/** 임시저장 기능 */
+export async function saveDraft(data: {
+  category: string;
+  title: string;
+  imageUrl: string;
+  content: string;
+  isEditorsPick: boolean;
+  reviewSubject?: string;
+  reviewRating?: number;
+  reviewComment?: string;
+}) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: 'Unauthorized' };
+
+  const { error } = await supabase
+    .from('drafts')
+    .upsert({
+      user_id: user.id,
+      ...data,
+      updated_at: new Date().toISOString()
+    });
+
+  if (error) {
+    console.error('Save draft error:', error);
+    return { error: error.message };
+  }
+  return { success: true };
+}
+
+/** 임시저장 불러오기 */
+export async function getDraft() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const { data, error } = await supabase
+    .from('drafts')
+    .select('*')
+    .eq('user_id', user.id)
+    .single();
+
+  if (error) return null;
+  return data;
+}
+

@@ -117,13 +117,23 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
 
   const { data: { user } } = await supabase.auth.getUser();
   const { isAdmin } = await getAdminStatus();
-
-  // 현재 유저 role 조회 (수정/삭제 버튼 표시 여부)
   let currentUserRole = 'user'
   if (user) {
     const { data: profile } = await supabase
       .from('profiles').select('role').eq('id', user.id).single()
     currentUserRole = profile?.role || 'user'
+  }
+
+  // Check if current user has liked this post
+  let isLiked = false;
+  if (user && isDbPost) {
+    const { data: likeRecord } = await supabase
+      .from('likes')
+      .select('id')
+      .eq('post_id', actualId)
+      .eq('user_id', user.id)
+      .single();
+    if (likeRecord) isLiked = true;
   }
 
   return (
@@ -151,6 +161,24 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
         
         <div className={styles.content} dangerouslySetInnerHTML={{ __html: post.content }} />
         
+        {/* [신규] 에디터의 한줄평 섹션 */}
+        {post.review_subject && (
+          <div className={styles.postReviewBox}>
+            <div className={styles.reviewHeader}>
+              <h3 className={styles.reviewSubject}>{post.review_subject}</h3>
+              <div className={styles.reviewRatingBox}>
+                <div className={styles.reviewStars}>
+                  {[1, 2, 3, 4, 5].map(i => (
+                    <span key={i} style={{ color: (post.review_rating >= i * 2) ? '#ff4d4d' : '#ddd' }}>★</span>
+                  ))}
+                </div>
+                <span className={styles.reviewScore}>{post.review_rating}</span>
+              </div>
+            </div>
+            <p className={styles.reviewCommentText}>{post.review_comment}</p>
+          </div>
+        )}
+
         {/* Editor Profile Card - New Position */}
         {post.authorProfile && (
           <Link href={`/?author=${post.authorProfile.id}`} className={styles.authorCardLinkWrapper}>
@@ -195,6 +223,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
           user={user} 
           prevId={post.prevId}
           nextId={post.nextId}
+          initialIsLiked={isLiked}
         />
       </article>
     </div>

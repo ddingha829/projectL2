@@ -128,6 +128,16 @@
   word-break: keep-all; 
 }
 
+.stretchedLink::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* Below badges but covers card */
+}
+
 .metaInfo {
   display: flex;
   align-items: center;
@@ -172,6 +182,16 @@
     border-radius: 10px;
   }
   
+  .card:hover {
+    transform: none !important;
+    box-shadow: var(--shadow-sm) !important;
+    border-color: var(--border-light) !important;
+  }
+
+  .card:hover .posterImage {
+    transform: none !important;
+  }
+
   .title {
     font-size: 1.05rem; /* Increased (+10%) from 0.95rem */
     margin-bottom: 10px; /* Positioned slightly higher (+10/20%) */
@@ -189,6 +209,13 @@
 
   .metaInfo {
     display: none !important;
+  }
+
+  .categoryBadge, .authorBadge {
+    height: 20px !important;
+    font-size: 0.66rem !important;
+    font-weight: 700 !important;
+    padding: 0 10px !important;
   }
 }
 
@@ -216,6 +243,28 @@
 .pickBadgeInline {
   top: 38px !important;
   font-size: 0.55rem;
+}
+
+.minimalCard .contentArea,
+.minimalCard .categoryBadge,
+.minimalCard .authorBadge,
+.minimalCard .pickBadgeInline {
+  display: none !important;
+}
+
+.minimalCard .imageWrapper {
+  height: 100% !important;
+}
+
+.minimalCard:hover .imageWrapper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.15);
+  z-index: 2;
 }
 
 

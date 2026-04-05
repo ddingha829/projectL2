@@ -7,7 +7,7 @@ import Link from "next/link";
 import styles from "./page.module.css";
 
 export default function PostInteractions({ 
-  postId, authorId, initialLikes, initialComments, user, prevId, nextId 
+  postId, authorId, initialLikes, initialComments, user, prevId, nextId, initialIsLiked = false 
 }: { 
   postId: string, 
   authorId: string, 
@@ -15,29 +15,36 @@ export default function PostInteractions({
   initialComments: any[], 
   user: any,
   prevId?: string,
-  nextId?: string
+  nextId?: string,
+  initialIsLiked?: boolean
 }) {
   const [likes, setLikes] = useState(initialLikes);
   const [comments, setComments] = useState(initialComments);
   const [newComment, setNewComment] = useState("");
-  const [isLikedLocally, setIsLikedLocally] = useState(false);
+  const [isLikedLocally, setIsLikedLocally] = useState(initialIsLiked);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const supabase = createClient();
   const router = useRouter();
   
   const handleLike = async () => {
-    if (isLikedLocally) return;
-    setLikes((l) => l + 1);
-    setIsLikedLocally(true);
-    
+    // Optimistic UI update
+    const newLikedState = !isLikedLocally;
+    setIsLikedLocally(newLikedState);
+    setLikes(prev => newLikedState ? prev + 1 : Math.max(0, prev - 1));
+
     if (postId.length > 10) {
-      if (user) {
-        const { error } = await supabase.from('likes').insert({ user_id: user.id, post_id: postId });
-        if (!error) {
-           await supabase.rpc('increment_post_likes', { p_id: postId });
+      if (newLikedState) {
+        // Add Like
+        if (user) {
+          await supabase.from('likes').insert({ user_id: user.id, post_id: postId });
         }
-      } else {
         await supabase.rpc('increment_post_likes', { p_id: postId });
+      } else {
+        // Remove Like
+        if (user) {
+          await supabase.from('likes').delete().eq('user_id', user.id).eq('post_id', postId);
+        }
+        await supabase.rpc('decrement_post_likes', { p_id: postId });
       }
     }
   };

@@ -114,6 +114,14 @@ export default async function Home({
     .neq('category', 'notice')
     .order('created_at', { ascending: false });
 
+  // 3. Fetch Recent Reviews (for the new section)
+  const { data: reviewDbPosts } = await supabase
+    .from('posts')
+    .select('id, review_subject, review_rating, review_comment, created_at, author:profiles!author_id(display_name)')
+    .not('review_subject', 'is', null)
+    .order('created_at', { ascending: false })
+    .limit(7);
+
   if (dbError) {
     console.error('Supabase fetch error:', dbError);
   }
@@ -145,9 +153,18 @@ export default async function Home({
       imageUrl: p.image_url || 'https://images.unsplash.com/photo-1542204165-65bf26472b9b?auto=format&fit=crop&w=1600&q=80',
       isEditorsPick: p.is_editors_pick || false,
       isHero: p.is_hero || false,
-      heroAt: p.hero_at
+      heroAt: p.hero_at,
+      isFeature: p.is_feature || false
     };
   };
+
+  // 4. Fetch Special Feature posts (is_feature = true)
+  const { data: featureDbPosts } = await supabase
+    .from('posts')
+    .select('*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets:description_bullets), comments(count)')
+    .eq('is_feature', true)
+    .order('created_at', { ascending: false })
+    .limit(3);
 
   const heroPosts = heroDbPosts?.map(mapToPost) || [];
   const livePosts = dbPosts?.map(mapToPost) || [];
@@ -201,15 +218,28 @@ export default async function Home({
     displayTitle = `${authorName} 에디터가 작성한 글`;
   }
 
+  const mappedReviews = reviewDbPosts?.map((p: any) => ({
+    id: p.id,
+    subject: p.review_subject,
+    rating: p.review_rating,
+    comment: p.review_comment,
+    date: p.created_at,
+    authorName: (p.author?.display_name || '익명').substring(0, 3) + '***'
+  })) || [];
+
+  const featurePosts = featureDbPosts?.map(mapToPost) || [];
+
   return (
     <Suspense fallback={<div>피드를 불러오는 중입니다...</div>}>
       <HomeContent 
         heroPosts={finalHeroPosts}
         otherPosts={finalOtherPosts}
         allPosts={allPosts}
+        featurePosts={featurePosts}
         displayTitle={displayTitle}
         animationKey={animationKey}
         isInitialVisit={isInitialVisit}
+        recentReviews={mappedReviews}
       />
     </Suspense>
   );

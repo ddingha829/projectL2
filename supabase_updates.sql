@@ -1,0 +1,1 @@
+﻿CREATE TABLE IF NOT EXISTS public.user_reviews (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), post_id UUID REFERENCES public.posts(id) ON DELETE CASCADE, user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE, rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 10), comment TEXT, created_at TIMESTAMPTZ DEFAULT now(), UNIQUE(post_id, user_id));

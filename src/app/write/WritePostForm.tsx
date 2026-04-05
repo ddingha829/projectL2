@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { createPost } from "./actions";
+import { createPost, saveDraft, getDraft, getUniqueReviewSubjects } from "./actions";
 import styles from "./page.module.css";
 import { useFormStatus } from "react-dom";
 import dynamic from "next/dynamic";
@@ -15,12 +15,14 @@ const RichTextEditor = dynamic(() => import("@/components/editor/RichTextEditor"
   loading: () => <div style={{ height: '600px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-hover)', borderRadius: '12px' }}>글쓰기 에디터 로딩중...</div> 
 });
 
-function SubmitButton({ isUploading }: { isUploading: boolean }) {
+function SubmitButton({ isUploading, isDraftSaving }: { isUploading: boolean, isDraftSaving: boolean }) {
   const { pending } = useFormStatus();
   return (
-    <button type="submit" className={styles.submitBtn} disabled={pending || isUploading}>
-      {pending ? "출간하는 중..." : isUploading ? "이미지 업로드 중..." : "출간하기"}
-    </button>
+    <div className={styles.submitGroup}>
+      <button type="submit" className={styles.submitBtn} disabled={pending || isUploading || isDraftSaving}>
+        {pending ? "출간하는 중..." : isUploading ? "이미지 업로드 중..." : "출간하기"}
+      </button>
+    </div>
   );
 }
 
@@ -28,9 +30,21 @@ export default function WritePostForm({ role }: { role: string }) {
   const searchParams = useSearchParams();
   const error = searchParams.get('error');
 
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("movie");
   const [content, setContent] = useState("");
   const [mainImageUrl, setMainImageUrl] = useState("");
+  const [isEditorsPick, setIsEditorsPick] = useState(false);
+  
+  // [신규] 한줄평 상태
+  const [showReview, setShowReview] = useState(false);
+  const [reviewSubject, setReviewSubject] = useState("");
+  const [reviewRating, setReviewRating] = useState(0);
+  const [reviewComment, setReviewComment] = useState("");
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  
   const [isUploading, setIsUploading] = useState(false);
+  const [isDraftSaving, setIsDraftSaving] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const supabase = createClient();
@@ -40,7 +54,40 @@ export default function WritePostForm({ role }: { role: string }) {
     if (error) {
       alert(`저장 중 오류가 발생했습니다: ${error}`);
     }
+
+    // 임시저장 데이터 불러오기
+    const loadDraft = async () => {
+      const draft = await getDraft();
+      if (draft) {
+        if (confirm("작성 중이던 임시저장 글이 있습니다. 불러오시겠습니까?")) {
+          setTitle(draft.title || "");
+          setCategory(draft.category || "movie");
+          setContent(draft.content || "");
+          setMainImageUrl(draft.image_url || "");
+          setIsEditorsPick(draft.is_editors_pick || false);
+        }
+      }
+    };
+    loadDraft();
   }, [error]);
+
+  const handleSaveDraft = async () => {
+    setIsDraftSaving(true);
+    const result = await saveDraft({
+      title,
+      content,
+      category,
+      imageUrl: mainImageUrl,
+      isEditorsPick
+    });
+    
+    if (result.success) {
+      alert("임시저저장이 완료되었습니다.");
+    } else {
+      alert(`임시저장 실패: ${result.error}`);
+    }
+    setIsDraftSaving(false);
+  };
 
   const handleMainImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -101,7 +148,8 @@ export default function WritePostForm({ role }: { role: string }) {
           name="category" 
           required 
           className={styles.input}
-          defaultValue={searchParams.get('category') || 'movie'}
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
         >
           <option value="movie">영화 (Movie)</option>
           <option value="book">책 (Book)</option>
@@ -118,7 +166,16 @@ export default function WritePostForm({ role }: { role: string }) {
 
       <div className={styles.inputGroup}>
         <label htmlFor="title">제목</label>
-        <input type="text" id="title" name="title" required placeholder="글 제목을 입력하세요" className={styles.input} />
+        <input 
+          type="text" 
+          id="title" 
+          name="title" 
+          required 
+          placeholder="글 제목을 입력하세요" 
+          className={styles.input} 
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
       </div>
 
       <div className={styles.inputGroup}>
@@ -134,7 +191,6 @@ export default function WritePostForm({ role }: { role: string }) {
           )}
           <input type="file" ref={fileInputRef} onChange={handleMainImageUpload} className={styles.hiddenInput} accept="image/*" />
         </div>
-        {/* 브라우저의 'required' 밸리데이션이 hidden input에서 오작동할 수 있어 속성 제거 */}
         <input type="hidden" name="imageUrl" value={mainImageUrl} />
       </div>
 
@@ -149,14 +205,106 @@ export default function WritePostForm({ role }: { role: string }) {
         <input type="hidden" name="content" value={content} />
       </div>
 
+      {/* [신규] 한줄 평 추가 섹션 */}
+      <div className={styles.checkboxGroup}>
+        <input 
+          type="checkbox" 
+          id="showReview" 
+          checked={showReview}
+          onChange={(e) => setShowReview(e.target.checked)}
+        />
+        <label htmlFor="showReview" className={styles.checkboxLabel}>📝 한줄 평 추가하기</label>
+      </div>
+
+      {showReview && (
+        <div className={styles.reviewEditorBox}>
+          <div className={styles.inputGroup}>
+            <label>평가 항목 (예: 영화 제목, 제품명)</label>
+            <div className={styles.autocompleteWrapper}>
+              <input 
+                type="text" 
+                name="reviewSubject"
+                className={styles.input}
+                placeholder="평가할 대상을 입력하세요"
+                value={reviewSubject}
+                onChange={async (e) => {
+                  setReviewSubject(e.target.value);
+                  const suggs = await getUniqueReviewSubjects(e.target.value);
+                  setSuggestions(suggs);
+                }}
+                autoComplete="off"
+              />
+              {suggestions.length > 0 && (
+                <ul className={styles.suggestionsList}>
+                  {suggestions.map((s, i) => (
+                    <li key={i} onClick={() => {
+                      setReviewSubject(s);
+                      setSuggestions([]);
+                    }}>
+                      {s}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+
+          <div className={styles.inputGroup}>
+            <label>별점 ({reviewRating} / 10)</label>
+            <div className={styles.starRatingRow}>
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => (
+                <span 
+                  key={star} 
+                  className={`${styles.star} ${reviewRating >= star ? styles.starActive : ''}`}
+                  onClick={() => setReviewRating(star)}
+                >
+                  ★
+                </span>
+              ))}
+              <input type="hidden" name="reviewRating" value={reviewRating} />
+            </div>
+          </div>
+
+          <div className={styles.inputGroup}>
+            <label>한줄평</label>
+            <input 
+              type="text" 
+              name="reviewComment"
+              className={styles.input}
+              placeholder="한줄평을 25자 이내로 입력하세요"
+              value={reviewComment}
+              onChange={(e) => setReviewComment(e.target.value)}
+              maxLength={25}
+            />
+          </div>
+        </div>
+      )}
+
       {role === 'admin' && (
         <div className={styles.checkboxGroup}>
-          <input type="checkbox" id="isEditorsPick" name="isEditorsPick" />
+          <input 
+            type="checkbox" 
+            id="isEditorsPick" 
+            name="isEditorsPick" 
+            checked={isEditorsPick}
+            onChange={(e) => setIsEditorsPick(e.target.checked)}
+          />
           <label htmlFor="isEditorsPick" className={styles.checkboxLabel}>🏆 이 게시물을 에디터 추천으로 지정합니다.</label>
         </div>
       )}
 
-      <SubmitButton isUploading={isUploading} />
+      <div className={styles.actionsFooter}>
+        <button 
+          type="button" 
+          className={styles.draftBtn} 
+          onClick={handleSaveDraft}
+          disabled={isUploading || isDraftSaving}
+        >
+          {isDraftSaving ? "임시저장 중..." : "임시저장"}
+        </button>
+        <SubmitButton isUploading={isUploading} isDraftSaving={isDraftSaving} />
+      </div>
     </form>
   );
 }
+

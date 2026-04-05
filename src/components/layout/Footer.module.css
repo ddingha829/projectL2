@@ -72,4 +72,7 @@
   .rightGroup {
     text-align: center;
   }
+  .footerLink {
+    font-size: 0.97rem; /* Reduced 10% from 1.08rem */
+  }
 }

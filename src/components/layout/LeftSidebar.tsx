@@ -199,23 +199,11 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
         {/* New Mobile-Optimized Navigation Menu */}
         <div className={styles.sidebarNav}>
           <Link href="/?view=all" className={styles.sidebarLink} onClick={onClose}>
-            <span className={styles.sidebarIcon}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                <line x1="3" y1="9" x2="21" y2="9"></line>
-                <line x1="9" y1="21" x2="9" y2="9"></line>
-              </svg>
-            </span>
             전체 포스팅
           </Link>
           
           <details className={styles.sidebarDisclosure}>
             <summary className={styles.sidebarSummary}>
-              <span className={styles.sidebarIcon}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                </svg>
-              </span>
               카테고리 <span className={styles.disclosureArrow}>▼</span>
             </summary>
             <div className={styles.disclosureContent}>
@@ -242,11 +230,6 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
 
           <details className={styles.sidebarDisclosure}>
             <summary className={styles.sidebarSummary}>
-              <span className={styles.sidebarIcon}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-                </svg>
-              </span>
               에디터 <span className={styles.disclosureArrow}>▼</span>
             </summary>
             <div className={styles.disclosureContent}>
@@ -263,6 +246,10 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
               ))}
             </div>
           </details>
+
+          <Link href="/reviews" className={styles.sidebarLink} onClick={onClose}>
+            리뷰 아카이브
+          </Link>
         </div>
 
 
