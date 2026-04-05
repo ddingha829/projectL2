@@ -120,7 +120,14 @@ export async function saveDraft(data: {
     .from('drafts')
     .upsert({
       user_id: user.id,
-      ...data,
+      category: data.category,
+      title: data.title,
+      image_url: data.imageUrl,
+      content: data.content,
+      is_editors_pick: data.isEditorsPick,
+      review_subject: data.reviewSubject || null,
+      review_rating: data.reviewRating || 0,
+      review_comment: data.reviewComment || null,
       updated_at: new Date().toISOString()
     });
 

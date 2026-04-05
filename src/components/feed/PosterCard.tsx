@@ -56,7 +56,7 @@ export default function PosterCard({
         )}
         
         <h3 className={isMagazine ? styles.magTitle : styles.title}>
-          <Link href={`/post/${id}`} className={isMagazine ? "" : styles.stretchedLink}>
+          <Link href={`/post/${id}`} className={styles.stretchedLink}>
             {title}
           </Link>
         </h3>

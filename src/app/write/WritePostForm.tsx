@@ -65,6 +65,13 @@ export default function WritePostForm({ role }: { role: string }) {
           setContent(draft.content || "");
           setMainImageUrl(draft.image_url || "");
           setIsEditorsPick(draft.is_editors_pick || false);
+          
+          if (draft.review_subject) {
+            setReviewSubject(draft.review_subject);
+            setReviewRating(draft.review_rating || 0);
+            setReviewComment(draft.review_comment || "");
+            setShowReview(true);
+          }
         }
       }
     };
@@ -78,7 +85,10 @@ export default function WritePostForm({ role }: { role: string }) {
       content,
       category,
       imageUrl: mainImageUrl,
-      isEditorsPick
+      isEditorsPick,
+      reviewSubject,
+      reviewRating,
+      reviewComment
     });
     
     if (result.success) {
