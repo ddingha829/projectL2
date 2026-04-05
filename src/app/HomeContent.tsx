@@ -531,61 +531,31 @@ export default function HomeContent({
         ) : (
           <div key={animationKey} className={styles.feedAnimator}>
             {authorData && (
-              <div className={styles.authorProfileCard} style={{ '--author-color': authorData.color } as React.CSSProperties}>
-                {/* Desktop Profile */}
-                <div className={styles.desktopContent}>
-                  <div className={styles.profileMain}>
-                    <div className={styles.profileTop}>
-                      <img src={authorData.avatar} alt={authorData.name} className={styles.profileAvatar} />
-                      <h2 className={styles.profileName}>
-                        {authorData.name} <span>Editor</span>
-                      </h2>
-                    </div>
-                    <p className={styles.profileBioText}>
-                      {authorData.description.bio}
-                    </p>
-                  </div>
-                  <div className={styles.profileDivider}></div>
-                  <div className={styles.profileDetail}>
-                    <ul className={styles.profileBullets}>
-                      {authorData.description.bullets.map((bullet: string, idx: number) => (
-                        <li key={idx} className={styles.profileBullet}>
-                          <span className={styles.bulletDot} style={{ backgroundColor: authorData.color }}></span>
-                          {bullet}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div className={styles.requestSection}>
-                    <ReviewRequest writerId={authorData.id} color={authorData.color} />
-                  </div>
+              <div className={styles.authorCardWrapper}>
+                <div className={styles.authorCardHeader} style={{ background: authorData.color || '#204bb8' }}>
+                  <span>EDITOR</span>
+                  <Link href={`/requests/${authorData.id}`} className={styles.headerRequestLink}>
+                    에디터님, 이것도 리뷰해주세요! 💬
+                  </Link>
                 </div>
-
-                {/* Mobile Profile */}
-                <div className={styles.mobileContent}>
-                  <div className={styles.mobileTopRow}>
-                    <div className={styles.mobileAuthorBlock}>
-                      <img src={authorData.avatar} alt={authorData.name} className={styles.mobileAvatar} />
-                      <div className={styles.mobileNameBadge}>
-                        <span className={styles.mobileWriterName}>{authorData.name}</span>
-                        <span className={styles.mobileBadge}>EDITOR</span>
-                      </div>
+                <div className={styles.authorCardContent}>
+                  <div className={styles.authorAvatarArea}>
+                    <div className={styles.authorAvatarLarge}>
+                      <img src={authorData.avatar} alt={authorData.name} />
                     </div>
-                    <div className={styles.mobileMainIntroList}>
-                      <ul>
-                        {authorData.description.bullets.map((bullet: string, idx: number) => (
-                          <li key={idx} style={{ '--author-color': authorData.color } as React.CSSProperties}>
-                            {bullet}
-                          </li>
+                  </div>
+                  <div className={styles.authorDetailsArea}>
+                    <div className={styles.authorNameLink}>
+                      {authorData.name}
+                    </div>
+                    <p className={styles.authorBio}>{authorData.description.bio || "생동감 넘치는 리뷰를 작성하는 에디터입니다."}</p>
+                    {authorData.description.bullets && authorData.description.bullets.length > 0 && (
+                      <div className={styles.authorBullets}>
+                        {authorData.description.bullets.map((b: string, i: number) => (
+                          <span key={i} className={styles.authorBullet}># {b}</span>
                         ))}
-                      </ul>
-                    </div>
-                  </div>
-                  <div className={styles.mobileBottomRow}>
-                    <p className={styles.mobileBioText}>{authorData.description.bio}</p>
-                  </div>
-                  <div className={styles.mobileRequestBtnWrap}>
-                    <ReviewRequest writerId={authorData.id} color={authorData.color} />
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

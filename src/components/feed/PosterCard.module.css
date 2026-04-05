@@ -225,12 +225,13 @@
   position: absolute;
   top: 12px;
   right: 12px;
-  background: #204bb8; /* Logo blue */
-  color: #ffffff;
-  height: 22px; /* Increased 10% for PC */
+  background: #ffffff;
+  border: 1.5px solid #204bb8;
+  color: #204bb8;
+  height: 22px;
   padding: 0 10px;
   border-radius: 4px;
-  font-size: 0.72rem; /* Increased (+10%) from 0.66rem */
+  font-size: 0.72rem;
   font-weight: 800;
   z-index: 15;
   align-items: center;
@@ -431,9 +432,10 @@
 
 .magAuthorBadge {
   font-size: 0.75rem;
-  color: #204bb8; /* Logo color */
+  color: #204bb8;
   font-weight: 700;
-  background: rgba(32, 75, 184, 0.05);
+  background: #ffffff;
+  border: 1px solid #204bb8;
   padding: 1px 6px;
   border-radius: 4px;
 }

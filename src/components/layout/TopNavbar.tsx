@@ -112,7 +112,7 @@ export default function TopNavbar({
   const ViewSettingsDropdown = ({ isPC = false }: { isPC?: boolean }) => {
     const vType = searchParams.get("viewType") || "card";
     const mCols = searchParams.get("mCols") || "2";
-    const dCols = searchParams.get("dCols") || "4";
+    const dCols = searchParams.get("dCols") || "3";
     const [isOpen, setIsOpen] = useState(false);
     const viewRef = useRef<HTMLDivElement>(null);
 

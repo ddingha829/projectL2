@@ -192,35 +192,36 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
 
         {/* Editor Profile Card - New Position */}
         {post.authorProfile && (
-          <Link href={`/?author=${post.authorProfile.id}`} className={styles.authorCardLinkWrapper}>
-            <div className={styles.authorCardWrapper}>
-              <div className={styles.authorCardHeader} style={{ background: post.authorProfile.color || '#204bb8' }}>
-                EDITOR
+          <div className={styles.authorCardWrapper}>
+            <div className={styles.authorCardHeader} style={{ background: post.authorProfile.color || '#204bb8' }}>
+              <span>EDITOR</span>
+              <Link href={`/requests/${post.authorProfile.id}`} className={styles.headerRequestLink}>
+                에디터님, 이것도 리뷰해주세요! 💬
+              </Link>
+            </div>
+            <div className={styles.authorCardContent}>
+              <div className={styles.authorAvatarArea}>
+                <div className={styles.authorAvatarLarge}>
+                   {post.authorProfile.avatar_url ? (
+                     <img src={post.authorProfile.avatar_url} alt={post.authorProfile.display_name} />
+                   ) : "👤"}
+                </div>
               </div>
-              <div className={styles.authorCardContent}>
-                <div className={styles.authorAvatarArea}>
-                  <div className={styles.authorAvatarLarge}>
-                     {post.authorProfile.avatar_url ? (
-                       <img src={post.authorProfile.avatar_url} alt={post.authorProfile.display_name} />
-                     ) : "👤"}
+              <div className={styles.authorDetailsArea}>
+                <Link href={`/?author=${post.authorProfile.id}`} className={styles.authorNameLink}>
+                  {post.authorProfile.display_name}
+                </Link>
+                <p className={styles.authorBio}>{post.authorProfile.bio || "생동감 넘치는 리뷰를 작성하는 에디터입니다."}</p>
+                {post.authorProfile.bullets && post.authorProfile.bullets.length > 0 && (
+                  <div className={styles.authorBullets}>
+                    {post.authorProfile.bullets.map((b: string, i: number) => (
+                      <span key={i} className={styles.authorBullet}># {b}</span>
+                    ))}
                   </div>
-                </div>
-                <div className={styles.authorDetailsArea}>
-                  <div className={styles.authorNameLink}>
-                    {post.authorProfile.display_name}
-                  </div>
-                  <p className={styles.authorBio}>{post.authorProfile.bio || "생동감 넘치는 리뷰를 작성하는 에디터입니다."}</p>
-                  {post.authorProfile.bullets && post.authorProfile.bullets.length > 0 && (
-                    <div className={styles.authorBullets}>
-                      {post.authorProfile.bullets.map((b: string, i: number) => (
-                        <span key={i} className={styles.authorBullet}># {b}</span>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                )}
               </div>
             </div>
-          </Link>
+          </div>
         )}
 
         <div className={styles.separator} />

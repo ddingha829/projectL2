@@ -166,11 +166,32 @@
 
 .authorCardHeader {
   color: #fff;
-  padding: 8px 20px;
+  padding: 8px 24px;
   font-size: 0.65rem;
   font-weight: 900;
   letter-spacing: 0.15em;
   text-transform: uppercase;
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headerRequestLink {
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  transition: all 0.2s;
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+}
+
+.headerRequestLink:hover {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
 }
 
 .authorCardContent {
