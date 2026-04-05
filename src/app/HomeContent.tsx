@@ -49,6 +49,11 @@ interface HomeContentProps {
     authorName: string;
   }[];
   featurePosts?: any[];
+  userProfile?: {
+    preferred_view_type: string | null;
+    preferred_m_cols: number | null;
+    preferred_d_cols: number | null;
+  } | null;
 }
 
 export default function HomeContent({ 
@@ -59,7 +64,8 @@ export default function HomeContent({
   animationKey,
   isInitialVisit,
   recentReviews = [],
-  featurePosts = []
+  featurePosts = [],
+  userProfile
 }: HomeContentProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -92,44 +98,74 @@ export default function HomeContent({
   const [slideDir, setSlideDir] = useState<'next' | 'prev'>('next');
   const [currentPage, setCurrentPage] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [hasInitialized, setHasInitialized] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(6);
 
   useEffect(() => {
-    const checkMobileAndSetView = () => {
-      const isMob = window.innerWidth <= 768;
-      setIsMobile(isMob);
-      
-      const storedView = localStorage.getItem('viewType');
-      const currentView = searchParams.get('viewType');
-      
-      if (!currentView) {
-        const defaultView = isMob ? 'card' : 'magazine';
-        const finalView = storedView || defaultView;
-        
-        const params = new URLSearchParams(window.location.search);
-        params.set('viewType', finalView);
-        if (window.location.pathname === '/' || window.location.search.includes('view=all')) {
-          router.replace(`?${params.toString()}`, { scroll: false });
-        }
-      } else {
-        localStorage.setItem('viewType', currentView);
-      }
-    };
+    const isMob = window.innerWidth <= 768;
+    setIsMobile(isMob);
     
-    checkMobileAndSetView();
-    window.addEventListener("resize", checkMobileAndSetView);
-    return () => window.removeEventListener("resize", checkMobileAndSetView);
-  }, [searchParams, router]);
+    // Defaulting Logic
+    const currentView = searchParams.get('viewType');
+    const currentMCols = searchParams.get('mCols');
+    const currentDCols = searchParams.get('dCols');
+
+    if (!currentView && !hasInitialized) {
+      const params = new URLSearchParams(window.location.search);
+      
+      // 1. Priority: User Profile -> 2. Device Default
+      if (userProfile?.preferred_view_type) {
+        params.set('viewType', userProfile.preferred_view_type);
+        if (userProfile.preferred_m_cols) params.set('mCols', userProfile.preferred_m_cols.toString());
+        if (userProfile.preferred_d_cols) params.set('dCols', userProfile.preferred_d_cols.toString());
+      } else {
+        // Device Defaults
+        if (isMob) {
+          params.set('viewType', 'card');
+          params.set('mCols', '2');
+        } else {
+          params.set('viewType', 'magazine');
+          params.set('dCols', '3'); // Switch to grid on PC default
+        }
+      }
+
+      if (window.location.pathname === '/' || window.location.search.includes('view=all')) {
+        router.replace(`?${params.toString()}`, { scroll: false });
+      }
+      setHasInitialized(true);
+    }
+  }, [searchParams, userProfile, isInitialVisit, hasInitialized, router]);
+
+  // Save selection to DB if logged in
+  useEffect(() => {
+    if (!userProfile) return;
+    
+    const saveToDb = async () => {
+      const { createClient } = await import('@/lib/supabase/client');
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      await supabase.from('profiles').update({
+        preferred_view_type: searchParams.get('viewType') || (isMobile ? 'card' : 'magazine'),
+        preferred_m_cols: parseInt(searchParams.get('mCols') || '2'),
+        preferred_d_cols: parseInt(searchParams.get('dCols') || '3')
+      }).eq('id', user.id);
+    };
+
+    const timer = setTimeout(saveToDb, 2000); // 2s debounce
+    return () => clearTimeout(timer);
+  }, [searchParams, userProfile, isMobile]);
 
   const vType = (searchParams.get("viewType") || (isMobile ? "card" : "magazine")) as "card" | "magazine";
   const mobileGridCols = vType === 'magazine' ? 1 : parseInt(searchParams.get("mCols") || "2");
-  const cardCols = parseInt(searchParams.get("dCols") || "4");
+  const cardCols = parseInt(searchParams.get("dCols") || (vType === 'magazine' ? "3" : "3")); // PC default grid 3 as requested
 
   const [isHeroPaused, setIsHeroPaused] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [showMobileFab, setShowMobileFab] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
-  const [visibleCount, setVisibleCount] = useState(6);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -597,9 +633,10 @@ export default function HomeContent({
               {vType === 'card' ? (
                 <div 
                   className={styles.gridList}
-                  style={{ 
+                   style={{ 
                     '--mobile-cols': mobileGridCols,
-                    '--desktop-cols': cardCols 
+                    '--desktop-cols': cardCols,
+                    '--grid-gap': isMobile ? (mobileGridCols === 3 ? '4.8px' : mobileGridCols === 2 ? '6px' : '24px') : '24px'
                   } as React.CSSProperties}
                 >
                   {displayPosts.map(post => (
@@ -609,7 +646,7 @@ export default function HomeContent({
                       aspectRatio="default" 
                       isOneCol={(isMobile && mobileGridCols === 1) || (!isMobile && cardCols === 1)}
                       isDense={!isMobile && cardCols === 4}
-                      isMinimal={(isMobile && mobileGridCols === 3) || (!isMobile && cardCols === 4)}
+                      isMinimal={(isMobile && mobileGridCols === 3)}
                     />
                   ))}
                 </div>
@@ -619,7 +656,7 @@ export default function HomeContent({
                   <div className={styles.magHeroRow}>
                     {displayPosts.slice(0, 2).map(post => (
                       <div key={post.id} className={styles.magHeroItem}>
-                        <PosterCard {...post} aspectRatio="mag53" />
+                        <PosterCard {...post} aspectRatio="mag53" viewType="magazine" />
                       </div>
                     ))}
                   </div>

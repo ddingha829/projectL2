@@ -199,6 +199,18 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     };
   }, [supabase, router]);
 
+  // Record Global Visit
+  useEffect(() => {
+    const recordVisit = async () => {
+      const hasVisited = sessionStorage.getItem('v3_visited');
+      if (!hasVisited) {
+        await supabase.from('site_visits').insert({}).then();
+        sessionStorage.setItem('v3_visited', 'true');
+      }
+    };
+    recordVisit();
+  }, [supabase]);
+
   return (
     <>
       {!isMobileScreen && isCavemanEnabled && <CavemanStickman />}

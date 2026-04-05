@@ -245,11 +245,39 @@
   font-size: 0.55rem;
 }
 
-.minimalCard .contentArea,
 .minimalCard .categoryBadge,
 .minimalCard .authorBadge,
-.minimalCard .pickBadgeInline {
+.minimalCard .pickBadgeInline,
+.minimalCard .metaInfo {
   display: none !important;
+}
+
+.minimalCard .contentArea {
+  display: flex !important;
+  background: transparent !important;
+}
+
+.minimalCard .title {
+  font-size: 0.98rem; /* PC version title size reduced */
+}
+
+@media (max-width: 768px) {
+  .minimalCard .contentArea {
+    padding-left: 6px !important; /* 50% reduction from 12px for high density */
+    padding-right: 6px !important;
+    padding-top: 12px !important; /* Move title significantly down */
+  }
+  .minimalCard .title {
+    font-size: 0.84rem !important; /* Mobile 3-column: additional 5% reduction from 0.88rem (Total ~25% from 1.1rem) */
+  }
+
+  .magTitle {
+    font-size: 0.85rem; /* Reduced from 0.95rem */
+    -webkit-line-clamp: 4; /* Allow up to 4 lines for very narrow 2-col hero view */
+    line-clamp: 4;
+    min-height: auto;
+    word-break: break-word;
+  }
 }
 
 .minimalCard .imageWrapper {
@@ -367,9 +395,11 @@
 
 @media (max-width: 768px) {
   .magTitle {
-    font-size: 1.1rem;
-    line-clamp: 2;
-    min-height: 2.8em; /* 2 lines on mobile */
+    font-size: 0.95rem;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    min-height: auto;
+    word-break: break-word;
   }
   .magExcerpt {
     font-size: 0.82rem;

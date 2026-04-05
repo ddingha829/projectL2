@@ -103,7 +103,7 @@ export default async function Home({
   // 1. Fetch Hero posts (designated by admin)
   const { data: heroDbPosts } = await supabase
     .from('posts')
-    .select('*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets:description_bullets), comments(count)')
+    .select('*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')
     .eq('is_hero', true)
     .order('hero_at', { ascending: false })
     .limit(3);
@@ -111,7 +111,7 @@ export default async function Home({
   // 2. Fetch all posts for the feed (excluding or including hero posts - user's preference usually separate them)
   const { data: dbPosts, error: dbError } = await supabase
     .from('posts')
-    .select('*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets:description_bullets), comments(count)')
+    .select('*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')
     .neq('category', 'notice')
     .order('created_at', { ascending: false });
 
@@ -230,6 +230,18 @@ export default async function Home({
 
   const featurePosts = featureDbPosts?.map(mapToPost) || [];
 
+  // 5. Fetch User Profile for persistence
+  const { data: { user } } = await supabase.auth.getUser();
+  let userProfile = null;
+  if (user) {
+    const { data } = await supabase
+      .from('profiles')
+      .select('preferred_view_type, preferred_m_cols, preferred_d_cols')
+      .eq('id', user.id)
+      .single();
+    userProfile = data;
+  }
+
   return (
     <Suspense fallback={<div>피드를 불러오는 중입니다...</div>}>
       <HomeContent 
@@ -241,6 +253,7 @@ export default async function Home({
         animationKey={animationKey}
         isInitialVisit={isInitialVisit}
         recentReviews={mappedReviews}
+        userProfile={userProfile}
       />
     </Suspense>
   );

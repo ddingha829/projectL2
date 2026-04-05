@@ -386,7 +386,7 @@
 .gridList, .mainGrid {
   display: grid;
   grid-template-columns: repeat(var(--desktop-cols, 4), 1fr);
-  gap: 24px;
+  gap: var(--grid-gap, 24px);
   margin-bottom: 4px; /* Reduced by 70% as requested */
 }
 
@@ -849,7 +849,7 @@
   .gridList, .mainGrid {
     display: grid !important;
     grid-template-columns: repeat(var(--mobile-cols, 2), 1fr) !important;
-    gap: 12px !important; 
+    gap: var(--grid-gap, 12px) !important; 
     padding: 0 !important; 
     width: 100% !important;
     margin: 0 !important;

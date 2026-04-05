@@ -65,6 +65,9 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
       console.error('Post detail fetch error:', error);
       notFound();
     }
+
+    // Increment Views
+    supabase.rpc('increment_post_views', { post_id: actualId }).then();
     
     post = {
        ...dbPost,
@@ -150,6 +153,14 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
               {post.author?.display_name || post.author?.name || '익명 작가'}
             </Link>
           </div>
+          
+          <PostManageBtns 
+            postId={actualId} 
+            authorId={post.author?.id || post.author_id} 
+            currentUserId={user?.id || ''} 
+            role={currentUserRole || 'user'} 
+          />
+
           <h1 className={styles.title}>{post.title}</h1>
         </header>
 

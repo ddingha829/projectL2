@@ -9,9 +9,11 @@ import Link from 'next/link'
 interface AdminDashboardProps {
   initialPosts: any[]
   initialProfiles: any[]
+  visitCount?: number
+  totalViews?: number
 }
 
-export default function AdminDashboard({ initialPosts, initialProfiles }: AdminDashboardProps) {
+export default function AdminDashboard({ initialPosts, initialProfiles, visitCount = 0, totalViews = 0 }: AdminDashboardProps) {
   const [activeTab, setActiveTab] = useState<'stats' | 'posts' | 'users' | 'categories'>('stats')
   const [searchQuery, setSearchQuery] = useState('')
   const [timeRange, setTimeRange] = useState<'daily' | 'weekly' | 'monthly'>('weekly')
@@ -94,6 +96,8 @@ export default function AdminDashboard({ initialPosts, initialProfiles }: AdminD
         <StatsView 
           posts={initialPosts} 
           users={initialProfiles} 
+          visitCount={visitCount}
+          totalViews={totalViews}
           timeRange={timeRange} 
           onTimeRangeChange={setTimeRange} 
         />
@@ -248,17 +252,32 @@ export default function AdminDashboard({ initialPosts, initialProfiles }: AdminD
   )
 }
 
-function StatsView({ posts, users, timeRange, onTimeRangeChange }: { 
+function StatsView({ posts, users, visitCount, totalViews, timeRange, onTimeRangeChange }: { 
   posts: any[], 
   users: any[], 
+  visitCount: number,
+  totalViews: number,
   timeRange: 'daily' | 'weekly' | 'monthly',
   onTimeRangeChange: (v: any) => void 
 }) {
-  // Mocking realistic stats based on post count
-  const totalVisitors = posts.length * 150 + users.length * 10;
   const growth = "+12.5%";
   
-  // Mock chart data
+  // Real Category Stats
+  const categoryStats = posts.reduce((acc: any, post) => {
+    acc[post.category] = (acc[post.category] || 0) + (post.views || 0);
+    return acc;
+  }, {});
+
+  const totalViewsAggregation = Object.values(categoryStats).reduce((a: any, b: any) => a + b, 0) as number;
+  const sortedCategories = Object.entries(categoryStats)
+    .map(([name, val]) => ({ 
+      name: name === 'restaurant' ? '맛집' : name === 'travel' ? '여행' : name === 'movie' ? '영화' : name === 'game' ? '게임' : name === 'book' ? '책' : name === 'exhibition' ? '전시' : '기타', 
+      val: totalViewsAggregation > 0 ? Math.round(((val as number) / totalViewsAggregation) * 100) : 0 
+    }))
+    .sort((a, b) => b.val - a.val)
+    .slice(0, 4);
+
+  // Mock chart data based on visit count for visual flair
   const chartData = [40, 70, 45, 90, 65, 85, 55];
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -270,15 +289,15 @@ function StatsView({ posts, users, timeRange, onTimeRangeChange }: {
             <span className={styles.statsLabel}>총 방문객 수</span>
             <span className={`${styles.statsTrend} ${styles.trendUp}`}>↑ {growth}</span>
           </div>
-          <div className={styles.statsValue}>{totalVisitors.toLocaleString()}</div>
-          <div className={styles.statsSub}>지난 {timeRange === 'daily' ? '24시간' : timeRange === 'weekly' ? '7일' : '30일'} 기준</div>
+          <div className={styles.statsValue}>{(visitCount || 0).toLocaleString()}</div>
+          <div className={styles.statsSub}>누적 세션 기준</div>
         </div>
         <div className={styles.statsCard}>
           <div className={styles.statsHeader}>
             <span className={styles.statsLabel}>콘텐츠 조회수</span>
             <span className={`${styles.statsTrend} ${styles.trendUp}`}>↑ +8.2%</span>
           </div>
-          <div className={styles.statsValue}>{(totalVisitors * 3.4).toFixed(0).toLocaleString()}</div>
+          <div className={styles.statsValue}>{(totalViews || 0).toLocaleString()}</div>
           <div className={styles.statsSub}>게시물 전체 누적</div>
         </div>
         <div className={styles.statsCard}>
@@ -286,8 +305,8 @@ function StatsView({ posts, users, timeRange, onTimeRangeChange }: {
             <span className={styles.statsLabel}>신규 유입</span>
             <span className={`${styles.statsTrend} ${styles.trendDown}`}>↓ -2.1%</span>
           </div>
-          <div className={styles.statsValue}>{Math.floor(users.length * 0.8)}</div>
-          <div className={styles.statsSub}>목표 대비 소폭 하락</div>
+          <div className={styles.statsValue}>{users.filter(u => new Date(u.created_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)).length}</div>
+          <div className={styles.statsSub}>최근 7일 신규 가입</div>
         </div>
       </div>
 
@@ -342,12 +361,7 @@ function StatsView({ posts, users, timeRange, onTimeRangeChange }: {
         <div className={styles.glassCard}>
            <h3 className={styles.chartTitle}>카테고리별 조회수</h3>
            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {[
-                { name: '맛집', val: 45 },
-                { name: '여행', val: 32 },
-                { name: '영화', val: 28 },
-                { name: '게임', val: 15 }
-              ].map(item => (
+              {sortedCategories.map(item => (
                 <div key={item.name} style={{ width: '100%' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '0.85rem' }}>
                     <span style={{ fontWeight: 700 }}>{item.name}</span>
@@ -363,16 +377,21 @@ function StatsView({ posts, users, timeRange, onTimeRangeChange }: {
         <div className={styles.glassCard}>
            <h3 className={styles.chartTitle}>실시간 최고 에디터</h3>
            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {users.slice(0, 4).map(u => (
-                <div key={u.id} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <img src={u.avatar_url || "/avatars/default.png"} className={styles.authorAvatar} style={{ margin: 0 }} />
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: 700, fontSize: '0.9rem' }}>{u.display_name}</div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>조회수 {Math.floor(Math.random() * 5000 + 1000).toLocaleString()}</div>
+              {users.slice(0, 4).map(u => {
+                const totalUserViews = posts
+                  .filter(p => p.author?.id === u.id || p.author_id === u.id)
+                  .reduce((sum, p) => sum + (p.views || 0), 0);
+                return (
+                  <div key={u.id} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <img src={u.avatar_url || "/avatars/default.png"} className={styles.authorAvatar} style={{ margin: 0 }} />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontWeight: 700, fontSize: '0.9rem' }}>{u.display_name}</div>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>조회수 {totalUserViews.toLocaleString()}</div>
+                    </div>
+                    <div className={`${styles.statsTrend} ${styles.trendUp}`}>↑</div>
                   </div>
-                  <div className={`${styles.statsTrend} ${styles.trendUp}`}>↑</div>
-                </div>
-              ))}
+                );
+              })}
            </div>
         </div>
       </div>
