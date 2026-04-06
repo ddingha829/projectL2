@@ -626,7 +626,7 @@ export default function HomeContent({
                   <div className={styles.magHeroRow}>
                     {displayPosts.slice(0, 2).map(post => (
                       <div key={post.id} className={styles.magHeroItem}>
-                        <PosterCard {...post} aspectRatio="mag53" viewType="magazine" />
+                        <PosterCard {...post} aspectRatio="mag53" viewType="magazine" excerpt={post.content} />
                       </div>
                     ))}
                   </div>
