@@ -92,3 +92,22 @@ export async function deletePost(postId: string) {
   revalidatePath('/', 'layout')
   redirect('/')
 }
+
+/** 평가 항목 중복 조회를 위한 자동완성 목록용 액션 */
+export async function getUniqueReviewSubjects(query: string) {
+  if (!query || query.length < 1) return [];
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('posts')
+    .select('review_subject')
+    .ilike('review_subject', `%${query}%`)
+    .not('review_subject', 'is', null)
+    .limit(10);
+
+  if (error || !data) return [];
+  // 중복 제거 후 반환
+  const subjects = data
+    .map((d: any) => d.review_subject as string)
+    .filter((s, i, arr) => s && arr.indexOf(s) === i);
+  return subjects;
+}

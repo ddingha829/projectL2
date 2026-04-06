@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useTransition } from 'react'
-import { updatePost } from '@/app/actions/postManage'
+import { updatePost, getUniqueReviewSubjects } from '@/app/actions/postManage'
 import styles from '@/app/write/page.module.css'
 import dynamic from 'next/dynamic'
 import { createClient } from '@/lib/supabase/client'
@@ -33,6 +33,8 @@ export default function EditPostForm({
 }: EditPostFormProps) {
   const [content, setContent] = useState(initialContent)
   const [imageUrl, setImageUrl] = useState(initialImageUrl)
+  const [reviewSubject, setReviewSubject] = useState(initialReviewSubject)
+  const [suggestions, setSuggestions] = useState<string[]>([])
   const [isUploading, setIsUploading] = useState(false)
   const [isPending, startTransition] = useTransition()
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -41,12 +43,12 @@ export default function EditPostForm({
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
+    setIsUploading(true)
     try {
       let uploadBlob: Blob | File = file
       let fileExt = 'jpg'
       let contentType = 'image/jpeg'
 
-      // GIF 특수 처리: 압축하지 않되 1MB 제한
       if (file.type === 'image/gif') {
         if (file.size > 1024 * 1024) {
           alert('GIF 파일은 애니메이션 유지를 위해 압축하지 않으므로, 1MB 이하만 업로드 가능합니다.')
@@ -57,7 +59,6 @@ export default function EditPostForm({
         fileExt = 'gif'
         contentType = 'image/gif'
       } else {
-        // 일반 이미지는 압축 진행
         uploadBlob = await compressImage(file)
         fileExt = 'jpg'
         contentType = 'image/jpeg'
@@ -84,6 +85,7 @@ export default function EditPostForm({
     const formData = new FormData(e.currentTarget)
     formData.set('content', content)
     formData.set('imageUrl', imageUrl)
+    formData.set('reviewSubject', reviewSubject)
     startTransition(() => updatePost(postId, formData))
   }
 
@@ -140,14 +142,35 @@ export default function EditPostForm({
         
         <div className={styles.inputGroup}>
           <label htmlFor="reviewSubject">리뷰 대상 (작품 제목)</label>
-          <input 
-            type="text" 
-            id="reviewSubject" 
-            name="reviewSubject" 
-            defaultValue={initialReviewSubject} 
-            placeholder="예: 듄, 오펜하이머, 노인과 바다 등" 
-            className={styles.input} 
-          />
+          <div className={styles.autocompleteWrapper}>
+            <input 
+              type="text" 
+              id="reviewSubject" 
+              name="reviewSubject" 
+              value={reviewSubject}
+              placeholder="예: 듄, 오펜하이머, 노인과 바다 등" 
+              className={styles.input}
+              autoComplete="off"
+              onChange={async (e) => {
+                const val = e.target.value
+                setReviewSubject(val)
+                const suggs = await getUniqueReviewSubjects(val)
+                setSuggestions(suggs)
+              }}
+            />
+            {suggestions.length > 0 && (
+              <ul className={styles.suggestionsList}>
+                {suggestions.map((s, i) => (
+                  <li key={i} onClick={() => {
+                    setReviewSubject(s)
+                    setSuggestions([])
+                  }}>
+                    {s}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
 
         <div className={styles.inputGroup}>
