@@ -203,10 +203,10 @@ function ReviewArchiveContent() {
                       <h3 className={styles.subjectName}>{group.subject}</h3>
                       <div className={styles.metaWrapper}>
                         <div className={styles.subjectMeta}>
-                          <span className={styles.reviewCount}>리뷰 {group.reviews.length + group.userReviews.length}개</span>
                           <div className={styles.avgBadge}>
                             통합 평점 {group.avgRating}
                           </div>
+                          <span className={styles.reviewCount}>이용자 리뷰 {group.reviews.length + group.userReviews.length}개</span>
                         </div>
                         <span className={styles.expandIcon}>
                           {(expandedId === group.subject || isCenter) ? '▴' : '▾'}
