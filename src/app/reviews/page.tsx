@@ -112,18 +112,25 @@ function ReviewArchiveContent() {
     s.subject.toLowerCase().includes(search.toLowerCase())
   ).sort((a, b) => (b.reviews.length + b.userReviews.length) - (a.reviews.length + a.userReviews.length));
 
+  const isOrbitMode = expandedId !== null || (search.trim() && filtered.length === 1);
+  const centerSubjectStr = expandedId ? expandedId : (isOrbitMode ? filtered[0]?.subject : null);
+  const displaySubjects = isOrbitMode ? subjects : filtered;
+
   return (
     <div className={styles.container}>
       <header className={styles.header}>
         <h1 className={styles.title}>리뷰 아카이브</h1>
-        <p className={styles.subtitle}>에디터와 독자가 함께 완성하는 아카이브입니다.</p>
+        <p className={styles.subtitle}>에디터와 독자가 함께 완성하는 우주같은 아카이브입니다.</p>
         <div className={styles.searchBox}>
           <input 
             type="text" 
             placeholder="작품 제목으로 검색..." 
             className={styles.searchInput}
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              if (expandedId) setExpandedId(null);
+            }}
           />
         </div>
       </header>
@@ -131,114 +138,166 @@ function ReviewArchiveContent() {
       {isLoading ? (
         <div className={styles.loading}>아카이브를 불러오는 중입니다...</div>
       ) : (
-        <div className={styles.archiveGrid}>
-          {filtered.length > 0 ? (
-            filtered.map((group) => (
-              <div key={group.subject} 
-                className={`${styles.subjectCard} ${expandedId === group.subject ? styles.activeCard : ''}`}
-              >
-                <div 
-                  className={styles.subjectMain} 
-                  onClick={() => setExpandedId(expandedId === group.subject ? null : group.subject)}
+        <div className={`${styles.archiveGrid} ${isOrbitMode ? styles.orbitMode : ''}`}>
+          {isOrbitMode && (
+            <div className={styles.orbitRings}>
+              <div className={styles.orbitRing1}></div>
+              <div className={styles.orbitRing2}></div>
+              <div className={styles.orbitRing3}></div>
+              <div className={styles.orbitRing4}></div>
+            </div>
+          )}
+
+          {displaySubjects.length > 0 ? (
+            displaySubjects.map((group, index) => {
+              const isCenter = group.subject === centerSubjectStr;
+              const isSatellite = isOrbitMode && !isCenter;
+              
+              if (isSatellite) {
+                // Determine orbit dynamics based on index
+                const radius = 320 + (index % 4) * 80; // Distance from center
+                const duration = 25 + (index % 5) * 15; // Orbit speed
+                const delay = -(index * 13); // Stagger start positions
+                
+                return (
+                  <div key={group.subject} 
+                    className={`${styles.subjectCard} ${styles.satelliteCard}`}
+                    style={{
+                      '--radius': `${radius}px`,
+                      '--duration': `${duration}s`,
+                      '--delay': `${delay}s`
+                    } as React.CSSProperties}
+                    onClick={() => {
+                        setSearch('');
+                        setExpandedId(group.subject);
+                        window.scrollTo({ top: 300, behavior: 'smooth' });
+                    }}
+                  >
+                    <div className={styles.subjectMain}>
+                      <div className={styles.subjectTop}>
+                        <div className={styles.satelliteGlow}></div>
+                        <h3 className={styles.subjectName}>{group.subject}</h3>
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+
+              // Center item (or default list item)
+              return (
+                <div key={group.subject} 
+                  className={`${styles.subjectCard} ${expandedId === group.subject ? styles.activeCard : ''} ${isOrbitMode && isCenter ? styles.centerOrbitCard : ''}`}
                 >
-                  <div className={styles.subjectTop}>
-                    <h3 className={styles.subjectName}>{group.subject}</h3>
-                    <div className={styles.subjectMeta}>
-                        <span className={styles.reviewCount}>리뷰 {group.reviews.length + group.userReviews.length}개</span>
-                        <div className={styles.avgBadge}>
-                          통합 평점 {group.avgRating}
+                  <div 
+                    className={styles.subjectMain} 
+                    onClick={() => {
+                      if (isOrbitMode && isCenter) {
+                         setExpandedId(null);
+                         setSearch('');
+                      } else {
+                         setExpandedId(group.subject);
+                      }
+                    }}
+                  >
+                    <div className={styles.subjectTop}>
+                      <h3 className={styles.subjectName}>{group.subject}</h3>
+                      <div className={styles.subjectMeta}>
+                          <span className={styles.reviewCount}>리뷰 {group.reviews.length + group.userReviews.length}개</span>
+                          <div className={styles.avgBadge}>
+                            통합 평점 {group.avgRating}
+                          </div>
+                          <span className={styles.expandIcon}>
+                             {(expandedId === group.subject || isCenter) ? '▴' : '▾'}
+                          </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {(expandedId === group.subject || (isOrbitMode && isCenter)) && (
+                    <div className={styles.reviewList}>
+                      {/* User Interaction Section */}
+                      <div className={styles.userVoteBox}>
+                        <h4 className={styles.userVoteTitle}>이 작품이 어떠셨나요?</h4>
+                        <div className={styles.voteControls}>
+                          <select 
+                            className={styles.ratingSelect}
+                            value={userRating}
+                            onChange={(e) => setUserRating(Number(e.target.value))}
+                          >
+                            <option value="0">평점 선택 (10점 만점)</option>
+                            {[10,9,8,7,6,5,4,3,2,1].map(n => <option key={n} value={n}>{n}점</option>)}
+                          </select>
+                          <textarea 
+                            placeholder="작품에 대한 한줄평을 남겨주세요." 
+                            className={styles.voteTextarea}
+                            value={userComment}
+                            onChange={(e) => setUserComment(e.target.value)}
+                          />
+                          <button className={styles.voteBtn} onClick={() => handleUserVote(group.subject)}>참여하기</button>
                         </div>
-                        <span className={styles.expandIcon}>
-                           {expandedId === group.subject ? '▴' : '▾'}
-                        </span>
-                    </div>
-                  </div>
-                </div>
-
-                {expandedId === group.subject && (
-                  <div className={styles.reviewList}>
-                    {/* User Interaction Section */}
-                    <div className={styles.userVoteBox}>
-                      <h4 className={styles.userVoteTitle}>이 작품이 어떠셨나요?</h4>
-                      <div className={styles.voteControls}>
-                        <select 
-                          className={styles.ratingSelect}
-                          value={userRating}
-                          onChange={(e) => setUserRating(Number(e.target.value))}
-                        >
-                          <option value="0">평점 선택 (10점 만점)</option>
-                          {[10,9,8,7,6,5,4,3,2,1].map(n => <option key={n} value={n}>{n}점</option>)}
-                        </select>
-                        <textarea 
-                          placeholder="작품에 대한 한줄평을 남겨주세요." 
-                          className={styles.voteTextarea}
-                          value={userComment}
-                          onChange={(e) => setUserComment(e.target.value)}
-                        />
-                        <button className={styles.voteBtn} onClick={() => handleUserVote(group.subject)}>참여하기</button>
                       </div>
-                    </div>
 
-                    <div className={styles.reviewDivider}>에디터 리뷰</div>
+                      <div className={styles.reviewDivider}>에디터 리뷰</div>
 
-                    {group.reviews.map((rev: any) => (
-                      <div key={rev.id} className={styles.reviewItem}>
-                          <div className={styles.reviewHeader}>
-                            <div className={styles.reviewAuthorGroup}>
-                              <div className={styles.authorAvatar}>
-                                {rev.author?.avatar_url ? (
-                                  <img src={rev.author.avatar_url} alt="" />
-                                ) : "👤"}
+                      {group.reviews.map((rev: any) => (
+                        <div key={rev.id} className={styles.reviewItem}>
+                            <div className={styles.reviewHeader}>
+                              <div className={styles.reviewAuthorGroup}>
+                                <div className={styles.authorAvatar}>
+                                  {rev.author?.avatar_url ? (
+                                    <img src={rev.author.avatar_url} alt="" />
+                                  ) : "👤"}
+                                </div>
+                                <span className={styles.authorName}>{rev.author?.display_name || "익명 에디터"}</span>
                               </div>
-                              <span className={styles.authorName}>{rev.author?.display_name || "익명 에디터"}</span>
-                            </div>
-                            <div className={styles.ratingBox}>
-                              <div className={styles.stars}>
-                                {[1,2,3,4,5].map(i => (
-                                  <span key={i} style={{ color: (rev.review_rating >= i*2) ? '#ff4d4d' : '#ddd' }}>★</span>
-                                ))}
+                              <div className={styles.ratingBox}>
+                                <div className={styles.stars}>
+                                  {[1,2,3,4,5].map(i => (
+                                    <span key={i} style={{ color: (rev.review_rating >= i*2) ? '#ff4d4d' : '#ddd' }}>★</span>
+                                  ))}
+                                </div>
+                                <span className={styles.score}>{rev.review_rating}</span>
                               </div>
-                              <span className={styles.score}>{rev.review_rating}</span>
                             </div>
-                          </div>
-                          <p className={styles.reviewText}>{rev.review_comment}</p>
-                          <div className={styles.reviewFooter}>
-                             <span className={styles.date}>{new Date(rev.created_at).toLocaleDateString()}</span>
-                             <Link href={`/post/db-${rev.id}`} className={styles.postLink}>원문 포스팅 보기 →</Link>
-                          </div>
-                      </div>
-                    ))}
+                            <p className={styles.reviewText}>{rev.review_comment}</p>
+                            <div className={styles.reviewFooter}>
+                               <span className={styles.date}>{new Date(rev.created_at).toLocaleDateString()}</span>
+                               <Link href={`/post/db-${rev.id}`} className={styles.postLink}>원문 포스팅 보기 →</Link>
+                            </div>
+                        </div>
+                      ))}
 
-                    {group.userReviews.length > 0 && (
-                      <>
-                        <div className={styles.reviewDivider}>유저 한줄평</div>
-                        {group.userReviews.map((ur: any) => (
-                          <div key={ur.id} className={`${styles.reviewItem} ${styles.userReviewItem}`}>
-                             <div className={styles.reviewHeader}>
-                                <div className={styles.reviewAuthorGroup}>
-                                  <div className={`${styles.authorAvatar} ${styles.userAvatarSmall}`}>
-                                    {ur.user?.avatar_url ? (
-                                      <img src={ur.user.avatar_url} alt="" />
-                                    ) : "👤"}
+                      {group.userReviews.length > 0 && (
+                        <>
+                          <div className={styles.reviewDivider}>유저 한줄평</div>
+                          {group.userReviews.map((ur: any) => (
+                            <div key={ur.id} className={`${styles.reviewItem} ${styles.userReviewItem}`}>
+                               <div className={styles.reviewHeader}>
+                                  <div className={styles.reviewAuthorGroup}>
+                                    <div className={`${styles.authorAvatar} ${styles.userAvatarSmall}`}>
+                                      {ur.user?.avatar_url ? (
+                                        <img src={ur.user.avatar_url} alt="" />
+                                      ) : "👤"}
+                                    </div>
+                                    <span className={styles.userReviewAuthor}>{ur.user?.display_name || "익명 유저"}</span>
                                   </div>
-                                  <span className={styles.userReviewAuthor}>{ur.user?.display_name || "익명 유저"}</span>
-                                </div>
-                                <div className={styles.ratingBox}>
-                                  <span className={styles.userReviewScore}>★ {ur.rating}</span>
-                                </div>
-                             </div>
-                             <p className={styles.userReviewText}>{ur.comment}</p>
-                             <div className={styles.userReviewDay}>
-                                {new Date(ur.created_at).toLocaleDateString()}
-                             </div>
-                          </div>
-                        ))}
-                      </>
-                    )}
-                  </div>
-                )}
-              </div>
-            ))
+                                  <div className={styles.ratingBox}>
+                                    <span className={styles.userReviewScore}>★ {ur.rating}</span>
+                                  </div>
+                               </div>
+                               <p className={styles.userReviewText}>{ur.comment}</p>
+                               <div className={styles.userReviewDay}>
+                                  {new Date(ur.created_at).toLocaleDateString()}
+                               </div>
+                            </div>
+                          ))}
+                        </>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })
           ) : (
             <div className={styles.emptyState}>검색된 결과가 없습니다.</div>
           )}

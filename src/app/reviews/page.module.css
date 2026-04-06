@@ -122,6 +122,144 @@
   color: var(--text-muted);
 }
 
+/* Orbit Layout */
+.orbitMode {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 800px;
+  position: relative;
+  overflow: hidden;
+  padding: 60px 20px;
+  background: radial-gradient(circle at center, rgba(32, 75, 184, 0.04) 0%, transparent 60%);
+  border-radius: 40px;
+  border: 1px solid var(--border-light);
+  gap: 0;
+}
+
+.centerOrbitCard {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 800px;
+  border-width: 2px;
+  box-shadow: 0 0 50px rgba(32, 75, 184, 0.15) !important;
+  margin: 0 !important;
+}
+
+.satelliteCard {
+  position: absolute !important;
+  top: 50%;
+  left: 50%;
+  width: auto;
+  margin: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  transform-origin: center center;
+  z-index: 1;
+  animation: orbit var(--duration, 20s) linear infinite;
+  animation-delay: var(--delay, 0s);
+  padding: 0 !important;
+}
+
+@keyframes orbit {
+  from {
+    transform: rotate(0deg) translateX(var(--radius, 300px)) rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg) translateX(var(--radius, 300px)) rotate(-360deg);
+  }
+}
+
+.satelliteCard .subjectMain {
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(8px);
+  border-radius: 50px;
+  border: 1px solid var(--border-medium);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+@media (prefers-color-scheme: dark) {
+  .satelliteCard .subjectMain {
+    background: rgba(20, 20, 20, 0.8) !important;
+  }
+}
+
+.satelliteCard .subjectTop {
+  align-items: center;
+  gap: 8px;
+}
+
+.satelliteCard .subjectName {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  opacity: 0.8;
+  white-space: nowrap;
+  transition: all 0.3s;
+}
+
+.satelliteCard:hover .subjectMain {
+  border-color: #204bb8;
+  box-shadow: 0 4px 20px rgba(32, 75, 184, 0.2);
+}
+
+.satelliteCard:hover .subjectName {
+  opacity: 1;
+  color: #204bb8;
+}
+
+.satelliteGlow {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #204bb8;
+  box-shadow: 0 0 10px #204bb8;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(32, 75, 184, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(32, 75, 184, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(32, 75, 184, 0); }
+}
+
+.orbitRings {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.orbitRing1, .orbitRing2, .orbitRing3, .orbitRing4 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px dashed rgba(32, 75, 184, 0.15);
+}
+
+.orbitRing1 { width: 640px; height: 640px; }
+.orbitRing2 { width: 800px; height: 800px; }
+.orbitRing3 { width: 960px; height: 960px; }
+.orbitRing4 { width: 1120px; height: 1120px; }
+
+@media (max-width: 768px) {
+  .orbitMode {
+    min-height: 600px;
+    padding: 20px 10px;
+    border-radius: 20px;
+  }
+}
+
 .reviewList {
   padding: 0 32px 32px 32px;
   background: var(--bg-tertiary);

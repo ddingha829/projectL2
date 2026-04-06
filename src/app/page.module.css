@@ -24,24 +24,24 @@
 
 .resultsTitle {
   font-family: var(--font-noto-sans), sans-serif;
-  font-size: 1.8rem; /* Leaner than sectionTitle */
+  font-size: 1.8rem;
   font-weight: 800;
   color: var(--text-primary);
   letter-spacing: -0.02em;
-  margin: 0;
-  text-align: center;
+  margin: 0 auto;
+  text-align: left;
   position: relative;
-  padding-bottom: 12px;
+  padding-bottom: 15px;
+  display: inline-block; /* Essential to anchor ::after to text start */
 }
 
 .resultsTitle::after {
   content: '';
   position: absolute;
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
   width: 60px;
-  height: 5px;
+  height: 5px; /* Consistent thickness */
   background-color: var(--accent-primary);
   border-radius: 10px;
 }
@@ -59,19 +59,21 @@
   }
   .resultsTitle {
     font-size: 1.53rem; 
-    text-align: left !important;
-    padding: 0 0 12px 0 !important; 
+    text-align: left;
+    padding: 0 0 12px 0; 
     font-weight: 900; 
     letter-spacing: -0.03em;
     position: relative;
+    display: inline-block;
+    margin: 0;
   }
   .resultsTitle::after {
     content: '';
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 60px; /* Increased 50% from 40px */
-    height: 5px;
+    width: 50px; 
+    height: 5px; /* Consistent thickness */
     background-color: var(--accent-primary);
     border-radius: 10px;
   }
@@ -279,9 +281,10 @@
   letter-spacing: -0.03em;
   margin: 0;
   flex: 0 0 auto;
-  text-align: left; /* Alignment fix for PC */
+  text-align: left;
   position: relative;
-  padding-bottom: 12px;
+  padding-bottom: 15px;
+  display: inline-block;
 }
 
 .sectionTitle::after {
@@ -289,7 +292,7 @@
   position: absolute;
   bottom: 0;
   left: 0; 
-  width: 60px; /* Increased 50% from 40px */
+  width: 60px;
   height: 5px;
   background-color: var(--accent-primary);
   border-radius: 10px;
@@ -779,17 +782,18 @@
     white-space: nowrap;
     text-align: left; 
     margin: 0;
-    padding: 0 0 10px 0 !important; 
+    padding: 0 0 10px 0; 
     line-height: 1;
     position: relative;
+    display: inline-block;
   }
   .sectionTitle::after {
     content: '';
     position: absolute;
-    bottom: -2px; 
+    bottom: -4px; 
     left: 0;
-    width: 48px; /* Increased 50% from 32px */
-    height: 4px;
+    width: 40px;
+    height: 5px; /* Consistent thickness */
     background-color: var(--accent-primary);
     border-radius: 10px;
   }

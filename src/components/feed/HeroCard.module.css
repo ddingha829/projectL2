@@ -123,46 +123,51 @@
 }
 
 
-.authorBadge {
+.authorSection {
   display: flex;
   align-items: center;
-  gap: 10px;
-  border: 2px solid rgba(255,255,255,0.8);
-  padding: 5px 14px 5px 5px;
-  border-radius: 24px;
-  font-size: 1.08rem; /* 20% larger than PostCard's 0.9rem */
-  font-weight: 800;
-  color: #ffffff;
-  background: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(8px);
+  gap: 12px;
+  z-index: 10;
 }
 
-.avatarImg {
-  width: 29px; /* 20% larger than PostCard's 24px */
-  height: 29px;
+.avatarWrapper {
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  object-fit: cover;
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.avatarEmoji {
-  width: 29px;
-  height: 29px;
+  overflow: hidden;
+  border: 1.5px solid rgba(255, 255, 255, 0.8);
+  background-color: var(--bg-tertiary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
+  flex-shrink: 0;
 }
 
-.authorLine {
-  width: 22px; /* 20% larger than PostCard's 18px */
-  height: 5.4px;
-  border-radius: 2px;
-  margin-left: 5px;
+.authorNameBadge {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  color: #204bb8;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  letter-spacing: -0.01em;
+}
+
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarEmoji {
+  font-size: 1.1rem;
 }
 
 .authorName {
-  padding-right: 5px;
+  display: inline-block;
 }
 
 .footer {
@@ -331,12 +336,25 @@
     opacity: 0.9;
   }
 
-  .categoryBadge, .authorName {
+  .avatarWrapper {
+    width: 26px;
+    height: 26px;
+    border-width: 1px;
+  }
+
+  .authorNameBadge {
+    padding: 3px 10px;
+    font-size: 0.72rem;
+  }
+
+  .categoryBadge {
     height: 20px !important;
     font-size: 0.66rem !important;
     font-weight: 700 !important;
     padding: 0 10px !important;
+    border-radius: 4px;
   }
+
 
   .navButtons {
     display: none;
