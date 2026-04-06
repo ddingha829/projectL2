@@ -152,15 +152,17 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
             <Link href={`/?author=${post.author?.id}`} className={styles.authorBadgeDetail}>
               {post.author?.display_name || post.author?.name || '익명 작가'}
             </Link>
+            
+            <div style={{ flex: 1 }} /> {/* Spacer */}
+            
+            <PostManageBtns 
+              postId={actualId} 
+              authorId={post.author?.id || post.author_id} 
+              currentUserId={user?.id || ''} 
+              role={currentUserRole || 'user'} 
+            />
           </div>
           
-          <PostManageBtns 
-            postId={actualId} 
-            authorId={post.author?.id || post.author_id} 
-            currentUserId={user?.id || ''} 
-            role={currentUserRole || 'user'} 
-          />
-
           <h1 className={styles.title}>{post.title}</h1>
         </header>
 

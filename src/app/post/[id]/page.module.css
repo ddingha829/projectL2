@@ -799,4 +799,55 @@
   .reviewCommentText {
     font-size: 1.05rem;
   }
-}
+}
+
+.manageBar {
+  display: flex;
+  gap: 8px;
+}
+
+.editBtn, .deleteBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1.2px solid var(--border-medium);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+}
+
+.editBtn:hover {
+  background: #f0f7ff;
+  border-color: #204bb8;
+  color: #204bb8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(32, 75, 184, 0.1);
+}
+
+.deleteBtn:hover {
+  background: #fff5f5;
+  border-color: #ff4d4d;
+  color: #ff4d4d;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 77, 77, 0.1);
+}
+
+.editBtn svg, .deleteBtn svg {
+  width: 14px;
+  height: 14px;
+}
+
+@media (max-width: 768px) {
+  .manageBar {
+    margin-bottom: 12px;
+  }
+  .editBtn, .deleteBtn {
+    padding: 5px 12px;
+    font-size: 0.75rem;
+  }
+}
