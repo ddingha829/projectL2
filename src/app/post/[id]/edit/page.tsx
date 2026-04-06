@@ -73,6 +73,9 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
         initialCategory={post.category}
         initialImageUrl={post.image_url || ''}
         initialIsEditorsPick={post.is_editors_pick || false}
+        initialReviewSubject={post.review_subject || ''}
+        initialReviewRating={post.review_rating || 0}
+        initialReviewComment={post.review_comment || ''}
         isAdmin={profile?.role === 'admin'}
       />
     </div>

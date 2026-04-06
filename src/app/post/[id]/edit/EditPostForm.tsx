@@ -19,12 +19,17 @@ interface EditPostFormProps {
   initialCategory: string
   initialImageUrl: string
   initialIsEditorsPick: boolean
+  initialReviewSubject?: string
+  initialReviewRating?: number
+  initialReviewComment?: string
   isAdmin: boolean
 }
 
 export default function EditPostForm({
   postId, initialTitle, initialContent, initialCategory,
-  initialImageUrl, initialIsEditorsPick, isAdmin
+  initialImageUrl, initialIsEditorsPick,
+  initialReviewSubject = '', initialReviewRating = 0, initialReviewComment = '',
+  isAdmin
 }: EditPostFormProps) {
   const [content, setContent] = useState(initialContent)
   const [imageUrl, setImageUrl] = useState(initialImageUrl)
@@ -129,6 +134,49 @@ export default function EditPostForm({
           <label htmlFor="isEditorsPick" className={styles.checkboxLabel}>🏆 에디터 추천(Editor's Pick)으로 지정</label>
         </div>
       )}
+
+      <div className={styles.reviewEditorBox}>
+        <h3 className={styles.sectionTitle}>리뷰 아카이브 설정</h3>
+        
+        <div className={styles.inputGroup}>
+          <label htmlFor="reviewSubject">리뷰 대상 (작품 제목)</label>
+          <input 
+            type="text" 
+            id="reviewSubject" 
+            name="reviewSubject" 
+            defaultValue={initialReviewSubject} 
+            placeholder="예: 듄, 오펜하이머, 노인과 바다 등" 
+            className={styles.input} 
+          />
+        </div>
+
+        <div className={styles.inputGroup}>
+          <label htmlFor="reviewRating">에디터 평점 (10점 만점)</label>
+          <select 
+            id="reviewRating" 
+            name="reviewRating" 
+            defaultValue={initialReviewRating} 
+            className={styles.input}
+          >
+            <option value="0">평점 없음</option>
+            {[10,9,8,7,6,5,4,3,2,1].map(n => (
+              <option key={n} value={n}>{n}점</option>
+            ))}
+          </select>
+        </div>
+
+        <div className={styles.inputGroup}>
+          <label htmlFor="reviewComment">에디터 한줄평</label>
+          <textarea 
+            id="reviewComment" 
+            name="reviewComment" 
+            defaultValue={initialReviewComment} 
+            className={`${styles.input} ${styles.textarea}`} 
+            rows={3}
+            placeholder="작품에 대한 짧은 평을 남겨주세요."
+          />
+        </div>
+      </div>
 
       <button type="submit" className={styles.submitBtn} disabled={isPending || isUploading}>
         {isPending ? '저장 중...' : isUploading ? '이미지 업로드 중...' : '수정 완료'}

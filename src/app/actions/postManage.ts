@@ -37,8 +37,18 @@ export async function updatePost(postId: string, formData: FormData) {
   const category = formData.get('category') as string
   const imageUrl = formData.get('imageUrl') as string
   const isEditorsPick = formData.get('isEditorsPick') === 'on'
+  
+  const reviewSubject = formData.get('reviewSubject') as string
+  const reviewRating = parseInt(formData.get('reviewRating') as string) || null
+  const reviewComment = formData.get('reviewComment') as string
 
-  const updateData: Record<string, any> = { title, content, category, image_url: imageUrl }
+  const updateData: Record<string, any> = { 
+    title, content, category, 
+    image_url: imageUrl,
+    review_subject: reviewSubject || null,
+    review_rating: reviewRating,
+    review_comment: reviewComment || null
+  }
 
   // admin만 editors_pick 변경 가능
   if (profile.role === 'admin') {

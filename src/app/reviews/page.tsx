@@ -26,9 +26,9 @@ function ReviewArchiveContent() {
     }
   }, [urlSearch]);
 
-  useEffect(() => {
-    async function fetchData() {
-      const { data, error } = await supabase
+  const fetchData = async () => {
+    const [{ data: postsData }, { data: userReviewsData }] = await Promise.all([
+      supabase
         .from('posts')
         .select(`
           id, 
@@ -40,38 +40,77 @@ function ReviewArchiveContent() {
           author:profiles!author_id(display_name, avatar_url)
         `)
         .not('review_subject', 'is', null)
-        .order('created_at', { ascending: false });
-      
-      if (data) {
-        const grouped = data.reduce((acc: any, p: any) => {
-          const s = p.review_subject?.trim() || "Untitled";
+        .order('created_at', { ascending: false }),
+      supabase
+        .from('user_reviews')
+        .select(`
+          *, 
+          user:profiles(display_name, avatar_url)
+        `)
+        .order('created_at', { ascending: false })
+    ]);
+    
+    if (postsData) {
+      const grouped = postsData.reduce((acc: any, p: any) => {
+        const s = p.review_subject?.trim() || "Untitled";
+        const key = s.toLowerCase();
+        if (!acc[key]) acc[key] = { subject: s, reviews: [], userReviews: [], avgRating: 0 };
+        acc[key].reviews.push(p);
+        return acc;
+      }, {});
+
+      if (userReviewsData) {
+        userReviewsData.forEach((ur: any) => {
+          const s = ur.subject?.trim() || "Untitled";
           const key = s.toLowerCase();
-          if (!acc[key]) acc[key] = { subject: s, reviews: [], avgRating: 0 };
-          acc[key].reviews.push(p);
-          return acc;
-        }, {});
-
-        Object.values(grouped).forEach((g: any) => {
-          const sum = g.reviews.reduce((acc: number, r: any) => acc + (r.review_rating || 0), 0);
-          g.avgRating = (sum / g.reviews.length).toFixed(1);
+          if (grouped[key]) {
+            grouped[key].userReviews.push(ur);
+          } else {
+            // Even if no editor review exists, we can still show user reviews if desired,
+            // but the current archive seems centered around editor-introduced subjects.
+            // For now, only show user reviews for subjects that have at least one editor post.
+          }
         });
-
-        setSubjects(Object.values(grouped));
       }
-      setIsLoading(false);
+
+      Object.values(grouped).forEach((g: any) => {
+        const editorSum = g.reviews.reduce((acc: number, r: any) => acc + (r.review_rating || 0), 0);
+        const userSum = g.userReviews.reduce((acc: number, r: any) => acc + (r.rating || 0), 0);
+        const totalCount = g.reviews.length + g.userReviews.length;
+        g.avgRating = ((editorSum + userSum) / totalCount).toFixed(1);
+      });
+
+      setSubjects(Object.values(grouped));
     }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
     fetchData();
   }, []);
 
   const handleUserVote = async (subject: string) => {
-    alert(`${subject}에 대해 ${userRating}점을 주셨습니다. (실제 DB 저장은 구현 예정)`);
-    setUserRating(0);
-    setUserComment("");
+    if (!userRating || !userComment.trim()) {
+      alert("평점과 한줄평을 모두 입력해주세요.");
+      return;
+    }
+
+    const { submitUserReview } = await import('../actions/reviews');
+    const result = await submitUserReview(subject, userRating, userComment);
+
+    if (result.success) {
+      alert("리뷰가 성공적으로 등록되어 평균 점수에 반영되었습니다!");
+      setUserRating(0);
+      setUserComment("");
+      fetchData(); // Refresh list to reflect the new vote immediately
+    } else {
+      alert(result.error);
+    }
   };
 
   const filtered = subjects.filter(s => 
     s.subject.toLowerCase().includes(search.toLowerCase())
-  ).sort((a, b) => b.reviews.length - a.reviews.length);
+  ).sort((a, b) => (b.reviews.length + b.userReviews.length) - (a.reviews.length + a.userReviews.length));
 
   return (
     <div className={styles.container}>
@@ -105,9 +144,9 @@ function ReviewArchiveContent() {
                   <div className={styles.subjectTop}>
                     <h3 className={styles.subjectName}>{group.subject}</h3>
                     <div className={styles.subjectMeta}>
-                        <span className={styles.reviewCount}>총 {group.reviews.length}개 리뷰</span>
+                        <span className={styles.reviewCount}>리뷰 {group.reviews.length + group.userReviews.length}개</span>
                         <div className={styles.avgBadge}>
-                          평점 {group.avgRating}
+                          통합 평점 {group.avgRating}
                         </div>
                         <span className={styles.expandIcon}>
                            {expandedId === group.subject ? '▴' : '▾'}
@@ -165,10 +204,37 @@ function ReviewArchiveContent() {
                           <p className={styles.reviewText}>{rev.review_comment}</p>
                           <div className={styles.reviewFooter}>
                              <span className={styles.date}>{new Date(rev.created_at).toLocaleDateString()}</span>
-                             <Link href={`/post/${rev.id}`} className={styles.postLink}>원문 포스팅 보기 →</Link>
+                             <Link href={`/post/db-${rev.id}`} className={styles.postLink}>원문 포스팅 보기 →</Link>
                           </div>
                       </div>
                     ))}
+
+                    {group.userReviews.length > 0 && (
+                      <>
+                        <div className={styles.reviewDivider}>유저 한줄평</div>
+                        {group.userReviews.map((ur: any) => (
+                          <div key={ur.id} className={`${styles.reviewItem} ${styles.userReviewItem}`}>
+                             <div className={styles.reviewHeader}>
+                                <div className={styles.reviewAuthorGroup}>
+                                  <div className={`${styles.authorAvatar} ${styles.userAvatarSmall}`}>
+                                    {ur.user?.avatar_url ? (
+                                      <img src={ur.user.avatar_url} alt="" />
+                                    ) : "👤"}
+                                  </div>
+                                  <span className={styles.userReviewAuthor}>{ur.user?.display_name || "익명 유저"}</span>
+                                </div>
+                                <div className={styles.ratingBox}>
+                                  <span className={styles.userReviewScore}>★ {ur.rating}</span>
+                                </div>
+                             </div>
+                             <p className={styles.userReviewText}>{ur.comment}</p>
+                             <div className={styles.userReviewDay}>
+                                {new Date(ur.created_at).toLocaleDateString()}
+                             </div>
+                          </div>
+                        ))}
+                      </>
+                    )}
                   </div>
                 )}
               </div>

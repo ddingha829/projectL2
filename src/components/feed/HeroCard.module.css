@@ -80,17 +80,16 @@
 .categoryBadge {
   background: rgba(255, 255, 255, 0.95);
   color: #333;
-  height: 22px; 
-  padding: 0 10px;
-  border-radius: 4px;
+  padding: 7px 14px;
+  border-radius: 20px;
   font-weight: 800;
-  font-size: 0.66rem;
+  font-size: 0.96rem; /* 20% larger than PostCard's 0.8rem */
   text-transform: uppercase;
   letter-spacing: 0.05em;
   display: flex;
   align-items: center;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 10;
 }
 
 .editorsPick {
@@ -124,56 +123,46 @@
 }
 
 
-.authorSection {
+.authorBadge {
   display: flex;
   align-items: center;
-  gap: 12px;
-}
-
-.avatarWrapper {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 2px solid rgba(255, 255, 255, 0.8);
-  background-color: var(--bg-tertiary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+  gap: 10px;
+  border: 2px solid rgba(255,255,255,0.8);
+  padding: 5px 14px 5px 5px;
+  border-radius: 24px;
+  font-size: 1.08rem; /* 20% larger than PostCard's 0.9rem */
+  font-weight: 800;
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(8px);
 }
 
 .avatarImg {
-  width: 100%;
-  height: 100%;
+  width: 29px; /* 20% larger than PostCard's 24px */
+  height: 29px;
+  border-radius: 50%;
   object-fit: cover;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .avatarEmoji {
-  font-size: 1.5rem;
+  width: 29px;
+  height: 29px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
 }
 
-.authorInfo {
-  display: flex;
-  flex-direction: column;
+.authorLine {
+  width: 22px; /* 20% larger than PostCard's 18px */
+  height: 5.4px;
+  border-radius: 2px;
+  margin-left: 5px;
 }
 
 .authorName {
-  background-color: var(--accent-primary);
-  color: #fff;
-  height: 22px;
-  padding: 0 10px;
-  border-radius: 4px;
-  font-weight: 800;
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-}
-
-.authorTitle {
-  display: none;
+  padding-right: 5px;
 }
 
 .footer {

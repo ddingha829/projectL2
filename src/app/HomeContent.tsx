@@ -504,7 +504,7 @@ export default function HomeContent({
                           <div className={styles.miniRevFooter}>
                             <span className={styles.miniRevAuthor}>{rev.authorName}</span>
                             {(rev.id && !String(rev.id).startsWith('m')) && (
-                              <Link href={`/post/${rev.id}`} className={styles.miniRevLink} onClick={(e) => e.stopPropagation()}>리뷰 보기 →</Link>
+                              <Link href={`/post/db-${rev.id}`} className={styles.miniRevLink} onClick={(e) => e.stopPropagation()}>리뷰 보기 →</Link>
                             )}
                           </div>
                         </div>
@@ -658,6 +658,7 @@ export default function HomeContent({
                                 </div>
                                 <div className={styles.magListInfo}>
                                   <h4 className={styles.magListTitle}>{post.title}</h4>
+                                  <p className={styles.magListExcerpt}>{stripHtml(post.content).slice(0, 100)}...</p>
                                   <div className={styles.magMetaRow}>
                                     <span className={styles.magListAuthor}>{post.author.name}</span>
                                     <span className={styles.magListDate}>{post.displayDate}</span>

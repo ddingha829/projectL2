@@ -54,18 +54,14 @@ export default function HeroCard({
                   <h2 className={styles.title} style={title.length > 50 ? { fontSize: '0.75em' } : title.length > 35 ? { fontSize: '0.85em' } : {}}>{title}</h2>
                   
                   <div className={styles.footer}>
-                    <div className={styles.authorSection}>
-                      <div className={styles.avatarWrapper}>
-                        {author.avatar.startsWith("/") || author.avatar.startsWith("http") ? (
-                          <img src={author.avatar} alt={author.name} className={styles.avatarImg} />
-                        ) : (
-                          <span className={styles.avatarEmoji}>{author.avatar}</span>
-                        )}
-                      </div>
-                      <div className={styles.authorInfo}>
-                        <div className={styles.authorName}>{author.name}</div>
-                        <div className={styles.authorTitle}>Editor</div>
-                      </div>
+                    <div className={styles.authorBadge} style={{ borderColor: author.color }}>
+                      {author.avatar.startsWith("/") || author.avatar.startsWith("http") ? (
+                        <img src={author.avatar} alt={author.name} className={styles.avatarImg} />
+                      ) : (
+                        <span className={styles.avatarEmoji}>{author.avatar}</span>
+                      )}
+                      <span className={styles.authorName}>{author.name}</span>
+                      <div className={styles.authorLine} style={{ backgroundColor: author.color }}></div>
                     </div>
                     
                     <div className={styles.meta}>

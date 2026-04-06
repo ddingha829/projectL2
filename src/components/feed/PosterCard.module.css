@@ -380,7 +380,7 @@
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  white-space: pre-line;
+  white-space: pre-wrap;
   min-height: 3.2em; /* 2 lines of 1.6 line-height */
 }
 
@@ -397,17 +397,19 @@
 @media (max-width: 768px) {
   .magTitle {
     font-size: 0.95rem;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-    min-height: auto;
+    -webkit-line-clamp: 2; /* Max 2 lines as requested */
+    line-clamp: 2;
+    height: 2.8em; /* Fixed height for 2 lines (line-height 1.4) */
     word-break: break-word;
+    margin-bottom: 8px;
   }
   .magExcerpt {
     font-size: 0.82rem;
     -webkit-line-clamp: 2;
     line-clamp: 2;
-    min-height: 3.2em; /* 2 lines on mobile */
-    white-space: pre-line; /* Respect line breaks from stripHtml on mobile */
+    height: 3.2em; /* Fixed height for 2 lines (line-height 1.6) */
+    white-space: pre-wrap; /* Better preservation of breaks with clamping */
+    margin-bottom: 12px;
   }
   .categoryBadge {
     left: 16px !important; /* Premium 16px inset */
