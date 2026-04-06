@@ -85,35 +85,46 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 16px;
 }
 
 .subjectName {
-  font-size: 1.6rem;
+  font-size: 1.45rem;
   font-weight: 900;
   color: #204bb8;
   margin: 0;
   letter-spacing: -0.03em;
+  word-break: keep-all;
+  flex: 1;
+}
+
+.metaWrapper {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
 }
 
 .subjectMeta {
   display: flex;
-  align-items: center;
-  gap: 20px;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
 }
 
 .reviewCount {
   font-weight: 700;
   color: var(--text-tertiary);
-  font-size: 0.95rem;
+  font-size: 0.85rem;
 }
 
 .avgBadge {
   background: #204bb8;
   color: #fff;
-  padding: 6px 16px;
+  padding: 4px 12px;
   border-radius: 50px;
   font-weight: 900;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   letter-spacing: 0.02em;
 }
 
