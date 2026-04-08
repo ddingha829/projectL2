@@ -216,16 +216,14 @@ export default function TopNavbar({
         </div>
 
         <nav className={styles.mainNav}>
-          <Link href="/?view=all" className={styles.navLink}>모든 게시물</Link>
-          
           <div 
             className={styles.dropdownContainer}
             onMouseEnter={() => setIsCategoryOpen(true)}
             onMouseLeave={() => setIsCategoryOpen(false)}
           >
-            <span className={styles.navLink}>
-              카테고리 <span className={styles.miniArrow}>▼</span>
-            </span>
+            <Link href="/?view=all" className={styles.navLink}>
+              포스팅 <span className={styles.miniArrow}>▼</span>
+            </Link>
             {isCategoryOpen && (
               <div className={styles.navDropdown}>
                 {[

@@ -279,12 +279,22 @@
   display: none;
 }
 
+.summaryLink {
+  text-decoration: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  flex: 0 0 auto;
+}
+
 .sidebarIcon {
   font-size: 1.1rem;
 }
 
 .disclosureArrow {
-  margin-left: auto;
+  flex: 1;
+  text-align: right;
   font-size: 0.6rem;
   opacity: 0.4;
   transition: transform 0.3s;

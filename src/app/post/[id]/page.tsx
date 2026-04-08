@@ -224,7 +224,22 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       
-      <Link href="/" className={styles.backBtn}>← 목록으로 돌아가기</Link>
+      <div className={styles.topNav}>
+        <Link href="/" className={styles.backBtn}>← 목록으로 돌아가기</Link>
+        
+        <div className={styles.topNavRight}>
+          {isAdmin && isDbPost && (
+            <HeroToggleBtn postId={actualId} initialIsHero={post.is_hero || false} />
+          )}
+          
+          <PostManageBtns 
+            postId={actualId} 
+            authorId={post.author?.id || post.author_id} 
+            currentUserId={user?.id || ''} 
+            role={currentUserRole || 'user'} 
+          />
+        </div>
+      </div>
       
       <article className={styles.post}>
         <header className={styles.header}>
@@ -252,18 +267,6 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
               </span>
             )}
             
-            <div style={{ flex: 1 }} /> {/* Spacer */}
-            
-            {isAdmin && isDbPost && (
-              <HeroToggleBtn postId={actualId} initialIsHero={post.is_hero || false} />
-            )}
-            
-            <PostManageBtns 
-              postId={actualId} 
-              authorId={post.author?.id || post.author_id} 
-              currentUserId={user?.id || ''} 
-              role={currentUserRole || 'user'} 
-            />
           </div>
           
           <h1 className={styles.title}>{post.title}</h1>
@@ -279,19 +282,22 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
         
         {/* [신규] 에디터의 한줄평 섹션 */}
         {post.review_subject && (
-          <div className={styles.postReviewBox}>
-            <div className={styles.reviewHeader}>
-              <h3 className={styles.reviewSubject}>{post.review_subject}</h3>
-              <div className={styles.reviewRatingBox}>
-                <div className={styles.reviewStars}>
-                  {[1, 2, 3, 4, 5].map(i => (
-                    <span key={i} style={{ color: (post.review_rating >= i * 2) ? '#ff4d4d' : '#ddd' }}>★</span>
-                  ))}
+          <div className={styles.postReviewSection}>
+            <fieldset className={styles.postReviewBox}>
+              <legend className={styles.reviewLabel}>한줄 평</legend>
+              <div className={styles.reviewHeader}>
+                <h3 className={styles.reviewSubject}>{post.review_subject}</h3>
+                <div className={styles.reviewRatingBox}>
+                  <div className={styles.reviewStars}>
+                    {[1, 2, 3, 4, 5].map(i => (
+                      <span key={i} style={{ color: (post.review_rating >= i * 2) ? '#ff4d4d' : '#ddd' }}>★</span>
+                    ))}
+                  </div>
+                  <span className={styles.reviewScore}>{post.review_rating}</span>
                 </div>
-                <span className={styles.reviewScore}>{post.review_rating}</span>
               </div>
-            </div>
-            <p className={styles.reviewCommentText}>{post.review_comment}</p>
+              <p className={styles.reviewCommentText}>{post.review_comment}</p>
+            </fieldset>
           </div>
         )}
 

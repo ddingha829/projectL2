@@ -51,9 +51,13 @@ interface HomeContentProps {
   featurePosts?: any[];
   userProfile?: {
     preferred_view_type: string | null;
+    preferred_view_pc: string | null;
+    preferred_view_mobile: string | null;
     preferred_m_cols: number | null;
     preferred_d_cols: number | null;
   } | null;
+  isMobileServer?: boolean;
+  initialViewType?: "card" | "magazine";
 }
 
 export default function HomeContent({ 
@@ -65,7 +69,9 @@ export default function HomeContent({
   isInitialVisit,
   recentReviews = [],
   featurePosts = [],
-  userProfile
+  userProfile,
+  isMobileServer = false,
+  initialViewType
 }: HomeContentProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -102,30 +108,27 @@ export default function HomeContent({
   const [visibleCount, setVisibleCount] = useState(6);
 
   useEffect(() => {
-    const isMob = window.innerWidth <= 768;
+    // 1. Determine Device Type (Prioritize Server-side, fallback to client-side)
+    const isMob = isMobileServer || (typeof window !== 'undefined' ? window.innerWidth <= 768 : false);
     setIsMobile(isMob);
     
-    // Defaulting Logic
+    // 2. Defaulting Logic
     const currentView = searchParams.get('viewType');
-    const currentMCols = searchParams.get('mCols');
-    const currentDCols = searchParams.get('dCols');
-
+    
     if (!currentView && !hasInitialized) {
       const params = new URLSearchParams(window.location.search);
       
-      // 1. Priority: User Profile -> 2. Device Default
-      if (userProfile?.preferred_view_type) {
-        params.set('viewType', userProfile.preferred_view_type);
-        if (userProfile.preferred_m_cols) params.set('mCols', userProfile.preferred_m_cols.toString());
-        if (userProfile.preferred_d_cols) params.set('dCols', userProfile.preferred_d_cols.toString());
+      // Use initialViewType passed from server (which already considers Cookie/Profile/Default)
+      if (initialViewType) {
+        params.set('viewType', initialViewType);
       } else {
-        // Device Defaults
+        // Fallback safety
         if (isMob) {
           params.set('viewType', 'card');
           params.set('mCols', '2');
         } else {
           params.set('viewType', 'magazine');
-          params.set('dCols', '3'); // Switch to grid on PC default
+          params.set('dCols', '3');
         }
       }
 
@@ -134,30 +137,54 @@ export default function HomeContent({
       }
       setHasInitialized(true);
     }
-  }, [searchParams, userProfile, isInitialVisit, hasInitialized, router]);
+  }, [searchParams, userProfile, isInitialVisit, hasInitialized, router, isMobileServer, initialViewType]);
 
-  // Save selection to DB if logged in
+  // View Sync Helper (Cookies & DB)
+  const setCookie = (name: string, value: string) => {
+    document.cookie = `${name}=${value}; path=/; max-age=31536000`; // 1 year
+  };
+
+  // Save selection (Cookies & DB)
   useEffect(() => {
+    const currentView = searchParams.get('viewType');
+    if (!currentView) return;
+
+    // Sync to Cookie immediately for flicker prevention next time
+    if (isMobile) {
+      setCookie('viewType_mobile', currentView);
+    } else {
+      setCookie('viewType_pc', currentView);
+    }
+
     if (!userProfile) return;
     
+    // Debounced Save to DB
     const saveToDb = async () => {
       const { createClient } = await import('@/lib/supabase/client');
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      await supabase.from('profiles').update({
-        preferred_view_type: searchParams.get('viewType') || (isMobile ? 'card' : 'magazine'),
-        preferred_m_cols: parseInt(searchParams.get('mCols') || '2'),
-        preferred_d_cols: parseInt(searchParams.get('dCols') || '3')
-      }).eq('id', user.id);
+      const updateData: any = {
+        preferred_view_type: currentView // Compatibility fallback
+      };
+
+      if (isMobile) {
+        updateData.preferred_view_mobile = currentView;
+        updateData.preferred_m_cols = parseInt(searchParams.get('mCols') || '2');
+      } else {
+        updateData.preferred_view_pc = currentView;
+        updateData.preferred_d_cols = parseInt(searchParams.get('dCols') || '3');
+      }
+
+      await supabase.from('profiles').update(updateData).eq('id', user.id);
     };
 
     const timer = setTimeout(saveToDb, 2000); // 2s debounce
     return () => clearTimeout(timer);
   }, [searchParams, userProfile, isMobile]);
 
-  const vType = (searchParams.get("viewType") || (isMobile ? "card" : "magazine")) as "card" | "magazine";
+  const vType = (searchParams.get("viewType") || initialViewType || (isMobile ? "card" : "magazine")) as "card" | "magazine";
   const mobileGridCols = vType === 'magazine' ? 1 : parseInt(searchParams.get("mCols") || "2");
   const cardCols = parseInt(searchParams.get("dCols") || (vType === 'magazine' ? "3" : "3")); // PC default grid 3 as requested
 

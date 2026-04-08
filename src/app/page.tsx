@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import HomeContent from "./HomeContent";
 import { Suspense } from "react";
+import { headers, cookies } from "next/headers";
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -240,11 +241,25 @@ export default async function Home({
   if (user) {
     const { data } = await supabase
       .from('profiles')
-      .select('preferred_view_type, preferred_m_cols, preferred_d_cols')
+      .select('preferred_view_pc, preferred_view_mobile, preferred_view_type, preferred_m_cols, preferred_d_cols')
       .eq('id', user.id)
       .single();
     userProfile = data;
   }
+
+  // 6. Device Detection (Server-side) to prevent flicker
+  const headerList = await headers();
+  const userAgent = headerList.get('user-agent') || "";
+  const isMobileServer = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+  
+  // 7. Read Preference from Cookie or Profile
+  const cookieStore = await cookies();
+  const cookieView = isMobileServer ? cookieStore.get('viewType_mobile')?.value : cookieStore.get('viewType_pc')?.value;
+  
+  const initialViewType = cookieView || 
+    (isMobileServer 
+      ? (userProfile?.preferred_view_mobile || userProfile?.preferred_view_type || 'card')
+      : (userProfile?.preferred_view_pc || userProfile?.preferred_view_type || 'magazine'));
 
   return (
     <Suspense fallback={<div>피드를 불러오는 중입니다...</div>}>
@@ -258,6 +273,8 @@ export default async function Home({
         isInitialVisit={isInitialVisit}
         recentReviews={mappedReviews}
         userProfile={userProfile}
+        isMobileServer={isMobileServer}
+        initialViewType={initialViewType as any}
       />
     </Suspense>
   );

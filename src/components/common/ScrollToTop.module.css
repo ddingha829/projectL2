@@ -1,0 +1,52 @@
+.scrollTopBtn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--bg-primary-rgb) 0.7;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--text-primary);
+  border: 1px solid var(--border-medium);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2500;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.scrollTopBtn:hover {
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  border-color: var(--text-primary);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+  .scrollTopBtn {
+    bottom: 20px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .scrollTopBtn {
+    background: rgba(30, 30, 30, 0.8);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+  
+  @media (max-width: 768px) {
+    .scrollTopBtn {
+      background: rgba(40, 40, 40, 0.95);
+    }
+  }
+}

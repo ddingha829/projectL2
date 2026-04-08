@@ -80,6 +80,7 @@ html, body {
   color: var(--text-primary);
   scrollbar-gutter: stable;
   background-color: var(--bg-primary); 
+  scroll-behavior: smooth;
 }
 
 body {

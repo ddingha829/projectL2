@@ -198,13 +198,12 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
 
         {/* New Mobile-Optimized Navigation Menu */}
         <div className={styles.sidebarNav}>
-          <Link href="/?view=all" className={styles.sidebarLink} onClick={onClose}>
-            전체 포스팅
-          </Link>
-          
           <details className={styles.sidebarDisclosure}>
             <summary className={styles.sidebarSummary}>
-              카테고리 <span className={styles.disclosureArrow}>▼</span>
+              <Link href="/?view=all" className={styles.summaryLink} onClick={onClose}>
+                포스팅 
+              </Link>
+              <span className={styles.disclosureArrow}>▼</span>
             </summary>
             <div className={styles.disclosureContent}>
               {[

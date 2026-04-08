@@ -10,6 +10,7 @@ import TopNavbar from "./TopNavbar";
 import LeftSidebar from "./LeftSidebar";
 import gridStyles from "@/app/layout.module.css";
 import Footer from "./Footer";
+import ScrollToTop from "@/components/common/ScrollToTop";
 
 // --- Caveman Easter Egg Component ---
 function CavemanStickman() {
@@ -270,7 +271,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </main>
       </div>
       <Footer onCopyrightClick={() => setIsCavemanEnabled(!isCavemanEnabled)} />
-
+      <ScrollToTop />
     </>
   );
 }
