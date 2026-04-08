@@ -391,16 +391,6 @@ export default function HomeContent({
                 </div>
               </div>
               <div className={styles.mobileOnly}>
-                <div 
-                  className={styles.heroTrack} 
-                  style={{ transform: `translateX(-${heroIndex * 100}%)` }}
-                >
-                  {heroPosts.map((post) => (
-                    <div key={post.id} className={styles.heroSlideItem}>
-                      <HeroCard {...post} heightRatio="2/3" />
-                    </div>
-                  ))}
-                </div>
                 {heroPosts.length > 1 && (
                   <div className={styles.mobileHeroDots}>
                     {heroPosts.map((_, idx) => (
@@ -411,6 +401,16 @@ export default function HomeContent({
                     ))}
                   </div>
                 )}
+                <div 
+                  className={styles.heroTrack} 
+                  style={{ transform: `translateX(-${heroIndex * 100}%)` }}
+                >
+                  {heroPosts.map((post) => (
+                    <div key={post.id} className={styles.heroSlideItem}>
+                      <HeroCard {...post} heightRatio="2/3" />
+                    </div>
+                  ))}
+                </div>
               </div>
             </>
             </div>
