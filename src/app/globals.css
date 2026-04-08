@@ -183,3 +183,13 @@ li {
   animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
+/* Quill Line Height Classes */
+.ql-line-height-1-0 { line-height: 1.0 !important; }
+.ql-line-height-1-2 { line-height: 1.2 !important; }
+.ql-line-height-1-4 { line-height: 1.4 !important; }
+.ql-line-height-1-5 { line-height: 1.5 !important; }
+.ql-line-height-1-6 { line-height: 1.6 !important; }
+.ql-line-height-1-8 { line-height: 1.8 !important; }
+.ql-line-height-2-0 { line-height: 2.0 !important; }
+.ql-line-height-2-5 { line-height: 2.5 !important; }
+.ql-line-height-3-0 { line-height: 3.0 !important; }
