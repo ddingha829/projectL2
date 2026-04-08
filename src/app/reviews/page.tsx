@@ -265,8 +265,8 @@ function ReviewArchiveContent() {
                   }}
                 >
                   <div className={styles.brickHeader}>
-                    <div className={styles.editorRating}>{group.editorAvg}</div>
-                    <div className={styles.userRating}>{group.userAvg}</div>
+                    <div className={styles.editorRating}>E {group.editorAvg}</div>
+                    <div className={styles.userRating}>U {group.userAvg}</div>
                   </div>
                   <div className={styles.brickSubject}>{group.subject}</div>
                   <div className={styles.brickMeta}>한줄 평 수 {group.reviews.length + group.userReviews.length}</div>

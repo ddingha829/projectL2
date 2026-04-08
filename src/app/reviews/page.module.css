@@ -167,7 +167,7 @@
 }
 
 .brickCard {
-  aspect-ratio: 1.8 / 1; /* Halved height feeling */
+  aspect-ratio: 1.6 / 1; 
   background: var(--bg-primary);
   border: 1.5px solid var(--border-medium);
   padding: 12px 14px;
@@ -202,26 +202,32 @@
 }
 
 .editorRating {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   font-weight: 950;
   color: #204bb8; /* Blue */
+  letter-spacing: -0.02em;
 }
 
 .userRating {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   font-weight: 950;
   color: var(--text-tertiary); /* Gray */
+  letter-spacing: -0.02em;
 }
 
 .brickSubject {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 1000;
   color: var(--text-primary);
   text-align: center;
-  margin: 4px 0;
+  margin: 2px 0;
   line-height: 1.2;
   word-break: keep-all;
   letter-spacing: -0.01em;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .brickMeta {
