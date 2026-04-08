@@ -92,7 +92,7 @@ export default function WritePostForm({ role }: { role: string }) {
     });
     
     if (result.success) {
-      alert("임시저저장이 완료되었습니다.");
+      alert("임시저장이 완료되었습니다.");
     } else {
       alert(`임시저장 실패: ${result.error}`);
     }

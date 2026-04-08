@@ -18,14 +18,23 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "WoogaWooga 우가우가",
-  description: "일상 리뷰 사이트, 우가우가",
+  metadataBase: new URL("https://project-l2.vercel.app"),
+  title: {
+    default: "WoogaWooga 우가우가 | 일상 리뷰 매거진",
+    template: "%s | 우가우가"
+  },
+  description: "일상의 모든 순간을 리뷰합니다. 영화, 책, 게임, 맛집까지 에디터들이 전하는 생생한 리뷰 사이트, 우가우가.",
+  keywords: ["리뷰", "매거진", "영화 리뷰", "맛집 추천", "도서 리뷰", "게임 리뷰", "우가우가", "WoogaWooga"],
+  authors: [{ name: "WoogaWooga Team" }],
   icons: {
     icon: "/favicon.ico",
   },
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: "WoogaWooga 우가우가",
-    description: "일상 리뷰 사이트, 우가우가",
+    description: "일상의 모든 것을 리뷰하는 매거진, 우가우가",
     url: "https://project-l2.vercel.app",
     siteName: "WoogaWooga",
     locale: "ko_KR",
@@ -42,7 +51,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "WoogaWooga 우가우가",
-    description: "일상 리뷰 사이트, 우가우가",
+    description: "일상의 모든 것을 리뷰하는 매거진, 우가우가",
     images: ["/logo.png"],
   },
 };

@@ -202,10 +202,22 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   // Record Global Visit
   useEffect(() => {
     const recordVisit = async () => {
-      const hasVisited = sessionStorage.getItem('v3_visited');
+      // Use a consistent key for visit tracking
+      const VISIT_KEY = 'project_l2_visited';
+      const hasVisited = sessionStorage.getItem(VISIT_KEY);
+      
       if (!hasVisited) {
-        await supabase.from('site_visits').insert({}).then();
-        sessionStorage.setItem('v3_visited', 'true');
+        try {
+          // Record the visit in Supabase
+          const { error } = await supabase.from('site_visits').insert({});
+          if (error) {
+             console.warn("Visitor recording failed:", error.message);
+          } else {
+             sessionStorage.setItem(VISIT_KEY, 'true');
+          }
+        } catch (err) {
+          console.error("Critical error recording visit:", err);
+        }
       }
     };
     recordVisit();

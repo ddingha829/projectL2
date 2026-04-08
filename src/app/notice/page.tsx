@@ -1,8 +1,14 @@
+import { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import styles from "./notice.module.css";
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: "공지사항",
+  description: "우가우가 매거진의 새로운 소식과 안내사항을 확인하세요.",
+};
 
 export default async function NoticeListPage() {
   const supabase = await createClient();

@@ -38,11 +38,11 @@ export default async function AdminPage() {
   const [postsRes, profilesRes, visitRes] = await Promise.all([
     supabase.from('posts').select('*, author:profiles!author_id(display_name, avatar_url)').order('created_at', { ascending: false }),
     supabase.from('profiles').select('*').order('created_at', { ascending: false }),
-    supabase.from('site_visits').select('id', { count: 'exact' })
+    supabase.from('site_visits').select('*', { count: 'exact', head: true })
   ])
 
   // Aggregate total views from all posts
-  const totalViews = (postsRes.data || []).reduce((acc: number, post: any) => acc + (post.views || 0), 0);
+  const totalViewsAggregation = (postsRes.data || []).reduce((acc: number, post: any) => acc + (post.views || 0), 0);
 
   return (
     <div className={styles.adminContainer}>
@@ -56,6 +56,8 @@ export default async function AdminPage() {
       <AdminDashboard 
         initialPosts={postsRes.data || []} 
         initialProfiles={profilesRes.data || []} 
+        visitCount={visitRes.count || 0}
+        totalViews={totalViewsAggregation}
       />
     </div>
   )

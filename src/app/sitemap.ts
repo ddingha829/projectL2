@@ -1,0 +1,54 @@
+import { MetadataRoute } from 'next'
+import { createClient } from '@/lib/supabase/server'
+import { MOCK_POSTS } from './page'
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const baseUrl = 'https://project-l2.vercel.app'
+  const supabase = await createClient()
+
+  // 1. Fetch all DB posts
+  const { data: dbPosts } = await supabase
+    .from('posts')
+    .select('id, created_at')
+    .order('created_at', { ascending: false })
+
+  // 2. Map DB posts to sitemap entries
+  const postEntries = (dbPosts || []).map((post) => ({
+    url: `${baseUrl}/post/db-${post.id}`,
+    lastModified: new Date(post.created_at),
+    changeFrequency: 'weekly' as const,
+    priority: 0.7,
+  }))
+
+  // 3. Map Mock posts
+  const mockEntries = MOCK_POSTS.map((post) => ({
+    url: `${baseUrl}/post/${post.id}`,
+    lastModified: new Date(post.date),
+    changeFrequency: 'monthly' as const,
+    priority: 0.5,
+  }))
+
+  // 4. Static pages
+  const staticPages = [
+    {
+      url: baseUrl,
+      lastModified: new Date(),
+      changeFrequency: 'daily' as const,
+      priority: 1,
+    },
+    {
+      url: `${baseUrl}/about`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.3,
+    },
+    {
+        url: `${baseUrl}/notice`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly' as const,
+        priority: 0.5,
+    }
+  ]
+
+  return [...staticPages, ...postEntries, ...mockEntries]
+}
