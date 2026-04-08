@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -110,6 +110,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const key = `${pathname}?${searchParams.toString()}`;
   const [isMobileScreen, setIsMobileScreen] = useState(false);
   const [isCavemanEnabled, setIsCavemanEnabled] = useState(false);
+  const lastUserId = useRef<string | null>(null);
   const router = useRouter();
 
 
@@ -179,16 +180,33 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       }
     };
 
-    supabase.auth.getUser().then(({ data }) => syncAuth(data.user));
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) {
+        lastUserId.current = data.user.id;
+        syncAuth(data.user);
+      } else {
+        setIsLoading(false);
+      }
+    });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      const currentUserId = session?.user?.id || null;
+      
       if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
         syncAuth(session?.user);
-        router.refresh();
+        
+        // Only refresh if user status actually changed (prevents infinite loops)
+        if (currentUserId !== lastUserId.current) {
+          lastUserId.current = currentUserId;
+          router.refresh();
+        }
       } else if (event === 'SIGNED_OUT') {
         syncAuth(null);
-        router.push('/');
-        router.refresh();
+        if (lastUserId.current !== null) {
+          lastUserId.current = null;
+          router.push('/');
+          router.refresh();
+        }
       } else if (event === 'USER_UPDATED') {
         syncAuth(session?.user);
       }
