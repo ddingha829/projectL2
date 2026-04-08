@@ -30,13 +30,13 @@ const ReactQuill = dynamic(async () => {
                 RQ.Quill.register(Font, true);
             }
 
-            // 줄간격(Line Height) 등록 - 인라인 스타일 방식이 실제 렌더링에서 더 직관적임
+            // 줄간격(Line Height) 등록 - 클래스 방식이 오버라이드에 유리함
             const Parchment = RQ.Quill.import('parchment');
-            const StyleAttributor = (RQ.Quill.import('attributors/style/size') as any).constructor;
-            if (StyleAttributor) {
-                const LineHeight = new StyleAttributor('lineheight', 'line-height', {
+            const ClassAttributor = (Parchment as any).Attributor?.Class || (Parchment as any).ClassAttributor;
+            if (ClassAttributor) {
+                const LineHeight = new ClassAttributor('lineheight', 'ql-line-height', {
                     scope: (Parchment as any).Scope?.BLOCK || 3,
-                    whitelist: ['1', '1.2', '1.4', '1.5', '1.6', '1.8', '2', '2.5', '3']
+                    whitelist: ['1-0', '1-2', '1-4', '1-5', '1-6', '1-8', '2-0', '2-5', '3-0']
                 });
                 RQ.Quill.register(LineHeight, true);
             }
@@ -222,7 +222,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                 [{ 'header': [1, 2, 3, false] }],
                 [{ 'font': ['notosans', 'nanummyeongjo', 'nanumgothic', 'inter', 'merriweather'] }],
                 [{ 'size': ['0.75rem', '0.875rem', '1rem', '1.125rem', '1.25rem', '1.5rem', '2rem', '2.5rem'] }],
-                [{ 'lineheight': ['1', '1.2', '1.4', '1.5', '1.6', '1.8', '2', '2.5', '3'] }],
+                [{ 'lineheight': ['1-0', '1-2', '1-4', '1-5', '1-6', '1-8', '2-0', '2-5', '3-0'] }],
                 ['bold', 'italic', 'underline', 'strike'],
                 [{ 'color': [] }, { 'background': [] }],
                 [{ 'align': [] }],
@@ -289,7 +289,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                 .ql-editor {
                     min-height: 600px;
                     font-size: 1.125rem;
-                    line-height: 1.85;
+                    line-height: 1.7;
                     padding: 40px !important;
                     font-family: var(--font-noto-sans), sans-serif;
                     color: #333;
@@ -304,15 +304,15 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                     content: attr(data-value) !important;
                 }
                 :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label::before) { content: 'Line Height'; }
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1"]::before) { content: '1.0'; }
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1.2"]::before) { content: '1.2'; }
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1.4"]::before) { content: '1.4'; }
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1.5"]::before) { content: '1.5'; }
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1.6"]::before) { content: '1.6'; }
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1.8"]::before) { content: '1.8'; }
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="2"]::before) { content: '2.0'; }
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="2.5"]::before) { content: '2.5'; }
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="3"]::before) { content: '3.0'; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1-0"]::before) { content: '1.0'; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1-2"]::before) { content: '1.2'; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1-4"]::before) { content: '1.4'; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1-5"]::before) { content: '1.5'; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1-6"]::before) { content: '1.6'; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1-8"]::before) { content: '1.8'; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="2-0"]::before) { content: '2.0'; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="2-5"]::before) { content: '2.5'; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="3-0"]::before) { content: '3.0'; }
                 :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label::before) { content: 'Line Height'; }
                 :global(.ql-snow .ql-picker.ql-font.ql-header .ql-picker-label::before) { content: 'Heading'; }
                 :global(.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="notosans"]::before),
@@ -331,6 +331,16 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                 :global(.ql-font-nanumgothic) { font-family: var(--font-nanum-gothic) !important; }
                 :global(.ql-font-inter) { font-family: var(--font-inter) !important; }
                 :global(.ql-font-merriweather) { font-family: var(--font-merriweather) !important; }
+
+                :global(.ql-line-height-1-0) { line-height: 1.0 !important; }
+                :global(.ql-line-height-1-2) { line-height: 1.2 !important; }
+                :global(.ql-line-height-1-4) { line-height: 1.4 !important; }
+                :global(.ql-line-height-1-5) { line-height: 1.5 !important; }
+                :global(.ql-line-height-1-6) { line-height: 1.6 !important; }
+                :global(.ql-line-height-1-8) { line-height: 1.8 !important; }
+                :global(.ql-line-height-2-0) { line-height: 2.0 !important; }
+                :global(.ql-line-height-2-5) { line-height: 2.5 !important; }
+                :global(.ql-line-height-3-0) { line-height: 3.0 !important; }
 
                 @media (max-width: 768px) {
                     .ql-editor {

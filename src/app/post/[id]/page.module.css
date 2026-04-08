@@ -80,7 +80,7 @@
 
 .content {
   font-size: 1.125rem;
-  line-height: 1.85;
+  line-height: 1.7; /* 기본 간격을 에디터와 거의 동일하게 조정 */
   color: var(--text-primary);
   margin-bottom: 30px;
   font-weight: 400;
@@ -89,16 +89,27 @@
   overflow-wrap: break-word;
 }
 
-/* 에디터에서 작성된 문단간 간격을 제거하여 줄간격 설정만으로 간격이 조절되도록 함 */
+/* 문단 간격 제거하여 줄간격 설정만으로 제어되게 함 */
 .content p {
-  margin: 0;
-  padding: 0;
+  margin: 0 !important;
+  padding: 0 !important;
 }
+
+/* 줄간격 클래스 (인용 기능 등과 충돌을 피하기 위해 !important 사용) */
+.content :global(.ql-line-height-1-0) { line-height: 1.0 !important; }
+.content :global(.ql-line-height-1-2) { line-height: 1.2 !important; }
+.content :global(.ql-line-height-1-4) { line-height: 1.4 !important; }
+.content :global(.ql-line-height-1-5) { line-height: 1.5 !important; }
+.content :global(.ql-line-height-1-6) { line-height: 1.6 !important; }
+.content :global(.ql-line-height-1-8) { line-height: 1.8 !important; }
+.content :global(.ql-line-height-2-0) { line-height: 2.0 !important; }
+.content :global(.ql-line-height-2-5) { line-height: 2.5 !important; }
+.content :global(.ql-line-height-3-0) { line-height: 3.0 !important; }
 
 @media (max-width: 768px) {
   .content {
     font-size: 1.05rem;
-    line-height: 1.75;
+    line-height: 1.65;
   }
 }
 
