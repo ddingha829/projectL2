@@ -214,7 +214,8 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
                   { id: 'game', name: '게임' },
                   { id: 'book', name: '책' },
                   { id: 'exhibition', name: '전시회' },
-                  { id: 'other', name: '기타' }
+                  { id: 'other', name: '기타' },
+                  { id: 'feature', name: '기획전' }
               ].map(cat => (
                 <Link 
                   key={cat.id} 
