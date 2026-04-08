@@ -95,7 +95,7 @@
 
 .content {
   font-size: 1rem;
-  line-height: 1.6; /* 기본 간격을 사용자 요청에 따라 1.6으로 설정 */
+  line-height: 1.8; /* 기본 간격을 사용자 요청에 따라 1.8로 설정 */
   color: var(--text-primary);
   margin-bottom: 30px;
   font-weight: 400;
@@ -1059,6 +1059,28 @@
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 300px;
+}
+
+.quoteHighlight {
+  background-color: rgba(255, 235, 59, 0.4);
+  border-bottom: 2px solid rgba(255, 193, 7, 0.5);
+  cursor: pointer;
+  padding: 2px 0;
+  transition: background-color 0.2s;
+  border-radius: 2px;
+}
+
+.quoteHighlight:hover {
+  background-color: rgba(255, 235, 59, 0.7);
+}
+
+.quotePromptError {
+  border-color: #ff4d4d !important;
+  background: rgba(255, 77, 77, 0.05) !important;
+}
+
+.quotePromptError span {
+  color: #ff4d4d !important;
 }
 
 .jumpBadge {

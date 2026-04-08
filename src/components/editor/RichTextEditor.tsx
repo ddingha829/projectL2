@@ -289,7 +289,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                 .ql-editor {
                     min-height: 600px;
                     font-size: 1rem;
-                    line-height: 1.6;
+                    line-height: 1.8;
                     padding: 40px !important;
                     font-family: var(--font-noto-sans), sans-serif;
                     color: var(--text-primary);

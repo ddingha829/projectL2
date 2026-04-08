@@ -278,7 +278,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
           </div>
         )}
         
-        <ContentSegmenter content={post.content} />
+        <ContentSegmenter content={post.content} comments={commentsData} />
         
         {/* [신규] 에디터의 한줄평 섹션 */}
         {post.review_subject && (

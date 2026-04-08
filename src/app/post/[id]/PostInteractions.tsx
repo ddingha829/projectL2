@@ -46,9 +46,10 @@ export default function PostInteractions({
       
       const segment = (container as HTMLElement).closest('[data-segment-id]');
       if (segment) {
+        const fullText = selection.toString().trim();
         setActiveAnchor({
           id: segment.getAttribute('data-segment-id') || '',
-          text: selection.toString().trim().substring(0, 100)
+          text: fullText
         });
       }
     };
@@ -116,6 +117,11 @@ export default function PostInteractions({
   const handleAddComment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user || !newComment.trim() || isSubmitting) return;
+
+    if (selectedAnchor && selectedAnchor.text.length > 20) {
+      alert("20글자 이내로 인용 가능합니다");
+      return;
+    }
     
     setIsSubmitting(true);
     if (postId.length > 10) {
@@ -225,11 +231,19 @@ export default function PostInteractions({
           <form onSubmit={handleAddComment} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {activeAnchor && !selectedAnchor && (
               <div 
-                className={styles.quotePrompt}
-                onClick={() => setSelectedAnchor(activeAnchor)}
+                className={`${styles.quotePrompt} ${activeAnchor.text.length > 20 ? styles.quotePromptError : ''}`}
+                onClick={() => {
+                  if (activeAnchor.text.length > 20) {
+                    alert("20글자 이내로 인용 가능합니다");
+                  } else {
+                    setSelectedAnchor(activeAnchor);
+                  }
+                }}
               >
-                <span>" {activeAnchor.text}... "</span>
-                <button type="button" className={styles.quoteBtn}>이 위치 인용하기</button>
+                <span>" {activeAnchor.text}{activeAnchor.text.length >= 20 ? '...' : ''} "</span>
+                <button type="button" className={styles.quoteBtn}>
+                  {activeAnchor.text.length > 20 ? '인용 불가' : '이 위치 인용하기'}
+                </button>
               </div>
             )}
             {selectedAnchor && (
@@ -264,7 +278,7 @@ export default function PostInteractions({
               hour12: false
             });
             return (
-              <div key={c.id} className={`${styles.comment} ${isAuthor ? styles.authorComment : ""}`}>
+              <div key={c.id} id={`comment-${c.id}`} className={`${styles.comment} ${isAuthor ? styles.authorComment : ""}`}>
                 <div className={styles.commentHeader}>
                   <div className={styles.commentUserSide}>
                     <div className={styles.commentAvatar}>
