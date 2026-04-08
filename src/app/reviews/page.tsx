@@ -70,18 +70,25 @@ function ReviewArchiveContent() {
         });
       }
 
-      Object.values(grouped).forEach((g: any) => {
-        const editorSum = g.reviews.reduce((acc: number, r: any) => acc + (r.review_rating || 0), 0);
-        const userSum = g.userReviews.reduce((acc: number, r: any) => acc + (r.rating || 0), 0);
+      const subjectsArray = Object.values(grouped).map((g: any) => {
+        const editorSum = g.reviews.reduce((acc: number, r: any) => acc + (Number(r.review_rating) || 0), 0);
+        const userSum = g.userReviews.reduce((acc: number, r: any) => acc + (Number(r.rating) || 0), 0);
         
-        g.editorAvg = g.reviews.length > 0 ? (editorSum / g.reviews.length).toFixed(1) : "0.0";
-        g.userAvg = g.userReviews.length > 0 ? (userSum / g.userReviews.length).toFixed(1) : "0.0";
+        const editorCount = g.reviews.length;
+        const userCount = g.userReviews.length;
         
-        const totalCount = g.reviews.length + g.userReviews.length;
-        g.avgRating = totalCount > 0 ? ((editorSum + userSum) / totalCount).toFixed(1) : "0.0";
+        return {
+          ...g,
+          editorAvg: editorCount > 0 ? (editorSum / editorCount).toFixed(1) : "0.0",
+          userAvg: userCount > 0 ? (userSum / userCount).toFixed(1) : "0.0",
+          avgRating: (editorCount + userCount) > 0 
+            ? ((editorSum + userSum) / (editorCount + userCount)).toFixed(1) 
+            : "0.0"
+        };
       });
 
-      setSubjects(Object.values(grouped));
+      console.log('Review Archive Data:', subjectsArray);
+      setSubjects(subjectsArray);
     }
     setIsLoading(false);
   };
