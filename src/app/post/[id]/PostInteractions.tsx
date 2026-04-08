@@ -28,6 +28,10 @@ export default function PostInteractions({
   const [activeAnchor, setActiveAnchor] = useState<{ id: string, text: string } | null>(null);
   const [selectedAnchor, setSelectedAnchor] = useState<{ id: string, text: string } | null>(null);
 
+  // [신규] 댓글 수정/삭제 상태
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+  const [editContent, setEditContent] = useState("");
+
   const supabase = createClient();
   const router = useRouter();
 
@@ -120,7 +124,41 @@ export default function PostInteractions({
     setIsSubmitting(false);
     router.refresh();
   };
-  
+
+  const handleDeleteComment = async (commentId: string) => {
+    if (!confirm("댓글을 삭제하시겠습니까?")) return;
+    
+    const { error } = await supabase.from('comments').delete().eq('id', commentId);
+    if (error) {
+      alert("삭제 실패: " + error.message);
+    } else {
+      setComments(comments.filter(c => c.id !== commentId));
+      router.refresh();
+    }
+  };
+
+  const startEditing = (id: string, content: string) => {
+    setEditingCommentId(id);
+    setEditContent(content);
+  };
+
+  const handleUpdateComment = async (commentId: string) => {
+    if (!editContent.trim()) return;
+    
+    const { error } = await supabase
+      .from('comments')
+      .update({ content: editContent.trim() })
+      .eq('id', commentId);
+      
+    if (error) {
+      alert("수정 실패: " + error.message);
+    } else {
+      setComments(comments.map(c => c.id === commentId ? { ...c, content: editContent.trim() } : c));
+      setEditingCommentId(null);
+      router.refresh();
+    }
+  };
+
   return (
     <>
       <div className={styles.interactionBar}>
@@ -222,29 +260,55 @@ export default function PostInteractions({
                       {isAuthor && <span className={styles.writerBadge}>에디터</span>}
                     </div>
                   </div>
-                  <span className={styles.commentDate}>{dateStr}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginLeft: 'auto' }}>
+                    <span className={styles.commentDate}>{dateStr}</span>
+                    
+                    {/* 수정/삭제 버튼 (본인 또는 운영자) */}
+                    {(user?.id === c.user_id || user?.app_metadata?.role === 'admin' || user?.user_metadata?.role === 'admin') && (
+                      <div className={styles.commentActions}>
+                        <button className={styles.actionIconBtn} onClick={() => startEditing(c.id, c.content)} title="수정">✏️</button>
+                        <button className={`${styles.actionIconBtn} ${styles.deleteBtn}`} onClick={() => handleDeleteComment(c.id)} title="삭제">🗑️</button>
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div className={styles.commentBody}>
-                  {c.content.startsWith('[quote:') ? (() => {
-                    const match = c.content.match(/^\[quote:(.*?):(.*?)\] (.*)$/);
-                    if (match) {
-                      return (
-                        <>
-                          <div 
-                            className={styles.commentQuote}
-                            onClick={() => handleJump(match[1])}
-                          >
-                            <span className={styles.quoteIcon}>❝</span>
-                            <span className={styles.quoteText}>{match[2]}</span>
-                            <span className={styles.jumpBadge}>본문 이동</span>
-                          </div>
-                          <p className={styles.commentText}>{match[3]}</p>
-                        </>
-                      );
-                    }
-                    return <p className={styles.commentText}>{c.content}</p>;
-                  })() : (
-                    <p className={styles.commentText}>{c.content}</p>
+                  {editingCommentId === c.id ? (
+                    <div className={styles.editArea}>
+                      <textarea 
+                        className={styles.editInput} 
+                        value={editContent} 
+                        onChange={(e) => setEditContent(e.target.value)}
+                      />
+                      <div className={styles.editActions}>
+                        <button className={styles.saveBtn} onClick={() => handleUpdateComment(c.id)}>저장</button>
+                        <button className={styles.cancelBtn} onClick={() => setEditingCommentId(null)}>취소</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      {c.content.startsWith('[quote:') ? (() => {
+                        const match = c.content.match(/^\[quote:(.*?):(.*?)\] (.*)$/);
+                        if (match) {
+                          return (
+                            <>
+                              <div 
+                                className={styles.commentQuote}
+                                onClick={() => handleJump(match[1])}
+                              >
+                                <span className={styles.quoteIcon}>❝</span>
+                                <span className={styles.quoteText}>{match[2]}</span>
+                                <span className={styles.jumpBadge}>이동</span>
+                              </div>
+                              <p className={styles.commentText}>{match[3]}</p>
+                            </>
+                          );
+                        }
+                        return <p className={styles.commentText}>{c.content}</p>;
+                      })() : (
+                        <p className={styles.commentText}>{c.content}</p>
+                      )}
+                    </>
                   )}
                 </div>
               </div>
