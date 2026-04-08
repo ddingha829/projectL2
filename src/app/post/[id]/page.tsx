@@ -254,6 +254,10 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
             
             <div style={{ flex: 1 }} /> {/* Spacer */}
             
+            {isAdmin && isDbPost && (
+              <HeroToggleBtn postId={actualId} initialIsHero={post.is_hero || false} />
+            )}
+            
             <PostManageBtns 
               postId={actualId} 
               authorId={post.author?.id || post.author_id} 
