@@ -17,12 +17,13 @@ interface PosterCardProps {
   isMinimal?: boolean;
   viewType?: 'card' | 'magazine';
   excerpt?: string;
+  isPublic?: boolean;
 }
 
 export default function PosterCard({ 
   id, category, title, author, imageUrl, isEditorsPick, displayDate, likes = 0, comments = 0,
   aspectRatio = 'default', isOneCol = false, isDense = false, isMinimal = false,
-  viewType = 'card', excerpt
+  viewType = 'card', excerpt, isPublic = true
 }: PosterCardProps) {
   const isMagazine = viewType === 'magazine';
 
@@ -57,6 +58,7 @@ export default function PosterCard({
         
         <h3 className={isMagazine ? styles.magTitle : styles.title}>
           <Link href={`/post/${id}`} className={styles.stretchedLink}>
+            {isPublic === false && <span style={{ marginRight: '6px', color: '#ea4335' }}>🔒</span>}
             {title}
           </Link>
         </h3>

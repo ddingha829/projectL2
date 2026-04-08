@@ -37,6 +37,8 @@ export async function updatePost(postId: string, formData: FormData) {
   const category = formData.get('category') as string
   const imageUrl = formData.get('imageUrl') as string
   const isEditorsPick = formData.get('isEditorsPick') === 'on'
+  const isPublic = formData.get('isPublic') === 'on'
+  const isFeature = formData.get('isFeature') === 'on' // 추가
   
   const reviewSubject = formData.get('reviewSubject') as string
   const reviewRating = parseInt(formData.get('reviewRating') as string) || null
@@ -45,14 +47,16 @@ export async function updatePost(postId: string, formData: FormData) {
   const updateData: Record<string, any> = { 
     title, content, category, 
     image_url: imageUrl,
+    is_public: isPublic,
     review_subject: reviewSubject || null,
     review_rating: reviewRating,
     review_comment: reviewComment || null
   }
 
-  // admin만 editors_pick 변경 가능
+  // admin만 editors_pick 및 is_feature 변경 가능
   if (profile.role === 'admin') {
     updateData.is_editors_pick = isEditorsPick
+    updateData.is_feature = isFeature
   }
 
   const { data: updatedData, error: updateError } = await supabase

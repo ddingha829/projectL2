@@ -455,6 +455,9 @@ export default function HomeContent({
                   <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '25px' }}>
                     <h2 className={styles.sectionTitle}>기획전</h2>
                     <div className={styles.headerSpacer}></div>
+                    <Link href="/features" className={styles.viewAllLink}>
+                      전체 보기 <span className={styles.linkIcon}>→</span>
+                    </Link>
                   </header>
                   
                   <div className={styles.featureGrid}>
@@ -617,6 +620,7 @@ export default function HomeContent({
                       isOneCol={(isMobile && mobileGridCols === 1) || (!isMobile && cardCols === 1)}
                       isDense={!isMobile && cardCols === 4}
                       isMinimal={(isMobile && mobileGridCols === 3)}
+                      isPublic={post.isPublic}
                     />
                   ))}
                 </div>

@@ -23,15 +23,17 @@ interface EditPostFormProps {
   initialReviewRating?: number
   initialReviewComment?: string
   isAdmin: boolean
+  initialIsPublic: boolean
 }
 
 export default function EditPostForm({
   postId, initialTitle, initialContent, initialCategory,
   initialImageUrl, initialIsEditorsPick,
   initialReviewSubject = '', initialReviewRating = 0, initialReviewComment = '',
-  isAdmin
+  isAdmin, initialIsPublic
 }: EditPostFormProps) {
   const [content, setContent] = useState(initialContent)
+  const [isPublic, setIsPublic] = useState(initialIsPublic)
   const [imageUrl, setImageUrl] = useState(initialImageUrl)
   const [reviewSubject, setReviewSubject] = useState(initialReviewSubject)
   const [suggestions, setSuggestions] = useState<string[]>([])
@@ -199,6 +201,25 @@ export default function EditPostForm({
             placeholder="작품에 대한 짧은 평을 남겨주세요."
           />
         </div>
+      </div>
+
+      <div style={{ marginTop: '20px', padding: '15px', background: 'var(--bg-hover)', borderRadius: '12px', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <input 
+            type="checkbox" 
+            id="isPublic" 
+            checked={isPublic}
+            onChange={(e) => setIsPublic(e.target.checked)}
+            style={{ width: '20px', height: '20px', cursor: 'pointer' }}
+          />
+          <label htmlFor="isPublic" style={{ fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', color: isPublic ? '#1a77ce' : '#ea4335' }}>
+            {isPublic ? "🌐 모두에게 공개" : "🔒 나만 보기 (비공개)"}
+          </label>
+          <input type="hidden" name="isPublic" value={isPublic ? 'on' : 'off'} />
+        </div>
+        <p style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)', marginLeft: '30px', marginTop: '4px' }}>
+          {isPublic ? "모든 방문자가 이 글을 읽을 수 있습니다." : "관리자와 작성자 본인에게만 글이 보입니다."}
+        </p>
       </div>
 
       <button type="submit" className={styles.submitBtn} disabled={isPending || isUploading}>

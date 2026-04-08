@@ -67,6 +67,7 @@ const getPost = cache(async (id: string) => {
        ...dbPost,
        category: CATEGORY_MAP[dbPost.category] || dbPost.category,
        is_hero: dbPost.is_hero || false,
+       is_public: dbPost.is_public,
        author: {
          id: dbPost.author?.id || dbPost.author_id || 'db-anon',
          display_name: dbPost.author?.display_name || '활발한 작가',
@@ -233,6 +234,22 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
             <Link href={`/?author=${post.author?.id}`} className={styles.authorBadgeDetail}>
               {post.author?.display_name || post.author?.name || '익명 작가'}
             </Link>
+            {post.is_public === false && (
+              <span style={{ 
+                background: '#ea4335', 
+                color: 'white', 
+                padding: '2px 8px', 
+                borderRadius: '4px', 
+                fontSize: '0.7rem', 
+                fontWeight: 800,
+                marginLeft: '8px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}>
+                🔒 비공개
+              </span>
+            )}
             
             <div style={{ flex: 1 }} /> {/* Spacer */}
             

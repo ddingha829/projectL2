@@ -29,6 +29,8 @@ export async function createPost(formData: FormData) {
   const imageUrl = (formData.get('imageUrl') as string || '').trim();
   const content = (formData.get('content') as string || '').trim();
   const isEditorsPick = formData.get('isEditorsPick') === 'on';
+  const isPublic = formData.get('isPublic') === 'on';
+  const isFeature = formData.get('isFeature') === 'on';
 
   // [신규] 한줄평 평가 항목
   const reviewSubject = (formData.get('reviewSubject') as string || '').trim();
@@ -57,6 +59,8 @@ export async function createPost(formData: FormData) {
           image_url: imageUrl || 'https://images.unsplash.com/photo-1542204165-65bf26472b9b?auto=format&fit=crop&w=1600&q=80',
           content,
           is_editors_pick: isEditorsPick,
+          is_public: isPublic,
+          is_feature: isFeature,
           review_subject: reviewSubject || null,
           review_rating: reviewRating || 0,
           review_comment: reviewComment || null
@@ -108,6 +112,8 @@ export async function saveDraft(data: {
   imageUrl: string;
   content: string;
   isEditorsPick: boolean;
+  isPublic: boolean;
+  isFeature: boolean; // 추가
   reviewSubject?: string;
   reviewRating?: number;
   reviewComment?: string;
@@ -125,6 +131,8 @@ export async function saveDraft(data: {
       image_url: data.imageUrl,
       content: data.content,
       is_editors_pick: data.isEditorsPick,
+      is_public: data.isPublic,
+      is_feature: data.isFeature,
       review_subject: data.reviewSubject || null,
       review_rating: data.reviewRating || 0,
       review_comment: data.reviewComment || null,

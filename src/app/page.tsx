@@ -157,7 +157,8 @@ export default async function Home({
       isEditorsPick: p.is_editors_pick || false,
       isHero: p.is_hero || false,
       heroAt: p.hero_at,
-      isFeature: p.is_feature || false
+      isFeature: p.is_feature || false,
+      isPublic: p.is_public !== false
     };
   };
 

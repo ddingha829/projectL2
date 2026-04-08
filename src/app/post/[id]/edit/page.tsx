@@ -77,6 +77,7 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
         initialReviewRating={post.review_rating || 0}
         initialReviewComment={post.review_comment || ''}
         isAdmin={profile?.role === 'admin'}
+        initialIsPublic={post.is_public !== false}
       />
     </div>
   )

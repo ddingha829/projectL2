@@ -35,6 +35,8 @@ export default function WritePostForm({ role }: { role: string }) {
   const [content, setContent] = useState("");
   const [mainImageUrl, setMainImageUrl] = useState("");
   const [isEditorsPick, setIsEditorsPick] = useState(false);
+  const [isPublic, setIsPublic] = useState(true);
+  const [isFeature, setIsFeature] = useState(false);
   
   // [신규] 한줄평 상태
   const [showReview, setShowReview] = useState(false);
@@ -51,6 +53,9 @@ export default function WritePostForm({ role }: { role: string }) {
 
   useEffect(() => {
     setIsClient(true);
+    if (searchParams.get('is_feature') === 'true') {
+      setIsFeature(true);
+    }
     if (error) {
       alert(`저장 중 오류가 발생했습니다: ${error}`);
     }
@@ -65,6 +70,8 @@ export default function WritePostForm({ role }: { role: string }) {
           setContent(draft.content || "");
           setMainImageUrl(draft.image_url || "");
           setIsEditorsPick(draft.is_editors_pick || false);
+          setIsPublic(draft.is_public !== false);
+          setIsFeature(draft.is_feature || false);
           
           if (draft.review_subject) {
             setReviewSubject(draft.review_subject);
@@ -86,6 +93,8 @@ export default function WritePostForm({ role }: { role: string }) {
       category,
       imageUrl: mainImageUrl,
       isEditorsPick,
+      isPublic,
+      isFeature,
       reviewSubject,
       reviewRating,
       reviewComment
@@ -302,6 +311,38 @@ export default function WritePostForm({ role }: { role: string }) {
           <label htmlFor="isEditorsPick" className={styles.checkboxLabel}>🏆 이 게시물을 에디터 추천으로 지정합니다.</label>
         </div>
       )}
+
+      {role === 'admin' && (
+        <div className={styles.checkboxGroup} style={{ borderTop: '1px solid var(--border)', paddingTop: '10px' }}>
+          <input 
+            type="checkbox" 
+            id="isFeature" 
+            name="isFeature" 
+            checked={isFeature}
+            onChange={(e) => setIsFeature(e.target.checked)}
+          />
+          <label htmlFor="isFeature" className={styles.checkboxLabel}>✨ 이 게시물을 **기획전(Feature)** 섹션에 등록합니다.</label>
+        </div>
+      )}
+
+      <div className={styles.checkboxGroup} style={{ marginTop: '20px', padding: '15px', background: 'var(--bg-hover)', borderRadius: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <input 
+            type="checkbox" 
+            id="isPublic" 
+            checked={isPublic}
+            onChange={(e) => setIsPublic(e.target.checked)}
+            style={{ width: '20px', height: '20px', cursor: 'pointer' }}
+          />
+          <label htmlFor="isPublic" style={{ fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', color: isPublic ? '#1a77ce' : '#ea4335' }}>
+            {isPublic ? "🌐 모두에게 공개" : "🔒 나만 보기 (비공개)"}
+          </label>
+          <input type="hidden" name="isPublic" value={isPublic ? 'on' : 'off'} />
+        </div>
+        <p style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)', marginLeft: '30px', marginTop: '4px' }}>
+          {isPublic ? "모든 방문자가 이 글을 읽을 수 있습니다." : "관리자와 작성자 본인에게만 글이 보입니다."}
+        </p>
+      </div>
 
       <div className={styles.actionsFooter}>
         <button 
