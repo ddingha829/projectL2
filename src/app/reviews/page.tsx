@@ -63,9 +63,10 @@ function ReviewArchiveContent() {
         userReviewsData.forEach((ur: any) => {
           const s = ur.subject?.trim() || "Untitled";
           const key = s.toLowerCase();
-          if (grouped[key]) {
-            grouped[key].userReviews.push(ur);
+          if (!grouped[key]) {
+            grouped[key] = { subject: s, reviews: [], userReviews: [], avgRating: 0 };
           }
+          grouped[key].userReviews.push(ur);
         });
       }
 
