@@ -7,10 +7,11 @@ import styles from "./RichTextEditor.module.css";
 interface ImageCropModalProps {
   image: string;
   onCropComplete: (croppedImage: Blob) => void;
+  onUseOriginal?: () => void; // 원본 사용 콜백 추가
   onCancel: () => void;
 }
 
-export default function ImageCropModal({ image, onCropComplete, onCancel }: ImageCropModalProps) {
+export default function ImageCropModal({ image, onCropComplete, onUseOriginal, onCancel }: ImageCropModalProps) {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [aspect, setAspect] = useState<number | undefined>(undefined);
@@ -122,6 +123,9 @@ export default function ImageCropModal({ image, onCropComplete, onCancel }: Imag
           </div>
           <div className={styles.buttonGroup}>
             <button type="button" className={styles.cancelBtn} onClick={onCancel}>취소</button>
+            {onUseOriginal && (
+              <button type="button" className={styles.originalBtn} onClick={onUseOriginal}>원본 그대로 사용</button>
+            )}
             <button type="button" className={styles.confirmBtn} onClick={handleDone}>크롭 완료</button>
           </div>
         </div>

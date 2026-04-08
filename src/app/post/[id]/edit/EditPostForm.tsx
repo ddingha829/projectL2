@@ -12,6 +12,7 @@ const RichTextEditor = dynamic(() => import('@/components/editor/RichTextEditor'
   ssr: false,
   loading: () => <div style={{ height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border)', borderRadius: '12px' }}>에디터 로딩중...</div>
 })
+import ImageCropModal from '@/components/editor/ImageCropModal'
 
 interface EditPostFormProps {
   postId: string
@@ -46,6 +47,11 @@ export default function EditPostForm({
   const fileInputRef = useRef<HTMLInputElement>(null)
   const supabase = createClient()
   const [isSaving, setIsSaving] = useState(false)
+  
+  // [신규] 대표 이미지 크롭 관련 상태
+  const [showCropModal, setShowCropModal] = useState(false);
+  const [cropImageSrc, setCropImageSrc] = useState("");
+  const [originalFile, setOriginalFile] = useState<File | null>(null);
 
   // 1. [신규] 페이지 이탈 방지 경고 및 로컬 백업
   useEffect(() => {
@@ -69,31 +75,33 @@ export default function EditPostForm({
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    setIsUploading(true)
-    try {
-      let uploadBlob: Blob | File = file
-      let fileExt = 'jpg'
-      let contentType = 'image/jpeg'
 
-      if (file.type === 'image/gif') {
-        if (file.size > 1024 * 1024) {
-          alert('GIF 파일은 애니메이션 유지를 위해 압축하지 않으므로, 1MB 이하만 업로드 가능합니다.')
-          setIsUploading(false)
-          return
-        }
-        uploadBlob = file
-        fileExt = 'gif'
-        contentType = 'image/gif'
-      } else {
-        uploadBlob = await compressImage(file)
-        fileExt = 'jpg'
-        contentType = 'image/jpeg'
+    setOriginalFile(file);
+    const reader = new FileReader();
+    reader.onload = () => {
+      setCropImageSrc(reader.result as string);
+      setShowCropModal(true);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  const uploadMainImage = async (uploadBlob: Blob | File, isOriginal = false) => {
+    setIsUploading(true)
+    setShowCropModal(false)
+    try {
+      let finalBlob = uploadBlob;
+      let fileExt = isOriginal ? (originalFile?.name.split('.').pop() || 'jpg') : 'jpg';
+      let contentType = isOriginal ? (originalFile?.type || 'image/jpeg') : 'image/jpeg';
+
+      if (!isOriginal) {
+        // 크롭 완료된 데이터라면 압축 진행
+        finalBlob = await compressImage(new File([uploadBlob], "main.jpg", { type: "image/jpeg" }));
       }
 
-      const fileName = `covers/${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`
+      const fileName = `covers/${Math.random().toString(36).substring(2, 12)}_${Date.now()}.${fileExt}`
       const { error } = await supabase.storage
         .from('post-images')
-        .upload(fileName, uploadBlob, { contentType })
+        .upload(fileName, finalBlob, { contentType })
 
       if (error) throw error
       const { data: { publicUrl } } = supabase.storage.from('post-images').getPublicUrl(fileName)
@@ -103,6 +111,7 @@ export default function EditPostForm({
       alert('이미지 업로드에 실패했습니다.')
     } finally {
       setIsUploading(false)
+      setOriginalFile(null)
     }
   }
 
@@ -311,6 +320,15 @@ export default function EditPostForm({
           {isPending ? '수정 중...' : isUploading ? '이미지 업로드 중...' : '수정 완료'}
         </button>
       </div>
+
+      {showCropModal && (
+        <ImageCropModal 
+          image={cropImageSrc}
+          onCropComplete={(blob) => uploadMainImage(blob)}
+          onUseOriginal={() => originalFile && uploadMainImage(originalFile, true)}
+          onCancel={() => setShowCropModal(false)}
+        />
+      )}
     </form>
   )
 }

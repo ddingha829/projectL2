@@ -63,6 +63,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
     const [isClient, setIsClient] = useState(false);
     const [showCropModal, setShowCropModal] = useState(false);
     const [cropImageSrc, setCropImageSrc] = useState<string>("");
+    const [originalFile, setOriginalFile] = useState<File | null>(null);
     const quillRef = useRef<any>(null);
     const lastContentRef = useRef<string>(content); // 루프 방지용
     const supabase = createClient();
@@ -113,6 +114,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             const file = input.files?.[0];
             if (!file) return;
 
+            setOriginalFile(file); // 원본 파일 보관
             const reader = new FileReader();
             reader.onload = () => {
                 setCropImageSrc(reader.result as string);
@@ -150,6 +152,40 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             alert('이미지 업로드에 실패했습니다.');
         }
     };
+
+    const handleUseOriginal = async () => {
+        if (!originalFile) return;
+        setShowCropModal(false);
+        const quill = quillRef.current?.getEditor();
+        let range = quill?.getSelection();
+        let currentIndex = range ? range.index : quill.getLength();
+
+        try {
+            // 원본 그대로 사용 (압축 생략)
+            const fileExt = originalFile.name.split('.').pop() || 'jpg';
+            const fileName = `editor/${Math.random().toString(36).substring(2, 10)}_${Date.now()}.${fileExt}`;
+            const { error } = await supabase.storage
+                .from('post-images')
+                .upload(fileName, originalFile, { contentType: originalFile.type });
+
+            if (error) throw error;
+
+            const { data: { publicUrl } } = supabase.storage
+                .from('post-images')
+                .getPublicUrl(fileName);
+
+            if (quill) {
+                quill.insertEmbed(currentIndex, "image", publicUrl);
+                quill.setSelection(currentIndex + 1);
+            }
+        } catch (err) {
+            console.error('Upload failed:', err);
+            alert('원본 이미지 업로드에 실패했습니다.');
+        } finally {
+            setOriginalFile(null);
+        }
+    };
+
 
     const modules = useMemo(() => ({
         toolbar: {
@@ -213,6 +249,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                 <ImageCropModal 
                     image={cropImageSrc}
                     onCropComplete={handleCropComplete}
+                    onUseOriginal={handleUseOriginal}
                     onCancel={() => setShowCropModal(false)}
                 />
             )}

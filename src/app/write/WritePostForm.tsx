@@ -14,6 +14,7 @@ const RichTextEditor = dynamic(() => import("@/components/editor/RichTextEditor"
   ssr: false, 
   loading: () => <div style={{ height: '600px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-hover)', borderRadius: '12px' }}>글쓰기 에디터 로딩중...</div> 
 });
+import ImageCropModal from "@/components/editor/ImageCropModal";
 
 function SubmitButton({ isUploading, isDraftSaving }: { isUploading: boolean, isDraftSaving: boolean }) {
   const { pending } = useFormStatus();
@@ -49,6 +50,12 @@ export default function WritePostForm({ role }: { role: string }) {
   const [isUploading, setIsUploading] = useState(false);
   const [isDraftSaving, setIsDraftSaving] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  
+  // [신규] 대표 이미지 크롭 관련 상태
+  const [showCropModal, setShowCropModal] = useState(false);
+  const [cropImageSrc, setCropImageSrc] = useState("");
+  const [originalFile, setOriginalFile] = useState<File | null>(null);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const supabase = createClient();
 
@@ -151,34 +158,33 @@ export default function WritePostForm({ role }: { role: string }) {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setIsUploading(true);
-    try {
-      let uploadBlob: Blob | File = file;
-      let fileExt = 'jpg';
-      let contentType = 'image/jpeg';
+    setOriginalFile(file);
+    const reader = new FileReader();
+    reader.onload = () => {
+      setCropImageSrc(reader.result as string);
+      setShowCropModal(true);
+    };
+    reader.readAsDataURL(file);
+  };
 
-      // GIF 특수 처리: 압축하지 않되 1MB 제한
-      if (file.type === 'image/gif') {
-        if (file.size > 1024 * 1024) {
-          alert('GIF 파일은 애니메이션 유지를 위해 압축하지 않으므로, 1MB 이하만 업로드 가능합니다.');
-          setIsUploading(false);
-          return;
-        }
-        uploadBlob = file;
-        fileExt = 'gif';
-        contentType = 'image/gif';
-      } else {
-        // 일반 이미지는 기존처럼 압축 진행
-        uploadBlob = await compressImage(file);
-        fileExt = 'jpg';
-        contentType = 'image/jpeg';
+  const uploadMainImage = async (uploadBlob: Blob | File, isOriginal = false) => {
+    setIsUploading(true);
+    setShowCropModal(false);
+    try {
+      let finalBlob = uploadBlob;
+      let fileExt = isOriginal ? (originalFile?.name.split('.').pop() || 'jpg') : 'jpg';
+      let contentType = isOriginal ? (originalFile?.type || 'image/jpeg') : 'image/jpeg';
+
+      if (!isOriginal) {
+        // 크롭 완료된 데이터라면 압축 진행 (GIF는 알아서 패스됨)
+        finalBlob = await compressImage(new File([uploadBlob], "main.jpg", { type: "image/jpeg" }));
       }
 
       const fileName = `covers/${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
       
       const { error } = await supabase.storage
         .from('post-images')
-        .upload(fileName, uploadBlob, { contentType });
+        .upload(fileName, finalBlob, { contentType });
 
       if (error) throw error;
 
@@ -192,6 +198,7 @@ export default function WritePostForm({ role }: { role: string }) {
       alert('대표 이미지 업로드 실패');
     } finally {
       setIsUploading(false);
+      setOriginalFile(null);
     }
   };
 
@@ -415,6 +422,15 @@ export default function WritePostForm({ role }: { role: string }) {
         </button>
         <SubmitButton isUploading={isUploading} isDraftSaving={isDraftSaving} />
       </div>
+
+      {showCropModal && (
+        <ImageCropModal 
+          image={cropImageSrc}
+          onCropComplete={(blob) => uploadMainImage(blob)}
+          onUseOriginal={() => originalFile && uploadMainImage(originalFile, true)}
+          onCancel={() => setShowCropModal(false)}
+        />
+      )}
     </form>
   );
 }
