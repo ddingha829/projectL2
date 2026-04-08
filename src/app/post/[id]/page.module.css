@@ -543,82 +543,103 @@
 .commentList {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 32px;
+  margin-top: 24px;
 }
 
 .comment {
-  background-color: var(--bg-primary);
-  border: 1px solid var(--border-medium);
-  border-radius: 12px;
-  padding: 16px;
+  padding: 0;
   position: relative;
   transition: all 0.2s ease;
-  box-shadow: var(--shadow-sm);
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 32px;
 }
 
-.comment:hover {
-  border-color: var(--text-primary);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+.comment:last-child {
+  border-bottom: none;
 }
 
 .authorComment {
-  background-color: rgba(0, 153, 255, 0.04);
-  border: 2px solid #0099ff;
-  border-radius: 12px;
-  padding: 16px;
+  position: relative;
 }
 
-.commentAuthorInfo {
+.commentHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  width: 100%;
+}
+
+.commentUserSide {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.commentAvatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--bg-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-light);
+  flex-shrink: 0;
+}
+
+.commentAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarPlaceholder {
+  font-size: 1.2rem;
+}
+
+.commentUserInfo {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.writerBadge {
-  background-color: #0099ff;
-  color: white;
-  font-size: 0.7rem;
-  padding: 2px 6px;
-  border-radius: 4px;
+.commentNickname {
+  font-size: 1rem;
   font-weight: 800;
+  color: var(--text-primary);
+}
+
+.writerBadge {
+  background-color: var(--accent-primary);
+  color: white;
+  font-size: 0.65rem;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-@media (prefers-color-scheme: dark) {
-  .authorComment {
-    background-color: rgba(0, 153, 255, 0.1);
-    border-color: rgba(0, 153, 255, 0.3);
-  }
-}
-
-.commentMeta {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 6px;
-}
-
-.commentAuthor {
-  font-weight: 700;
-}
-
 .commentDate {
-  font-size: 0.85rem;
-  color: var(--text-light);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  font-family: var(--font-outfit), sans-serif;
+}
+
+.commentBody {
+  padding-left: 50px;
 }
 
 .commentText {
-  font-size: 0.9rem;
-  line-height: 1.5;
-  color: var(--text-main);
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 40px;
-  padding: 20px 24px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, rgba(255, 200, 0, 0.06) 0%, rgba(255, 120, 0, 0.06) 100%);
-  border: 1.5px dashed rgba(255, 185, 0, 0.45);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+  word-break: break-all;
+  white-space: pre-wrap;
 }
 
 .heroAdminArea::before {

@@ -136,16 +136,35 @@ export default function PostInteractions({
         <div className={styles.commentList}>
           {comments.length > 0 ? comments.map((c: any) => {
             const isAuthor = (c.user_id === authorId) || (c.user?.id === authorId);
+            const dateStr = new Date(c.created_at).toLocaleString('ko-KR', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: false
+            });
             return (
               <div key={c.id} className={`${styles.comment} ${isAuthor ? styles.authorComment : ""}`}>
-                <div className={styles.commentMeta}>
-                  <div className={styles.commentAuthorInfo}>
-                    <span className={styles.commentAuthor}>{c.user?.display_name || c.user?.name || '익명 작가'}</span>
-                    {isAuthor && <span className={styles.writerBadge}>에디터</span>}
+                <div className={styles.commentHeader}>
+                  <div className={styles.commentUserSide}>
+                    <div className={styles.commentAvatar}>
+                      {c.user?.avatar_url ? (
+                        <img src={c.user.avatar_url} alt={c.user.display_name} />
+                      ) : (
+                        <div className={styles.avatarPlaceholder}>👤</div>
+                      )}
+                    </div>
+                    <div className={styles.commentUserInfo}>
+                      <span className={styles.commentNickname}>{c.user?.display_name || c.user?.name || '익명 작가'}</span>
+                      {isAuthor && <span className={styles.writerBadge}>에디터</span>}
+                    </div>
                   </div>
-                  <span className={styles.commentDate}>{new Date(c.created_at).toLocaleDateString()}</span>
+                  <span className={styles.commentDate}>{dateStr}</span>
                 </div>
-                <p className={styles.commentText}>{c.content}</p>
+                <div className={styles.commentBody}>
+                  <p className={styles.commentText}>{c.content}</p>
+                </div>
               </div>
             );
           }) : (
