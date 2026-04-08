@@ -31,7 +31,7 @@ const ReactQuill = dynamic(async () => {
         if (styleSize && styleSize.constructor) {
             const StyleAttributor: any = styleSize.constructor;
             const LineHeightStyle = new StyleAttributor('lineheight', 'line-height', {
-                scope: (Parchment as any).Scope?.INLINE || 2,
+                scope: (Parchment as any).Scope?.BLOCK || 3,
                 whitelist: ['1', '1.2', '1.4', '1.6', '1.8', '2', '2.5', '3']
             });
             RQ.Quill.register(LineHeightStyle, true);
