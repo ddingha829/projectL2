@@ -79,8 +79,8 @@
 }
 
 .content {
-  font-size: 1.125rem;
-  line-height: 1.7; /* 기본 간격을 에디터와 거의 동일하게 조정 */
+  font-size: 1rem;
+  line-height: 1.6; /* 기본 간격을 사용자 요청에 따라 1.6으로 설정 */
   color: var(--text-primary);
   margin-bottom: 30px;
   font-weight: 400;
@@ -108,8 +108,8 @@
 
 @media (max-width: 768px) {
   .content {
-    font-size: 1.05rem;
-    line-height: 1.65;
+    font-size: 0.95rem;
+    line-height: 1.6;
   }
 }
 

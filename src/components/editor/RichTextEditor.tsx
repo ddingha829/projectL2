@@ -288,11 +288,11 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             <style jsx global>{`
                 .ql-editor {
                     min-height: 600px;
-                    font-size: 1.125rem;
-                    line-height: 1.7;
+                    font-size: 1rem;
+                    line-height: 1.6;
                     padding: 40px !important;
                     font-family: var(--font-noto-sans), sans-serif;
-                    color: #333;
+                    color: var(--text-primary);
                 }
                 /* 에디터 내 문단 간격 초기화 (실제 게시물과 동일하게) */
                 .ql-editor p {
