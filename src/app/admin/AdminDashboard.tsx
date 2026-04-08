@@ -10,10 +10,19 @@ interface AdminDashboardProps {
   initialPosts: any[]
   initialProfiles: any[]
   visitCount?: number
+  todayVisitCount?: number
   totalViews?: number
+  trendData?: { day: string, count: number }[]
 }
 
-export default function AdminDashboard({ initialPosts, initialProfiles, visitCount = 0, totalViews = 0 }: AdminDashboardProps) {
+export default function AdminDashboard({ 
+  initialPosts, 
+  initialProfiles, 
+  visitCount = 0, 
+  todayVisitCount = 0,
+  totalViews = 0,
+  trendData = [] 
+}: AdminDashboardProps) {
   const [activeTab, setActiveTab] = useState<'stats' | 'posts' | 'users' | 'categories'>('stats')
   const [searchQuery, setSearchQuery] = useState('')
   const [timeRange, setTimeRange] = useState<'daily' | 'weekly' | 'monthly'>('weekly')
@@ -97,7 +106,9 @@ export default function AdminDashboard({ initialPosts, initialProfiles, visitCou
           posts={initialPosts} 
           users={initialProfiles} 
           visitCount={visitCount}
+          todayVisitCount={todayVisitCount}
           totalViews={totalViews}
+          trendData={trendData}
           timeRange={timeRange} 
           onTimeRangeChange={setTimeRange} 
         />
@@ -252,11 +263,13 @@ export default function AdminDashboard({ initialPosts, initialProfiles, visitCou
   )
 }
 
-function StatsView({ posts, users, visitCount, totalViews, timeRange, onTimeRangeChange }: { 
+function StatsView({ posts, users, visitCount, todayVisitCount, totalViews, trendData, timeRange, onTimeRangeChange }: { 
   posts: any[], 
   users: any[], 
   visitCount: number,
+  todayVisitCount: number,
   totalViews: number,
+  trendData: { day: string, count: number }[],
   timeRange: 'daily' | 'weekly' | 'monthly',
   onTimeRangeChange: (v: any) => void 
 }) {
@@ -286,11 +299,19 @@ function StatsView({ posts, users, visitCount, totalViews, timeRange, onTimeRang
       <div className={styles.statsGrid}>
         <div className={styles.statsCard}>
           <div className={styles.statsHeader}>
-            <span className={styles.statsLabel}>총 방문객 수</span>
+            <span className={styles.statsLabel}>오늘 방문객</span>
+            <span className={`${styles.statsTrend} ${styles.trendUp}`}>Live</span>
+          </div>
+          <div className={styles.statsValue}>{(todayVisitCount || 0).toLocaleString()}</div>
+          <div className={styles.statsSub}>00:00:00 이후 기준</div>
+        </div>
+        <div className={styles.statsCard}>
+          <div className={styles.statsHeader}>
+            <span className={styles.statsLabel}>누적 방문객</span>
             <span className={`${styles.statsTrend} ${styles.trendUp}`}>↑ {growth}</span>
           </div>
           <div className={styles.statsValue}>{(visitCount || 0).toLocaleString()}</div>
-          <div className={styles.statsSub}>누적 세션 기준</div>
+          <div className={styles.statsSub}>전체 세션 합계</div>
         </div>
         <div className={styles.statsCard}>
           <div className={styles.statsHeader}>
@@ -335,24 +356,35 @@ function StatsView({ posts, users, visitCount, totalViews, timeRange, onTimeRang
             <line x1="0" y1="150" x2="700" y2="150" stroke="var(--border-light)" strokeWidth="1" />
             
             {/* Bars */}
-            {chartData.map((val, i) => (
-              <rect 
-                key={i}
-                x={i * 100 + 20}
-                y={200 - val * 2}
-                width="60"
-                height={val * 2}
-                fill="var(--accent-primary)"
-                rx="6"
-                opacity="0.8"
-              >
-                <animate attributeName="height" from="0" to={val * 2} dur="1s" />
-                <animate attributeName="y" from="200" to={200 - val * 2} dur="1s" />
-              </rect>
-            ))}
+            {trendData.map((item, i) => {
+              const maxVal = Math.max(...trendData.map(d => d.count), 1);
+              const barHeight = (item.count / maxVal) * 160; // Max height 160
+              return (
+                <rect 
+                  key={i}
+                  x={i * 100 + 20}
+                  y={200 - barHeight}
+                  width="60"
+                  height={barHeight}
+                  fill="var(--accent-primary)"
+                  rx="6"
+                  opacity="0.8"
+                  style={{ cursor: 'pointer', transition: 'all 0.3s' }}
+                  className={styles.chartBar}
+                >
+                  <title>{`${item.day}: ${item.count}명`}</title>
+                  <animate attributeName="height" from="0" to={barHeight} dur="0.8s" />
+                  <animate attributeName="y" from="200" to={200 - barHeight} dur="0.8s" />
+                </rect>
+              );
+            })}
           </svg>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '12px' }}>
-            {days.map(d => <span key={d} style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', width: '60px', textAlign: 'center', marginLeft: '20px' }}>{d}</span>)}
+            {trendData.map(item => (
+              <span key={item.day} style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', width: '60px', textAlign: 'center', marginLeft: '20px' }}>
+                {item.day}
+              </span>
+            ))}
           </div>
         </div>
       </div>

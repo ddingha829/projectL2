@@ -35,14 +35,41 @@ export default async function AdminPage() {
   }
 
   // Fetch initial data
-  const [postsRes, profilesRes, visitRes] = await Promise.all([
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const todayIso = today.toISOString();
+
+  // Last 7 days for trend
+  const weekAgo = new Date();
+  weekAgo.setDate(weekAgo.getDate() - 6);
+  weekAgo.setHours(0, 0, 0, 0);
+  const weekAgoIso = weekAgo.toISOString();
+
+  const [postsRes, profilesRes, visitRes, todayVisitRes, trendRes] = await Promise.all([
     supabase.from('posts').select('*, author:profiles!author_id(display_name, avatar_url)').order('created_at', { ascending: false }),
     supabase.from('profiles').select('*').order('created_at', { ascending: false }),
-    supabase.from('site_visits').select('*', { count: 'exact', head: true })
+    supabase.from('site_visits').select('*', { count: 'exact', head: true }),
+    supabase.from('site_visits').select('*', { count: 'exact', head: true }).gte('created_at', todayIso),
+    supabase.from('site_visits').select('created_at').gte('created_at', weekAgoIso)
   ])
 
   // Aggregate total views from all posts
   const totalViewsAggregation = (postsRes.data || []).reduce((acc: number, post: any) => acc + (post.views || 0), 0);
+
+  // Process trend data
+  const trendMap: Record<string, number> = {};
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(weekAgo);
+    d.setDate(d.getDate() + i);
+    trendMap[d.toLocaleDateString('en-US', { weekday: 'short' })] = 0;
+  }
+
+  (trendRes.data || []).forEach(v => {
+    const day = new Date(v.created_at).toLocaleDateString('en-US', { weekday: 'short' });
+    if (trendMap[day] !== undefined) trendMap[day]++;
+  });
+
+  const trendData = Object.entries(trendMap).map(([day, count]) => ({ day, count }));
 
   return (
     <div className={styles.adminContainer}>
@@ -57,6 +84,8 @@ export default async function AdminPage() {
         initialPosts={postsRes.data || []} 
         initialProfiles={profilesRes.data || []} 
         visitCount={visitRes.count || 0}
+        todayVisitCount={todayVisitRes.count || 0}
+        trendData={trendData}
         totalViews={totalViewsAggregation}
       />
     </div>
