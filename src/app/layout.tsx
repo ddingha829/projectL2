@@ -21,23 +21,27 @@ const nanumMyeongjo = Nanum_Myeongjo({
   variable: "--font-nanum-myeongjo",
   subsets: ["latin"],
   weight: ["400", "700"],
+  display: 'swap',
 });
 
 const nanumGothic = Nanum_Gothic({
   variable: "--font-nanum-gothic",
   subsets: ["latin"],
   weight: ["400", "700"],
+  display: 'swap',
 });
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+  display: 'swap',
 });
 
 const merriweather = Merriweather({
   variable: "--font-merriweather",
   subsets: ["latin"],
   weight: ["300", "400", "700", "900"],
+  display: 'swap',
 });
 
 export const metadata: Metadata = {

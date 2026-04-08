@@ -25,13 +25,17 @@ const ReactQuill = dynamic(async () => {
         Font.whitelist = ['notosans', 'nanummyeongjo', 'nanumgothic', 'inter', 'merriweather'];
         RQ.Quill.register(Font, true);
 
-        // 줄간격(Line Height) 등록
+        // 줄간격(Line Height) 등록 - 매우 안전한 방식으로 구현
         const Parchment = RQ.Quill.import('parchment');
-        const LineHeightStyle = new (Parchment.Attributor as any).Style('lineheight', 'line-height', {
-            scope: (Parchment as any).Scope.INLINE,
-            whitelist: ['1', '1.2', '1.4', '1.6', '1.8', '2', '2.5', '3']
-        });
-        RQ.Quill.register(LineHeightStyle, true);
+        const styleSize = RQ.Quill.import('attributors/style/size');
+        if (styleSize && styleSize.constructor) {
+            const StyleAttributor: any = styleSize.constructor;
+            const LineHeightStyle = new StyleAttributor('lineheight', 'line-height', {
+                scope: (Parchment as any).Scope?.INLINE || 2,
+                whitelist: ['1', '1.2', '1.4', '1.6', '1.8', '2', '2.5', '3']
+            });
+            RQ.Quill.register(LineHeightStyle, true);
+        }
 
         const BaseImage: any = RQ.Quill.import('formats/image');
         class AppImage extends BaseImage {
