@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import styles from "./page.module.css";
 import PosterCard from "@/components/feed/PosterCard";
-import { CATEGORY_MAP } from "@/lib/constants/categories";
+import { CATEGORY_MAP } from "../../lib/constants/categories";
 
 export const dynamic = 'force-dynamic';
 
@@ -34,11 +34,6 @@ export default async function FeaturesPage() {
     console.error('Fetch features error:', error);
   }
 
-  const CATEGORY_LABELS: Record<string, string> = {
-    movie: "영화", book: "책", game: "게임", restaurant: "맛집", 
-    travel: "여행", exhibition: "전시회", other: "기타", notice: "공지사항"
-  };
-
   return (
     <div className={styles.container}>
       <header className={styles.header}>
@@ -68,7 +63,7 @@ export default async function FeaturesPage() {
               <PosterCard 
                 key={post.id}
                 id={`db-${post.id}`}
-                category={CATEGORY_LABELS[post.category] || post.category}
+                category={CATEGORY_MAP[post.category] || post.category}
                 title={post.title}
                 imageUrl={post.image_url}
                 displayDate={new Date(post.created_at).toLocaleDateString('ko-KR')}

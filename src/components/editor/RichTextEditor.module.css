@@ -131,6 +131,36 @@
   overflow: hidden;
 }
 
+.aspectControls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 5px;
+}
+
+.aspectControls button {
+  padding: 6px 12px;
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #666;
+}
+
+.aspectControls button:hover {
+  background: #e0e0e0;
+}
+
+.aspectControls button.activeAspect {
+  background: var(--accent-primary);
+  color: #fff;
+  border-color: var(--accent-primary);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
 .controls {
   display: flex;
   flex-direction: column;

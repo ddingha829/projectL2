@@ -13,6 +13,7 @@ interface ImageCropModalProps {
 export default function ImageCropModal({ image, onCropComplete, onCancel }: ImageCropModalProps) {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
+  const [aspect, setAspect] = useState<number | undefined>(undefined);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
 
   const onCropChange = (crop: any) => setCrop(crop);
@@ -75,12 +76,18 @@ export default function ImageCropModal({ image, onCropComplete, onCancel }: Imag
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
+        <div className={styles.aspectControls}>
+          <button type="button" className={aspect === undefined ? styles.activeAspect : ""} onClick={() => setAspect(undefined)}>자유 (Free)</button>
+          <button type="button" className={aspect === 1 ? styles.activeAspect : ""} onClick={() => setAspect(1)}>1:1 (정사각형)</button>
+          <button type="button" className={aspect === 4/5 ? styles.activeAspect : ""} onClick={() => setAspect(4/5)}>4:5 (세로)</button>
+          <button type="button" className={aspect === 16/9 ? styles.activeAspect : ""} onClick={() => setAspect(16/9)}>16:9 (가로)</button>
+        </div>
         <div className={styles.cropperWrapper}>
           <Cropper
             image={image}
             crop={crop}
             zoom={zoom}
-            aspect={undefined} // Free aspect ratio
+            aspect={aspect}
             onCropChange={onCropChange}
             onCropComplete={onCropAreaChange}
             onZoomChange={onZoomChange}
