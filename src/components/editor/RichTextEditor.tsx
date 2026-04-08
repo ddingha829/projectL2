@@ -6,6 +6,7 @@ import 'react-quill-new/dist/quill.snow.css';
 import { createClient } from '@/lib/supabase/client';
 import { compressImage } from '@/lib/utils/image';
 import styles from './RichTextEditor.module.css';
+import ImageCropModal from './ImageCropModal';
 
 // [중요] 최신 버전의 Quill 2.0 및 React 19 호환을 위한 동적 로드 및 모듈 등록
 const ReactQuill = dynamic(async () => {
@@ -13,8 +14,37 @@ const ReactQuill = dynamic(async () => {
     const { default: ImageResize } = await import('quill-image-resize-module-react');
     
     // Quill 인스턴스에 이미지 리사이즈 모듈 등록
-    // react-quill-new는 내부적으로 Quill을 내장하고 있거나 전역 Quill을 사용할 수 있음
     if (typeof window !== 'undefined' && RQ.Quill) {
+        const BaseImage: any = RQ.Quill.import('formats/image');
+        class AppImage extends BaseImage {
+            static formats(domNode: any) {
+                return BaseImage.formats(domNode);
+            }
+            format(name: string, value: any) {
+                const node = (this as any).domNode;
+                if (name === 'align') {
+                    if (value) {
+                        node.style.display = 'block';
+                        if (value === 'center') {
+                            node.style.margin = '20px auto';
+                        } else if (value === 'right') {
+                            node.style.margin = '20px 0 20px auto';
+                        } else {
+                            node.style.margin = '20px auto 20px 0';
+                        }
+                    } else {
+                        node.style.display = '';
+                        node.style.margin = '';
+                    }
+                } else {
+                    super.format(name, value);
+                }
+            }
+        }
+        (AppImage as any).blotName = 'image';
+        (AppImage as any).tagName = 'IMG';
+        
+        RQ.Quill.register(AppImage, true);
         RQ.Quill.register('modules/imageResize', ImageResize);
     }
 
@@ -31,75 +61,79 @@ interface RichTextEditorProps {
 
 export default function RichTextEditor({ content, onChange, placeholder }: RichTextEditorProps) {
     const [isClient, setIsClient] = useState(false);
+    const [showCropModal, setShowCropModal] = useState(false);
+    const [cropImageSrc, setCropImageSrc] = useState<string>("");
     const quillRef = useRef<any>(null);
+    const lastContentRef = useRef<string>(content); // 루프 방지를 위한 Ref
     const supabase = createClient();
 
     useEffect(() => {
         setIsClient(true);
     }, []);
 
+    // 외부에서 content가 들어왔을 때 (예: 임시저장 불러오기), 
+    // 에디터 내부 값과 다를 경우에만 동기화하여 타이핑 렉 방지
+    useEffect(() => {
+        if (quillRef.current) {
+            const editor = quillRef.current.getEditor();
+            if (content !== editor.root.innerHTML && content !== lastContentRef.current) {
+                lastContentRef.current = content;
+                editor.root.innerHTML = content;
+            }
+        }
+    }, [content]);
+
+    const handleEditorChange = (newContent: string) => {
+        lastContentRef.current = newContent;
+        onChange(newContent);
+    };
+
     const imageHandler = () => {
         const input = document.createElement("input");
         input.setAttribute("type", "file");
         input.setAttribute("accept", "image/*");
-        input.setAttribute("multiple", ""); // 다중 선택 허용
         input.click();
 
         input.onchange = async () => {
-            const files = input.files ? Array.from(input.files) : [];
-            if (files.length === 0) return;
+            const file = input.files?.[0];
+            if (!file) return;
 
-            const quill = quillRef.current?.getEditor();
-            let range = quill?.getSelection();
-            
-            // 현재 커서 위치가 없으면 마지막으로 설정
-            let currentIndex = range ? range.index : quill.getLength();
-
-            for (const file of files) {
-                try {
-                    let uploadBlob: Blob | File = file;
-                    let fileExt = 'jpg';
-                    let contentType = 'image/jpeg';
-
-                    // GIF 특수 처리: 압축하지 않되 1MB 제한
-                    if (file.type === 'image/gif') {
-                        if (file.size > 1024 * 1024) {
-                            alert(`'${file.name}' GIF 파일은 1MB 이하만 업로드 가능합니다.`);
-                            continue;
-                        }
-                        uploadBlob = file;
-                        fileExt = 'gif';
-                        contentType = 'image/gif';
-                    } else {
-                        // 일반 이미지는 기존처럼 압축 진행
-                        uploadBlob = await compressImage(file);
-                        fileExt = 'jpg';
-                        contentType = 'image/jpeg';
-                    }
-
-                    const fileName = `editor/${Math.random().toString(36).substring(2, 10)}_${Date.now()}.${fileExt}`;
-                    
-                    const { error } = await supabase.storage
-                        .from('post-images')
-                        .upload(fileName, uploadBlob, { contentType });
-
-                    if (error) throw error;
-
-                    const { data: { publicUrl } } = supabase.storage
-                        .from('post-images')
-                        .getPublicUrl(fileName);
-
-                    if (quill) {
-                        quill.insertEmbed(currentIndex, "image", publicUrl);
-                        currentIndex++; // 다음 이미지 위치를 한 칸 뒤로
-                        quill.setSelection(currentIndex);
-                    }
-                } catch (err) {
-                    console.error(`Upload failed for ${file.name}:`, err);
-                    alert(`'${file.name}' 이미지 업로드에 실패했습니다.`);
-                }
-            }
+            const reader = new FileReader();
+            reader.onload = () => {
+                setCropImageSrc(reader.result as string);
+                setShowCropModal(true);
+            };
+            reader.readAsDataURL(file);
         };
+    };
+
+    const handleCropComplete = async (croppedBlob: Blob) => {
+        setShowCropModal(false);
+        const quill = quillRef.current?.getEditor();
+        let range = quill?.getSelection();
+        let currentIndex = range ? range.index : quill.getLength();
+
+        try {
+            const compressedFile = await compressImage(new File([croppedBlob], "cropped.jpg", { type: "image/jpeg" }));
+            const fileName = `editor/${Math.random().toString(36).substring(2, 10)}_${Date.now()}.jpg`;
+            const { error } = await supabase.storage
+                .from('post-images')
+                .upload(fileName, compressedFile, { contentType: "image/jpeg" });
+
+            if (error) throw error;
+
+            const { data: { publicUrl } } = supabase.storage
+                .from('post-images')
+                .getPublicUrl(fileName);
+
+            if (quill) {
+                quill.insertEmbed(currentIndex, "image", publicUrl);
+                quill.setSelection(currentIndex + 1);
+            }
+        } catch (err) {
+            console.error('Upload failed:', err);
+            alert('이미지 업로드에 실패했습니다.');
+        }
     };
 
     const modules = useMemo(() => ({
@@ -120,16 +154,14 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             }
         },
         imageResize: {
-            parchment: null, // Quill 2.0 호환성 관련 설정
+            parchment: null,
             modules: ['Resize', 'DisplaySize', 'Toolbar']
         },
-        // [수정] 모바일 엔터 키 이슈 해결을 위한 키보드 바인딩 추가
         keyboard: {
             bindings: {
                 enter: {
                     key: 'Enter',
                     handler: function(range: any, context: any) {
-                        // 기본 엔터 동작을 허용하되, 모바일에서 명확히 캡처되도록 함
                         return true; 
                     }
                 }
@@ -154,13 +186,21 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             <ReactQuill
                 forwardedRef={quillRef}
                 theme="snow"
-                value={content}
-                onChange={onChange}
+                defaultValue={content} // value 대신 defaultValue 사용하여 입력 도중 개입 차단
+                onChange={handleEditorChange}
                 modules={modules}
                 formats={formats}
                 placeholder={placeholder}
                 className={styles.quillEditor}
             />
+
+            {showCropModal && (
+                <ImageCropModal 
+                    image={cropImageSrc}
+                    onCropComplete={handleCropComplete}
+                    onCancel={() => setShowCropModal(false)}
+                />
+            )}
             
             <style jsx global>{`
                 .ql-editor {
@@ -191,10 +231,11 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                 }
                 .ql-editor img {
                     border-radius: 12px;
-                    margin: 20px auto;
-                    display: block;
+                    margin-top: 20px;
+                    margin-bottom: 20px;
                     max-width: 100%;
                     cursor: pointer;
+                    /* 정렬을 위해 고정 center 해제 */
                 }
                 /* 리사이즈 툴바 스타일 개선 */
                 .ql-image-resizer {
@@ -206,8 +247,14 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                     padding: 12px 16px;
                     background: #fdfdfd;
                     position: sticky;
-                    top: 0;
-                    z-index: 100;
+                    top: 62px; /* 상단 네비바 높이에 맞춤 */
+                    z-index: 1000;
+                    border-radius: 12px 12px 0 0;
+                }
+                @media (max-width: 768px) {
+                    .ql-toolbar.ql-snow {
+                        top: 54px; /* 모바일 네비바 높이에 맞춤 */
+                    }
                 }
                 .ql-container.ql-snow {
                     border: none;
