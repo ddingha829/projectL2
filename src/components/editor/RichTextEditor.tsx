@@ -64,28 +64,27 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
     const [showCropModal, setShowCropModal] = useState(false);
     const [cropImageSrc, setCropImageSrc] = useState<string>("");
     const quillRef = useRef<any>(null);
-    const lastContentRef = useRef<string>(content); // 루프 방지를 위한 Ref
+    const lastContentRef = useRef<string>(content); // 루프 방지용
     const supabase = createClient();
 
     useEffect(() => {
         setIsClient(true);
     }, []);
 
-    // 외부에서 content가 들어왔을 때 (예: 임시저장 불러오기), 
-    // 에디터 내부 값과 다를 경우에만 동기화하여 타이핑 렉 방지
-    useEffect(() => {
-        if (quillRef.current) {
-            const editor = quillRef.current.getEditor();
-            if (content !== editor.root.innerHTML && content !== lastContentRef.current) {
-                lastContentRef.current = content;
-                editor.root.innerHTML = content;
+    const handleEditorChange = (newContent: string, delta: any, source: string) => {
+        // [보안] 에러 등으로 인해 갑자기 빈 값이 들어올 경우 무시 (데이터 유실 방지)
+        if (newContent === '<p><br></p>' || newContent === '' || newContent === '<p></p>') {
+            if (lastContentRef.current && lastContentRef.current.length > 30) {
+                // 이전에 데이터가 충분히 있었는데 갑자기 비었다면 크래시 가능성 있음 -> 업데이트 무시
+                return;
             }
         }
-    }, [content]);
 
-    const handleEditorChange = (newContent: string) => {
-        lastContentRef.current = newContent;
-        onChange(newContent);
+        // 루프 방지: 현재 값과 동일하면 부모 호출 안 함
+        if (newContent !== lastContentRef.current) {
+            lastContentRef.current = newContent;
+            onChange(newContent);
+        }
     };
 
     const imageHandler = () => {
@@ -186,7 +185,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             <ReactQuill
                 forwardedRef={quillRef}
                 theme="snow"
-                defaultValue={content} // value 대신 defaultValue 사용하여 입력 도중 개입 차단
+                value={content} // 안정적인 제어 방식을 위해 value로 회귀하되 내부 로직으로 루프 차단
                 onChange={handleEditorChange}
                 modules={modules}
                 formats={formats}
