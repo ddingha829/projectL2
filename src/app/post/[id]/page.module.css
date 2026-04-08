@@ -79,31 +79,50 @@
 }
 
 .content {
-  font-size: 1.09rem;
-  line-height: 1.8;
+  font-size: 1.125rem;
+  line-height: 1.85;
   color: var(--text-primary);
   margin-bottom: 30px;
   font-weight: 400;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
   word-break: keep-all;
   overflow-wrap: break-word;
 }
 
-.content :global(.text-center) {
+@media (max-width: 768px) {
+  .content {
+    font-size: 1.05rem;
+    line-height: 1.75;
+  }
+}
+
+.content :global(.text-center),
+.content :global(.ql-align-center) {
   text-align: center;
 }
 
-.content :global(.text-right) {
+.content :global(.text-right),
+.content :global(.ql-align-right) {
   text-align: right;
 }
 
-.content :global(.text-center img) {
+.content :global(.ql-align-justify) {
+  text-align: justify;
+}
+
+.content :global(.text-center) img,
+.content :global(.ql-align-center) img,
+.content img:global(.ql-align-center),
+.content img:global(.text-center) {
   margin-left: auto !important;
   margin-right: auto !important;
   display: block;
 }
 
-.content :global(.text-right img) {
+.content :global(.text-right) img,
+.content :global(.ql-align-right) img,
+.content img:global(.ql-align-right),
+.content img:global(.text-right) {
   margin-left: auto !important;
   display: block;
 }
@@ -661,31 +680,35 @@
   white-space: pre-wrap;
 }
 
+.heroAdminArea {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 200, 0, 0.05);
+  padding: 4px 8px;
+  border-radius: 50px;
+  border: 1px solid rgba(255, 200, 0, 0.15);
+}
+
 .heroAdminArea::before {
-  content: '🔧 Admin';
+  content: '🔧';
   font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  color: #b8860b;
-  background: rgba(255, 200, 0, 0.18);
-  border-radius: 4px;
-  padding: 2px 7px;
-  white-space: nowrap;
+  margin-right: -2px;
 }
 
 .heroToggleBtn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 22px;
-  font-size: 0.95rem;
-  font-weight: 700;
-  border-radius: 10px;
+  gap: 4px;
+  padding: 5px 12px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  border-radius: 50px;
   cursor: pointer;
-  border: 2px solid rgba(180, 130, 0, 0.5);
-  background-color: transparent;
+  border: 1.2px solid rgba(180, 130, 0, 0.3);
+  background-color: var(--bg-primary);
   color: #8a6f00;
-  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: inherit;
 }
 
@@ -707,7 +730,7 @@
   background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
   border-color: #e8a000;
   color: #3d2800;
-  box-shadow: 0 4px 16px rgba(255, 185, 0, 0.35);
+  box-shadow: 0 2px 8px rgba(255, 185, 0, 0.2);
 }
 
 .heroToggleBtnActive:hover:not(:disabled) {

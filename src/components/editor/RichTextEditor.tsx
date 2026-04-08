@@ -15,6 +15,16 @@ const ReactQuill = dynamic(async () => {
     
     // Quill 인스턴스에 이미지 리사이즈 모듈 등록
     if (typeof window !== 'undefined' && RQ.Quill) {
+        // 폰트 사이즈 등록
+        const Size: any = RQ.Quill.import('attributors/style/size');
+        Size.whitelist = ['0.75rem', '0.875rem', '1rem', '1.125rem', '1.25rem', '1.5rem', '2rem', '2.5rem'];
+        RQ.Quill.register(Size, true);
+
+        // 폰트 등록
+        const Font: any = RQ.Quill.import('formats/font');
+        Font.whitelist = ['notosans', 'nanummyeongjo', 'nanumgothic', 'inter', 'merriweather'];
+        RQ.Quill.register(Font, true);
+
         const BaseImage: any = RQ.Quill.import('formats/image');
         class AppImage extends BaseImage {
             static formats(domNode: any) {
@@ -191,7 +201,8 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
         toolbar: {
             container: [
                 [{ 'header': [1, 2, 3, false] }],
-                [{ 'font': [] }],
+                [{ 'font': ['notosans', 'nanummyeongjo', 'nanumgothic', 'inter', 'merriweather'] }],
+                [{ 'size': ['0.75rem', '0.875rem', '1rem', '1.125rem', '1.25rem', '1.5rem', '2rem', '2.5rem'] }],
                 ['bold', 'italic', 'underline', 'strike'],
                 [{ 'color': [] }, { 'background': [] }],
                 [{ 'align': [] }],
@@ -221,7 +232,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
     }), []);
 
     const formats = [
-        'header', 'font',
+        'header', 'font', 'size',
         'bold', 'italic', 'underline', 'strike',
         'color', 'background',
         'align',
@@ -257,15 +268,38 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             <style jsx global>{`
                 .ql-editor {
                     min-height: 600px;
-                    font-size: 1.1rem;
-                    line-height: 1.8;
+                    font-size: 1.125rem;
+                    line-height: 1.85;
                     padding: 40px !important;
-                    font-family: 'Noto Sans KR', sans-serif;
+                    font-family: var(--font-noto-sans), sans-serif;
+                    color: #333;
                 }
+                :global(.ql-snow .ql-picker.ql-size .ql-picker-label::before),
+                :global(.ql-snow .ql-picker.ql-size .ql-picker-item::before) {
+                    content: attr(data-value) !important;
+                }
+                :global(.ql-snow .ql-picker.ql-font.ql-header .ql-picker-label::before) { content: 'Heading'; }
+                :global(.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="notosans"]::before),
+                :global(.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="notosans"]::before) { content: '노토산스 (기본)'; font-family: var(--font-noto-sans); }
+                :global(.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="nanummyeongjo"]::before),
+                :global(.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="nanummyeongjo"]::before) { content: '나눔명조'; font-family: var(--font-nanum-myeongjo); }
+                :global(.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="nanumgothic"]::before),
+                :global(.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="nanumgothic"]::before) { content: '나눔고딕'; font-family: var(--font-nanum-gothic); }
+                :global(.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="inter"]::before),
+                :global(.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="inter"]::before) { content: 'Inter (Sans)'; font-family: var(--font-inter); }
+                :global(.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="merriweather"]::before),
+                :global(.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="merriweather"]::before) { content: 'Merriweather (Serif)'; font-family: var(--font-merriweather); }
+
+                :global(.ql-font-notosans) { font-family: var(--font-noto-sans) !important; }
+                :global(.ql-font-nanummyeongjo) { font-family: var(--font-nanum-myeongjo) !important; }
+                :global(.ql-font-nanumgothic) { font-family: var(--font-nanum-gothic) !important; }
+                :global(.ql-font-inter) { font-family: var(--font-inter) !important; }
+                :global(.ql-font-merriweather) { font-family: var(--font-merriweather) !important; }
+
                 @media (max-width: 768px) {
                     .ql-editor {
                         padding: 20px 16px !important;
-                        font-size: 1rem;
+                        font-size: 1.05rem;
                     }
                     .ql-toolbar.ql-snow {
                         padding: 8px 12px;
@@ -287,9 +321,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                     margin-bottom: 20px;
                     max-width: 100%;
                     cursor: pointer;
-                    /* 정렬을 위해 고정 center 해제 */
                 }
-                /* 리사이즈 툴바 스타일 개선 */
                 .ql-image-resizer {
                     border: 2px solid #1a77ce;
                 }
@@ -299,20 +331,21 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                     padding: 12px 16px;
                     background: #fdfdfd;
                     position: sticky;
-                    top: 62px; /* 상단 네비바 높이에 맞춤 */
+                    top: 62px; 
                     z-index: 1000;
                     border-radius: 12px 12px 0 0;
                 }
                 @media (max-width: 768px) {
                     .ql-toolbar.ql-snow {
-                        top: 54px; /* 모바일 네비바 높이에 맞춤 */
+                        top: 54px;
                     }
                 }
                 .ql-container.ql-snow {
                     border: none;
                 }
                 .ql-snow .ql-picker.ql-header { width: 100px; }
-                .ql-snow .ql-picker.ql-font { width: 120px; }
+                .ql-snow .ql-picker.ql-font { width: 160px; }
+                .ql-snow .ql-picker.ql-size { width: 100px; }
             `}</style>
         </div>
     );

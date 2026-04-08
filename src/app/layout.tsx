@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Noto_Sans_KR, Outfit } from "next/font/google";
+import { Noto_Sans_KR, Outfit, Nanum_Myeongjo, Nanum_Gothic, Inter, Merriweather } from "next/font/google";
 import "./globals.css";
 import gridStyles from "./layout.module.css";
 import AppShell from "@/components/layout/AppShell";
@@ -15,6 +15,29 @@ const outfit = Outfit({
   variable: "--font-outfit",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
+});
+
+const nanumMyeongjo = Nanum_Myeongjo({
+  variable: "--font-nanum-myeongjo",
+  subsets: ["latin"],
+  weight: ["400", "700"],
+});
+
+const nanumGothic = Nanum_Gothic({
+  variable: "--font-nanum-gothic",
+  subsets: ["latin"],
+  weight: ["400", "700"],
+});
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
+
+const merriweather = Merriweather({
+  variable: "--font-merriweather",
+  subsets: ["latin"],
+  weight: ["300", "400", "700", "900"],
 });
 
 export const metadata: Metadata = {
@@ -63,7 +86,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" className={`${notoSans.variable} ${outfit.variable}`}>
+    <html lang="ko" className={`${notoSans.variable} ${outfit.variable} ${nanumMyeongjo.variable} ${nanumGothic.variable} ${inter.variable} ${merriweather.variable}`}>
       <body>
         <Suspense fallback={null}>
           <AppShell>
