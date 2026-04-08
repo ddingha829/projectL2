@@ -6,6 +6,6 @@ export const CATEGORY_MAP: Record<string, string> = {
   travel: "여행",
   exhibition: "전시회",
   other: "기타",
-  notice: "공지사항",
-  feature: "기획전"
+  feature: "기획전",
+  notice: "공지사항"
 };

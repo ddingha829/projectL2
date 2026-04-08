@@ -455,7 +455,7 @@ export default function HomeContent({
                   <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '25px' }}>
                     <h2 className={styles.sectionTitle}>기획전</h2>
                     <div className={styles.headerSpacer}></div>
-                    <Link href="/features" className={styles.viewAllLink}>
+                    <Link href="/?category=feature" className={styles.viewAllLink}>
                       전체 보기 <span className={styles.linkIcon}>→</span>
                     </Link>
                   </header>
@@ -582,8 +582,8 @@ export default function HomeContent({
                     { id: 'game', name: '게임' },
                     { id: 'book', name: '책' },
                     { id: 'exhibition', name: '전시' },
-                    { id: 'feature', name: '기획전' },
-                    { id: 'other', name: '기타' }
+                    { id: 'other', name: '기타' },
+                    { id: 'feature', name: '기획전' }
                   ].map(cat => (
                     <button
                       key={cat.id}

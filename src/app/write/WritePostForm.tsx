@@ -223,12 +223,8 @@ export default function WritePostForm({ role }: { role: string }) {
           <option value="travel">여행 (Travel)</option>
           <option value="exhibition">전시회 (Exhibition)</option>
           <option value="other">기타 (Other)</option>
-          {role === 'admin' && (
-            <>
-              <option value="notice">📢 공지사항 (Notice)</option>
-              <option value="feature">✨ 기획전 (Feature)</option>
-            </>
-          )}
+          {role === 'admin' && <option value="feature">✨ 기획전 (Feature)</option>}
+          {role === 'admin' && <option value="notice">📢 공지사항 (Notice)</option>}
         </select>
       </div>
 

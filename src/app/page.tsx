@@ -92,9 +92,10 @@ export default async function Home({
     book: "책",
     game: "게임",
     restaurant: "맛집",
-    other: "기타",
     travel: "여행",
     exhibition: "전시회",
+    other: "기타",
+    feature: "기획전",
     notice: "공지사항"
   };
 
@@ -228,7 +229,7 @@ export default async function Home({
     rating: p.review_rating,
     comment: p.review_comment,
     date: p.created_at,
-    authorName: (p.author?.display_name || '익명').substring(0, 3) + '***'
+    authorName: p.author?.display_name || '익명'
   })) || [];
 
   const featurePosts = featureDbPosts?.map(mapToPost) || [];
