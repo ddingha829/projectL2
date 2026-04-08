@@ -69,6 +69,22 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
 
     useEffect(() => {
         setIsClient(true);
+        
+        // [중요] 에디터 내의 모든 버튼(리사이즈 툴바 등)이 폼을 제출하지 않도록 강제 설정
+        const preventSubmit = () => {
+            const editorElement = document.querySelector(`.${styles.editorContainer}`);
+            if (editorElement) {
+                const buttons = editorElement.querySelectorAll("button");
+                buttons.forEach(btn => {
+                    if (!btn.getAttribute("type")) {
+                        btn.setAttribute("type", "button");
+                    }
+                });
+            }
+        };
+
+        const timer = setInterval(preventSubmit, 1000); // 동적으로 생기는 버튼 대응
+        return () => clearInterval(timer);
     }, []);
 
     const handleEditorChange = (newContent: string, delta: any, source: string) => {

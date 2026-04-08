@@ -99,8 +99,8 @@ export default function ImageCropModal({ image, onCropComplete, onCancel }: Imag
             />
           </div>
           <div className={styles.buttonGroup}>
-            <button className={styles.cancelBtn} onClick={onCancel}>취소</button>
-            <button className={styles.confirmBtn} onClick={handleDone}>크롭 완료</button>
+            <button type="button" className={styles.cancelBtn} onClick={onCancel}>취소</button>
+            <button type="button" className={styles.confirmBtn} onClick={handleDone}>크롭 완료</button>
           </div>
         </div>
       </div>
