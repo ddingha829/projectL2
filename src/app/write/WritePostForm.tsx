@@ -61,8 +61,16 @@ export default function WritePostForm({ role }: { role: string }) {
       alert(`저장 중 오류가 발생했습니다: ${error}`);
     }
 
-    // 임시저장 데이터 불러오기
-    const loadDraft = async () => {
+    // 탭 전환/새로고침 시 데이터 날림 방지
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = '';
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    // [초기 로드] 임시저장 데이터 및 로컬 백업 불러오기
+    const initData = async () => {
+      // 1. DB 임시저장 확인
       const draft = await getDraft();
       if (draft) {
         if (confirm("작성 중이던 임시저장 글이 있습니다. 불러오시겠습니까?")) {
@@ -81,11 +89,39 @@ export default function WritePostForm({ role }: { role: string }) {
             setReviewComment(draft.review_comment || "");
             setShowReview(true);
           }
+          return; // DB 불러왔으면 로컬은 패스
+        }
+      }
+
+      // 2. DB 없으면 로컬 백업 확인
+      const backup = localStorage.getItem('write_backup');
+      if (backup) {
+        const data = JSON.parse(backup);
+        if (confirm(`비정상적으로 종료된 작성 중인 글이 있습니다. (${new Date(data.lastUpdated).toLocaleString()})\n이 내용을 불러오시겠습니까?`)) {
+          setTitle(data.title || "");
+          setCategory(data.category || "movie");
+          setContent(data.content || "");
+          setMainImageUrl(data.mainImageUrl || "");
+          setReviewSubject(data.reviewSubject || "");
+          setReviewComment(data.reviewComment || "");
+          if (data.reviewSubject) setShowReview(true);
         }
       }
     };
-    loadDraft();
-  }, [error]);
+    initData();
+
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [searchParams, error]); 
+
+  // 실시간 로컬 스토리지 백업
+  useEffect(() => {
+    if (!title && !content) return; 
+    const backupData = {
+      title, content, category, mainImageUrl, 
+      reviewSubject, reviewComment, showMainImage, lastUpdated: new Date().getTime()
+    };
+    localStorage.setItem('write_backup', JSON.stringify(backupData));
+  }, [title, content, category, mainImageUrl, reviewSubject, reviewComment, showMainImage]);
 
   const handleSaveDraft = async () => {
     setIsDraftSaving(true);
@@ -353,18 +389,18 @@ export default function WritePostForm({ role }: { role: string }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <input 
             type="checkbox" 
-            id="isPublic" 
-            checked={isPublic}
-            onChange={(e) => setIsPublic(e.target.checked)}
+            id="isPrivateCheck" 
+            checked={!isPublic}
+            onChange={(e) => setIsPublic(!e.target.checked)}
             style={{ width: '20px', height: '20px', cursor: 'pointer' }}
           />
-          <label htmlFor="isPublic" style={{ fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', color: isPublic ? '#1a77ce' : '#ea4335' }}>
-            {isPublic ? "🌐 모두에게 공개" : "🔒 나만 보기 (비공개)"}
+          <label htmlFor="isPrivateCheck" style={{ fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', color: '#555' }}>
+            🔒 이 게시물을 비공개로 설정합니다
           </label>
           <input type="hidden" name="isPublic" value={isPublic ? 'on' : 'off'} />
         </div>
         <p style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)', marginLeft: '30px', marginTop: '4px' }}>
-          {isPublic ? "모든 방문자가 이 글을 읽을 수 있습니다." : "관리자와 작성자 본인에게만 글이 보입니다."}
+          체크하면 관리자와 작성자 본인에게만 글이 보이며, 목록에서 숨겨집니다.
         </p>
       </div>
 

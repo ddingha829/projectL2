@@ -1,7 +1,8 @@
 "use client"
 
-import { useState, useRef, useTransition } from 'react'
+import { useState, useRef, useTransition, useEffect } from 'react'
 import { updatePost, getUniqueReviewSubjects } from '@/app/actions/postManage'
+import { saveDraft } from '@/app/write/actions'
 import styles from '@/app/write/page.module.css'
 import dynamic from 'next/dynamic'
 import { createClient } from '@/lib/supabase/client'
@@ -44,6 +45,26 @@ export default function EditPostForm({
   const [isPending, startTransition] = useTransition()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const supabase = createClient()
+  const [isSaving, setIsSaving] = useState(false)
+
+  // 1. [신규] 페이지 이탈 방지 경고 및 로컬 백업
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = '';
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, []);
+
+  // 2. [신규] 로컬 스토리지 자동 백업 (정전/새로고침 대비)
+  useEffect(() => {
+    const backupData = {
+      title: initialTitle, content, category: initialCategory, imageUrl, 
+      reviewSubject, reviewComment, showMainImage, lastUpdated: new Date().getTime()
+    };
+    localStorage.setItem(`edit_backup_${postId}`, JSON.stringify(backupData));
+  }, [content, reviewSubject, reviewComment, showMainImage, imageUrl]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -95,6 +116,29 @@ export default function EditPostForm({
     formData.set('showMainImage', showMainImage ? 'on' : 'off')
     startTransition(() => updatePost(postId, formData))
   }
+
+  const handleSaveDraft = async () => {
+    setIsSaving(true);
+    try {
+      const result = await saveDraft({
+        category: initialCategory,
+        title: initialTitle,
+        imageUrl,
+        content,
+        isEditorsPick: initialIsEditorsPick,
+        isPublic,
+        isFeature: initialCategory === 'feature', // 기획전 여부 유지
+        showMainImage,
+        reviewSubject,
+        reviewComment
+      });
+      if (result.success) {
+        alert("수정 중인 내용이 내 보관함(임시저장)에 안전하게 저장되었습니다.");
+      }
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit} className={styles.formContainer}>
@@ -233,24 +277,40 @@ export default function EditPostForm({
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <input 
             type="checkbox" 
-            id="isPublic" 
-            checked={isPublic}
-            onChange={(e) => setIsPublic(e.target.checked)}
+            id="isPrivateCheck" 
+            checked={!isPublic}
+            onChange={(e) => setIsPublic(!e.target.checked)}
             style={{ width: '20px', height: '20px', cursor: 'pointer' }}
           />
-          <label htmlFor="isPublic" style={{ fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', color: isPublic ? '#1a77ce' : '#ea4335' }}>
-            {isPublic ? "🌐 모두에게 공개" : "🔒 나만 보기 (비공개)"}
+          <label htmlFor="isPrivateCheck" style={{ fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', color: '#555' }}>
+            🔒 이 게시물을 비공개로 설정합니다
           </label>
           <input type="hidden" name="isPublic" value={isPublic ? 'on' : 'off'} />
         </div>
         <p style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)', marginLeft: '30px', marginTop: '4px' }}>
-          {isPublic ? "모든 방문자가 이 글을 읽을 수 있습니다." : "관리자와 작성자 본인에게만 글이 보입니다."}
+          체크하면 관리자와 작성자 본인에게만 글이 보이며, 목록에서 숨겨집니다.
         </p>
       </div>
 
-      <button type="submit" className={styles.submitBtn} disabled={isPending || isUploading}>
-        {isPending ? '저장 중...' : isUploading ? '이미지 업로드 중...' : '수정 완료'}
-      </button>
+      <div className={styles.buttonGroup} style={{ display: 'flex', gap: '12px' }}>
+        <button 
+          type="button" 
+          className={styles.saveDraftBtn} 
+          onClick={handleSaveDraft}
+          disabled={isSaving}
+          style={{ flex: 1 }}
+        >
+          {isSaving ? '저장 중...' : '임시 저장'}
+        </button>
+        <button 
+          type="submit" 
+          className={styles.submitBtn} 
+          disabled={isPending || isUploading}
+          style={{ flex: 1 }}
+        >
+          {isPending ? '수정 중...' : isUploading ? '이미지 업로드 중...' : '수정 완료'}
+        </button>
+      </div>
     </form>
   )
 }
