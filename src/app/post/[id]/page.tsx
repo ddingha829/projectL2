@@ -7,6 +7,7 @@ import { MOCK_POSTS } from "@/app/page";
 import PostInteractions from "./PostInteractions";
 import HeroToggleBtn from "./HeroToggleBtn";
 import PostManageBtns from "./PostManageBtns";
+import ContentSegmenter from "./ContentSegmenter";
 import { getAdminStatus } from "@/app/actions/hero";
 import styles from "./page.module.css";
 
@@ -270,7 +271,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
           </div>
         )}
         
-        <div className={styles.content} dangerouslySetInnerHTML={{ __html: post.content }} />
+        <ContentSegmenter content={post.content} />
         
         {/* [신규] 에디터의 한줄평 섹션 */}
         {post.review_subject && (

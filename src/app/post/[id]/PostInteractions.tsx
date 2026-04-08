@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -23,8 +23,49 @@ export default function PostInteractions({
   const [newComment, setNewComment] = useState("");
   const [isLikedLocally, setIsLikedLocally] = useState(initialIsLiked);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // [PoC] Contextual Commenting States
+  const [activeAnchor, setActiveAnchor] = useState<{ id: string, text: string } | null>(null);
+  const [selectedAnchor, setSelectedAnchor] = useState<{ id: string, text: string } | null>(null);
+
   const supabase = createClient();
   const router = useRouter();
+
+  useEffect(() => {
+    const handleSelection = () => {
+      const selection = window.getSelection();
+      if (!selection || selection.isCollapsed) {
+        // Option: Don't clear immediately to allow clicking "Quote"
+        return;
+      }
+      
+      let container = selection.getRangeAt(0).commonAncestorContainer;
+      if (container.nodeType === 3) container = container.parentElement!;
+      
+      const segment = (container as HTMLElement).closest('[data-segment-id]');
+      if (segment) {
+        setActiveAnchor({
+          id: segment.getAttribute('data-segment-id') || '',
+          text: selection.toString().trim().substring(0, 100)
+        });
+      }
+    };
+
+    document.addEventListener('selectionchange', handleSelection);
+    return () => document.removeEventListener('selectionchange', handleSelection);
+  }, []);
+
+  const handleJump = (id: string) => {
+    const el = document.querySelector(`[data-segment-id="${id}"]`);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Temporary highlight
+      (el as HTMLElement).style.backgroundColor = 'rgba(255, 200, 0, 0.2)';
+      setTimeout(() => {
+        (el as HTMLElement).style.backgroundColor = 'transparent';
+      }, 2000);
+    }
+  };
   
   const handleLike = async () => {
     // Optimistic UI update
@@ -57,10 +98,16 @@ export default function PostInteractions({
     if (postId.length > 10) {
       const { data: profile } = await supabase.from('profiles').select('display_name, avatar_url').eq('id', user.id).single();
       
+      // [PoC] Add anchor info if present
+      let finalContent = newComment.trim();
+      if (selectedAnchor) {
+        finalContent = `[quote:${selectedAnchor.id}:${selectedAnchor.text}] ${finalContent}`;
+      }
+
       const newCommentData = {
         post_id: postId,
         user_id: user.id,
-        content: newComment.trim()
+        content: finalContent
       };
       
       const { data, error } = await supabase.from('comments').insert(newCommentData).select().single();
@@ -119,6 +166,21 @@ export default function PostInteractions({
           )}
           
           <form onSubmit={handleAddComment} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {activeAnchor && !selectedAnchor && (
+              <div 
+                className={styles.quotePrompt}
+                onClick={() => setSelectedAnchor(activeAnchor)}
+              >
+                <span>" {activeAnchor.text}... "</span>
+                <button type="button" className={styles.quoteBtn}>이 위치 인용하기</button>
+              </div>
+            )}
+            {selectedAnchor && (
+              <div className={styles.selectedQuote}>
+                <span>선택됨: "{selectedAnchor.text}"</span>
+                <button type="button" onClick={() => setSelectedAnchor(null)}>❌</button>
+              </div>
+            )}
             <textarea 
               className={styles.commentInput} 
               placeholder="자유롭게 의견을 남겨주세요..." 
@@ -163,7 +225,27 @@ export default function PostInteractions({
                   <span className={styles.commentDate}>{dateStr}</span>
                 </div>
                 <div className={styles.commentBody}>
-                  <p className={styles.commentText}>{c.content}</p>
+                  {c.content.startsWith('[quote:') ? (() => {
+                    const match = c.content.match(/^\[quote:(.*?):(.*?)\] (.*)$/);
+                    if (match) {
+                      return (
+                        <>
+                          <div 
+                            className={styles.commentQuote}
+                            onClick={() => handleJump(match[1])}
+                          >
+                            <span className={styles.quoteIcon}>❝</span>
+                            <span className={styles.quoteText}>{match[2]}</span>
+                            <span className={styles.jumpBadge}>본문 이동</span>
+                          </div>
+                          <p className={styles.commentText}>{match[3]}</p>
+                        </>
+                      );
+                    }
+                    return <p className={styles.commentText}>{c.content}</p>;
+                  })() : (
+                    <p className={styles.commentText}>{c.content}</p>
+                  )}
                 </div>
               </div>
             );
