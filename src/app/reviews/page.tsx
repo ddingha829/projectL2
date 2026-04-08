@@ -73,8 +73,12 @@ function ReviewArchiveContent() {
       Object.values(grouped).forEach((g: any) => {
         const editorSum = g.reviews.reduce((acc: number, r: any) => acc + (r.review_rating || 0), 0);
         const userSum = g.userReviews.reduce((acc: number, r: any) => acc + (r.rating || 0), 0);
+        
+        g.editorAvg = g.reviews.length > 0 ? (editorSum / g.reviews.length).toFixed(1) : "0.0";
+        g.userAvg = g.userReviews.length > 0 ? (userSum / g.userReviews.length).toFixed(1) : "0.0";
+        
         const totalCount = g.reviews.length + g.userReviews.length;
-        g.avgRating = ((editorSum + userSum) / totalCount).toFixed(1);
+        g.avgRating = totalCount > 0 ? ((editorSum + userSum) / totalCount).toFixed(1) : "0.0";
       });
 
       setSubjects(Object.values(grouped));
@@ -260,9 +264,12 @@ function ReviewArchiveContent() {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
                 >
-                  <div className={styles.brickRating}>{group.avgRating}</div>
+                  <div className={styles.brickHeader}>
+                    <div className={styles.editorRating}>{group.editorAvg}</div>
+                    <div className={styles.userRating}>{group.userAvg}</div>
+                  </div>
                   <div className={styles.brickSubject}>{group.subject}</div>
-                  <div className={styles.brickMeta}>Reviews {group.reviews.length + group.userReviews.length}</div>
+                  <div className={styles.brickMeta}>한줄 평 수 {group.reviews.length + group.userReviews.length}</div>
                 </div>
               ))
             ) : (
