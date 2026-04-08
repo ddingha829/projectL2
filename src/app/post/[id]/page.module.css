@@ -475,6 +475,8 @@
 
 .content p {
   margin-bottom: 1em;
+  min-height: 1em;
+
 }
 
 .content img {
