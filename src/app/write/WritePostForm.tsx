@@ -37,6 +37,7 @@ export default function WritePostForm({ role }: { role: string }) {
   const [isEditorsPick, setIsEditorsPick] = useState(false);
   const [isPublic, setIsPublic] = useState(true);
   const [isFeature, setIsFeature] = useState(false);
+  const [showMainImage, setShowMainImage] = useState(true);
   
   // [신규] 한줄평 상태
   const [showReview, setShowReview] = useState(false);
@@ -72,6 +73,7 @@ export default function WritePostForm({ role }: { role: string }) {
           setIsEditorsPick(draft.is_editors_pick || false);
           setIsPublic(draft.is_public !== false);
           setIsFeature(draft.is_feature || false);
+          setShowMainImage(draft.show_main_image !== false);
           
           if (draft.review_subject) {
             setReviewSubject(draft.review_subject);
@@ -95,6 +97,7 @@ export default function WritePostForm({ role }: { role: string }) {
       isEditorsPick,
       isPublic,
       isFeature,
+      showMainImage,
       reviewSubject,
       reviewRating,
       reviewComment
@@ -214,6 +217,17 @@ export default function WritePostForm({ role }: { role: string }) {
           <input type="file" ref={fileInputRef} onChange={handleMainImageUpload} className={styles.hiddenInput} accept="image/*" />
         </div>
         <input type="hidden" name="imageUrl" value={mainImageUrl} />
+        
+        <div className={styles.checkboxGroup} style={{ marginTop: '10px' }}>
+          <input 
+            type="checkbox" 
+            id="showMainImage" 
+            name="showMainImage" 
+            checked={showMainImage}
+            onChange={(e) => setShowMainImage(e.target.checked)}
+          />
+          <label htmlFor="showMainImage" className={styles.checkboxLabel}>🖼️ 본문에 대표 이미지 포함하기 (배너 이미지를 본문 상단에도 노출합니다)</label>
+        </div>
       </div>
 
       {/* 수리된 에디터 컴포넌트 복구 */}

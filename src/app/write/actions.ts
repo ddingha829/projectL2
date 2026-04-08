@@ -31,6 +31,7 @@ export async function createPost(formData: FormData) {
   const isEditorsPick = formData.get('isEditorsPick') === 'on';
   const isPublic = formData.get('isPublic') === 'on';
   const isFeature = formData.get('isFeature') === 'on';
+  const showMainImage = formData.get('showMainImage') !== 'off'; // 기본값 true (on이거나 null이면 true)
 
   // [신규] 한줄평 평가 항목
   const reviewSubject = (formData.get('reviewSubject') as string || '').trim();
@@ -60,7 +61,8 @@ export async function createPost(formData: FormData) {
           content,
           is_editors_pick: isEditorsPick,
           is_public: isPublic,
-          is_feature: isFeature,
+          is_feature: isFeature || category === 'feature',
+          show_main_image: showMainImage,
           review_subject: reviewSubject || null,
           review_rating: reviewRating || 0,
           review_comment: reviewComment || null
@@ -113,7 +115,8 @@ export async function saveDraft(data: {
   content: string;
   isEditorsPick: boolean;
   isPublic: boolean;
-  isFeature: boolean; // 추가
+  isFeature: boolean;
+  showMainImage: boolean;
   reviewSubject?: string;
   reviewRating?: number;
   reviewComment?: string;
@@ -133,6 +136,7 @@ export async function saveDraft(data: {
       is_editors_pick: data.isEditorsPick,
       is_public: data.isPublic,
       is_feature: data.isFeature,
+      show_main_image: data.showMainImage,
       review_subject: data.reviewSubject || null,
       review_rating: data.reviewRating || 0,
       review_comment: data.reviewComment || null,

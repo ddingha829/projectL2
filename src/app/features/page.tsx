@@ -23,11 +23,11 @@ export default async function FeaturesPage() {
   }
   const isAdmin = role === 'admin';
 
-  // 2. 기획전 게시물 조회 (is_feature = true)
+  // 2. 기획전 게시물 조회 (is_feature = true 이거나 카테고리가 feature인 경우)
   const { data: posts, error } = await supabase
     .from('posts')
     .select('*, author:profiles!author_id(display_name, avatar_url), comments(count)')
-    .eq('is_feature', true)
+    .or('is_feature.eq.true,category.eq.feature')
     .order('created_at', { ascending: false });
 
   if (error) {

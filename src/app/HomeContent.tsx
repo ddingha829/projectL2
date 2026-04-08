@@ -11,11 +11,11 @@ import { useSearchParams, useRouter } from "next/navigation";
 import ReviewRequest from "@/components/feed/ReviewRequest";
 
 const MOCK_REVIEWS = [
-  { id: 'm1', subject: '크라임 101', rating: 6, comment: '반전은 보이나 몰입감 부족', authorName: 'hwa***' },
-  { id: 'm2', subject: '샷 콜러', rating: 7, comment: '연기가 돋보이는 처절한 사투', authorName: 'pen***' },
-  { id: 'm3', subject: '파묘', rating: 8, comment: '한국적 오컬트 정수, 사운드 압권', authorName: 'kim***' },
-  { id: 'm4', subject: '듄: 파트 2', rating: 10, comment: '장엄한 아이맥스 시각적 황홀경', authorName: 'lee***' },
-  { id: 'm5', subject: '서울의 봄', rating: 9, comment: '실화의 묵직한 울림, 긴장감 최고', authorName: 'cho***' }
+  { id: 'm1', subject: '크라임 101', rating: 6, comment: '반전은 보이나 몰입감 부족', authorName: '황수정 에디터' },
+  { id: 'm2', subject: '샷 콜러', rating: 7, comment: '연기가 돋보이는 처절한 사투', authorName: '박펜 에디터' },
+  { id: 'm3', subject: '파묘', rating: 8, comment: '한국적 오컬트 정수, 사운드 압권', authorName: '김철수 에디터' },
+  { id: 'm4', subject: '듄: 파트 2', rating: 10, comment: '장엄한 아이맥스 시각적 황홀경', authorName: '이동진 에디터' },
+  { id: 'm5', subject: '서울의 봄', rating: 9, comment: '실화의 묵직한 울림, 긴장감 최고', authorName: '조성우 에디터' }
 ];
 
 const stripHtml = (html: string) => {
@@ -464,7 +464,7 @@ export default function HomeContent({
                     {(featurePosts.length > 0 ? featurePosts : [
                       { id: 'f1', title: '에디터 선정 2026.4 최고의 점심메뉴', imageUrl: 'https://images.unsplash.com/photo-1525648199074-cee30ba79a4a?auto=format&fit=crop&w=1600&q=80' }
                     ]).map((feature: any) => (
-                      <Link key={feature.id} href={feature.id.startsWith('db-') ? `/post/${feature.id.replace('db-','')}` : '#'} className={styles.featureBanner}>
+                      <Link key={feature.id} href={feature.id.startsWith('db-') ? `/post/${feature.id}` : '#'} className={styles.featureBanner}>
                         <img src={feature.imageUrl} alt={feature.title} className={styles.featureImage} />
                         <div className={styles.featureOverlay}>
                           <h3 className={styles.featureTitle}>{feature.title}</h3>

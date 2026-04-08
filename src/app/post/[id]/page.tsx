@@ -264,7 +264,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
           <h1 className={styles.title}>{post.title}</h1>
         </header>
 
-        {post.image_url && (
+        {post.show_main_image !== false && post.image_url && (
           <div className={styles.mainImageWrapper}>
             <img src={post.image_url} alt={post.title} className={styles.mainImage} />
           </div>

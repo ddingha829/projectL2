@@ -38,7 +38,8 @@ export async function updatePost(postId: string, formData: FormData) {
   const imageUrl = formData.get('imageUrl') as string
   const isEditorsPick = formData.get('isEditorsPick') === 'on'
   const isPublic = formData.get('isPublic') === 'on'
-  const isFeature = formData.get('isFeature') === 'on' // 추가
+  const isFeature = formData.get('isFeature') === 'on'
+  const showMainImage = formData.get('showMainImage') !== 'off'
   
   const reviewSubject = formData.get('reviewSubject') as string
   const reviewRating = parseInt(formData.get('reviewRating') as string) || null
@@ -48,6 +49,7 @@ export async function updatePost(postId: string, formData: FormData) {
     title, content, category, 
     image_url: imageUrl,
     is_public: isPublic,
+    show_main_image: showMainImage,
     review_subject: reviewSubject || null,
     review_rating: reviewRating,
     review_comment: reviewComment || null
@@ -56,7 +58,7 @@ export async function updatePost(postId: string, formData: FormData) {
   // admin만 editors_pick 및 is_feature 변경 가능
   if (profile.role === 'admin') {
     updateData.is_editors_pick = isEditorsPick
-    updateData.is_feature = isFeature
+    updateData.is_feature = isFeature || category === 'feature'
   }
 
   const { data: updatedData, error: updateError } = await supabase

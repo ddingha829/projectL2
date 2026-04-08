@@ -24,19 +24,21 @@ interface EditPostFormProps {
   initialReviewComment?: string
   isAdmin: boolean
   initialIsPublic: boolean
+  initialShowMainImage: boolean
 }
 
 export default function EditPostForm({
   postId, initialTitle, initialContent, initialCategory,
   initialImageUrl, initialIsEditorsPick,
   initialReviewSubject = '', initialReviewRating = 0, initialReviewComment = '',
-  isAdmin, initialIsPublic
+  isAdmin, initialIsPublic, initialShowMainImage
 }: EditPostFormProps) {
   const [content, setContent] = useState(initialContent)
   const [isPublic, setIsPublic] = useState(initialIsPublic)
   const [imageUrl, setImageUrl] = useState(initialImageUrl)
   const [reviewSubject, setReviewSubject] = useState(initialReviewSubject)
   const [reviewComment, setReviewComment] = useState(initialReviewComment)
+  const [showMainImage, setShowMainImage] = useState(initialShowMainImage)
   const [suggestions, setSuggestions] = useState<string[]>([])
   const [isUploading, setIsUploading] = useState(false)
   const [isPending, startTransition] = useTransition()
@@ -89,6 +91,8 @@ export default function EditPostForm({
     formData.set('content', content)
     formData.set('imageUrl', imageUrl)
     formData.set('reviewSubject', reviewSubject)
+    formData.set('reviewComment', reviewComment)
+    formData.set('showMainImage', showMainImage ? 'on' : 'off')
     startTransition(() => updatePost(postId, formData))
   }
 
@@ -126,6 +130,17 @@ export default function EditPostForm({
           <input type="file" ref={fileInputRef} onChange={handleImageUpload} className={styles.hiddenInput} accept="image/*" />
         </div>
         <input type="hidden" name="imageUrl" value={imageUrl} />
+        
+        <div className={styles.checkboxGroup} style={{ marginTop: '10px' }}>
+          <input 
+            type="checkbox" 
+            id="showMainImage" 
+            name="showMainImage" 
+            checked={showMainImage}
+            onChange={(e) => setShowMainImage(e.target.checked)}
+          />
+          <label htmlFor="showMainImage" className={styles.checkboxLabel}>🖼️ 본문에 대표 이미지 포함하기</label>
+        </div>
       </div>
 
       <div className={`${styles.inputGroup} ${styles.editorGroup}`}>

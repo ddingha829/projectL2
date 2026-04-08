@@ -166,7 +166,7 @@ export default async function Home({
   const { data: featureDbPosts } = await supabase
     .from('posts')
     .select('*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets:description_bullets), comments(count)')
-    .eq('is_feature', true)
+    .or('is_feature.eq.true,category.eq.feature')
     .order('created_at', { ascending: false })
     .limit(3);
 
