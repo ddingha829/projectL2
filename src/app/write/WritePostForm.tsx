@@ -277,7 +277,7 @@ export default function WritePostForm({ role }: { role: string }) {
           onChange={setContent} 
           placeholder="리뷰를 작성해 보세요!"
         />
-        <input type="hidden" name="content" value={content} />
+        <textarea name="content" value={content} style={{ display: 'none' }} readOnly />
       </div>
 
       {/* [신규] 한줄 평 추가 섹션 */}

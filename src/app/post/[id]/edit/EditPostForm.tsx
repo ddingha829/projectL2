@@ -199,7 +199,7 @@ export default function EditPostForm({
       <div className={`${styles.inputGroup} ${styles.editorGroup}`}>
         <label>내용</label>
         <RichTextEditor content={content} onChange={setContent} />
-        <input type="hidden" name="content" value={content} />
+        <textarea name="content" value={content} style={{ display: 'none' }} readOnly />
       </div>
 
       {isAdmin && (

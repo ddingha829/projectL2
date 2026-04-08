@@ -89,6 +89,12 @@
   overflow-wrap: break-word;
 }
 
+/* 에디터에서 작성된 문단간 간격을 제거하여 줄간격 설정만으로 간격이 조절되도록 함 */
+.content p {
+  margin: 0;
+  padding: 0;
+}
+
 @media (max-width: 768px) {
   .content {
     font-size: 1.05rem;
@@ -109,16 +115,6 @@
 .content :global(.ql-align-justify) {
   text-align: justify;
 }
-
-.content :global(.ql-line-height-1-0) { line-height: 1.0 !important; }
-.content :global(.ql-line-height-1-2) { line-height: 1.2 !important; }
-.content :global(.ql-line-height-1-4) { line-height: 1.4 !important; }
-.content :global(.ql-line-height-1-5) { line-height: 1.5 !important; }
-.content :global(.ql-line-height-1-6) { line-height: 1.6 !important; }
-.content :global(.ql-line-height-1-8) { line-height: 1.8 !important; }
-.content :global(.ql-line-height-2-0) { line-height: 2.0 !important; }
-.content :global(.ql-line-height-2-5) { line-height: 2.5 !important; }
-.content :global(.ql-line-height-3-0) { line-height: 3.0 !important; }
 
 .content :global(.text-center) img,
 .content :global(.ql-align-center) img,
