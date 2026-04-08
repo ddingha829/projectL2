@@ -155,7 +155,7 @@ li {
   background: var(--bg-primary);
 }
 
-::-webkit-scrollbar thumb {
+::-webkit-scrollbar-thumb {
   background: var(--border-medium);
   border-radius: 10px;
 }
