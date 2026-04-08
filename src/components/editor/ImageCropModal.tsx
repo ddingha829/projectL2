@@ -14,6 +14,7 @@ export default function ImageCropModal({ image, onCropComplete, onCancel }: Imag
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [aspect, setAspect] = useState<number | undefined>(undefined);
+  const [freeAspect, setFreeAspect] = useState<number>(16 / 9); // 자유 비율 기본값
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
 
   const onCropChange = (crop: any) => setCrop(crop);
@@ -77,25 +78,39 @@ export default function ImageCropModal({ image, onCropComplete, onCancel }: Imag
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
         <div className={styles.aspectControls}>
-          <button type="button" className={aspect === undefined ? styles.activeAspect : ""} onClick={() => setAspect(undefined)}>자유 (Free)</button>
-          <button type="button" className={aspect === 1 ? styles.activeAspect : ""} onClick={() => setAspect(1)}>1:1 (정사각형)</button>
-          <button type="button" className={aspect === 4/5 ? styles.activeAspect : ""} onClick={() => setAspect(4/5)}>4:5 (세로)</button>
-          <button type="button" className={aspect === 16/9 ? styles.activeAspect : ""} onClick={() => setAspect(16/9)}>16:9 (가로)</button>
+          <button type="button" className={aspect === undefined ? styles.activeAspect : ""} onClick={() => setAspect(undefined)}>자유 비율</button>
+          <button type="button" className={aspect === 1 ? styles.activeAspect : ""} onClick={() => setAspect(1)}>1:1</button>
+          <button type="button" className={aspect === 4/5 ? styles.activeAspect : ""} onClick={() => setAspect(4/5)}>4:5</button>
+          <button type="button" className={aspect === 16/9 ? styles.activeAspect : ""} onClick={() => setAspect(16/9)}>16:9</button>
         </div>
         <div className={styles.cropperWrapper}>
           <Cropper
             image={image}
             crop={crop}
             zoom={zoom}
-            aspect={aspect}
+            aspect={aspect === undefined ? freeAspect : aspect}
             onCropChange={onCropChange}
             onCropComplete={onCropAreaChange}
             onZoomChange={onZoomChange}
           />
         </div>
         <div className={styles.controls}>
+          {aspect === undefined && (
+            <div className={styles.zoomControl}>
+              <label>비율 조절</label>
+              <input
+                type="range"
+                value={freeAspect}
+                min={0.5}
+                max={3.0}
+                step={0.1}
+                onChange={(e) => setFreeAspect(Number(e.target.value))}
+              />
+              <span style={{ fontSize: '0.8rem', minWidth: '40px', color: '#666' }}>{freeAspect.toFixed(1)}:1</span>
+            </div>
+          )}
           <div className={styles.zoomControl}>
-            <label>Zoom</label>
+            <label>확대 슬라이더</label>
             <input
               type="range"
               value={zoom}
