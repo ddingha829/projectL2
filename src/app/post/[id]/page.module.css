@@ -79,14 +79,33 @@
 }
 
 .content {
-  font-size: 1.09rem; /* Increased by 3% from 1.06rem */
+  font-size: 1.09rem;
   line-height: 1.8;
   color: var(--text-primary);
-  margin-bottom: 30px; /* Reduced from 40px */
+  margin-bottom: 30px;
   font-weight: 400;
   letter-spacing: -0.01em;
   word-break: keep-all;
   overflow-wrap: break-word;
+}
+
+.content :global(.text-center) {
+  text-align: center;
+}
+
+.content :global(.text-right) {
+  text-align: right;
+}
+
+.content :global(.text-center img) {
+  margin-left: auto !important;
+  margin-right: auto !important;
+  display: block;
+}
+
+.content :global(.text-right img) {
+  margin-left: auto !important;
+  display: block;
 }
 
 .mainImageWrapper {

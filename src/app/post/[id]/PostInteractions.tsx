@@ -36,12 +36,10 @@ export default function PostInteractions({
   const router = useRouter();
 
   useEffect(() => {
+    // [PoC] Selection handle logic
     const handleSelection = () => {
       const selection = window.getSelection();
-      if (!selection || selection.isCollapsed) {
-        // Option: Don't clear immediately to allow clicking "Quote"
-        return;
-      }
+      if (!selection || selection.isCollapsed) return;
       
       let container = selection.getRangeAt(0).commonAncestorContainer;
       if (container.nodeType === 3) container = container.parentElement!;
@@ -56,8 +54,17 @@ export default function PostInteractions({
     };
 
     document.addEventListener('selectionchange', handleSelection);
+
+    // [BugFix] Guest Like Persistence Checking
+    if (!user) {
+      const guestLikes = JSON.parse(localStorage.getItem("guest_likes") || "[]");
+      if (guestLikes.includes(postId)) {
+        setIsLikedLocally(true);
+      }
+    }
+
     return () => document.removeEventListener('selectionchange', handleSelection);
-  }, []);
+  }, [postId, user]);
 
   const handleJump = (id: string) => {
     const el = document.querySelector(`[data-segment-id="${id}"]`);
@@ -82,12 +89,24 @@ export default function PostInteractions({
         // Add Like
         if (user) {
           await supabase.from('likes').insert({ user_id: user.id, post_id: postId });
+        } else {
+          // Guest logic
+          const guestLikes = JSON.parse(localStorage.getItem("guest_likes") || "[]");
+          if (!guestLikes.includes(postId)) {
+            guestLikes.push(postId);
+            localStorage.setItem("guest_likes", JSON.stringify(guestLikes));
+          }
         }
         await supabase.rpc('increment_post_likes', { p_id: postId });
       } else {
         // Remove Like
         if (user) {
           await supabase.from('likes').delete().eq('user_id', user.id).eq('post_id', postId);
+        } else {
+          // Guest logic
+          let guestLikes = JSON.parse(localStorage.getItem("guest_likes") || "[]");
+          guestLikes = guestLikes.filter((id: string) => id !== postId);
+          localStorage.setItem("guest_likes", JSON.stringify(guestLikes));
         }
         await supabase.rpc('decrement_post_likes', { p_id: postId });
       }

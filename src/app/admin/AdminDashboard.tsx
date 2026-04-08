@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import styles from './admin.module.css'
-import { deletePostAdmin, updateUserRole, toggleEditorsPick } from './actions'
+import { deletePostAdmin, updateUserRole } from './actions'
+import { toggleHeroPost } from '@/app/actions/hero'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
@@ -50,9 +51,13 @@ export default function AdminDashboard({
     }
   }
 
-  const handleToggleEditorsPick = async (id: string, status: boolean) => {
-    const res = await toggleEditorsPick(id, status)
-    if (res.success) router.refresh()
+  const handleToggleHero = async (postId: string) => {
+    const res = await toggleHeroPost(postId)
+    if (res.success) {
+      router.refresh()
+    } else {
+      alert(res.error)
+    }
   }
 
   const handleRoleChange = async (userId: string, newRole: 'user' | 'editor' | 'admin') => {
@@ -136,7 +141,7 @@ export default function AdminDashboard({
                   <th>작가</th>
                   <th>제목</th>
                   <th>카테고리</th>
-                  <th>픽</th>
+                  <th>히어로</th>
                   <th>날짜</th>
                   <th>관리</th>
                 </tr>
@@ -163,12 +168,14 @@ export default function AdminDashboard({
                         {post.category}
                       </span>
                     </td>
-                    <td data-label="픽">
+                    <td data-label="히어로">
                       <button 
                         className={styles.actionBtn} 
-                        onClick={() => handleToggleEditorsPick(post.id, post.is_editors_pick)}
+                        onClick={() => handleToggleHero(post.id)}
+                        title={post.is_hero ? "히어로 카드 제외" : "히어로 카드 지정"}
+                        style={{ color: post.is_hero ? '#204bb8' : 'var(--text-tertiary)' }}
                       >
-                        {post.is_editors_pick ? "⭐" : "☆"}
+                        {post.is_hero ? "🌟" : "☆"}
                       </button>
                     </td>
                     <td data-label="날짜">{new Date(post.created_at).toLocaleDateString()}</td>
