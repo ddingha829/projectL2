@@ -62,7 +62,7 @@ export default function ContentSegmenter({
             const target = document.getElementById(`comment-${commentId}`);
             if (target) {
               target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              target.style.backgroundColor = 'rgba(255, 235, 59, 0.3)';
+              target.style.backgroundColor = 'rgba(186, 230, 253, 0.4)';
               setTimeout(() => target.style.backgroundColor = '', 2000);
             }
           };

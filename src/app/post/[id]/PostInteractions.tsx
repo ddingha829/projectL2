@@ -72,7 +72,7 @@ export default function PostInteractions({
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'center' });
       // Temporary highlight
-      (el as HTMLElement).style.backgroundColor = 'rgba(255, 200, 0, 0.2)';
+      (el as HTMLElement).style.backgroundColor = 'rgba(186, 230, 253, 0.4)';
       setTimeout(() => {
         (el as HTMLElement).style.backgroundColor = 'transparent';
       }, 2000);
