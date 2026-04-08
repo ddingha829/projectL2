@@ -25,6 +25,14 @@ const ReactQuill = dynamic(async () => {
         Font.whitelist = ['notosans', 'nanummyeongjo', 'nanumgothic', 'inter', 'merriweather'];
         RQ.Quill.register(Font, true);
 
+        // 줄간격(Line Height) 등록
+        const Parchment = RQ.Quill.import('parchment');
+        const LineHeightStyle = new (Parchment.Attributor as any).Style('lineheight', 'line-height', {
+            scope: (Parchment as any).Scope.INLINE,
+            whitelist: ['1', '1.2', '1.4', '1.6', '1.8', '2', '2.5', '3']
+        });
+        RQ.Quill.register(LineHeightStyle, true);
+
         const BaseImage: any = RQ.Quill.import('formats/image');
         class AppImage extends BaseImage {
             static formats(domNode: any) {
@@ -203,6 +211,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                 [{ 'header': [1, 2, 3, false] }],
                 [{ 'font': ['notosans', 'nanummyeongjo', 'nanumgothic', 'inter', 'merriweather'] }],
                 [{ 'size': ['0.75rem', '0.875rem', '1rem', '1.125rem', '1.25rem', '1.5rem', '2rem', '2.5rem'] }],
+                [{ 'lineheight': ['1', '1.2', '1.4', '1.6', '1.8', '2', '2.5', '3'] }],
                 ['bold', 'italic', 'underline', 'strike'],
                 [{ 'color': [] }, { 'background': [] }],
                 [{ 'align': [] }],
@@ -232,7 +241,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
     }), []);
 
     const formats = [
-        'header', 'font', 'size',
+        'header', 'font', 'size', 'lineheight',
         'bold', 'italic', 'underline', 'strike',
         'color', 'background',
         'align',
@@ -276,6 +285,10 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                 }
                 :global(.ql-snow .ql-picker.ql-size .ql-picker-label::before),
                 :global(.ql-snow .ql-picker.ql-size .ql-picker-item::before) {
+                    content: attr(data-value) !important;
+                }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label::before) { content: 'Line Height'; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item::before) {
                     content: attr(data-value) !important;
                 }
                 :global(.ql-snow .ql-picker.ql-font.ql-header .ql-picker-label::before) { content: 'Heading'; }
@@ -346,6 +359,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                 .ql-snow .ql-picker.ql-header { width: 100px; }
                 .ql-snow .ql-picker.ql-font { width: 160px; }
                 .ql-snow .ql-picker.ql-size { width: 100px; }
+                .ql-snow .ql-picker.ql-lineheight { width: 120px; }
             `}</style>
         </div>
     );
