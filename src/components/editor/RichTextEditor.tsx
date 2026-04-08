@@ -15,23 +15,34 @@ const ReactQuill = dynamic(async () => {
     
     // Quill 인스턴스에 이미지 리사이즈 모듈 등록
     if (typeof window !== 'undefined' && RQ.Quill) {
-        // 폰트 사이즈 등록
-        const Size: any = RQ.Quill.import('attributors/style/size');
-        Size.whitelist = ['0.75rem', '0.875rem', '1rem', '1.125rem', '1.25rem', '1.5rem', '2rem', '2.5rem'];
-        RQ.Quill.register(Size, true);
+        try {
+            // 폰트 사이즈 등록
+            const Size: any = RQ.Quill.import('attributors/style/size');
+            if (Size) {
+                Size.whitelist = ['0.75rem', '0.875rem', '1rem', '1.125rem', '1.25rem', '1.5rem', '2rem', '2.5rem'];
+                RQ.Quill.register(Size, true);
+            }
 
-        // 폰트 등록
-        const Font: any = RQ.Quill.import('formats/font');
-        Font.whitelist = ['notosans', 'nanummyeongjo', 'nanumgothic', 'inter', 'merriweather'];
-        RQ.Quill.register(Font, true);
+            // 폰트 등록
+            const Font: any = RQ.Quill.import('formats/font');
+            if (Font) {
+                Font.whitelist = ['notosans', 'nanummyeongjo', 'nanumgothic', 'inter', 'merriweather'];
+                RQ.Quill.register(Font, true);
+            }
 
-        // 줄간격(Line Height) 등록 - 클래스 방식이 더 확실함
-        const Parchment = RQ.Quill.import('parchment');
-        const LineHeightClass = new (Parchment as any).Attributor.Class('lineheight', 'ql-line-height', {
-            scope: (Parchment as any).Scope.BLOCK,
-            whitelist: ['1-0', '1-2', '1-4', '1-5', '1-6', '1-8', '2-0', '2-5', '3-0']
-        });
-        RQ.Quill.register(LineHeightClass, true);
+            // 줄간격(Line Height) 등록 - 클래스 방식 (가장 안전)
+            const Parchment = RQ.Quill.import('parchment');
+            const ClassAttributor = (Parchment as any).Attributor?.Class || (Parchment as any).ClassAttributor;
+            if (ClassAttributor) {
+                const LineHeightClass = new ClassAttributor('lineheight', 'ql-line-height', {
+                    scope: (Parchment as any).Scope?.BLOCK || 3,
+                    whitelist: ['1-0', '1-2', '1-4', '1-5', '1-6', '1-8', '2-0', '2-5', '3-0']
+                });
+                RQ.Quill.register(LineHeightClass, true);
+            }
+        } catch (err) {
+            console.error('Quill custom formats registration failed:', err);
+        }
 
         const BaseImage: any = RQ.Quill.import('formats/image');
         class AppImage extends BaseImage {
@@ -297,7 +308,6 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                 :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="2-0"]::before) { content: '2.0'; }
                 :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="2-5"]::before) { content: '2.5'; }
                 :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="3-0"]::before) { content: '3.0'; }
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label::before) { content: 'Line Height'; }
                 :global(.ql-snow .ql-picker.ql-font.ql-header .ql-picker-label::before) { content: 'Heading'; }
                 :global(.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="notosans"]::before),
                 :global(.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="notosans"]::before) { content: '노토산스 (기본)'; font-family: var(--font-noto-sans); }
