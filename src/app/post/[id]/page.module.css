@@ -110,6 +110,16 @@
   text-align: justify;
 }
 
+.content :global(.ql-line-height-1-0) { line-height: 1.0 !important; }
+.content :global(.ql-line-height-1-2) { line-height: 1.2 !important; }
+.content :global(.ql-line-height-1-4) { line-height: 1.4 !important; }
+.content :global(.ql-line-height-1-5) { line-height: 1.5 !important; }
+.content :global(.ql-line-height-1-6) { line-height: 1.6 !important; }
+.content :global(.ql-line-height-1-8) { line-height: 1.8 !important; }
+.content :global(.ql-line-height-2-0) { line-height: 2.0 !important; }
+.content :global(.ql-line-height-2-5) { line-height: 2.5 !important; }
+.content :global(.ql-line-height-3-0) { line-height: 3.0 !important; }
+
 .content :global(.text-center) img,
 .content :global(.ql-align-center) img,
 .content img:global(.ql-align-center),
