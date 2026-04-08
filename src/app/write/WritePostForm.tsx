@@ -178,7 +178,10 @@ export default function WritePostForm({ role }: { role: string }) {
           <option value="exhibition">전시회 (Exhibition)</option>
           <option value="other">기타 (Other)</option>
           {role === 'admin' && (
-            <option value="notice">📢 공지사항 (Notice)</option>
+            <>
+              <option value="notice">📢 공지사항 (Notice)</option>
+              <option value="feature">✨ 기획전 (Feature)</option>
+            </>
           )}
         </select>
       </div>
@@ -285,14 +288,21 @@ export default function WritePostForm({ role }: { role: string }) {
           </div>
 
           <div className={styles.inputGroup}>
-            <label>한줄평</label>
+            <label>한줄평 (최대 25자)</label>
             <input 
               type="text" 
               name="reviewComment"
               className={styles.input}
-              placeholder="한줄평을 25자 이내로 입력하세요"
+              placeholder="한줄평을 입력하세요"
               value={reviewComment}
-              onChange={(e) => setReviewComment(e.target.value)}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val.length > 25) {
+                  alert("한줄평은 최대 25자까지 입력 가능합니다.");
+                  return;
+                }
+                setReviewComment(val);
+              }}
               maxLength={25}
             />
           </div>

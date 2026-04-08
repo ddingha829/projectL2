@@ -582,6 +582,7 @@ export default function HomeContent({
                     { id: 'game', name: '게임' },
                     { id: 'book', name: '책' },
                     { id: 'exhibition', name: '전시' },
+                    { id: 'feature', name: '기획전' },
                     { id: 'other', name: '기타' }
                   ].map(cat => (
                     <button

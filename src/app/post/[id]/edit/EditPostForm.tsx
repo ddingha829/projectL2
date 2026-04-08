@@ -36,6 +36,7 @@ export default function EditPostForm({
   const [isPublic, setIsPublic] = useState(initialIsPublic)
   const [imageUrl, setImageUrl] = useState(initialImageUrl)
   const [reviewSubject, setReviewSubject] = useState(initialReviewSubject)
+  const [reviewComment, setReviewComment] = useState(initialReviewComment)
   const [suggestions, setSuggestions] = useState<string[]>([])
   const [isUploading, setIsUploading] = useState(false)
   const [isPending, startTransition] = useTransition()
@@ -103,6 +104,7 @@ export default function EditPostForm({
           <option value="travel">여행</option>
           <option value="exhibition">전시회</option>
           <option value="other">기타</option>
+          <option value="feature">✨ 기획전</option>
         </select>
       </div>
 
@@ -191,14 +193,23 @@ export default function EditPostForm({
         </div>
 
         <div className={styles.inputGroup}>
-          <label htmlFor="reviewComment">에디터 한줄평</label>
-          <textarea 
+          <label htmlFor="reviewComment">에디터 한줄평 (최대 25자)</label>
+          <input 
+            type="text" 
             id="reviewComment" 
             name="reviewComment" 
-            defaultValue={initialReviewComment} 
-            className={`${styles.input} ${styles.textarea}`} 
-            rows={3}
+            value={reviewComment}
+            className={styles.input} 
             placeholder="작품에 대한 짧은 평을 남겨주세요."
+            onChange={(e) => {
+              const val = e.target.value;
+              if (val.length > 25) {
+                alert("한줄평은 최대 25자까지 입력 가능합니다.");
+                return;
+              }
+              setReviewComment(val);
+            }}
+            maxLength={25}
           />
         </div>
       </div>
