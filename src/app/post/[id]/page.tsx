@@ -303,7 +303,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
                   href={`/reviews?search=${encodeURIComponent(post.review_subject)}`}
                   className={styles.archiveJumpBtn}
                 >
-                  평점 아카이브에서 독자 평점 확인하기 📊
+                  평점 아카이브
                 </Link>
               </div>
             </fieldset>
