@@ -6,7 +6,7 @@
 
 @media (max-width: 768px) {
   .container {
-    padding: 20px 4px; /* Reduced further to prevent cutoff */
+    padding: 20px 2px; /* Reduced by 50% from 4px as requested */
     width: 100%;
     overflow: hidden;
   }
@@ -411,12 +411,13 @@
   .subtitle { font-size: 1rem; }
   .subjectTop { flex-direction: column; align-items: flex-start; gap: 12px; }
   .reviewCount { display: none; }
-  .subjectMain { padding: 20px; }
-  .reviewList { padding: 0 16px 20px 16px; }
-  .reviewItem { padding: 16px; }
+  .subjectMain { padding: 16px; }
+  .reviewList { padding: 0 10px 16px 10px; }
+  .reviewItem { padding: 14px; }
   
   .voteControls {
     flex-direction: column;
+    gap: 10px;
   }
   .ratingSelect {
     width: 100%;
@@ -441,12 +442,19 @@
 }
 
 .userVoteTitle {
-  font-size: 1.1rem;
+  font-size: 1rem; /* Slightly smaller */
   font-weight: 900;
   color: #204bb8;
   margin-bottom: 12px;
   text-align: left;
   letter-spacing: -0.02em;
+}
+
+@media (max-width: 768px) {
+  .userVoteBox {
+    padding: 12px;
+    margin: 10px 0;
+  }
 }
 
 .voteControls {
@@ -696,7 +704,7 @@
     transform: rotate(90deg); 
   }
   .infographicBox { 
-    padding: 16px; 
+    padding: 12px; 
   }
   .compValue { 
     font-size: 1.8rem; 
