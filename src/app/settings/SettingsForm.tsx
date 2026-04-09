@@ -39,26 +39,25 @@ export default function SettingsForm({ user, profile }: { user: any, profile: an
       const { createClient } = await import("@/lib/supabase/client");
       const supabase = createClient();
       
-      const fileName = `${user.id}/${Date.now()}.jpg`;
+      // 기존 editor가 사용하는 post-images 버킷과 editor/ 경로를 사용해 권한 문제 회피
+      const fileName = `editor/avatars/${user.id}_${Date.now()}.jpg`;
       const { error: uploadError } = await supabase.storage
-        .from('avatars')
-        .upload(fileName, compressedFile, { upsert: true });
+        .from('post-images')
+        .upload(fileName, compressedFile, { 
+          upsert: true,
+          contentType: 'image/jpeg'
+        });
 
       if (uploadError) {
-        // 'avatars' 버킷이 없을 경우를 대비해 'post-images' 시도
-        const { error: retryError } = await supabase.storage
-          .from('post-images')
-          .upload(`avatars/${fileName}`, compressedFile, { upsert: true });
-        
-        if (retryError) throw new Error("이미지 업로드에 실패했습니다. (Storage Error)");
-        
-        const { data: { publicUrl } } = supabase.storage.from('post-images').getPublicUrl(`avatars/${fileName}`);
-        setAvatarUrl(publicUrl);
-      } else {
-        const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(fileName);
-        setAvatarUrl(publicUrl);
+        console.error("Upload Error Details:", uploadError);
+        throw new Error(`이미지 업로드에 실패했습니다. (${uploadError.message})`);
       }
 
+      const { data: { publicUrl } } = supabase.storage
+        .from('post-images')
+        .getPublicUrl(fileName);
+      
+      setAvatarUrl(publicUrl);
       setSuccessMsg("사진이 준비되었습니다. 프로필 저장 버튼을 눌러주세요.");
     } catch (err: any) {
       console.error(err);
