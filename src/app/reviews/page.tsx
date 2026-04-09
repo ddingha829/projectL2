@@ -177,7 +177,7 @@ function ReviewArchiveContent() {
                   </div>
 
                   {/* Rating Infographic Section */}
-                  <div className={styles.infogrpahicBox}>
+                  <div className={styles.infographicBox}>
                     <div className={styles.infoTitle}>매체 전문가 vs 독자 만족도</div>
                     <div className={styles.comparisonGrid}>
                       <div className={styles.compItem}>

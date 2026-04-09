@@ -17,6 +17,56 @@ export default function SettingsForm({ user, profile }: { user: any, profile: an
   // Color presets (matching some in authors.ts)
   const colors = ["#FF3333", "#33CCFF", "#33FF99", "#FF9933", "#B833FF", "#000000", "#1a77ce"];
   const [selectedColor, setSelectedColor] = useState(profile?.color || colors[0]);
+  const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || "");
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploadingPhoto(true);
+      setErrorMsg("");
+
+      // 1. 이미지 압축 (최대 400px, 품질 0.7 정도로 충분)
+      const { compressImage } = await import("@/lib/utils/image");
+      const compressedBlob = await compressImage(file, 400, 0.7);
+      
+      // Blob -> File 변환 (Storage 업로드용)
+      const compressedFile = new File([compressedBlob], `avatar-${user.id}.jpg`, { type: "image/jpeg" });
+
+      // 2. Supabase Storage 업로드
+      const { createClient } = await import("@/lib/supabase/client");
+      const supabase = createClient();
+      
+      const fileName = `${user.id}/${Date.now()}.jpg`;
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(fileName, compressedFile, { upsert: true });
+
+      if (uploadError) {
+        // 'avatars' 버킷이 없을 경우를 대비해 'post-images' 시도
+        const { error: retryError } = await supabase.storage
+          .from('post-images')
+          .upload(`avatars/${fileName}`, compressedFile, { upsert: true });
+        
+        if (retryError) throw new Error("이미지 업로드에 실패했습니다. (Storage Error)");
+        
+        const { data: { publicUrl } } = supabase.storage.from('post-images').getPublicUrl(`avatars/${fileName}`);
+        setAvatarUrl(publicUrl);
+      } else {
+        const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(fileName);
+        setAvatarUrl(publicUrl);
+      }
+
+      setSuccessMsg("사진이 준비되었습니다. 프로필 저장 버튼을 눌러주세요.");
+    } catch (err: any) {
+      console.error(err);
+      setErrorMsg(err.message || "이미지 처리 중 오류가 발생했습니다.");
+    } finally {
+      setIsUploadingPhoto(false);
+    }
+  };
 
   const handleProfileUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,6 +75,8 @@ export default function SettingsForm({ user, profile }: { user: any, profile: an
     setSuccessMsg("");
 
     const formData = new FormData(e.currentTarget);
+    formData.set("avatarUrl", avatarUrl); // 업로드된 URL로 교체
+
     if (isWriter) {
       formData.set("color", selectedColor);
     }
@@ -69,6 +121,27 @@ export default function SettingsForm({ user, profile }: { user: any, profile: an
         
         <form onSubmit={handleProfileUpdate} className={styles.formGrid}>
           <div className={styles.formGroup}>
+            <label className={styles.label}>프로필 사진</label>
+            <div className={styles.avatarUploadArea}>
+              <div className={styles.avatarPreview}>
+                {avatarUrl ? <img src={avatarUrl} alt="Preview" /> : <div className={styles.avatarPlaceholder}>👤</div>}
+                {isUploadingPhoto && <div className={styles.uploadingOverlay}>...</div>}
+              </div>
+              <input 
+                type="file" 
+                accept="image/*" 
+                onChange={handleFileChange} 
+                className={styles.fileInput}
+                id="avatar-input"
+              />
+              <label htmlFor="avatar-input" className={styles.fileLabel}>
+                {isUploadingPhoto ? "업로드 중..." : "사진 변경하기"}
+              </label>
+            </div>
+            <input type="hidden" name="avatarUrl" value={avatarUrl} />
+          </div>
+
+          <div className={styles.formGroup}>
             <label className={styles.label}>닉네임 (댓글용)</label>
             <input 
               name="displayName" 
@@ -89,17 +162,6 @@ export default function SettingsForm({ user, profile }: { user: any, profile: an
                   className={styles.textarea} 
                   defaultValue={profile?.bio || ""} 
                   placeholder="본인을 잘 나타내는 소개를 써주세요"
-                />
-              </div>
-
-              <div className={styles.formGroup}>
-                <label className={styles.label}>아바타 이미지 URL</label>
-                <input 
-                  name="avatarUrl" 
-                  type="text" 
-                  className={styles.input} 
-                  defaultValue={profile?.avatar_url || ""} 
-                  placeholder="https://example.com/avatar.png"
                 />
               </div>
 
@@ -129,7 +191,7 @@ export default function SettingsForm({ user, profile }: { user: any, profile: an
             </>
           )}
 
-          <button type="submit" className={styles.submitBtn} disabled={isSubmittingProfile}>
+          <button type="submit" className={styles.submitBtn} disabled={isSubmittingProfile || isUploadingPhoto}>
             {isSubmittingProfile ? "저장 중..." : "프로필 저장하기"}
           </button>
         </form>
