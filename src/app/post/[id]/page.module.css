@@ -36,6 +36,8 @@
   border-bottom: 1px solid var(--border);
   padding-bottom: 40px;
   margin-bottom: 40px;
+  word-break: keep-all; /* Breaks by phrase, not middle of word */
+  overflow-wrap: break-word;
 }
 
 .header {
@@ -184,9 +186,9 @@
 
 @media (max-width: 768px) {
   .container {
-    padding-top: 20px; /* Reduced from 40px */
-    padding-left: 6px;
-    padding-right: 6px;
+    padding-top: 20px;
+    padding-left: 0; /* Let global layout handle safe zone */
+    padding-right: 0;
   }
   .topNav {
     margin-bottom: 12px;
@@ -425,12 +427,15 @@
 @media (max-width: 768px) {
   .authorCardContent {
     flex-direction: column;
+    align-items: center; /* Added for center alignment */
     text-align: center;
     padding: 20px;
   }
   .authorAvatarLarge {
-    width: 60px;
-    height: 60px;
+    width: 180px;
+    height: 240px;
+    margin: 0 auto;
+    font-size: 5rem;
   }
   .authorDetailsArea {
     width: 100%;
@@ -912,8 +917,12 @@
     margin: 40px 0 20px 0;
   }
   .postReviewBox {
-    padding: 20px;
+    padding: 20px 20px 60px 20px;
     border-radius: 12px;
+  }
+  .archiveLinkWrapper {
+    bottom: 12px;
+    right: 12px;
   }
   .reviewSubject {
     font-size: 1.15rem;

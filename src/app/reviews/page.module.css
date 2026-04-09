@@ -1,7 +1,15 @@
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 80px 24px;
+  padding: 40px 16px; /* Replaced fixed 80px 24px */
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 20px 4px; /* Reduced further to prevent cutoff */
+    width: 100%;
+    overflow: hidden;
+  }
 }
 
 .header {
@@ -175,6 +183,14 @@
 @media (max-width: 768px) {
   .archiveGrid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 8px; /* Reduced gap */
+    width: 100%;
+  }
+}
+
+@media (max-width: 500px) {
+  .archiveGrid {
+    grid-template-columns: 1fr; /* Single column for very narrow phones to prevent cutoff */
     gap: 12px;
   }
 }
@@ -186,7 +202,10 @@
 }
 
 .brickCard {
-  aspect-ratio: 1.6 / 1; 
+  aspect-ratio: auto; /* Removed fixed ratio for better flexibility */
+  min-height: 90px;
+  width: 100%; /* Ensure it fits container */
+  min-width: 0; /* Important for grid items */
   background: var(--bg-primary);
   border: 1.5px solid var(--border-medium);
   padding: 12px 14px;
@@ -197,6 +216,7 @@
   transition: all 0.2s ease-out;
   position: relative;
   border-radius: 4px;
+  box-sizing: border-box;
 }
 
 .brickCard:hover {
@@ -241,11 +261,11 @@
   text-align: center;
   margin: 2px 0;
   line-height: 1.2;
-  word-break: keep-all;
-  letter-spacing: -0.01em;
+  word-break: break-all; /* More aggressive break for mobile narrowness */
+  overflow-wrap: break-word;
   display: -webkit-box;
-  -webkit-line-clamp: 1;
-  line-clamp: 1;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -348,6 +368,8 @@
   color: var(--text-secondary);
   font-weight: 500;
   margin: 0;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 .reviewFooter {
@@ -384,12 +406,28 @@
 }
 
 @media (max-width: 768px) {
-  .title { font-size: 2.2rem; }
+  .header { margin-bottom: 30px; }
+  .title { font-size: 2rem; }
+  .subtitle { font-size: 1rem; }
   .subjectTop { flex-direction: column; align-items: flex-start; gap: 12px; }
   .reviewCount { display: none; }
   .subjectMain { padding: 20px; }
   .reviewList { padding: 0 16px 20px 16px; }
   .reviewItem { padding: 16px; }
+  
+  .voteControls {
+    flex-direction: column;
+  }
+  .ratingSelect {
+    width: 100%;
+  }
+  .voteBtn {
+    width: 100%;
+  }
+  .searchInput {
+    padding: 12px 20px; /* Reduced from 16px 32px to fit mobile */
+    font-size: 1rem;
+  }
 }
 
 /* User Interaction Section */
@@ -648,9 +686,19 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-@media (max-width: 600px) {
-  .comparisonGrid { gap: 20px; flex-direction: column; }
-  .vsIcon { margin-top: 0; transform: rotate(90deg); }
-  .infogrpahicBox { padding: 16px; }
-  .compValue { font-size: 1.8rem; }
+@media (max-width: 768px) {
+  .comparisonGrid { 
+    gap: 20px; 
+    flex-direction: column; 
+  }
+  .vsIcon { 
+    margin: 10px 0; 
+    transform: rotate(90deg); 
+  }
+  .infographicBox { 
+    padding: 16px; 
+  }
+  .compValue { 
+    font-size: 1.8rem; 
+  }
 }

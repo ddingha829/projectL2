@@ -60,8 +60,10 @@
   }
 
   .contentInner {
-    padding: 0 16px; /* Premium 16px safe zone for all content */
+    padding: 0 11px; /* Increased ~30% from 8px as requested */
     gap: 16px;
+    width: 100%;
+    overflow-x: hidden;
   }
   
   .mobileFAB {
