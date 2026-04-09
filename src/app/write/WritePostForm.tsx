@@ -202,10 +202,20 @@ export default function WritePostForm({ role }: { role: string }) {
     }
   };
 
+  const handleFormSubmit = async (formData: FormData) => {
+    // 약 1MB 이상의 텍스트(Base64 이미지 포함 가능성)가 포함된 경우 경고
+    if (content.length > 800000) {
+      if (!confirm("글의 용량이 너무 큼니다. 본문에 이미지를 직접 붙여넣기(Paste) 하셨나요? \n\n이대로 진행하면 업로드에 실패할 수 있습니다. 이미지를 삭제하고 '이미지 업로드' 버튼을 통해 다시 올려주시는 것을 권장합니다. \n\n그래도 진행할까요?")) {
+        return;
+      }
+    }
+    await createPost(formData);
+  };
+
   if (!isClient) return <div className={styles.formContainer}>잠시만 기다려 주세요...</div>;
 
   return (
-    <form action={createPost} className={styles.formContainer}>
+    <form action={handleFormSubmit} className={styles.formContainer}>
       <div className={styles.inputGroup}>
         <label htmlFor="category">카테고리</label>
         <select 

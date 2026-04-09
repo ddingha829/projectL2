@@ -68,7 +68,7 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
             color: "#0a467d",
             description: {
               bio: p.bio || "활동 중인 작가입니다.",
-              bullets: p.description_bullets || ["신규 작가"]
+              bullets: p.bullets || ["신규 작가"]
             }
           }));
         setLiveAuthors(mapped);

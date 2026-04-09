@@ -19,7 +19,7 @@ export default async function RequestPage({
     const supabase = await createClient();
     const { data: profile } = await supabase
       .from('profiles')
-      .select('id, display_name, color, bio, description_bullets')
+      .select('id, display_name, color, bio, bullets')
       .eq('id', writerId)
       .single();
 
@@ -31,7 +31,7 @@ export default async function RequestPage({
         avatar: "", 
         description: {
           bio: profile.bio || "",
-          bullets: profile.description_bullets || []
+          bullets: profile.bullets || []
         }
       };
     } else {
