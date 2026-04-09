@@ -241,9 +241,12 @@ export default function PostInteractions({
                 }}
               >
                 <span>" {activeAnchor.text}{activeAnchor.text.length >= 20 ? '...' : ''} "</span>
-                <button type="button" className={styles.quoteBtn}>
-                  {activeAnchor.text.length > 20 ? '인용 불가' : '이 위치 인용하기'}
-                </button>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>* 버튼을 눌러야만 인용됩니다</span>
+                  <button type="button" className={styles.quoteBtn}>
+                    {activeAnchor.text.length > 20 ? '인용 불가' : '이 위치 인용하기'}
+                  </button>
+                </div>
               </div>
             )}
             {selectedAnchor && (

@@ -275,7 +275,7 @@ export default function TopNavbar({
             )}
           </div>
 
-          <Link href="/reviews" className={styles.navLink}>리뷰 아카이브</Link>
+          <Link href="/reviews" className={styles.navLink}>평점 아카이브</Link>
         </nav>
 
         {/* Right: Search + Icons + Auth + View Settings */}

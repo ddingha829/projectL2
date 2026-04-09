@@ -131,7 +131,7 @@ function ReviewArchiveContent() {
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <h1 className={styles.title}>리뷰 아카이브</h1>
+        <h1 className={styles.title}>평점 아카이브</h1>
         <p className={styles.subtitle}>에디터와 독자가 함께 완성하는 공간입니다.</p>
         <div className={styles.searchBox}>
           <input 
