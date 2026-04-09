@@ -21,7 +21,7 @@ export async function createPost(formData: FormData) {
       .maybeSingle();
 
     if (!profile || (profile.role !== 'editor' && profile.role !== 'admin')) {
-      return { success: false, error: '글 작성 권한이 없습니다.' };
+      redirect('/write?error=No permission');
     }
 
     // 2. 폼 데이터 추출 및 검증
@@ -40,12 +40,12 @@ export async function createPost(formData: FormData) {
     const reviewComment = (formData.get('reviewComment') as string || '').trim();
 
     if (!title || !content) {
-      return { success: false, error: '제목과 내용을 입력해주세요.' };
+      redirect('/write?error=Title and content are required');
     }
 
     // 3. 게시판 타입별 권한 재검증
     if (category === 'notice' && profile.role !== 'admin') {
-      return { success: false, error: '공지사항은 관리자만 작성 가능합니다.' };
+      redirect('/write?error=Only admin can post notices');
     }
 
     // 4. 데이터베이스 저장
@@ -70,19 +70,17 @@ export async function createPost(formData: FormData) {
 
     if (error) {
       console.error('Insert post error:', error);
-      // throw 대신 리턴하여 redirect 루프 방지 및 명확한 에러 전달
-      return { success: false, error: `DB Error: ${error.message}` };
+      redirect(`/write?error=${encodeURIComponent(error.message)}`);
     }
 
     // 5. 임시저장 데이터 삭제
     await supabase.from('drafts').delete().eq('user_id', user.id);
 
     revalidatePath('/', 'layout');
-    // redirect('/?published=true'); // redirect()는 에러를 던지므로 try-catch 밖에서 처리하는 것이 안전할 수 있음
   } catch (err: any) {
     if (err?.digest?.includes('NEXT_REDIRECT')) throw err;
     console.error('Action unexpected error:', err);
-    return { success: false, error: err.message || 'Unknown error' };
+    redirect(`/write?error=Unexpected failure: ${encodeURIComponent(err.message || 'Unknown error')}`);
   }
 
   // try-catch 밖에서 최종 리다이렉트
