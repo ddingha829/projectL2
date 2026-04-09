@@ -108,58 +108,66 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
         reader.readAsDataURL(file);
     };
 
+    const handlersAttached = useRef(false);
+
     useEffect(() => {
         setIsClient(true);
         
         // [중요] 에디터 내의 모든 버튼(리사이즈 툴바 등)이 폼을 제출하지 않도록 강제 설정
         const preventSubmit = () => {
             const editorElement = document.querySelector(`.${styles.editorContainer}`);
-            if (editorElement) {
-                const buttons = editorElement.querySelectorAll("button");
-                buttons.forEach(btn => {
-                    if (!btn.getAttribute("type")) {
-                        btn.setAttribute("type", "button");
-                    }
-                });
+            if (!editorElement) return;
 
-                // 드래그앤드롭 및 붙여넣기 핸들러 부착 (한 번만 부착되도록 체크)
-                const qlEditor = editorElement.querySelector('.ql-editor');
-                if (qlEditor && !(qlEditor as any)._hasHandlers) {
-                    (qlEditor as any)._hasHandlers = true;
-                    
-                    // 1. 붙여넣기(Paste) 처리
-                    qlEditor.addEventListener('paste', ((e: ClipboardEvent) => {
-                        const items = e.clipboardData?.items;
-                        if (items) {
-                            for (let i = 0; i < items.length; i++) {
-                                if (items[i].type.indexOf('image') !== -1) {
-                                    const file = items[i].getAsFile();
-                                    if (file) {
-                                        e.preventDefault();
-                                        handleImageFile(file);
-                                    }
-                                }
-                            }
-                        }
-                    }) as any);
-
-                    // 2. 드래그앤드롭(Drop) 처리
-                    qlEditor.addEventListener('drop', ((e: DragEvent) => {
-                        const files = e.dataTransfer?.files;
-                        if (files && files.length > 0) {
-                            for (let i = 0; i < files.length; i++) {
-                                if (files[i].type.startsWith('image/')) {
-                                    e.preventDefault();
-                                    handleImageFile(files[i]);
-                                }
-                            }
-                        }
-                    }) as any);
+            const buttons = editorElement.querySelectorAll("button");
+            buttons.forEach(btn => {
+                if (!btn.getAttribute("type")) {
+                    btn.setAttribute("type", "button");
                 }
+            });
+
+            // 드래그앤드롭 및 붙여넣기 핸들러 부착 (안정적인 Ref 방식 사용)
+            const qlEditor = editorElement.querySelector('.ql-editor');
+            if (qlEditor && !handlersAttached.current) {
+                handlersAttached.current = true;
+                
+                // 1. 붙여넣기(Paste) 처리
+                qlEditor.addEventListener('paste', ((e: ClipboardEvent) => {
+                    const items = e.clipboardData?.items;
+                    if (!items) return;
+
+                    let hasImage = false;
+                    for (let i = 0; i < items.length; i++) {
+                        if (items[i].type.indexOf('image') !== -1) {
+                            hasImage = true;
+                            const file = items[i].getAsFile();
+                            if (file) {
+                                e.preventDefault();
+                                e.stopImmediatePropagation();
+                                handleImageFile(file);
+                            }
+                        }
+                    }
+                }) as any, true); // Capture phase로 우선권 확보
+
+                // 2. 드래그앤드롭(Drop) 처리
+                qlEditor.addEventListener('drop', ((e: DragEvent) => {
+                    const files = e.dataTransfer?.files;
+                    if (!files || files.length === 0) return;
+
+                    let hasImage = false;
+                    for (let i = 0; i < files.length; i++) {
+                        if (files[i].type.startsWith('image/')) {
+                            hasImage = true;
+                            e.preventDefault();
+                            e.stopImmediatePropagation();
+                            handleImageFile(files[i]);
+                        }
+                    }
+                }) as any, true); // Capture phase
             }
         };
 
-        const timer = setInterval(preventSubmit, 1000); // 동적으로 생기는 버튼 대응
+        const timer = setInterval(preventSubmit, 1000); 
         return () => clearInterval(timer);
     }, []);
 
