@@ -39,12 +39,12 @@ export default function SettingsForm({ user, profile }: { user: any, profile: an
       const { createClient } = await import("@/lib/supabase/client");
       const supabase = createClient();
       
-      // 기존 editor가 사용하는 post-images 버킷과 editor/ 경로를 사용해 권한 문제 회피
-      const fileName = `editor/avatars/${user.id}_${Date.now()}.jpg`;
+      // 기존 editor가 사용하는 post-images 버킷과 editor/ 최상위 경로를 사용해 권한 문제 회피
+      // (하위 폴더인 avatars/ 가 RLS에 걸릴 수 있으므로 에디터와 동일하게 editor/ 직하단에 배치)
+      const fileName = `editor/profile_${user.id}_${Date.now()}.jpg`;
       const { error: uploadError } = await supabase.storage
         .from('post-images')
         .upload(fileName, compressedFile, { 
-          upsert: true,
           contentType: 'image/jpeg'
         });
 
