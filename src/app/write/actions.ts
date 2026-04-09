@@ -12,43 +12,42 @@ export async function createPost(formData: FormData) {
     redirect('/login');
   }
 
-  // 1. 프로필 권한 확인 (SITE_STANDARDS 준수)
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single();
-
-  if (!profile || (profile.role !== 'editor' && profile.role !== 'admin')) {
-    redirect('/write?error=No permission');
-  }
-
-  // 2. 폼 데이터 추출 및 검증
-  const category = formData.get('category') as string;
-  const title = (formData.get('title') as string || '').trim();
-  const imageUrl = (formData.get('imageUrl') as string || '').trim();
-  const content = (formData.get('content') as string || '').trim();
-  const isEditorsPick = formData.get('isEditorsPick') === 'on';
-  const isPublic = formData.get('isPublic') === 'on';
-  const isFeature = formData.get('isFeature') === 'on';
-  const showMainImage = formData.get('showMainImage') !== 'off'; // 기본값 true (on이거나 null이면 true)
-
-  // [신규] 한줄평 평가 항목
-  const reviewSubject = (formData.get('reviewSubject') as string || '').trim();
-  const reviewRating = parseInt(formData.get('reviewRating') as string || '0');
-  const reviewComment = (formData.get('reviewComment') as string || '').trim();
-
-  if (!title || !content) {
-    redirect('/write?error=Title and content are required');
-  }
-
-  // 3. 게시판 타입별 권한 재검증
-  // 공지사항(notice)은 admin만 가능
-  if (category === 'notice' && profile.role !== 'admin') {
-    redirect('/write?error=Only admin can post notices');
-  }
-
   try {
+    // 1. 프로필 권한 확인
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .maybeSingle();
+
+    if (!profile || (profile.role !== 'editor' && profile.role !== 'admin')) {
+      return { success: false, error: '글 작성 권한이 없습니다.' };
+    }
+
+    // 2. 폼 데이터 추출 및 검증
+    const category = formData.get('category') as string;
+    const title = (formData.get('title') as string || '').trim();
+    const imageUrl = (formData.get('imageUrl') as string || '').trim();
+    const content = (formData.get('content') as string || '').trim();
+    const isEditorsPick = formData.get('isEditorsPick') === 'on';
+    const isPublic = formData.get('isPublic') === 'on';
+    const isFeature = formData.get('isFeature') === 'on';
+    const showMainImage = formData.get('showMainImage') !== 'off';
+
+    // [신규] 한줄평 평가 항목
+    const reviewSubject = (formData.get('reviewSubject') as string || '').trim();
+    const reviewRating = parseInt(formData.get('reviewRating') as string || '0');
+    const reviewComment = (formData.get('reviewComment') as string || '').trim();
+
+    if (!title || !content) {
+      return { success: false, error: '제목과 내용을 입력해주세요.' };
+    }
+
+    // 3. 게시판 타입별 권한 재검증
+    if (category === 'notice' && profile.role !== 'admin') {
+      return { success: false, error: '공지사항은 관리자만 작성 가능합니다.' };
+    }
+
     // 4. 데이터베이스 저장
     const { error } = await supabase
       .from('posts')
@@ -71,21 +70,23 @@ export async function createPost(formData: FormData) {
 
     if (error) {
       console.error('Insert post error:', error);
-      redirect(`/write?error=${encodeURIComponent(error.message)}`);
+      // throw 대신 리턴하여 redirect 루프 방지 및 명확한 에러 전달
+      return { success: false, error: `DB Error: ${error.message}` };
     }
 
     // 5. 임시저장 데이터 삭제
     await supabase.from('drafts').delete().eq('user_id', user.id);
 
     revalidatePath('/', 'layout');
-    redirect('/');
+    // redirect('/?published=true'); // redirect()는 에러를 던지므로 try-catch 밖에서 처리하는 것이 안전할 수 있음
   } catch (err: any) {
-    // redirect()는 내부적으로 Next.js 에러를 던지므로 그대로 다시 던져야 작동함
     if (err?.digest?.includes('NEXT_REDIRECT')) throw err;
-    
     console.error('Action unexpected error:', err);
-    redirect(`/write?error=Unexpected failure: ${encodeURIComponent(err.message || 'Unknown error')}`);
+    return { success: false, error: err.message || 'Unknown error' };
   }
+
+  // try-catch 밖에서 최종 리다이렉트
+  redirect('/');
 }
 
 /** 평가 항목 중복 조회를 위한 자동완성 목록용 액션 */
