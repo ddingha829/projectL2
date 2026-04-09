@@ -97,6 +97,17 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
     const lastContentRef = useRef<string>(content); // 루프 방지용
     const supabase = createClient();
 
+    const handleImageFile = (file: File) => {
+        if (!file.type.startsWith('image/')) return;
+        setOriginalFile(file);
+        const reader = new FileReader();
+        reader.onload = () => {
+            setCropImageSrc(reader.result as string);
+            setShowCropModal(true);
+        };
+        reader.readAsDataURL(file);
+    };
+
     useEffect(() => {
         setIsClient(true);
         
@@ -110,6 +121,41 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                         btn.setAttribute("type", "button");
                     }
                 });
+
+                // 드래그앤드롭 및 붙여넣기 핸들러 부착 (한 번만 부착되도록 체크)
+                const qlEditor = editorElement.querySelector('.ql-editor');
+                if (qlEditor && !(qlEditor as any)._hasHandlers) {
+                    (qlEditor as any)._hasHandlers = true;
+                    
+                    // 1. 붙여넣기(Paste) 처리
+                    qlEditor.addEventListener('paste', ((e: ClipboardEvent) => {
+                        const items = e.clipboardData?.items;
+                        if (items) {
+                            for (let i = 0; i < items.length; i++) {
+                                if (items[i].type.indexOf('image') !== -1) {
+                                    const file = items[i].getAsFile();
+                                    if (file) {
+                                        e.preventDefault();
+                                        handleImageFile(file);
+                                    }
+                                }
+                            }
+                        }
+                    }) as any);
+
+                    // 2. 드래그앤드롭(Drop) 처리
+                    qlEditor.addEventListener('drop', ((e: DragEvent) => {
+                        const files = e.dataTransfer?.files;
+                        if (files && files.length > 0) {
+                            for (let i = 0; i < files.length; i++) {
+                                if (files[i].type.startsWith('image/')) {
+                                    e.preventDefault();
+                                    handleImageFile(files[i]);
+                                }
+                            }
+                        }
+                    }) as any);
+                }
             }
         };
 
@@ -142,14 +188,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
         input.onchange = async () => {
             const file = input.files?.[0];
             if (!file) return;
-
-            setOriginalFile(file); // 원본 파일 보관
-            const reader = new FileReader();
-            reader.onload = () => {
-                setCropImageSrc(reader.result as string);
-                setShowCropModal(true);
-            };
-            reader.readAsDataURL(file);
+            handleImageFile(file);
         };
     };
 
