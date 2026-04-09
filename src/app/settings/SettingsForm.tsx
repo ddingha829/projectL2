@@ -39,25 +39,35 @@ export default function SettingsForm({ user, profile }: { user: any, profile: an
       const { createClient } = await import("@/lib/supabase/client");
       const supabase = createClient();
       
-      // 기존 editor가 사용하는 post-images 버킷과 editor/ 최상위 경로를 사용해 권한 문제 회피
-      // (하위 폴더인 avatars/ 가 RLS에 걸릴 수 있으므로 에디터와 동일하게 editor/ 직하단에 배치)
-      const fileName = `editor/profile_${user.id}_${Date.now()}.jpg`;
+      // 기존 editor가 사용하는 post-images 버킷 사용
+      // RLS 규칙이 파일 명명 규칙이나 폴더 깊이에 민감할 수 있으므로 에디터 패턴을 완벽히 모방
+      const randomId = Math.random().toString(36).substring(2, 12);
+      const fileName = `editor/${randomId}_${Date.now()}.jpg`;
+      
       const { error: uploadError } = await supabase.storage
         .from('post-images')
-        .upload(fileName, compressedFile, { 
-          contentType: 'image/jpeg'
-        });
+        .upload(fileName, compressedFile, { contentType: 'image/jpeg' });
 
       if (uploadError) {
-        console.error("Upload Error Details:", uploadError);
-        throw new Error(`이미지 업로드에 실패했습니다. (${uploadError.message})`);
+        console.error("1차 업로드 실패 (editor/):", uploadError);
+        // 만약 editor/ 가 실패하면 covers/ 경로로 재시도 (수정 권한 차이 대비)
+        const retryPath = `covers/p_${randomId}.jpg`;
+        const { error: retryError } = await supabase.storage
+          .from('post-images')
+          .upload(retryPath, compressedFile, { contentType: 'image/jpeg' });
+        
+        if (retryError) {
+          console.error("2차 업로드 실패 (covers/):", retryError);
+          throw new Error(`이미지 업로드 권한이 없거나 저장소 설정에 문제가 있습니다. (RLS Error: ${retryError.message})`);
+        }
+        
+        const { data: { publicUrl } } = supabase.storage.from('post-images').getPublicUrl(retryPath);
+        setAvatarUrl(publicUrl);
+      } else {
+        const { data: { publicUrl } } = supabase.storage.from('post-images').getPublicUrl(fileName);
+        setAvatarUrl(publicUrl);
       }
 
-      const { data: { publicUrl } } = supabase.storage
-        .from('post-images')
-        .getPublicUrl(fileName);
-      
-      setAvatarUrl(publicUrl);
       setSuccessMsg("사진이 준비되었습니다. 프로필 저장 버튼을 눌러주세요.");
     } catch (err: any) {
       console.error(err);
