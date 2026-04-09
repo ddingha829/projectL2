@@ -1175,3 +1175,31 @@
   from { transform: translateY(-10px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
+
+.archiveLinkWrapper {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.archiveJumpBtn {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 24px;
+  background: #f0f4ff;
+  color: #204bb8;
+  border: 1.5px solid #204bb8;
+  border-radius: 100px;
+  font-size: 0.95rem;
+  font-weight: 850;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(32, 75, 184, 0.08);
+}
+
+.archiveJumpBtn:hover {
+  background: #204bb8;
+  color: white;
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 10px 25px rgba(32, 75, 184, 0.2);
+}

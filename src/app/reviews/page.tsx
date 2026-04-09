@@ -156,14 +156,14 @@ function ReviewArchiveContent() {
               <div 
                 className={`${styles.subjectCard} ${styles.activeCard}`}
               >
-                <div 
-                  className={styles.subjectMain} 
-                  onClick={() => {
-                    setExpandedId(null);
-                    setSearch('');
-                  }}
-                >
-                  <div className={styles.subjectTop}>
+                <div className={styles.subjectMain}>
+                  <div 
+                    className={styles.subjectTop}
+                    onClick={() => {
+                      setExpandedId(null);
+                      setSearch('');
+                    }}
+                  >
                     <h3 className={styles.subjectName}>{activeSubject.subject}</h3>
                     <div className={styles.metaWrapper}>
                       <div className={styles.subjectMeta}>
@@ -175,31 +175,48 @@ function ReviewArchiveContent() {
                       <span className={styles.expandIcon}>▴</span>
                     </div>
                   </div>
+
+                  {/* Rating Infographic Section */}
+                  <div className={styles.infogrpahicBox}>
+                    <div className={styles.infoTitle}>매체 전문가 vs 독자 만족도</div>
+                    <div className={styles.comparisonGrid}>
+                      <div className={styles.compItem}>
+                        <div className={styles.compLabel}>에디터 평점</div>
+                        <div className={styles.compValue} style={{ color: '#204bb8' }}>{activeSubject.editorAvg}</div>
+                        <div className={styles.compBarBg}>
+                          <div 
+                            className={styles.compBarFill} 
+                            style={{ width: `${Number(activeSubject.editorAvg) * 10}%`, backgroundColor: '#204bb8' }}
+                          />
+                        </div>
+                      </div>
+                      <div className={styles.vsIcon}>VS</div>
+                      <div className={styles.compItem}>
+                        <div className={styles.compLabel}>유저 평점</div>
+                        <div className={styles.compValue} style={{ color: '#666' }}>{activeSubject.userAvg}</div>
+                        <div className={styles.compBarBg}>
+                          <div 
+                            className={styles.compBarFill} 
+                            style={{ width: `${Number(activeSubject.userAvg) * 10}%`, backgroundColor: '#666' }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className={styles.verdictRow}>
+                      <div className={styles.verdictBadge}>
+                        {Math.abs(Number(activeSubject.editorAvg) - Number(activeSubject.userAvg)) < 0.5 
+                          ? "시각 일치: 전문가와 대중이 공통적으로 평가한 작품"
+                          : Number(activeSubject.editorAvg) > Number(activeSubject.userAvg)
+                            ? `전문가 호평: 대중보다 에디터가 ${(Number(activeSubject.editorAvg) - Number(activeSubject.userAvg)).toFixed(1)}점 더 높게 평가`
+                            : `대중의 선택: 에디터보다 독자가 ${(Number(activeSubject.userAvg) - Number(activeSubject.editorAvg)).toFixed(1)}점 더 높게 평가`
+                        }
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <div className={styles.reviewList}>
-                  <div className={styles.userVoteBox}>
-                    <h4 className={styles.userVoteTitle}>이 작품이 어떠셨나요?</h4>
-                    <div className={styles.voteControls}>
-                      <select 
-                        className={styles.ratingSelect}
-                        value={userRating}
-                        onChange={(e) => setUserRating(Number(e.target.value))}
-                      >
-                        <option value="0">평점 선택 (10점 만점)</option>
-                        {[10,9,8,7,6,5,4,3,2,1].map(n => <option key={n} value={n}>{n}점</option>)}
-                      </select>
-                      <textarea 
-                        placeholder="작품에 대한 한줄평을 남겨주세요." 
-                        className={styles.voteTextarea}
-                        value={userComment}
-                        onChange={(e) => setUserComment(e.target.value)}
-                      />
-                      <button className={styles.voteBtn} onClick={() => handleUserVote(activeSubject.subject)}>참여하기</button>
-                    </div>
-                  </div>
-
-                  <div className={styles.reviewDivider}>에디터 리뷰</div>
+                  <div className={styles.reviewDivider}>에디터 평점</div>
 
                   {activeSubject.reviews.map((rev: any) => (
                     <div key={rev.id} className={styles.reviewItem}>
@@ -228,6 +245,27 @@ function ReviewArchiveContent() {
                         </div>
                     </div>
                   ))}
+
+                  <div className={styles.userVoteBox}>
+                    <h4 className={styles.userVoteTitle}>이 작품이 어떠셨나요?</h4>
+                    <div className={styles.voteControls}>
+                      <select 
+                        className={styles.ratingSelect}
+                        value={userRating}
+                        onChange={(e) => setUserRating(Number(e.target.value))}
+                      >
+                        <option value="0">평점</option>
+                        {[10,9,8,7,6,5,4,3,2,1].map(n => <option key={n} value={n}>{n}점</option>)}
+                      </select>
+                      <textarea 
+                        placeholder="작품에 대한 한줄평을 남겨주세요." 
+                        className={styles.voteTextarea}
+                        value={userComment}
+                        onChange={(e) => setUserComment(e.target.value)}
+                      />
+                      <button className={styles.voteBtn} onClick={() => handleUserVote(activeSubject.subject)}>참여하기</button>
+                    </div>
+                  </div>
 
                   {activeSubject.userReviews.length > 0 && (
                     <>

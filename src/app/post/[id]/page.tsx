@@ -297,6 +297,15 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
                 </div>
               </div>
               <p className={styles.reviewCommentText}>{post.review_comment}</p>
+              
+              <div className={styles.archiveLinkWrapper}>
+                <Link 
+                  href={`/reviews?search=${encodeURIComponent(post.review_subject)}`}
+                  className={styles.archiveJumpBtn}
+                >
+                  평점 아카이브에서 독자 평점 확인하기 📊
+                </Link>
+              </div>
             </fieldset>
           </div>
         )}
