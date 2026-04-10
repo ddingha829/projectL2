@@ -23,12 +23,16 @@ const ReactQuill = dynamic(async () => {
                 RQ.Quill.register(Size, true);
             }
 
-            // 폰트 등록
+            // 폰트 등록 (두께별 옵션 포함)
             const Font: any = RQ.Quill.import('formats/font');
             if (Font) {
-                Font.whitelist = ['notosans', 'nanummyeongjo', 'nanumgothic', 'inter', 'merriweather'];
+                Font.whitelist = [
+                    'notosans', 'notosans-thin', 'notosans-light', 'notosans-medium', 'notosans-bold', 'notosans-black',
+                    'nanummyeongjo', 'nanumgothic', 'inter', 'merriweather'
+                ];
                 RQ.Quill.register(Font, true);
             }
+
 
             // 줄간격(Line Height) 등록 - 클래스 방식이 오버라이드에 유리함
             const Parchment = RQ.Quill.import('parchment');
@@ -267,10 +271,14 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
         toolbar: {
             container: [
                 [{ 'header': [1, 2, 3, false] }],
-                [{ 'font': ['notosans', 'nanummyeongjo', 'nanumgothic', 'inter', 'merriweather'] }],
+                [{ 'font': [
+                    'notosans', 'notosans-thin', 'notosans-light', 'notosans-medium', 'notosans-bold', 'notosans-black',
+                    'nanummyeongjo', 'nanumgothic', 'inter', 'merriweather'
+                ] }],
                 [{ 'size': ['0.75rem', '0.875rem', '1rem', '1.125rem', '1.25rem', '1.5rem', '2rem', '2.5rem'] }],
                 [{ 'lineheight': ['1-0', '1-2', '1-4', '1-5', '1-6', '1-8', '2-0', '2-5', '3-0'] }],
                 ['bold', 'italic', 'underline', 'strike'],
+
                 [{ 'color': [] }, { 'background': [] }],
                 [{ 'align': [] }],
                 [{ 'list': 'ordered' }, { 'list': 'bullet' }],
@@ -301,6 +309,8 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
     const formats = [
         'header', 'font', 'size', 'lineheight',
         'bold', 'italic', 'underline', 'strike',
+
+
         'color', 'background',
         'align',
         'list', 'bullet',
@@ -361,9 +371,28 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                 :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="2-5"]::before) { content: '2.5'; }
                 :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="3-0"]::before) { content: '3.0'; }
                 :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label::before) { content: 'Line Height'; }
+
                 :global(.ql-snow .ql-picker.ql-font.ql-header .ql-picker-label::before) { content: 'Heading'; }
+
+                /* Noto Sans 두께별 라벨 설정 */
                 :global(.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="notosans"]::before),
-                :global(.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="notosans"]::before) { content: '노토산스 (기본)'; font-family: var(--font-noto-sans); }
+                :global(.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="notosans"]::before) { content: '노토산스 (Regular)'; font-family: var(--font-noto-sans); }
+                
+                :global(.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="notosans-thin"]::before),
+                :global(.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="notosans-thin"]::before) { content: '노토산스 (Ultrathin)'; font-family: var(--font-noto-sans); font-weight: 100; }
+                
+                :global(.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="notosans-light"]::before),
+                :global(.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="notosans-light"]::before) { content: '노토산스 (Light)'; font-family: var(--font-noto-sans); font-weight: 300; }
+                
+                :global(.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="notosans-medium"]::before),
+                :global(.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="notosans-medium"]::before) { content: '노토산스 (Medium)'; font-family: var(--font-noto-sans); font-weight: 500; }
+                
+                :global(.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="notosans-bold"]::before),
+                :global(.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="notosans-bold"]::before) { content: '노토산스 (Bold)'; font-family: var(--font-noto-sans); font-weight: 700; }
+                
+                :global(.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="notosans-black"]::before),
+                :global(.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="notosans-black"]::before) { content: '노토산스 (Black)'; font-family: var(--font-noto-sans); font-weight: 900; }
+
                 :global(.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="nanummyeongjo"]::before),
                 :global(.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="nanummyeongjo"]::before) { content: '나눔명조'; font-family: var(--font-nanum-myeongjo); }
                 :global(.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="nanumgothic"]::before),
@@ -373,7 +402,13 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                 :global(.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="merriweather"]::before),
                 :global(.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="merriweather"]::before) { content: 'Merriweather (Serif)'; font-family: var(--font-merriweather); }
 
-                :global(.ql-font-notosans) { font-family: var(--font-noto-sans) !important; }
+                /* CSS 클래스 매핑 */
+                :global(.ql-font-notosans) { font-family: var(--font-noto-sans) !important; font-weight: 400 !important; }
+                :global(.ql-font-notosans-thin) { font-family: var(--font-noto-sans) !important; font-weight: 100 !important; }
+                :global(.ql-font-notosans-light) { font-family: var(--font-noto-sans) !important; font-weight: 300 !important; }
+                :global(.ql-font-notosans-medium) { font-family: var(--font-noto-sans) !important; font-weight: 500 !important; }
+                :global(.ql-font-notosans-bold) { font-family: var(--font-noto-sans) !important; font-weight: 700 !important; }
+                :global(.ql-font-notosans-black) { font-family: var(--font-noto-sans) !important; font-weight: 900 !important; }
                 :global(.ql-font-nanummyeongjo) { font-family: var(--font-nanum-myeongjo) !important; }
                 :global(.ql-font-nanumgothic) { font-family: var(--font-nanum-gothic) !important; }
                 :global(.ql-font-inter) { font-family: var(--font-inter) !important; }
@@ -437,9 +472,11 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                     border: none;
                 }
                 .ql-snow .ql-picker.ql-header { width: 100px; }
-                .ql-snow .ql-picker.ql-font { width: 160px; }
+                .ql-snow .ql-picker.ql-font { width: 180px; }
                 .ql-snow .ql-picker.ql-size { width: 100px; }
                 .ql-snow .ql-picker.ql-lineheight { width: 120px; }
+
+
             `}</style>
         </div>
     );
