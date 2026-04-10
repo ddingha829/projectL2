@@ -27,19 +27,29 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  // 1. 유저 인증 체크 (서버 부하 감소를 위해 핵심 경로만 세션 체크)
-  // 중요:getUser() 호출 시 생기는 딜레이나 에러가 페이지 로딩을 막지 않도록 함
-  try {
-    const { data: { user } } = await supabase.auth.getUser();
+  // 1. 유저 인증 체크 최적화
+  const { pathname } = request.nextUrl
+  const protectedRoutes = ['/write', '/admin']
+  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route))
+  const isLoginPage = pathname.startsWith('/login')
 
-    // /write 나 /admin 같은 보호된 경로는 여기서 미리 가드 가능 (선택 사항)
-    if (request.nextUrl.pathname.startsWith('/write') && !user) {
-      return NextResponse.redirect(new URL('/login', request.url))
+  try {
+    if (isProtectedRoute || isLoginPage) {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (isProtectedRoute && !user) {
+        return NextResponse.redirect(new URL('/login', request.url))
+      }
+      if (isLoginPage && user) {
+        return NextResponse.redirect(new URL('/', request.url))
+      }
+    } else {
+      // 일반 페이지는 가벼운 세션 정보 확인만 수행하여 응답 속도 확보
+      await supabase.auth.getSession()
     }
   } catch (e) {
-    // 인증 실패 시 크래시 방지
     console.error('Middleware auth error:', e)
   }
+
 
   return supabaseResponse
 }

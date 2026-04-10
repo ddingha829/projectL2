@@ -240,14 +240,14 @@ export default function HomeContent({
   useEffect(() => {
     if (!heroPosts || heroPosts.length <= 1 || isHeroPaused) return;
     
-    // 1초 감소된 시간 적용 (모바일 4초, PC 5초)
     const interval = setInterval(() => {
       setSlideDir('next');
-      setHeroIndex((prev) => (prev + 1) % heroPosts.length || 0);
+      setHeroIndex((prev) => (prev + 1) % heroPosts.length);
     }, isMobile ? 4000 : 5000); 
     
     return () => clearInterval(interval);
-  }, [heroPosts?.length, isHeroPaused, isMobile]);
+  }, [heroPosts?.length, isHeroPaused, isMobile, heroIndex]);
+
 
 
   const handleIntroComplete = useCallback(() => {
@@ -449,7 +449,7 @@ export default function HomeContent({
                 
                 {filteredPosts.length > 0 && (
                   <button className={`${styles.viewAllLink} ${styles.desktopOnly}`} onClick={() => router.push('/?view=all')}>
-                    전체 보기 <span className={styles.linkIcon}>→</span>
+                    MORE <span className={styles.linkIcon}>{'>'}</span>
                   </button>
                 )}
               </header>
@@ -483,7 +483,7 @@ export default function HomeContent({
                     <h2 className={styles.sectionTitle}>기획전</h2>
                     <div className={styles.headerSpacer}></div>
                     <Link href="/?category=feature" className={styles.viewAllLink}>
-                      전체 보기 <span className={styles.linkIcon}>→</span>
+                      MORE <span className={styles.linkIcon}>{'>'}</span>
                     </Link>
                   </header>
                   
@@ -658,9 +658,11 @@ export default function HomeContent({
                   <div className={styles.magHeroRow}>
                     {displayPosts.slice(0, 2).map(post => (
                       <div key={post.id} className={styles.magHeroItem}>
-                        <PosterCard {...post} aspectRatio="mag53" viewType="magazine" excerpt={post.content} />
+                        <PosterCard {...post} aspectRatio="mag53" viewType="magazine" excerpt={stripHtml(post.content)} />
                       </div>
                     ))}
+
+
                   </div>
 
                   {/* Body: Group by categories */}

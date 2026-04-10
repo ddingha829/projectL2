@@ -47,6 +47,7 @@ export default function EditPostForm({
   const fileInputRef = useRef<HTMLInputElement>(null)
   const supabase = createClient()
   const [isSaving, setIsSaving] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   
   // [신규] 대표 이미지 크롭 관련 상태
   const [showCropModal, setShowCropModal] = useState(false);
@@ -56,6 +57,7 @@ export default function EditPostForm({
   // 1. [신규] 페이지 이탈 방지 경고 및 로컬 백업
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isSubmitting) return; // 제출 중에는 경고창을 띄우지 않음
       e.preventDefault();
       e.returnValue = '';
     };
@@ -123,6 +125,7 @@ export default function EditPostForm({
     formData.set('reviewSubject', reviewSubject)
     formData.set('reviewComment', reviewComment)
     formData.set('showMainImage', showMainImage ? 'on' : 'off')
+    setIsSubmitting(true);
     startTransition(() => updatePost(postId, formData))
   }
 

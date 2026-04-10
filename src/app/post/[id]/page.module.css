@@ -17,8 +17,47 @@
 .topNavRight {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
+
+/* Base style for all action buttons (PC & Mobile) */
+.editBtn, .deleteBtn, .heroToggleBtn, .copyBtn {
+  width: 36px !important;
+  height: 36px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--border-medium);
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.btnText {
+  display: none !important; /* Always hidden per user request */
+}
+
+.copyBtn:hover {
+  background-color: var(--bg-secondary);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(32, 75, 184, 0.1);
+}
+
+.copyBtnSuccess {
+  background-color: #2fb344 !important;
+  border-color: #2fb344 !important;
+  color: #fff !important;
+}
+
+
 
 .backBtn {
   display: inline-block;
@@ -723,17 +762,15 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  background: rgba(255, 200, 0, 0.05);
-  padding: 4px 8px;
-  border-radius: 50px;
-  border: 1px solid rgba(255, 200, 0, 0.15);
+  background: transparent;
+  padding: 0;
+  border: none;
 }
 
 .heroAdminArea::before {
-  content: '🔧';
-  font-size: 0.72rem;
-  margin-right: -2px;
+  content: none;
 }
+
 
 .heroToggleBtn {
   display: inline-flex;
@@ -931,22 +968,7 @@
 
 .manageBar {
   display: flex;
-  gap: 8px;
-}
-
-.editBtn, .deleteBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  border-radius: 50px;
-  font-size: 0.8rem;
-  font-weight: 800;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1.2px solid var(--border-medium);
-  background: var(--bg-primary);
-  color: var(--text-secondary);
+  gap: 10px;
 }
 
 .editBtn:hover {
@@ -965,20 +987,11 @@
   box-shadow: 0 4px 12px rgba(255, 77, 77, 0.1);
 }
 
-.editBtn svg, .deleteBtn svg {
-  width: 14px;
-  height: 14px;
+.editBtn svg, .deleteBtn svg, .heroToggleBtn svg, .copyBtn svg {
+  width: 17px;
+  height: 17px;
 }
 
-@media (max-width: 768px) {
-  .manageBar {
-    margin-bottom: 12px;
-  }
-  .editBtn, .deleteBtn {
-    padding: 5px 12px;
-    font-size: 0.75rem;
-  }
-}
 
 /* Contextual Commenting (PoC) */
 .quotePrompt {

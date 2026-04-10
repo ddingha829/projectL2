@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Noto_Sans_KR, Outfit, Nanum_Myeongjo, Nanum_Gothic, Inter, Merriweather } from "next/font/google";
+import { Noto_Sans_KR, Outfit, Nanum_Myeongjo, Nanum_Gothic } from "next/font/google";
 import "./globals.css";
 import gridStyles from "./layout.module.css";
 import AppShell from "@/components/layout/AppShell";
@@ -8,7 +8,7 @@ import { Suspense } from "react";
 const notoSans = Noto_Sans_KR({
   variable: "--font-noto-sans",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "700", "900"],
+  weight: ["100", "300", "400", "500", "700", "900"],
 });
 
 const outfit = Outfit({
@@ -31,18 +31,7 @@ const nanumGothic = Nanum_Gothic({
   display: 'swap',
 });
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: 'swap',
-});
 
-const merriweather = Merriweather({
-  variable: "--font-merriweather",
-  subsets: ["latin"],
-  weight: ["300", "400", "700", "900"],
-  display: 'swap',
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://project-l2.vercel.app"),
@@ -90,7 +79,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" className={`${notoSans.variable} ${outfit.variable} ${nanumMyeongjo.variable} ${nanumGothic.variable} ${inter.variable} ${merriweather.variable}`}>
+    <html lang="ko" className={`${notoSans.variable} ${outfit.variable} ${nanumMyeongjo.variable} ${nanumGothic.variable}`}>
       <body>
         <Suspense fallback={null}>
           <AppShell>

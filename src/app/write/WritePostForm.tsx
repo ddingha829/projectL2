@@ -50,6 +50,7 @@ export default function WritePostForm({ role }: { role: string }) {
   const [isUploading, setIsUploading] = useState(false);
   const [isDraftSaving, setIsDraftSaving] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   // [신규] 대표 이미지 크롭 관련 상태
   const [showCropModal, setShowCropModal] = useState(false);
@@ -70,6 +71,7 @@ export default function WritePostForm({ role }: { role: string }) {
 
     // 탭 전환/새로고침 시 데이터 날림 방지
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isSubmitting) return; // 제출 중에는 경고창을 띄우지 않음
       e.preventDefault();
       e.returnValue = '';
     };
@@ -209,6 +211,7 @@ export default function WritePostForm({ role }: { role: string }) {
         return;
       }
     }
+    setIsSubmitting(true);
     await createPost(formData);
   };
 

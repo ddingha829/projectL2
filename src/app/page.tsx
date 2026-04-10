@@ -131,9 +131,15 @@ export default async function Home({
 
   const mapToPost = (p: any) => {
     const strippedContent = p.content 
-      ? p.content.replace(/<[^>]+>/g, '').replace(/&nbsp;/gi, ' ').replace(/\s+/g, ' ').trim() 
+      ? p.content
+          .replace(/<br\s*\/?>/gi, '\n') 
+          .replace(/<\/p>/gi, '\n')      
+          .replace(/<[^>]+>/g, '')       
+          .replace(/&nbsp;/gi, ' ')
+          .trim() 
       : "내용이 없습니다.";
     const authorData = p.author || {};
+
     return {
       id: `db-${p.id}`,
       dbId: p.id,

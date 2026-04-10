@@ -452,21 +452,26 @@
 .viewAllLink {
   background: none;
   border: none;
-  color: #204bb8; /* Updated to logo blue */
+  color: #888; /* 회색으로 변경 */
+  font-family: var(--font-outfit), sans-serif; /* MORE 텍스트에 어울리는 폰트 */
   font-weight: 800;
-  font-size: 0.95rem;
+  font-size: 0.85rem; /* 살짝 크기 조절 */
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   cursor: pointer;
   display: flex !important;
   align-items: center;
-  gap: 6px;
-  margin-left: auto; /* Pushes to the right in flex container */
+  gap: 4px;
+  margin-left: auto;
   transition: all 0.2s;
-  margin-top: 4px; /* Moved down to be closer to grid below */
+  margin-top: 4px;
 }
 
 .viewAllLink:hover {
-  gap: 10px;
+  color: #555;
+  gap: 8px;
 }
+
 
 .viewMoreBtnInline {
   background: none;
@@ -1175,8 +1180,11 @@
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  word-break: break-all;
+  white-space: pre-wrap; /* 줄바꿈 반영 */
+  word-break: keep-all; 
+  overflow-wrap: break-word;
 }
+
 
 @media (max-width: 768px) {
   .gridSection {

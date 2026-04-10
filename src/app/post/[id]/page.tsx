@@ -8,6 +8,7 @@ import PostInteractions from "./PostInteractions";
 import HeroToggleBtn from "./HeroToggleBtn";
 import PostManageBtns from "./PostManageBtns";
 import ContentSegmenter from "./ContentSegmenter";
+import CopyUrlBtn from "./CopyUrlBtn";
 import { getAdminStatus } from "@/app/actions/hero";
 import styles from "./page.module.css";
 
@@ -231,6 +232,8 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
           {isAdmin && isDbPost && (
             <HeroToggleBtn postId={actualId} initialIsHero={post.is_hero || false} />
           )}
+
+          <CopyUrlBtn />
           
           <PostManageBtns 
             postId={actualId} 
