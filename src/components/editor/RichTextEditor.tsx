@@ -402,29 +402,8 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                 :global(.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="merriweather"]::before),
                 :global(.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="merriweather"]::before) { content: 'Merriweather (Serif)'; font-family: var(--font-merriweather); }
 
-                /* CSS 클래스 매핑 */
-                :global(.ql-font-notosans) { font-family: var(--font-noto-sans) !important; font-weight: 400 !important; }
-                :global(.ql-font-notosans-thin) { font-family: var(--font-noto-sans) !important; font-weight: 100 !important; }
-                :global(.ql-font-notosans-light) { font-family: var(--font-noto-sans) !important; font-weight: 300 !important; }
-                :global(.ql-font-notosans-medium) { font-family: var(--font-noto-sans) !important; font-weight: 500 !important; }
-                :global(.ql-font-notosans-bold) { font-family: var(--font-noto-sans) !important; font-weight: 700 !important; }
-                :global(.ql-font-notosans-black) { font-family: var(--font-noto-sans) !important; font-weight: 900 !important; }
-                :global(.ql-font-nanummyeongjo) { font-family: var(--font-nanum-myeongjo) !important; }
-                :global(.ql-font-nanumgothic) { font-family: var(--font-nanum-gothic) !important; }
-                :global(.ql-font-inter) { font-family: var(--font-inter) !important; }
-                :global(.ql-font-merriweather) { font-family: var(--font-merriweather) !important; }
-
-                :global(.ql-line-height-1-0) { line-height: 1.0 !important; }
-                :global(.ql-line-height-1-2) { line-height: 1.2 !important; }
-                :global(.ql-line-height-1-4) { line-height: 1.4 !important; }
-                :global(.ql-line-height-1-5) { line-height: 1.5 !important; }
-                :global(.ql-line-height-1-6) { line-height: 1.6 !important; }
-                :global(.ql-line-height-1-8) { line-height: 1.8 !important; }
-                :global(.ql-line-height-2-0) { line-height: 2.0 !important; }
-                :global(.ql-line-height-2-5) { line-height: 2.5 !important; }
-                :global(.ql-line-height-3-0) { line-height: 3.0 !important; }
-
                 @media (max-width: 768px) {
+
                     .ql-editor {
                         padding: 20px 16px !important;
                         font-size: 1.05rem;
