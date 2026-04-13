@@ -222,7 +222,7 @@ export default function TopNavbar({
             onMouseLeave={() => setIsCategoryOpen(false)}
           >
             <Link href="/?view=all" className={styles.navLink}>
-              티끌 <span className={styles.miniArrow}>▼</span>
+              티끌 모음 <span className={styles.miniArrow}>▼</span>
             </Link>
             {isCategoryOpen && (
               <div className={styles.navDropdown}>
