@@ -103,8 +103,8 @@
 }
 
 .dropdownItem:hover {
-  background: var(--text-primary);
-  color: var(--bg-primary) !important;
+  background: #ff4804;
+  color: #fff !important;
 }
 
 .dropdownItem:hover .edName,
@@ -327,8 +327,8 @@
 }
 
 .loginButton {
-  background: var(--brand-primary);
-  color: var(--bg-primary);
+  background: #ff4804;
+  color: #fff;
   padding: 8px 16px;
   border-radius: 30px;
   font-size: 0.9rem;

@@ -236,8 +236,17 @@
 
 /* Ensure PICK badge doesn't overlap with author name badge globally */
 .pickBadgeInline {
-  top: 38px !important;
-  font-size: 0.55rem;
+  display: none !important; /* Temporarily hidden per user request */
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #ffd700;
+  color: #000;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.6rem;
+  font-weight: 900;
+  z-index: 10;
 }
 
 .minimalCard .categoryBadge,
