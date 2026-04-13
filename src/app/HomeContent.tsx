@@ -523,7 +523,7 @@ export default function HomeContent({
                             <div className={styles.miniRevInnerRow}>
                               <div className={styles.miniRevStars}>
                                 {[1, 2, 3, 4, 5].map(i => (
-                                  <span key={i} style={{ color: (rev.rating >= i * 2) ? '#e15f08' : '#ddd' }}>★</span>
+                                  <span key={i} style={{ color: (rev.rating >= i * 2) ? '#ff4804' : '#ddd' }}>★</span>
                                 ))}
                               </div>
                               <span className={styles.miniRevScore}>{rev.rating}</span>

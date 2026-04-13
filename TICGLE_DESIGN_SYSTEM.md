@@ -19,7 +19,7 @@ This document summarizes the brand identity and design tokens for **Ticgle (í‹°ë
 | :--- | :--- | :--- |
 | `Primary` | `#121212` | Monochromatic Black (Buttons, Text, UI) |
 | `Primary Hover` | `#2c2c2c` | Dark gray for hover states |
-| `Accent Line` | `#e15f08` | Point Orange (Title underlines, specific accents) |
+| `Accent Line` | `#ff4804` | Point Orange (Title underlines, specific accents) |
 
 ### Functional Colors (Light Theme)
 | Token | Hex | Usage |
