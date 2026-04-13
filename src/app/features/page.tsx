@@ -73,7 +73,7 @@ export default async function FeaturesPage() {
                    id: post.author_id,
                    name: post.author?.display_name || '에디터',
                    avatar: post.author?.avatar_url || '👤',
-                   color: '#ff4804'
+                   color: '#204bb8'
                 }}
                 isPublic={post.is_public}
                 aspectRatio="default"

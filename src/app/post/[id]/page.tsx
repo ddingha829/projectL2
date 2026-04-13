@@ -316,7 +316,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
         {/* Editor Profile Card */}
         {post.authorProfile && (
           <div className={styles.authorCardWrapper}>
-            <div className={styles.authorCardHeader} style={{ background: post.authorProfile.color || '#ff4804' }}>
+            <div className={styles.authorCardHeader} style={{ background: post.authorProfile.color || '#204bb8' }}>
               <span>EDITOR</span>
               <Link href={`/requests/${post.authorProfile.id}`} className={styles.headerRequestLink}>
                 에디터님, 이것도 리뷰해주세요! 💬

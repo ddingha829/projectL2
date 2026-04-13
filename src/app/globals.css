@@ -9,8 +9,8 @@
   --text-tertiary: #adb5bd;
   --text-muted: #868e96;
   
-  --accent-primary: #ff4804; /* New Brand Orange */
-  --accent-hover: #e63d00;
+  --accent-primary: #204bb8; /* New Brand Orange */
+  --accent-hover: #163481;
   
   --border-light: #f1f3f5;
   --border-medium: #dee2e6;
@@ -44,8 +44,8 @@
     --text-secondary: #d1d5db;
     --text-tertiary: #9ca3af; /* Adjusted for better visibility */
     
-    --accent-primary: #ff4804;
-    --accent-hover: #e63d00;
+    --accent-primary: #204bb8;
+    --accent-hover: #163481;
     
     --border-light: #2a2a2a;
     --border-medium: #374151;

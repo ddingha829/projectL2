@@ -97,7 +97,7 @@
 }
 
 .authorBadgeDetail {
-  background-color: #ff4804;
+  background-color: #204bb8;
   color: #fff;
   padding: 4px 12px;
   border-radius: 4px;
@@ -973,8 +973,8 @@
 
 .editBtn:hover {
   background: #f0f7ff;
-  border-color: #ff4804;
-  color: #ff4804;
+  border-color: #204bb8;
+  color: #204bb8;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(32, 75, 184, 0.1);
 }

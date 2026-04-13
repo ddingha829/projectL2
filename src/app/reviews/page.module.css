@@ -53,7 +53,7 @@
 
 .searchInput:focus {
   outline: none;
-  border-color: #ff4804;
+  border-color: #204bb8;
   box-shadow: 0 10px 40px rgba(32, 75, 184, 0.15);
   transform: translateY(-2px);
 }
@@ -74,13 +74,13 @@
 }
 
 .subjectCard:hover {
-  border-color: #ff4804;
+  border-color: #204bb8;
   transform: translateY(-2px);
   box-shadow: 0 12px 30px rgba(0,0,0,0.08);
 }
 
 .activeCard {
-  border-color: #ff4804;
+  border-color: #204bb8;
   box-shadow: 0 15px 50px rgba(32, 75, 184, 0.1);
 }
 
@@ -100,7 +100,7 @@
 .subjectName {
   font-size: 1.45rem;
   font-weight: 900;
-  color: #ff4804;
+  color: #204bb8;
   margin: 0;
   letter-spacing: -0.03em;
   word-break: keep-all;
@@ -124,7 +124,7 @@
 
 .reviewCount {
   font-weight: 800;
-  color: #ff4804;
+  color: #204bb8;
   font-size: 0.72rem;
   background: rgba(32, 75, 184, 0.08);
   padding: 4px 10px;
@@ -134,7 +134,7 @@
 }
 
 .avgBadge {
-  background: #ff4804;
+  background: #204bb8;
   color: #fff;
   padding: 4px 10px;
   border-radius: 50px;
@@ -222,7 +222,7 @@
 
 .brickCard:hover {
   background: #f8faff;
-  border-color: #ff4804;
+  border-color: #204bb8;
   box-shadow: 0 8px 25px rgba(32, 75, 184, 0.12);
   transform: translateY(-3px);
   z-index: 2;
@@ -244,7 +244,7 @@
 .editorRating {
   font-size: 0.85rem;
   font-weight: 950;
-  color: #ff4804; /* Blue */
+  color: #204bb8; /* Blue */
   letter-spacing: -0.02em;
 }
 
@@ -283,7 +283,7 @@
 .avgBadgeLarge {
   font-size: 2.2rem;
   font-weight: 1000;
-  color: #ff4804;
+  color: #204bb8;
   line-height: 1;
 }
 
@@ -391,7 +391,7 @@
 .postLink {
   font-size: 0.85rem;
   font-weight: 800;
-  color: #ff4804;
+  color: #204bb8;
   text-decoration: none;
 }
 
@@ -435,7 +435,7 @@
 /* User Interaction Section */
 .userVoteBox {
   background: var(--bg-primary);
-  border: 2px solid #ff4804;
+  border: 2px solid #204bb8;
   border-radius: 16px;
   padding: 20px;
   margin: 20px 0 10px 0;
@@ -445,7 +445,7 @@
 .userVoteTitle {
   font-size: 1rem; /* Slightly smaller */
   font-weight: 900;
-  color: #ff4804;
+  color: #204bb8;
   margin-bottom: 12px;
   text-align: left;
   letter-spacing: -0.02em;
@@ -495,12 +495,12 @@
 
 .voteTextarea:focus, .ratingSelect:focus {
   outline: none;
-  border-color: #ff4804;
+  border-color: #204bb8;
   box-shadow: 0 0 0 4px rgba(32, 75, 184, 0.1);
 }
 
 .voteBtn {
-  background: #ff4804;
+  background: #204bb8;
   color: #fff;
   padding: 0 20px;
   height: 44px;
@@ -681,8 +681,8 @@
   display: inline-block;
   padding: 8px 16px;
   background: white;
-  border: 1.5px solid #ff4804;
-  color: #ff4804;
+  border: 1.5px solid #204bb8;
+  color: #204bb8;
   border-radius: 100px;
   font-size: 0.9rem;
   font-weight: 800;

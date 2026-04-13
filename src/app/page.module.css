@@ -1196,8 +1196,8 @@
   display: inline-flex;
   align-items: center;
   background-color: #ffffff;
-  border: 1px solid #ff4804;
-  color: #ff4804;
+  border: 1px solid #204bb8;
+  color: #204bb8;
   font-size: 0.72rem;
   font-weight: 800;
   padding: 2px 8px;
@@ -1348,7 +1348,7 @@
 }
 
 .scrollBtn:hover {
-  color: #ff4804;
+  color: #204bb8;
   transform: translateY(-50%) scale(1.4);
 }
 
@@ -1378,14 +1378,14 @@
 
 .miniReviewCard:hover {
   transform: translateY(-6px);
-  border-color: #ff4804;
+  border-color: #204bb8;
   box-shadow: 0 15px 40px rgba(0,0,0,0.06);
 }
 
 .miniRevSubject {
   font-size: 1.15rem;
   font-weight: 900;
-  color: #ff4804;
+  color: #204bb8;
   margin: 0;
   letter-spacing: -0.03em;
   white-space: nowrap;
@@ -1451,7 +1451,7 @@
 
 .miniRevAuthor {
   font-size: 0.8rem;
-  color: #ff4804; /* Highlighted with logo color on PC too */
+  color: #204bb8; /* Highlighted with logo color on PC too */
   font-weight: 800; /* Bolder weight for authority */
   margin: 0;
 }
@@ -1483,7 +1483,7 @@
   }
   .miniRevAuthor {
     font-size: 0.64rem !important; /* Reduced 20% from 0.8rem */
-    color: #ff4804 !important;
+    color: #204bb8 !important;
     font-weight: 800 !important;
   }
   .miniRevLink {
