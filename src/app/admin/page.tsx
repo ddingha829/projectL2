@@ -7,7 +7,7 @@ import styles from './admin.module.css'
 import Link from 'next/link'
 
 export const metadata = {
-  title: 'Admin Dashboard | WoogaWooga 우가우가',
+  title: 'Admin Dashboard | 티끌 Ticgle',
   description: 'Manage posts, users, and categories.',
 }
 

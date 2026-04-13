@@ -25,7 +25,7 @@ export default function LoginPage() {
     <div className={styles.container}>
       <div className={styles.card}>
         <h1 className={styles.title}>Login / Sign up</h1>
-        <p className={styles.subtitle}>평범한 사람들이 써나가는 위대한 일상</p>
+        <p className={styles.subtitle}>티끌 모아 반짝이는, 일상 매거진</p>
 
         {/* 에러 메시지 */}
         {error && (

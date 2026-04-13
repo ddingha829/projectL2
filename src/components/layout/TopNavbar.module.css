@@ -60,14 +60,14 @@
 }
 
 .editorBtnWrap .navLink {
-  background: #204bb8;
+  background: #ff4804;
   color: #fff !important;
 }
 
 .editorBtnWrap:hover .navLink {
   background: #fff !important;
-  color: #204bb8 !important;
-  box-shadow: 0 0 0 1px #204bb8 inset;
+  color: #ff4804 !important;
+  box-shadow: 0 0 0 1px #ff4804 inset;
 }
 
 .miniArrow {
@@ -155,7 +155,7 @@
 }
 
 .logoSub { 
-  color: #204bb8; 
+  color: #ff4804; 
   font-size: 1.95rem; /* Increased size by another 5% */
   font-weight: 1000;
 }
@@ -299,7 +299,7 @@
   gap: 8px;
   font-family: var(--font-outfit), var(--font-noto-sans), sans-serif;
   font-weight: 800;
-  color: #204bb8;
+  color: #ff4804;
   font-size: 1.1rem; /* Significantly reduced to prevent layout breaks */
   letter-spacing: -0.04em;
   transition: all 0.2s;
@@ -327,7 +327,7 @@
 }
 
 .loginButton {
-  background: #204bb8;
+  background: #ff4804;
   color: #fff;
   padding: 8px 16px;
   border-radius: 30px;

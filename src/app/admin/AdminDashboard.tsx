@@ -173,7 +173,7 @@ export default function AdminDashboard({
                         className={styles.actionBtn} 
                         onClick={() => handleToggleHero(post.id)}
                         title={post.is_hero ? "히어로 카드 제외" : "히어로 카드 지정"}
-                        style={{ color: post.is_hero ? '#204bb8' : 'var(--text-tertiary)' }}
+                        style={{ color: post.is_hero ? '#ff4804' : 'var(--text-tertiary)' }}
                       >
                         {post.is_hero ? "🌟" : "☆"}
                       </button>

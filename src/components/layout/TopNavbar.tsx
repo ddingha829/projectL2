@@ -207,7 +207,7 @@ export default function TopNavbar({
           </button>
           
           <Link href="/" className={styles.logoText}>
-            <span className={styles.logoSub}>WoogaWooga</span>
+            <span className={styles.logoSub}>Ticgle</span>
           </Link>
 
           <div className={styles.mobileViewToggleWrap}>

@@ -120,7 +120,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const description = post.content.replace(/<[^>]+>/g, '').substring(0, 160).trim();
   
   return {
-    title: `${post.title} | 우가우가`,
+    title: `${post.title} | 티끌`,
     description: description,
     openGraph: {
       title: post.title,
@@ -197,7 +197,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
     },
     "publisher": {
       "@type": "Organization",
-      "name": "WoogaWooga",
+      "name": "Ticgle",
       "logo": {
         "@type": "ImageObject",
         "url": "https://project-l2.vercel.app/logo.png"
@@ -316,7 +316,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
         {/* Editor Profile Card */}
         {post.authorProfile && (
           <div className={styles.authorCardWrapper}>
-            <div className={styles.authorCardHeader} style={{ background: post.authorProfile.color || '#204bb8' }}>
+            <div className={styles.authorCardHeader} style={{ background: post.authorProfile.color || '#ff4804' }}>
               <span>EDITOR</span>
               <Link href={`/requests/${post.authorProfile.id}`} className={styles.headerRequestLink}>
                 에디터님, 이것도 리뷰해주세요! 💬

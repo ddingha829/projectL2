@@ -182,11 +182,11 @@ function ReviewArchiveContent() {
                     <div className={styles.comparisonGrid}>
                       <div className={styles.compItem}>
                         <div className={styles.compLabel}>에디터 평점</div>
-                        <div className={styles.compValue} style={{ color: '#204bb8' }}>{activeSubject.editorAvg}</div>
+                        <div className={styles.compValue} style={{ color: '#ff4804' }}>{activeSubject.editorAvg}</div>
                         <div className={styles.compBarBg}>
                           <div 
                             className={styles.compBarFill} 
-                            style={{ width: `${Number(activeSubject.editorAvg) * 10}%`, backgroundColor: '#204bb8' }}
+                            style={{ width: `${Number(activeSubject.editorAvg) * 10}%`, backgroundColor: '#ff4804' }}
                           />
                         </div>
                       </div>

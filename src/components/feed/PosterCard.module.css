@@ -226,8 +226,8 @@
   top: 12px;
   right: 12px;
   background: #ffffff;
-  border: 1.5px solid #204bb8;
-  color: #204bb8;
+  border: 1.5px solid #ff4804;
+  color: #ff4804;
   height: 22px;
   padding: 0 10px;
   border-radius: 4px;
@@ -367,7 +367,7 @@
 }
 
 .magTitle a:hover {
-  color: #204bb8;
+  color: #ff4804;
 }
 
 .magExcerpt {
@@ -434,10 +434,10 @@
 
 .magAuthorBadge {
   font-size: 0.75rem;
-  color: #204bb8;
+  color: #ff4804;
   font-weight: 700;
   background: #ffffff;
-  border: 1px solid #204bb8;
+  border: 1px solid #ff4804;
   padding: 1px 6px;
   border-radius: 4px;
 }

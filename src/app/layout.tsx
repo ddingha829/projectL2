@@ -36,12 +36,12 @@ const nanumGothic = Nanum_Gothic({
 export const metadata: Metadata = {
   metadataBase: new URL("https://project-l2.vercel.app"),
   title: {
-    default: "WoogaWooga 우가우가 | 일상 리뷰 매거진",
-    template: "%s | 우가우가"
+    default: "티끌 Ticgle | 티끌 모아 반짝이는, 일상 매거진",
+    template: "%s | 티끌"
   },
-  description: "일상의 모든 순간을 리뷰합니다. 영화, 책, 게임, 맛집까지 에디터들이 전하는 생생한 리뷰 사이트, 우가우가.",
-  keywords: ["리뷰", "매거진", "영화 리뷰", "맛집 추천", "도서 리뷰", "게임 리뷰", "우가우가", "WoogaWooga"],
-  authors: [{ name: "WoogaWooga Team" }],
+  description: "티끌 모아 반짝이는, 일상 매거진",
+  keywords: ["리뷰", "매거진", "일상", "에세이", "티끌", "Ticgle"],
+  authors: [{ name: "Ticgle Team" }],
   icons: {
     icon: "/favicon.ico",
   },
@@ -49,10 +49,10 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "WoogaWooga 우가우가",
-    description: "일상의 모든 것을 리뷰하는 매거진, 우가우가",
+    title: "티끌 Ticgle",
+    description: "티끌 모아 반짝이는, 일상 매거진",
     url: "https://project-l2.vercel.app",
-    siteName: "WoogaWooga",
+    siteName: "Ticgle",
     locale: "ko_KR",
     type: "website",
     images: [
@@ -60,14 +60,14 @@ export const metadata: Metadata = {
         url: "/logo.png",
         width: 800,
         height: 400,
-        alt: "WoogaWooga Logo",
+        alt: "Ticgle Logo",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "WoogaWooga 우가우가",
-    description: "일상의 모든 것을 리뷰하는 매거진, 우가우가",
+    title: "티끌 Ticgle",
+    description: "티끌 모아 반짝이는, 일상 매거진",
     images: ["/logo.png"],
   },
 };

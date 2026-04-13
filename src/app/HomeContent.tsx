@@ -562,7 +562,7 @@ export default function HomeContent({
           <div key={animationKey} className={styles.feedAnimator}>
             {authorData && (
               <div className={styles.authorCardWrapper}>
-                <div className={styles.authorCardHeader} style={{ background: authorData.color || '#204bb8' }}>
+                <div className={styles.authorCardHeader} style={{ background: authorData.color || '#ff4804' }}>
                   <span>EDITOR</span>
                   <Link href={`/requests/${authorData.id}`} className={styles.headerRequestLink}>
                     에디터님, 이것도 리뷰해주세요! 💬
