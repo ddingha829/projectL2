@@ -206,8 +206,8 @@ export default function TopNavbar({
             </svg>
           </button>
           
-          <Link href="/" className={styles.logoText}>
-            <span className={styles.logoSub}>Ticgle</span>
+          <Link href="/" className={styles.logoLink}>
+            <img src="/logo.png" alt="티끌 Ticgle" className={styles.logoImage} />
           </Link>
 
           <div className={styles.mobileViewToggleWrap}>

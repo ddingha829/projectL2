@@ -142,22 +142,22 @@
   display: none;
 }
 
-.logoText {
+.logoLink {
   display: flex;
   align-items: center;
   text-decoration: none;
-  font-family: var(--font-outfit), var(--font-noto-sans), sans-serif;
-  font-size: 1.45rem;
-  font-weight: 900;
-  letter-spacing: -0.04em;
-  white-space: nowrap;
-  padding-left: 16px; /* Shifted further right to align perfectly */
+  padding-left: 16px;
+  transition: transform 0.2s ease;
 }
 
-.logoSub { 
-  color: #ff4804; 
-  font-size: 1.95rem; /* Increased size by another 5% */
-  font-weight: 1000;
+.logoLink:hover {
+  transform: scale(1.02);
+}
+
+.logoImage {
+  height: 48px; /* Prominent but fits in 62px header */
+  width: auto;
+  object-fit: contain;
 }
 
 .rightGroup {
@@ -461,13 +461,12 @@
   }
 
 
-  .logoText {
-    font-size: 1.1rem;
+  .logoLink {
     padding-left: 0;
   }
   
-  .logoSub {
-    font-size: 1.5rem;
+  .logoImage {
+    height: 38px; /* Slightly smaller for mobile footer */
   }
 }
 
