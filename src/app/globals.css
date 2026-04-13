@@ -19,6 +19,14 @@
   --accent-hover: var(--brand-primary-hover);
   --accent-line: var(--brand-accent-line);
   
+  /* Semantic Badges */
+  --badge-bg-admin: #fee2e2;
+  --badge-text-admin: #ef4444;
+  --badge-bg-editor: #dcfce7;
+  --badge-text-editor: #10b981;
+  --badge-bg-user: #f0f7ff;
+  --badge-text-user: var(--brand-primary);
+  
   /* Layout Tokens */
   --header-height: 62px;
   --header-height-mobile: 54px;
@@ -58,6 +66,15 @@
     --text-tertiary: #9ca3af; /* Adjusted for better visibility */
     
     --brand-primary: #f9fafb;
+    --brand-primary-hover: #e5e7eb;
+    
+    /* Semantic Badges Dark */
+    --badge-bg-admin: rgba(239, 68, 68, 0.15);
+    --badge-text-admin: #f87171;
+    --badge-bg-editor: rgba(16, 185, 129, 0.15);
+    --badge-text-editor: #34d399;
+    --badge-bg-user: rgba(249, 250, 251, 0.1);
+    --badge-text-user: #f9fafb;
     --brand-primary-hover: #e5e7eb;
     --brand-accent-line: #ff4804;
     --accent-primary: var(--brand-primary);

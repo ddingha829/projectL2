@@ -225,7 +225,7 @@
   position: absolute;
   top: 12px;
   right: 12px;
-  background: #ffffff;
+  background: var(--bg-primary);
   border: 1.5px solid var(--brand-primary);
   color: var(--brand-primary);
   height: 22px;
@@ -436,7 +436,7 @@
   font-size: 0.75rem;
   color: var(--brand-primary);
   font-weight: 700;
-  background: #ffffff;
+  background: var(--bg-primary);
   border: 1px solid var(--brand-primary);
   padding: 1px 6px;
   border-radius: 4px;

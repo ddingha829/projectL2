@@ -191,9 +191,9 @@
   font-weight: 700;
 }
 
-.badgeAdmin { background: #fee2e2; color: #ef4444; }
-.badgeEditor { background: #dcfce7; color: #10b981; }
-.badgeUser { background: #f0f7ff; color: var(--brand-primary); }
+.badgeAdmin { background: var(--badge-bg-admin); color: var(--badge-text-admin); }
+.badgeEditor { background: var(--badge-bg-editor); color: var(--badge-text-editor); }
+.badgeUser { background: var(--badge-bg-user); color: var(--badge-text-user); }
 
 .actionBtn {
   background: var(--bg-secondary);
