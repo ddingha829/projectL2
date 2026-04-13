@@ -207,7 +207,7 @@ export default function TopNavbar({
           </button>
           
           <Link href="/" className={styles.logoLink}>
-            <img src="/logo.png" alt="티끌 Ticgle" className={styles.logoImage} />
+            <img src="/logo.png?v=1301" alt="티끌 Ticgle" className={styles.logoImage} />
           </Link>
 
           <div className={styles.mobileViewToggleWrap}>

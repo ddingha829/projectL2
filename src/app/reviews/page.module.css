@@ -54,7 +54,7 @@
 .searchInput:focus {
   outline: none;
   border-color: var(--brand-primary);
-  box-shadow: 0 10px 40px rgba(32, 75, 184, 0.15);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
   transform: translateY(-2px);
 }
 
@@ -81,7 +81,7 @@
 
 .activeCard {
   border-color: var(--brand-primary);
-  box-shadow: 0 15px 50px rgba(32, 75, 184, 0.1);
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
 }
 
 .subjectMain {
@@ -126,7 +126,7 @@
   font-weight: 800;
   color: var(--brand-primary);
   font-size: 0.72rem;
-  background: rgba(32, 75, 184, 0.08);
+  background: rgba(0, 0, 0, 0.08);
   padding: 4px 10px;
   border-radius: 50px;
   text-align: center;
@@ -221,16 +221,16 @@
 }
 
 .brickCard:hover {
-  background: #f8faff;
-  border-color: var(--brand-primary);
-  box-shadow: 0 8px 25px rgba(32, 75, 184, 0.12);
+  background: var(--bg-secondary);
+  border-color: var(--accent-line);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
   transform: translateY(-3px);
   z-index: 2;
 }
 
 @media (prefers-color-scheme: dark) {
   .brickCard:hover {
-    background: rgba(32, 75, 184, 0.1);
+    background: rgba(0, 0, 0, 0.1);
   }
 }
 
@@ -244,7 +244,7 @@
 .editorRating {
   font-size: 0.85rem;
   font-weight: 950;
-  color: var(--brand-primary); /* Blue */
+  color: var(--accent-line);
   letter-spacing: -0.02em;
 }
 
@@ -283,7 +283,7 @@
 .avgBadgeLarge {
   font-size: 2.2rem;
   font-weight: 1000;
-  color: var(--brand-primary);
+  color: var(--accent-line);
   line-height: 1;
 }
 
@@ -391,7 +391,7 @@
 .postLink {
   font-size: 0.85rem;
   font-weight: 800;
-  color: var(--brand-primary);
+  color: var(--text-muted);
   text-decoration: none;
 }
 
@@ -435,11 +435,11 @@
 /* User Interaction Section */
 .userVoteBox {
   background: var(--bg-primary);
-  border: 2px solid var(--brand-primary);
+  border: 2px solid var(--accent-line);
   border-radius: 16px;
   padding: 20px;
   margin: 20px 0 10px 0;
-  box-shadow: 0 10px 40px rgba(32, 75, 184, 0.08);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
 }
 
 .userVoteTitle {
@@ -496,7 +496,7 @@
 .voteTextarea:focus, .ratingSelect:focus {
   outline: none;
   border-color: var(--brand-primary);
-  box-shadow: 0 0 0 4px rgba(32, 75, 184, 0.1);
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.1);
 }
 
 .voteBtn {
@@ -516,7 +516,7 @@
 .voteBtn:hover {
   background: #1a3a91;
   transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(32, 75, 184, 0.2);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 .reviewDivider {
@@ -686,7 +686,7 @@
   border-radius: 100px;
   font-size: 0.9rem;
   font-weight: 800;
-  box-shadow: 0 4px 15px rgba(32, 75, 184, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   animation: fadeInUp 0.5s ease-out 0.8s both;
 }
 

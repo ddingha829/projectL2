@@ -11,18 +11,18 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
-  border-bottom: 2px solid #192f70;
+  border-bottom: 2px solid var(--brand-primary);
   padding-bottom: 15px;
 }
 
 .title {
   font-size: 2rem;
-  color: #192f70;
+  color: var(--brand-primary);
   font-weight: 800;
 }
 
 .writeBtn {
-  background: #192f70;
+  background: var(--brand-primary);
   color: white;
   padding: 8px 18px;
   border-radius: 8px;
@@ -55,7 +55,7 @@
 }
 
 .noticeItem:hover {
-  border-color: #192f70;
+  border-color: var(--brand-primary);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }

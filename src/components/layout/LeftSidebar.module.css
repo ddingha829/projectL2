@@ -60,7 +60,7 @@
 }
 
 .loginBtnSmall {
-  background: #1a77ce;
+  background: var(--brand-primary);
   color: white;
   padding: 6px 16px;
   border-radius: 20px;
@@ -150,7 +150,7 @@
 }
 
 .sectionTitleLink:hover .sectionTitle {
-  color: #192f70;
+  color: var(--brand-primary);
 }
 
 .noticeList {
@@ -178,7 +178,7 @@
 }
 
 .noticeDot {
-  color: #192f70;
+  color: var(--brand-primary);
   font-weight: bold;
 }
 

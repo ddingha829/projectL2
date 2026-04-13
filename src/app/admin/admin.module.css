@@ -193,7 +193,7 @@
 
 .badgeAdmin { background: #fee2e2; color: #ef4444; }
 .badgeEditor { background: #dcfce7; color: #10b981; }
-.badgeUser { background: #f0f7ff; color: #1a77ce; }
+.badgeUser { background: #f0f7ff; color: var(--brand-primary); }
 
 .actionBtn {
   background: var(--bg-secondary);

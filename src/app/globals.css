@@ -9,13 +9,15 @@
   --text-tertiary: #adb5bd;
   --text-muted: #868e96;
   
-  /* Brand Tokens */
-  --brand-primary: #204bb8;
-  --brand-primary-hover: #163481;
-  --brand-secondary: #ff4804;
+  /* Brand Tokens - Monochromatic & Point Orange */
+  --brand-primary: #121212; 
+  --brand-primary-hover: #2c2c2c;
+  --brand-accent-line: #e15f08; 
+  --brand-secondary: #4a4a4a;
   
   --accent-primary: var(--brand-primary);
   --accent-hover: var(--brand-primary-hover);
+  --accent-line: var(--brand-accent-line);
   
   /* Layout Tokens */
   --header-height: 62px;
@@ -55,10 +57,12 @@
     --text-secondary: #d1d5db;
     --text-tertiary: #9ca3af; /* Adjusted for better visibility */
     
-    --brand-primary: #3b82f6;
-    --brand-primary-hover: #60a5fa;
+    --brand-primary: #f9fafb;
+    --brand-primary-hover: #e5e7eb;
+    --brand-accent-line: #e15f08;
     --accent-primary: var(--brand-primary);
     --accent-hover: var(--brand-primary-hover);
+    --accent-line: var(--brand-accent-line);
     
     --border-light: #2a2a2a;
     --border-medium: #374151;
