@@ -60,14 +60,14 @@
 }
 
 .editorBtnWrap .navLink {
-  background: var(--brand-primary);
-  color: var(--bg-primary) !important;
+  background: #ff4804;
+  color: #fff !important;
 }
 
 .editorBtnWrap:hover .navLink {
-  background: var(--bg-primary) !important;
-  color: var(--brand-primary) !important;
-  box-shadow: 0 0 0 1px var(--brand-primary) inset;
+  background: #ff4804 !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(255, 72, 4, 0.2);
 }
 
 .miniArrow {
@@ -250,20 +250,19 @@
 }
 
 .writeButton {
-  background: var(--text-primary);
-  color: var(--bg-primary);
-  padding: 6px 14px; /* Reduced from 8px 16px */
+  background: #ff4804;
+  color: #fff;
+  padding: 6px 14px;
   border-radius: 30px;
-  font-size: 0.78rem; /* Reduced from 0.85rem */
+  font-size: 0.78rem;
   font-weight: 800;
   text-decoration: none;
   transition: all 0.2s;
   white-space: nowrap;
 }
 
-
 .writeButton:hover {
-  background: #333;
+  background: #e63e00;
   transform: translateY(-1px);
 }
 
