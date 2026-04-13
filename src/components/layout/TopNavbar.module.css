@@ -155,7 +155,7 @@
 }
 
 .logoImage {
-  height: 48px; /* Prominent but fits in 62px header */
+  height: 43px; /* Reduced by 10% from 48px */
   width: auto;
   object-fit: contain;
 }
@@ -466,7 +466,7 @@
   }
   
   .logoImage {
-    height: 38px; /* Slightly smaller for mobile footer */
+    height: 34px; /* Reduced by 10% from 38px */
   }
 }
 
