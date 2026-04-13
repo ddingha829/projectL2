@@ -40,7 +40,7 @@ export default async function FeaturesPage() {
         <div className={styles.titleArea}>
           <span className={styles.subTitle}>Wooga Premium</span>
           <h1 className={styles.title}>기획전 (Features)</h1>
-          <p className={styles.description}>티끌 에디터들이 엄선한 특별한 주제의 리뷰 컬렉션</p>
+          <p className={styles.description}>티끌 티끌러들이 엄선한 특별한 주제의 리뷰 컬렉션</p>
         </div>
         
         {isAdmin && (
@@ -71,7 +71,7 @@ export default async function FeaturesPage() {
                 comments={post.comments?.[0]?.count || 0}
                 author={{
                    id: post.author_id,
-                   name: post.author?.display_name || '에디터',
+                   name: post.author?.display_name || '티끌러',
                    avatar: post.author?.avatar_url || '👤',
                    color: '#204bb8'
                 }}

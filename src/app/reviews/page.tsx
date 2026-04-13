@@ -132,7 +132,7 @@ function ReviewArchiveContent() {
     <div className={styles.container}>
       <header className={styles.header}>
         <h1 className={styles.title}>평점 아카이브</h1>
-        <p className={styles.subtitle}>에디터와 독자가 함께 완성하는 공간입니다.</p>
+        <p className={styles.subtitle}>티끌러와 독자가 함께 완성하는 공간입니다.</p>
         <div className={styles.searchBox}>
           <input 
             type="text" 
@@ -181,7 +181,7 @@ function ReviewArchiveContent() {
                     <div className={styles.infoTitle}>매체 전문가 vs 독자 만족도</div>
                     <div className={styles.comparisonGrid}>
                       <div className={styles.compItem}>
-                        <div className={styles.compLabel}>에디터 평점</div>
+                        <div className={styles.compLabel}>티끌러 평점</div>
                         <div className={styles.compValue} style={{ color: '#204bb8' }}>{activeSubject.editorAvg}</div>
                         <div className={styles.compBarBg}>
                           <div 
@@ -207,8 +207,8 @@ function ReviewArchiveContent() {
                         {Math.abs(Number(activeSubject.editorAvg) - Number(activeSubject.userAvg)) < 0.5 
                           ? "시각 일치: 전문가와 대중이 공통적으로 평가한 작품"
                           : Number(activeSubject.editorAvg) > Number(activeSubject.userAvg)
-                            ? `전문가 호평: 대중보다 에디터가 ${(Number(activeSubject.editorAvg) - Number(activeSubject.userAvg)).toFixed(1)}점 더 높게 평가`
-                            : `대중의 선택: 에디터보다 독자가 ${(Number(activeSubject.userAvg) - Number(activeSubject.editorAvg)).toFixed(1)}점 더 높게 평가`
+                            ? `전문가 호평: 대중보다 티끌러가 ${(Number(activeSubject.editorAvg) - Number(activeSubject.userAvg)).toFixed(1)}점 더 높게 평가`
+                            : `대중의 선택: 티끌러보다 독자가 ${(Number(activeSubject.userAvg) - Number(activeSubject.editorAvg)).toFixed(1)}점 더 높게 평가`
                         }
                       </div>
                     </div>
@@ -216,7 +216,7 @@ function ReviewArchiveContent() {
                 </div>
 
                 <div className={styles.reviewList}>
-                  <div className={styles.reviewDivider}>에디터 평점</div>
+                  <div className={styles.reviewDivider}>티끌러 평점</div>
 
                   {activeSubject.reviews.map((rev: any) => (
                     <div key={rev.id} className={styles.reviewItem}>
@@ -227,7 +227,7 @@ function ReviewArchiveContent() {
                                 <img src={rev.author.avatar_url} alt="" />
                               ) : "👤"}
                             </div>
-                            <span className={styles.authorName}>{rev.author?.display_name || "익명 에디터"}</span>
+                            <span className={styles.authorName}>{rev.author?.display_name || "익명 티끌러"}</span>
                           </div>
                           <div className={styles.ratingBox}>
                             <div className={styles.stars}>
@@ -241,7 +241,7 @@ function ReviewArchiveContent() {
                         <p className={styles.reviewText}>{rev.review_comment}</p>
                         <div className={styles.reviewFooter}>
                            <span className={styles.date}>{new Date(rev.created_at).toLocaleDateString()}</span>
-                           <Link href={`/post/db-${rev.id}`} className={styles.postLink}>원문 포스팅 보기 →</Link>
+                           <Link href={`/post/db-${rev.id}`} className={styles.postLink}>원문 티끌 보기 →</Link>
                         </div>
                     </div>
                   ))}

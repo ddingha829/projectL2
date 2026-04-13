@@ -222,7 +222,7 @@ export default function TopNavbar({
             onMouseLeave={() => setIsCategoryOpen(false)}
           >
             <Link href="/?view=all" className={styles.navLink}>
-              포스팅 <span className={styles.miniArrow}>▼</span>
+              티끌 <span className={styles.miniArrow}>▼</span>
             </Link>
             {isCategoryOpen && (
               <div className={styles.navDropdown}>
@@ -255,7 +255,7 @@ export default function TopNavbar({
             onMouseLeave={() => setIsEditorsOpen(false)}
           >
             <span className={styles.navLink}>
-              에디터 <span className={styles.miniArrow}>▼</span>
+              티끌러 <span className={styles.miniArrow}>▼</span>
             </span>
             {isEditorsOpen && (
               <div className={styles.navDropdown}>
@@ -267,10 +267,10 @@ export default function TopNavbar({
                     onClick={() => setIsEditorsOpen(false)}
                   >
                     <span className={styles.edName}>{ed.display_name}</span>
-                    <span className={styles.edRole}>{ed.role === 'admin' ? '운영자' : '에디터'}</span>
+                    <span className={styles.edRole}>{ed.role === 'admin' ? '운영자' : '티끌러'}</span>
                   </Link>
                 ))}
-                {editors.length === 0 && <div className={styles.emptyEds}>에디터가 없습니다.</div>}
+                {editors.length === 0 && <div className={styles.emptyEds}>티끌러가 없습니다.</div>}
               </div>
             )}
           </div>
@@ -330,7 +330,7 @@ export default function TopNavbar({
                     <div className={styles.userNameDisplay}>
                       {isPending ? "..." : (displayName || user.email?.split('@')[0] || "사용자")}
                       <span className={styles.roleLabel}>
-                        {role === 'admin' ? '운영자' : role === 'editor' ? '에디터' : '방문객'}
+                        {role === 'admin' ? '운영자' : role === 'editor' ? '티끌러' : '방문객'}
                       </span>
                       <span className={styles.dropdownArrow}>▼</span>
                     </div>

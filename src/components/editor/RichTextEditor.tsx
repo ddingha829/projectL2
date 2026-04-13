@@ -117,7 +117,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
     useEffect(() => {
         setIsClient(true);
         
-        // [중요] 에디터 내의 모든 버튼(리사이즈 툴바 등)이 폼을 제출하지 않도록 강제 설정
+        // [중요] 티끌러 내의 모든 버튼(리사이즈 툴바 등)이 폼을 제출하지 않도록 강제 설정
         const preventSubmit = () => {
             const editorElement = document.querySelector(`.${styles.editorContainer}`);
             if (!editorElement) return;
@@ -318,7 +318,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
         'link', 'image', 'video'
     ];
 
-    if (!isClient) return <div className={styles.loading}>에디터를 불러오는 중입니다...</div>;
+    if (!isClient) return <div className={styles.loading}>티끌러를 불러오는 중입니다...</div>;
 
     return (
         <div className={styles.editorContainer}>
@@ -351,7 +351,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                     font-family: var(--font-noto-sans), sans-serif;
                     color: var(--text-primary);
                 }
-                /* 에디터 내 문단 간격 초기화 (실제 게시물과 동일하게) */
+                /* 티끌러 내 문단 간격 초기화 (실제 게시물과 동일하게) */
                 .ql-editor p {
                     margin: 0;
                     padding: 0;

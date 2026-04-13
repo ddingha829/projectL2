@@ -111,7 +111,7 @@
   font-family: var(--font-outfit), sans-serif;
   font-size: 1.62rem; /* Increased by 20% from 1.35rem */
   font-weight: 800;
-  color: #204bb8;
+  color: var(--brand-primary);
   letter-spacing: -0.04em;
 }
 

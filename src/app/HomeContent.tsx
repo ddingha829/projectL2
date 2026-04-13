@@ -11,11 +11,11 @@ import { useSearchParams, useRouter } from "next/navigation";
 import ReviewRequest from "@/components/feed/ReviewRequest";
 
 const MOCK_REVIEWS = [
-  { id: 'm1', subject: '크라임 101', rating: 6, comment: '반전은 보이나 몰입감 부족', authorName: '황수정 에디터' },
-  { id: 'm2', subject: '샷 콜러', rating: 7, comment: '연기가 돋보이는 처절한 사투', authorName: '박펜 에디터' },
-  { id: 'm3', subject: '파묘', rating: 8, comment: '한국적 오컬트 정수, 사운드 압권', authorName: '김철수 에디터' },
-  { id: 'm4', subject: '듄: 파트 2', rating: 10, comment: '장엄한 아이맥스 시각적 황홀경', authorName: '이동진 에디터' },
-  { id: 'm5', subject: '서울의 봄', rating: 9, comment: '실화의 묵직한 울림, 긴장감 최고', authorName: '조성우 에디터' }
+  { id: 'm1', subject: '크라임 101', rating: 6, comment: '반전은 보이나 몰입감 부족', authorName: '황수정 티끌러' },
+  { id: 'm2', subject: '샷 콜러', rating: 7, comment: '연기가 돋보이는 처절한 사투', authorName: '박펜 티끌러' },
+  { id: 'm3', subject: '파묘', rating: 8, comment: '한국적 오컬트 정수, 사운드 압권', authorName: '김철수 티끌러' },
+  { id: 'm4', subject: '듄: 파트 2', rating: 10, comment: '장엄한 아이맥스 시각적 황홀경', authorName: '이동진 티끌러' },
+  { id: 'm5', subject: '서울의 봄', rating: 9, comment: '실화의 묵직한 울림, 긴장감 최고', authorName: '조성우 티끌러' }
 ];
 
 const stripHtml = (html: string) => {
@@ -444,7 +444,7 @@ export default function HomeContent({
 
             <div className={styles.gridSection}>
               <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '0' }}>
-                <h2 className={styles.sectionTitle}>새로운 포스팅</h2>
+                <h2 className={styles.sectionTitle}>새로운 티끌</h2>
                 <div className={styles.headerSpacer}></div>
                 
                 {filteredPosts.length > 0 && (
@@ -489,7 +489,7 @@ export default function HomeContent({
                   
                   <div className={styles.featureGrid}>
                     {(featurePosts.length > 0 ? featurePosts : [
-                      { id: 'f1', title: '에디터 선정 2026.4 최고의 점심메뉴', imageUrl: 'https://images.unsplash.com/photo-1525648199074-cee30ba79a4a?auto=format&fit=crop&w=1600&q=80' }
+                      { id: 'f1', title: '티끌러 선정 2026.4 최고의 점심메뉴', imageUrl: 'https://images.unsplash.com/photo-1525648199074-cee30ba79a4a?auto=format&fit=crop&w=1600&q=80' }
                     ]).map((feature: any) => (
                       <Link key={feature.id} href={feature.id.startsWith('db-') ? `/post/${feature.id}` : '#'} className={styles.featureBanner}>
                         <img src={feature.imageUrl} alt={feature.title} className={styles.featureImage} />
@@ -565,7 +565,7 @@ export default function HomeContent({
                 <div className={styles.authorCardHeader} style={{ background: authorData.color || '#204bb8' }}>
                   <span>EDITOR</span>
                   <Link href={`/requests/${authorData.id}`} className={styles.headerRequestLink}>
-                    에디터님, 이것도 리뷰해주세요! 💬
+                    티끌러님, 이것도 리뷰해주세요! 💬
                   </Link>
                 </div>
                 <div className={styles.authorCardContent}>
@@ -578,7 +578,7 @@ export default function HomeContent({
                     <div className={styles.authorNameLink}>
                       {authorData.name}
                     </div>
-                    <p className={styles.authorBio}>{authorData.description.bio || "생동감 넘치는 리뷰를 작성하는 에디터입니다."}</p>
+                    <p className={styles.authorBio}>{authorData.description.bio || "생동감 넘치는 리뷰를 작성하는 티끌러입니다."}</p>
                     {authorData.description.bullets && authorData.description.bullets.length > 0 && (
                       <div className={styles.authorBullets}>
                         {authorData.description.bullets.map((b: string, i: number) => (
@@ -593,7 +593,7 @@ export default function HomeContent({
 
             <div className={styles.resultsHeader}>
               <h1 className={styles.resultsTitle}>
-                { isViewMore ? "전체 포스팅" : displayTitle}
+                { isViewMore ? "전체 티끌" : displayTitle}
               </h1>
             </div>
 
@@ -734,7 +734,7 @@ function MobileScrollFab({ isMobile, isViewMore, showMobileFab }: { isMobile: bo
         className={styles.mobileViewAllBtn}
         onClick={() => router.push('/?view=all')}
       >
-        전체 포스팅 더보기
+        전체 티끌 더보기
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
           <polyline points="9 18 15 12 9 6"></polyline>
         </svg>

@@ -9,10 +9,10 @@ import { createClient } from "@/lib/supabase/client";
 import { useSearchParams } from "next/navigation";
 import { compressImage } from "@/lib/utils/image";
 
-// [중요] 수리된 에디터 컴포넌트를 다시 불러옴
+// [중요] 수리된 티끌러 컴포넌트를 다시 불러옴
 const RichTextEditor = dynamic(() => import("@/components/editor/RichTextEditor"), { 
   ssr: false, 
-  loading: () => <div style={{ height: '600px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-hover)', borderRadius: '12px' }}>글쓰기 에디터 로딩중...</div> 
+  loading: () => <div style={{ height: '600px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-hover)', borderRadius: '12px' }}>글쓰기 티끌러 로딩중...</div> 
 });
 import ImageCropModal from "@/components/editor/ImageCropModal";
 
@@ -282,7 +282,7 @@ export default function WritePostForm({ role }: { role: string }) {
         </div>
       </div>
 
-      {/* 수리된 에디터 컴포넌트 복구 */}
+      {/* 수리된 티끌러 컴포넌트 복구 */}
       <div className={`${styles.inputGroup} ${styles.editorGroup}`}>
         <label>내용</label>
         <RichTextEditor 
@@ -384,7 +384,7 @@ export default function WritePostForm({ role }: { role: string }) {
             checked={isEditorsPick}
             onChange={(e) => setIsEditorsPick(e.target.checked)}
           />
-          <label htmlFor="isEditorsPick" className={styles.checkboxLabel}>🏆 이 게시물을 에디터 추천으로 지정합니다.</label>
+          <label htmlFor="isEditorsPick" className={styles.checkboxLabel}>🏆 이 게시물을 티끌러 추천으로 지정합니다.</label>
         </div>
       )}
 

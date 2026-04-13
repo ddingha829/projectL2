@@ -293,7 +293,7 @@ export default function PostInteractions({
                     </div>
                     <div className={styles.commentUserInfo}>
                       <span className={styles.commentNickname}>{c.user?.display_name || c.user?.name || '익명 작가'}</span>
-                      {isAuthor && <span className={styles.writerBadge}>에디터</span>}
+                      {isAuthor && <span className={styles.writerBadge}>티끌러</span>}
                     </div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginLeft: 'auto' }}>

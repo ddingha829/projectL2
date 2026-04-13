@@ -283,7 +283,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
         
         <ContentSegmenter content={post.content} comments={commentsData} />
         
-        {/* [신규] 에디터의 한줄평 섹션 */}
+        {/* [신규] 티끌러의 한줄평 섹션 */}
         {post.review_subject && (
           <div className={styles.postReviewSection}>
             <fieldset className={styles.postReviewBox}>
@@ -319,7 +319,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
             <div className={styles.authorCardHeader} style={{ background: post.authorProfile.color || '#204bb8' }}>
               <span>EDITOR</span>
               <Link href={`/requests/${post.authorProfile.id}`} className={styles.headerRequestLink}>
-                에디터님, 이것도 리뷰해주세요! 💬
+                티끌러님, 이것도 리뷰해주세요! 💬
               </Link>
             </div>
             <div className={styles.authorCardContent}>
@@ -334,7 +334,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
                 <Link href={`/?author=${post.authorProfile.id}`} className={styles.authorNameLink}>
                   {post.authorProfile.display_name}
                 </Link>
-                <p className={styles.authorBio}>{post.authorProfile.bio || "생동감 넘치는 리뷰를 작성하는 에디터입니다."}</p>
+                <p className={styles.authorBio}>{post.authorProfile.bio || "생동감 넘치는 리뷰를 작성하는 티끌러입니다."}</p>
                 {post.authorProfile.bullets && post.authorProfile.bullets.length > 0 && (
                   <div className={styles.authorBullets}>
                     {post.authorProfile.bullets.map((b: string, i: number) => (

@@ -414,7 +414,7 @@ function StatsView({ posts, users, visitCount, todayVisitCount, totalViews, tren
            </div>
         </div>
         <div className={styles.glassCard}>
-           <h3 className={styles.chartTitle}>실시간 최고 에디터</h3>
+           <h3 className={styles.chartTitle}>실시간 최고 티끌러</h3>
            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {users.slice(0, 4).map(u => {
                 const totalUserViews = posts

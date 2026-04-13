@@ -158,7 +158,7 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
                 <div className={styles.nameGroup}>
                   <span className={styles.mobileNickname}>{displayName || user.email?.split('@')[0]}</span>
                   <span className={styles.mobileRole}>
-                    {role === 'admin' ? '운영자' : role === 'editor' ? '에디터' : '방문객'}
+                    {role === 'admin' ? '운영자' : role === 'editor' ? '티끌러' : '방문객'}
                   </span>
                 </div>
                 <div className={styles.mobileActionButtons}>
@@ -201,7 +201,7 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
           <details className={styles.sidebarDisclosure}>
             <summary className={styles.sidebarSummary}>
               <Link href="/?view=all" className={styles.summaryLink} onClick={onClose}>
-                포스팅 
+                티끌 
               </Link>
               <span className={styles.disclosureArrow}>▼</span>
             </summary>
@@ -230,7 +230,7 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
 
           <details className={styles.sidebarDisclosure}>
             <summary className={styles.sidebarSummary}>
-              에디터 <span className={styles.disclosureArrow}>▼</span>
+              티끌러 <span className={styles.disclosureArrow}>▼</span>
             </summary>
             <div className={styles.disclosureContent}>
               {ALL_AUTHORS.map(editor => (

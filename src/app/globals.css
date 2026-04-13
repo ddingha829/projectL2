@@ -9,8 +9,19 @@
   --text-tertiary: #adb5bd;
   --text-muted: #868e96;
   
-  --accent-primary: #204bb8; /* New Brand Orange */
-  --accent-hover: #163481;
+  /* Brand Tokens */
+  --brand-primary: #204bb8;
+  --brand-primary-hover: #163481;
+  --brand-secondary: #ff4804;
+  
+  --accent-primary: var(--brand-primary);
+  --accent-hover: var(--brand-primary-hover);
+  
+  /* Layout Tokens */
+  --header-height: 62px;
+  --header-height-mobile: 54px;
+  --container-max-width: 1200px;
+  --nav-max-width: 1200px;
   
   --border-light: #f1f3f5;
   --border-medium: #dee2e6;
@@ -44,8 +55,10 @@
     --text-secondary: #d1d5db;
     --text-tertiary: #9ca3af; /* Adjusted for better visibility */
     
-    --accent-primary: #204bb8;
-    --accent-hover: #163481;
+    --brand-primary: #3b82f6;
+    --brand-primary-hover: #60a5fa;
+    --accent-primary: var(--brand-primary);
+    --accent-hover: var(--brand-primary-hover);
     
     --border-light: #2a2a2a;
     --border-medium: #374151;

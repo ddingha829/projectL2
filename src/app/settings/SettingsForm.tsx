@@ -40,7 +40,7 @@ export default function SettingsForm({ user, profile }: { user: any, profile: an
       const supabase = createClient();
       
       // 기존 editor가 사용하는 post-images 버킷 사용
-      // RLS 규칙이 파일 명명 규칙이나 폴더 깊이에 민감할 수 있으므로 에디터 패턴을 완벽히 모방
+      // RLS 규칙이 파일 명명 규칙이나 폴더 깊이에 민감할 수 있으므로 티끌러 패턴을 완벽히 모방
       const randomId = Math.random().toString(36).substring(2, 12);
       const fileName = `editor/${randomId}_${Date.now()}.jpg`;
       

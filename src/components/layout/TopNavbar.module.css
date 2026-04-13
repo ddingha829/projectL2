@@ -1,5 +1,5 @@
 .header {
-  height: 62px;
+  height: var(--header-height);
   width: 100%;
   background-color: var(--glass-bg);
   backdrop-filter: blur(16px);
@@ -14,12 +14,12 @@
 
 .navContent {
   width: 100%;
-  max-width: 1200px;
+  max-width: var(--nav-max-width);
   height: 100%;
   display: grid;
-  grid-template-columns: auto 1fr auto; /* logo - menus - search/auth */
+  grid-template-columns: auto 1fr auto;
   align-items: center;
-  padding: 0 40px;
+  padding: 0 var(--radius-xl);
   box-sizing: border-box;
 }
 
@@ -60,14 +60,14 @@
 }
 
 .editorBtnWrap .navLink {
-  background: #204bb8;
-  color: #fff !important;
+  background: var(--brand-primary);
+  color: var(--bg-primary) !important;
 }
 
 .editorBtnWrap:hover .navLink {
-  background: #fff !important;
-  color: #204bb8 !important;
-  box-shadow: 0 0 0 1px #204bb8 inset;
+  background: var(--bg-primary) !important;
+  color: var(--brand-primary) !important;
+  box-shadow: 0 0 0 1px var(--brand-primary) inset;
 }
 
 .miniArrow {
@@ -296,12 +296,12 @@
 .userNameDisplay {
   display: flex;
   align-items: center;
-  white-space: nowrap; /* Prevent vertical wrapping */
+  white-space: nowrap;
   gap: 8px;
   font-family: var(--font-outfit), var(--font-noto-sans), sans-serif;
   font-weight: 800;
-  color: #204bb8;
-  font-size: 1.1rem; /* Significantly reduced to prevent layout breaks */
+  color: var(--brand-primary);
+  font-size: 1.1rem;
   letter-spacing: -0.04em;
   transition: all 0.2s;
   cursor: pointer;
@@ -328,8 +328,8 @@
 }
 
 .loginButton {
-  background: #204bb8;
-  color: #fff;
+  background: var(--brand-primary);
+  color: var(--bg-primary);
   padding: 8px 16px;
   border-radius: 30px;
   font-size: 0.9rem;
@@ -424,8 +424,8 @@
 
 @media (max-width: 768px) {
   .header {
-    height: 54px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    height: var(--header-height-mobile);
+    box-shadow: var(--shadow-sm);
   }
 
   .navContent {

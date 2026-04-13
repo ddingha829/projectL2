@@ -46,11 +46,11 @@ export default async function RequestPage({
       if (post) {
         author = {
           id: writerId,
-          name: "신규 에디터",
+          name: "신규 티끌러",
           color: "#0a467d",
           avatar: "",
           description: {
-            bio: "현재 프로필을 준비 중인 에디터입니다.",
+            bio: "현재 프로필을 준비 중인 티끌러입니다.",
             bullets: ["신규 멤버"]
           }
         };

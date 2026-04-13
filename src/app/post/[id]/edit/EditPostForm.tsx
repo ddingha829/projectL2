@@ -10,7 +10,7 @@ import { compressImage } from '@/lib/utils/image'
 
 const RichTextEditor = dynamic(() => import('@/components/editor/RichTextEditor'), {
   ssr: false,
-  loading: () => <div style={{ height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border)', borderRadius: '12px' }}>에디터 로딩중...</div>
+  loading: () => <div style={{ height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border)', borderRadius: '12px' }}>티끌러 로딩중...</div>
 })
 import ImageCropModal from '@/components/editor/ImageCropModal'
 
@@ -208,7 +208,7 @@ export default function EditPostForm({
       {isAdmin && (
         <div className={styles.checkboxGroup}>
           <input type="checkbox" id="isEditorsPick" name="isEditorsPick" defaultChecked={initialIsEditorsPick} />
-          <label htmlFor="isEditorsPick" className={styles.checkboxLabel}>🏆 에디터 추천(Editor's Pick)으로 지정</label>
+          <label htmlFor="isEditorsPick" className={styles.checkboxLabel}>🏆 티끌러 추천(Editor's Pick)으로 지정</label>
         </div>
       )}
 
@@ -249,7 +249,7 @@ export default function EditPostForm({
         </div>
 
         <div className={styles.inputGroup}>
-          <label htmlFor="reviewRating">에디터 평점 (10점 만점)</label>
+          <label htmlFor="reviewRating">티끌러 평점 (10점 만점)</label>
           <select 
             id="reviewRating" 
             name="reviewRating" 
@@ -264,7 +264,7 @@ export default function EditPostForm({
         </div>
 
         <div className={styles.inputGroup}>
-          <label htmlFor="reviewComment">에디터 한줄평 (최대 25자)</label>
+          <label htmlFor="reviewComment">티끌러 한줄평 (최대 25자)</label>
           <input 
             type="text" 
             id="reviewComment" 
