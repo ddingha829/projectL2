@@ -255,3 +255,39 @@
   filter: brightness(1.1);
   transform: translateY(-2px);
 }
+
+/* Mobile crop modal compact layout */
+@media (max-width: 768px) {
+  .modalContent {
+    padding: 16px;
+    gap: 12px;
+    border-radius: 16px;
+    width: 95vw;
+    max-height: 95vh;
+  }
+  .cropperWrapper {
+    height: 320px;
+    border-radius: 8px;
+  }
+  .aspectControls {
+    gap: 6px;
+    margin-bottom: 2px;
+    flex-wrap: wrap;
+  }
+  .aspectControls button {
+    padding: 5px 10px;
+    font-size: 0.72rem;
+  }
+  .controls {
+    gap: 10px;
+  }
+  .buttonGroup {
+    gap: 8px;
+  }
+  .cancelBtn, .originalBtn, .confirmBtn {
+    padding: 8px 14px;
+    font-size: 0.8rem;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+}

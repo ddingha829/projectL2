@@ -202,6 +202,7 @@ export default function ImageCropModal({ image, onCropComplete, onUseOriginal, o
               <ReactCrop
                 crop={freeCrop}
                 onChange={(c) => setFreeCrop(c)}
+                keepSelection={true}
                 style={{ maxHeight: "100%", maxWidth: "100%" }}
               >
                 <img
@@ -251,6 +252,42 @@ export default function ImageCropModal({ image, onCropComplete, onUseOriginal, o
           </div>
         </div>
       </div>
+
+      {/* Mobile touch handle improvements */}
+      <style jsx global>{`
+        /* Enlarge ALL drag handles (edges + corners) for mobile touch */
+        @media (max-width: 768px) {
+          .ReactCrop__drag-handle {
+            width: 24px !important;
+            height: 24px !important;
+          }
+          /* Edge handles: make them wider touch targets */
+          .ReactCrop__drag-handle.ord-n,
+          .ReactCrop__drag-handle.ord-s {
+            width: 48px !important;
+            height: 20px !important;
+            margin-left: -24px !important;
+          }
+          .ReactCrop__drag-handle.ord-e,
+          .ReactCrop__drag-handle.ord-w {
+            width: 20px !important;
+            height: 48px !important;
+            margin-top: -24px !important;
+          }
+          /* Corner handles: bigger for easier touch */
+          .ReactCrop__drag-handle.ord-nw,
+          .ReactCrop__drag-handle.ord-ne,
+          .ReactCrop__drag-handle.ord-sw,
+          .ReactCrop__drag-handle.ord-se {
+            width: 28px !important;
+            height: 28px !important;
+          }
+        }
+        /* Prevent browser pull-to-refresh / scroll gestures interfering */
+        .ReactCrop {
+          touch-action: none;
+        }
+      `}</style>
     </div>
   );
 }
