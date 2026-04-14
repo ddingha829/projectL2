@@ -4,6 +4,8 @@ import "./globals.css";
 import gridStyles from "./layout.module.css";
 import AppShell from "@/components/layout/AppShell";
 import { Suspense } from "react";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const notoSans = Noto_Sans_KR({
   variable: "--font-noto-sans",
@@ -85,6 +87,8 @@ export default function RootLayout({
           <AppShell>
             {children}
           </AppShell>
+          <Analytics />
+          <SpeedInsights />
         </Suspense>
       </body>
     </html>
