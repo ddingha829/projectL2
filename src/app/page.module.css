@@ -1663,11 +1663,11 @@
 
 .mobileHeroDots {
   display: flex;
-  justify-content: flex-start;
+  justify-content: flex-end;
   gap: 8px;
   position: absolute;
-  top: 48px; /* Positioned below the category badge */
-  left: 20px;
+  top: 20px;
+  right: 20px;
   z-index: 50;
 }
 
