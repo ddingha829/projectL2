@@ -1206,7 +1206,41 @@
 
 @media (max-width: 768px) {
   .magList {
-    gap: 11px;
+    gap: 16px;
+  }
+  
+  .magListItem {
+    padding: 24px !important; /* Fixed padding per request */
+    gap: 16px !important;
+    flex-direction: column !important; /* Keep it vertical as requested */
+    align-items: stretch !important;
+  }
+
+  .magThumbWrap {
+    width: 100% !important; /* Inset full width */
+    height: auto !important;
+    aspect-ratio: 1.6 / 1 !important;
+    border-radius: 12px !important;
+    border: 1.4px solid var(--border-medium) !important;
+    flex-shrink: 0 !important;
+    margin: 0 !important;
+  }
+
+  .magThumb {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+
+  .magListInfo {
+    padding: 12px 0 0 0 !important;
+    gap: 6px !important;
+  }
+
+  .magListTitle {
+    font-size: 1.15rem !important;
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
   }
 }
 
