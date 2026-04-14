@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
 
 export async function createPost(formData: FormData) {
   const supabase = await createClient();
@@ -71,6 +72,7 @@ export async function createPost(formData: FormData) {
     await supabase.from('drafts').delete().eq('user_id', user.id);
 
     revalidatePath('/', 'layout');
+    redirect('/');
 
     return { success: true, postId: postData.id };
 

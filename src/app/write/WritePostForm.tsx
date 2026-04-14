@@ -212,7 +212,14 @@ export default function WritePostForm({ role }: { role: string }) {
       }
     }
     setIsSubmitting(true);
-    await createPost(formData);
+    const result = await createPost(formData);
+    if (result?.error) {
+      alert(result.error);
+      setIsSubmitting(false);
+    } else {
+      // Clear backup on success (redirect handles navigation)
+      localStorage.removeItem('write_backup');
+    }
   };
 
   if (!isClient) return <div className={styles.formContainer}>잠시만 기다려 주세요...</div>;
