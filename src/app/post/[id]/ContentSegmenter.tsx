@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
+import DOMPurify from "isomorphic-dompurify";
 import styles from "./page.module.css";
 
 export default function ContentSegmenter({ 
@@ -74,11 +75,19 @@ export default function ContentSegmenter({
     });
   };
 
+  const sanitizedContent = useMemo(() => DOMPurify.sanitize(content, {
+    ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 's', 'a', 'img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 
+      'ul', 'ol', 'li', 'blockquote', 'pre', 'code', 'span', 'div', 'figure', 'figcaption', 'hr',
+      'table', 'thead', 'tbody', 'tr', 'th', 'td', 'sub', 'sup'],
+    ALLOWED_ATTR: ['href', 'src', 'alt', 'class', 'style', 'target', 'rel', 'width', 'height', 'data-*'],
+    ALLOW_DATA_ATTR: true,
+  }), [content]);
+
   return (
     <div 
       ref={contentRef}
       className={styles.content} 
-      dangerouslySetInnerHTML={{ __html: content }} 
+      dangerouslySetInnerHTML={{ __html: sanitizedContent }} 
     />
   );
 }
