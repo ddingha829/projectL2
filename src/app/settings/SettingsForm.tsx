@@ -151,7 +151,7 @@ export default function SettingsForm({ user, profile }: { user: any, profile: an
           </div>
 
           <div className={styles.formGroup}>
-            <label className={styles.label}>닉네임 (댓글용)</label>
+            <label className={styles.label}>닉네임</label>
             <input 
               name="displayName" 
               type="text" 
