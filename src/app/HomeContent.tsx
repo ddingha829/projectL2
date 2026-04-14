@@ -99,13 +99,14 @@ export default function HomeContent({
     
   const authorData = staticAuthor || liveAuthor;
 
-  const [showIntro, setShowIntro] = useState(false);
-  const [heroIndex, setHeroIndex] = useState(0);
-  const [slideDir, setSlideDir] = useState<'next' | 'prev'>('next');
   const [currentPage, setCurrentPage] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [hasInitialized, setHasInitialized] = useState(false);
   const [visibleCount, setVisibleCount] = useState(6);
+
+  const [showIntro, setShowIntro] = useState(false);
+  const [heroIndex, setHeroIndex] = useState(0);
+  const [slideDir, setSlideDir] = useState<'next' | 'prev'>('next');
 
   useEffect(() => {
     // 1. Determine Device Type (Prioritize Server-side, fallback to client-side)
@@ -128,7 +129,7 @@ export default function HomeContent({
           params.set('mCols', '2');
         } else {
           params.set('viewType', 'magazine');
-          params.set('dCols', '3');
+          params.set('dCols', '4');
         }
       }
 
@@ -174,7 +175,7 @@ export default function HomeContent({
         updateData.preferred_m_cols = parseInt(searchParams.get('mCols') || '2');
       } else {
         updateData.preferred_view_pc = currentView;
-        updateData.preferred_d_cols = parseInt(searchParams.get('dCols') || '3');
+        updateData.preferred_d_cols = parseInt(searchParams.get('dCols') || '4');
       }
 
       await supabase.from('profiles').update(updateData).eq('id', user.id);
@@ -186,7 +187,7 @@ export default function HomeContent({
 
   const vType = (searchParams.get("viewType") || initialViewType || (isMobile ? "card" : "magazine")) as "card" | "magazine";
   const mobileGridCols = vType === 'magazine' ? 1 : parseInt(searchParams.get("mCols") || "2");
-  const cardCols = parseInt(searchParams.get("dCols") || (vType === 'magazine' ? "3" : "3")); // PC default grid 3 as requested
+  const cardCols = parseInt(searchParams.get("dCols") || "4"); // PC default grid 4 as requested
 
   const [isHeroPaused, setIsHeroPaused] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
@@ -562,7 +563,7 @@ export default function HomeContent({
           <div key={animationKey} className={styles.feedAnimator}>
             {authorData && (
               <div className={styles.authorCardWrapper}>
-                <div className={styles.authorCardHeader} style={{ background: authorData.color || '#204bb8' }}>
+                <div className={styles.authorCardHeader}>
                   <span>EDITOR</span>
                   <Link href={`/requests/${authorData.id}`} className={styles.headerRequestLink}>
                     티끌러님, 이것도 리뷰해주세요! 💬
@@ -595,6 +596,22 @@ export default function HomeContent({
               <h1 className={styles.resultsTitle}>
                 { isViewMore ? "전체 티끌" : displayTitle}
               </h1>
+
+              {vType === 'card' && (
+                <div className={`${styles.headerColControls} ${styles.mobileOnly}`}>
+                  <div className={styles.headerColSelector}>
+                    {(isMobile ? ['1', '2', '3'] : ['2', '3', '4']).map(n => (
+                      <button 
+                        key={n}
+                        className={`${styles.headerColBtn} ${ (isMobile ? mobileGridCols : cardCols) === parseInt(n) ? styles.headerColActive : ''}`}
+                        onClick={() => updateParam(isMobile ? "mCols" : "dCols", n)}
+                      >
+                        {n}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Unified Control Bar for Results View - Made more compact */}
@@ -627,6 +644,22 @@ export default function HomeContent({
                   ))}
                 </div>
               </nav>
+
+              {vType === 'card' && (
+                <div className={`${styles.headerColControls} ${styles.desktopOnly}`}>
+                  <div className={styles.headerColSelector}>
+                    {(isMobile ? ['1', '2', '3'] : ['2', '3', '4']).map(n => (
+                      <button 
+                        key={n}
+                        className={`${styles.headerColBtn} ${ (isMobile ? mobileGridCols : cardCols) === parseInt(n) ? styles.headerColActive : ''}`}
+                        onClick={() => updateParam(isMobile ? "mCols" : "dCols", n)}
+                      >
+                        {n}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
 

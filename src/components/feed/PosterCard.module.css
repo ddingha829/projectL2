@@ -438,11 +438,11 @@
 .magAuthorBadge {
   font-size: 0.75rem;
   color: var(--brand-primary);
-  font-weight: 700;
-  background: var(--bg-primary);
-  border: 1px solid var(--brand-primary);
-  padding: 1px 6px;
-  border-radius: 4px;
+  font-weight: 800;
+  background: transparent;
+  border: none;
+  padding: 0;
+  border-radius: 0;
 }
 
 @media (max-width: 768px) {

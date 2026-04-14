@@ -266,9 +266,19 @@
   border: 1px solid var(--border-light);
   border-radius: 20px;
   overflow: hidden;
-  margin: 60px 0 30px 0;
+  margin: 60px auto 30px auto; /* Centered */
   box-shadow: 0 10px 40px rgba(0,0,0,0.06);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%; /* Default */
+}
+
+@media (min-width: 769px) {
+  .authorCardWrapper {
+    width: 70% !important;
+    max-width: 1000px;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
 }
 
 .authorCardWrapper:hover {
@@ -278,6 +288,7 @@
 }
 
 .authorCardHeader {
+  background: #0a467d !important; /* Force business blue */
   color: #fff;
   padding: 8px 24px;
   font-size: 0.65rem;
@@ -672,7 +683,10 @@
 }
 
 .comment.highlighted {
-  background-color: var(--brand-accent-soft);
+  background-color: rgba(255, 72, 4, 0.08) !important;
+  box-shadow: 0 0 20px rgba(255, 72, 4, 0.2) !important;
+  border-radius: 8px;
+  border-bottom: 2px solid rgba(255, 72, 4, 0.2) !important;
 }
 
 .comment:last-child {
@@ -1089,17 +1103,18 @@
 }
 
 .quoteHighlight {
-  background-color: var(--brand-accent-soft);
-  border-bottom: 2px solid var(--brand-accent-line);
+  background-color: rgba(255, 72, 4, 0.18); /* Pale orange highlighter effect */
+  border-bottom: none;
   cursor: pointer;
-  padding: 2px 0;
-  transition: background-color 0.2s;
-  border-radius: 2px;
+  padding: 0 4px;
+  margin: 0 -2px;
+  transition: all 0.2s;
+  border-radius: 3px;
 }
 
 .quoteHighlight:hover {
-  background-color: var(--brand-accent-line);
-  color: white;
+  background-color: rgba(255, 72, 4, 0.35);
+  color: var(--text-primary);
 }
 
 .quotePromptError {

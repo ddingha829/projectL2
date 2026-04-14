@@ -50,6 +50,13 @@
   white-space: nowrap;
   padding: 8px 16px;
   border-radius: 10px;
+  border: 1.5px solid transparent;
+}
+
+.navLinkBorder {
+  border-width: 2.5px;
+  border-color: rgba(255, 72, 4, 0.4); /* Bolder opacity to match thickness */
+  color: var(--brand-primary);
 }
 
 .navLink:hover {
@@ -57,18 +64,6 @@
   color: #fff;
   transform: translateY(-1px);
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-
-.mainNav:hover .editorBtnWrap .navLink {
-  background: var(--brand-accent-line);
-  color: #fff !important;
-  box-shadow: 0 4px 12px rgba(255, 72, 4, 0.2);
-}
-
-.mainNav .navLink:hover ~ .editorBtnWrap .navLink {
-  background: transparent;
-  color: var(--text-secondary);
-  box-shadow: none;
 }
 
 .miniArrow {
@@ -104,13 +99,13 @@
 }
 
 .dropdownItem:hover {
-  background: #ff4804;
-  color: #fff !important;
+  background: rgba(255, 72, 4, 0.12); /* Slightly darker pale orange as requested */
+  color: var(--brand-primary) !important;
 }
 
 .dropdownItem:hover .edName,
 .dropdownItem:hover .edRole {
-  color: inherit !important;
+  color: var(--brand-primary) !important;
 }
 
 .edName {

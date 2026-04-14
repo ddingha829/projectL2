@@ -49,9 +49,9 @@
 @media (max-width: 768px) {
   .resultsHeader {
     display: flex !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    justify-content: center !important;
+    flex-direction: row !important; 
+    align-items: flex-end !important;
+    justify-content: space-between !important;
     text-align: left;
     margin-top: 2px !important;
     margin-bottom: 8px !important;
@@ -77,15 +77,73 @@
     background-color: var(--accent-line);
     border-radius: 10px;
   }
+  
+  .headerColControls {
+    position: static !important;
+    gap: 4px !important;
+    padding: 2px !important;
+    margin-bottom: 8px !important;
+  }
+  
+  .headerColBtn {
+    width: 22px !important;
+    height: 22px !important;
+    font-size: 0.65rem !important;
+  }
 }
 
 .resultsHeader {
   display: flex;
-  align-items: center;
+  align-items: flex-end; /* Align with title's point line area */
   justify-content: space-between;
   width: 100%;
-  padding: 0; /* Aligned with grid */
+  padding: 0;
   margin-bottom: 24px;
+}
+
+.headerColControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-tertiary);
+  padding: 3px;
+  border-radius: 40px;
+  border: 1px solid var(--border-light);
+  margin-bottom: 0;
+  position: absolute; /* Push to the right edge of categoryPillRow */
+  right: 0;
+}
+
+.headerColSelector {
+  display: flex;
+  gap: 2px;
+}
+
+.headerColBtn {
+  background: transparent;
+  border: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.headerColBtn:hover:not(.headerColActive) {
+  background: rgba(0,0,0,0.05);
+  color: var(--text-primary);
+}
+
+.headerColActive {
+  background: var(--brand-primary);
+  color: #fff !important;
 }
 
 .controlsLeft, .controlsRight {
@@ -216,9 +274,25 @@
 
 .categoryPillRow {
   display: flex !important;
+  align-items: center;
   justify-content: center;
   margin-bottom: 20px;
   width: 100%;
+  position: relative; /* For absolute positioning of controls */
+}
+
+@media (max-width: 768px) {
+  .categoryPillRow {
+    justify-content: space-between !important;
+    gap: 0;
+    margin-bottom: 10px !important;
+    padding-right: 0;
+  }
+  
+  .headerColControls {
+    position: static !important; /* Revert for mobile flow */
+    margin-left: 8px;
+  }
 }
 
 .categoryPillNav {
@@ -799,7 +873,7 @@
     left: 0;
     width: 40px;
     height: 5px; /* Consistent thickness */
-    background-color: var(--accent-primary);
+    background-color: var(--accent-line);
     border-radius: 10px;
   }
   
@@ -948,6 +1022,7 @@
 }
 
 .authorCardHeader {
+  background: #0a467d !important; /* Force specific corporate blue */
   color: #fff;
   padding: 8px 24px;
   font-size: 0.65rem;
@@ -1050,6 +1125,14 @@
   padding: 0 32px 24px;
   display: flex;
   justify-content: flex-end;
+}
+
+@media (min-width: 769px) {
+  .authorCardWrapper {
+    width: 70% !important;
+    max-width: 1000px;
+    margin: 16px auto 32px auto !important;
+  }
 }
 
 @media (max-width: 768px) {
@@ -1195,13 +1278,13 @@
 .magListAuthor {
   display: inline-flex;
   align-items: center;
-  background-color: #ffffff;
-  border: 1px solid var(--brand-primary);
+  background-color: transparent;
+  border: none;
   color: var(--brand-primary);
   font-size: 0.72rem;
-  font-weight: 800;
-  padding: 2px 8px;
-  border-radius: 4px;
+  font-weight: 900;
+  padding: 0;
+  border-radius: 0;
   width: fit-content;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -1580,12 +1663,11 @@
 
 .mobileHeroDots {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 8px;
   position: absolute;
-  top: 20px;
-  left: 0;
-  right: 0;
+  top: 48px; /* Positioned below the category badge */
+  left: 20px;
   z-index: 50;
 }
 

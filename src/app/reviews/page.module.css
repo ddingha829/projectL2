@@ -100,7 +100,7 @@
 .subjectName {
   font-size: 1.45rem;
   font-weight: 900;
-  color: var(--brand-accent-line);
+  color: var(--text-primary);
   margin: 0;
   letter-spacing: -0.03em;
   word-break: keep-all;
@@ -416,16 +416,6 @@
   .reviewList { padding: 0 10px 16px 10px; }
   .reviewItem { padding: 14px; }
   
-  .voteControls {
-    flex-direction: column;
-    gap: 10px;
-  }
-  .ratingSelect {
-    width: 100%;
-  }
-  .voteBtn {
-    width: 100%;
-  }
   .searchInput {
     padding: 12px 20px; /* Reduced from 16px 32px to fit mobile */
     font-size: 1rem;
@@ -680,13 +670,13 @@
 .verdictBadge {
   display: inline-block;
   padding: 8px 16px;
-  background: white;
-  border: 1.5px solid var(--brand-accent-line);
-  color: var(--brand-accent-line);
+  background: var(--bg-primary);
+  border: 1.5px solid var(--border-medium);
+  color: var(--text-secondary);
   border-radius: 100px;
   font-size: 0.9rem;
   font-weight: 800;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   animation: fadeInUp 0.5s ease-out 0.8s both;
 }
 
@@ -713,5 +703,30 @@
   }
   .compValue {
     font-size: 1.8rem;
+  }
+}
+
+/* Mobile Overrides for Voting Section - Placed at end to ensure precedence */
+@media (max-width: 768px) {
+  .voteControls {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+  
+  .voteTextarea {
+    order: 1;
+    width: 100% !important;
+    height: 100px !important; /* Significantly taller as requested */
+    flex: none !important;
+  }
+  
+  .ratingSelect {
+    order: 2;
+    width: 100% !important;
+  }
+  
+  .voteBtn {
+    order: 3;
+    width: 100% !important;
   }
 }

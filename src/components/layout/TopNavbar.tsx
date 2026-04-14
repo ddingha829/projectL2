@@ -111,8 +111,8 @@ export default function TopNavbar({
 
   const ViewSettingsDropdown = ({ isPC = false }: { isPC?: boolean }) => {
     const vType = searchParams.get("viewType") || "card";
-    const mCols = searchParams.get("mCols") || "2";
-    const dCols = searchParams.get("dCols") || "3";
+    const mCols = searchParams.get("mCols") || "3";
+    const dCols = searchParams.get("dCols") || "4";
     const [isOpen, setIsOpen] = useState(false);
     const viewRef = useRef<HTMLDivElement>(null);
 
@@ -172,22 +172,6 @@ export default function TopNavbar({
                 </button>
               </div>
             </div>
-            {vType === 'card' && (
-              <div className={styles.vGroup}>
-                <span className={styles.vLabel}>{isPC ? '데스크탑' : '모바일'} 컬럼 수</span>
-                <div className={styles.vColSelector}>
-                  {(isPC ? ['2', '3', '4'] : ['1', '2', '3']).map(n => (
-                    <button 
-                      key={n}
-                      className={`${styles.vColBtn} ${ (isPC ? dCols : mCols) === n ? styles.vColActive : ''}`}
-                      onClick={() => updateParam(isPC ? "dCols" : "mCols", n)}
-                    >
-                      {n}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         )}
       </div>
@@ -254,7 +238,7 @@ export default function TopNavbar({
             onMouseEnter={() => setIsEditorsOpen(true)}
             onMouseLeave={() => setIsEditorsOpen(false)}
           >
-            <span className={styles.navLink}>
+            <span className={`${styles.navLink} ${styles.navLinkBorder}`}>
               티끌러 <span className={styles.miniArrow}>▼</span>
             </span>
             {isEditorsOpen && (
