@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/admin/', '/login/', '/write/'],
     },
-    sitemap: 'https://project-l2.vercel.app/sitemap.xml',
+    sitemap: 'https://ticgle.kr/sitemap.xml',
   }
 }

@@ -3,13 +3,14 @@ import { createClient } from '@/lib/supabase/server'
 import { MOCK_POSTS } from './page'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://project-l2.vercel.app'
+  const baseUrl = 'https://ticgle.kr'
   const supabase = await createClient()
 
   // 1. Fetch all DB posts
   const { data: dbPosts } = await supabase
     .from('posts')
     .select('id, created_at')
+    .eq('is_public', true)
     .order('created_at', { ascending: false })
 
   // 2. Map DB posts to sitemap entries

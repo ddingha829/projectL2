@@ -125,7 +125,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     openGraph: {
       title: post.title,
       description: description,
-      url: `https://project-l2.vercel.app/post/${id}`,
+      url: `https://ticgle.kr/post/${id}`,
       type: 'article',
       publishedTime: post.created_at,
       authors: [post.author?.display_name],
@@ -211,7 +211,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
       "name": "Ticgle",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://project-l2.vercel.app/logo.png"
+        "url": "https://ticgle.kr/logo.png"
       }
     },
     "description": post.content.replace(/<[^>]+>/g, '').substring(0, 160).trim(),
