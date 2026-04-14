@@ -57,10 +57,10 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/preview.png",
+        url: "https://project-l2.vercel.app/preview.png",
         width: 1200,
         height: 630,
-        alt: "Ticgle Preview",
+        alt: "티끌 ticgle",
       },
     ],
   },
@@ -68,7 +68,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "티끌 ticgle",
     description: "티끌 모아 반짝이는, 일상 매거진",
-    images: ["/preview.png"],
+    images: ["https://project-l2.vercel.app/preview.png"],
   },
 };
 

@@ -300,12 +300,12 @@
   }
 
   .contentLink {
-    padding: 20px 16px !important; /* Restored safe 16px inset */
+    padding: 10px 8px !important; /* Reduced 50% from 20px 16px as requested */
   }
 
   .title {
     font-size: clamp(1.2rem, 7vw, 1.55rem) !important;
-    margin-bottom: 8px !important;
+    margin-bottom: 6px !important; /* Tighter spacing */
     line-height: 1.25;
     display: block !important;
     overflow: visible !important;
@@ -313,8 +313,8 @@
 
   .header {
     position: absolute !important;
-    top: 12px !important;
-    left: 16px !important; /* Restored safe 16px inset */
+    top: 10px !important; /* Tighter inset */
+    left: 8px !important;
     margin-bottom: 0 !important;
   }
 

@@ -413,14 +413,15 @@
   }
   
   .magImageWrapper {
-    aspect-ratio: 1.6 / 1 !important; /* Slightly wider for better mobile balance */
+    aspect-ratio: 1.6 / 1 !important;
     display: flex;
-    align-items: center; /* Center image vertically */
+    align-items: center; 
     justify-content: center;
+    overflow: hidden;
   }
 
   .magContentArea {
-    padding: 32px !important; /* 2x increase from 16px */
+    padding: 48px 24px !important; /* Increased padding per user request */
   }
 
   .magTitle {
