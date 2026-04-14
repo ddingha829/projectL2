@@ -31,6 +31,8 @@ export default function PostInteractions({
   // [신규] 댓글 수정/삭제 상태
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editContent, setEditContent] = useState("");
+  const [selectionCoords, setSelectionCoords] = useState<{ x: number, y: number } | null>(null);
+
 
   const supabase = createClient();
   const router = useRouter();
@@ -51,6 +53,16 @@ export default function PostInteractions({
           id: segment.getAttribute('data-segment-id') || '',
           text: fullText
         });
+
+        // Calculate coordinates for floating button
+        const range = selection.getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+        setSelectionCoords({
+          x: rect.left + rect.width / 2,
+          y: rect.top + window.scrollY
+        });
+      } else {
+        setSelectionCoords(null);
       }
     };
 
@@ -118,8 +130,8 @@ export default function PostInteractions({
     e.preventDefault();
     if (!user || !newComment.trim() || isSubmitting) return;
 
-    if (selectedAnchor && selectedAnchor.text.length > 20) {
-      alert("20글자 이내로 인용 가능합니다");
+    if (selectedAnchor && selectedAnchor.text.length > 30) {
+      alert("30글자 이내로 인용 가능합니다");
       return;
     }
     
@@ -146,6 +158,7 @@ export default function PostInteractions({
       }
     }
     setNewComment("");
+    setSelectedAnchor(null); // Clear anchor after posting
     setIsSubmitting(false);
     router.refresh();
   };
@@ -231,20 +244,20 @@ export default function PostInteractions({
           <form onSubmit={handleAddComment} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {activeAnchor && !selectedAnchor && (
               <div 
-                className={`${styles.quotePrompt} ${activeAnchor.text.length > 20 ? styles.quotePromptError : ''}`}
+                className={`${styles.quotePrompt} ${activeAnchor.text.length > 30 ? styles.quotePromptError : ''}`}
                 onClick={() => {
-                  if (activeAnchor.text.length > 20) {
-                    alert("20글자 이내로 인용 가능합니다");
+                  if (activeAnchor.text.length > 30) {
+                    alert("30글자 이내로 인용 가능합니다");
                   } else {
                     setSelectedAnchor(activeAnchor);
                   }
                 }}
               >
-                <span>" {activeAnchor.text}{activeAnchor.text.length >= 20 ? '...' : ''} "</span>
+                <span>" {activeAnchor.text}{activeAnchor.text.length >= 30 ? '...' : ''} "</span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>* 버튼을 눌러야만 인용됩니다</span>
                   <button type="button" className={styles.quoteBtn}>
-                    {activeAnchor.text.length > 20 ? '인용 불가' : '이 위치 인용하기'}
+                    {activeAnchor.text.length > 30 ? '인용 불가' : '이 위치 인용하기'}
                   </button>
                 </div>
               </div>
@@ -354,6 +367,29 @@ export default function PostInteractions({
           )}
         </div>
       </section>
+
+      {selectionCoords && activeAnchor && activeAnchor.text.length <= 30 && (
+        <button 
+          className={styles.floatingQuoteBtn}
+          style={{ 
+            left: `${selectionCoords.x}px`, 
+            top: `${selectionCoords.y}px` 
+          }}
+          onMouseDown={(e) => {
+            // Use onMouseDown to prevent losing focus/selection
+            e.preventDefault();
+            setSelectedAnchor(activeAnchor);
+            setSelectionCoords(null);
+            document.getElementById('comments')?.scrollIntoView({ behavior: 'smooth' });
+          }}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="9 11 12 14 22 4"></polyline>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+          </svg>
+          인용하기
+        </button>
+      )}
     </>
   );
 }

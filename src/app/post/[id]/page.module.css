@@ -1333,3 +1333,32 @@
   border-color: var(--text-primary);
   opacity: 1;
 }
+.floatingQuoteBtn {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  margin-top: -10px;
+  background: var(--brand-primary);
+  color: #fff !important;
+  padding: 8px 16px;
+  border-radius: 40px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  z-index: 2500;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  animation: popInQuote 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.floatingQuoteBtn:hover {
+  background: var(--accent-line);
+}
+
+@keyframes popInQuote {
+  from { opacity: 0; transform: translate(-50%, -80%) scale(0.9); }
+  to { opacity: 1; transform: translate(-50%, -100%) scale(1); }
+}
