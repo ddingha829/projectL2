@@ -483,7 +483,7 @@ export default function HomeContent({
               {!isFiltered && (
                 <div className={styles.featureSection}>
                   <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '25px' }}>
-                    <h2 className={styles.sectionTitle}>기획전</h2>
+                    <h2 className={styles.sectionTitle}>태산 : 티끌 모아 봄</h2>
                     <div className={styles.headerSpacer}></div>
                     <Link href="/?category=feature" className={styles.viewAllLink}>
                       MORE <span className={styles.linkIcon}>{'>'}</span>
