@@ -53,11 +53,7 @@
   border: 1.5px solid transparent;
 }
 
-.navLinkBorder {
-  border-width: 2.5px;
-  border-color: rgba(255, 72, 4, 0.4); /* Bolder opacity to match thickness */
-  color: var(--brand-primary);
-}
+
 
 .navLink:hover {
   background: var(--brand-accent-line);

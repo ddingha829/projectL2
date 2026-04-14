@@ -251,11 +251,11 @@ export default function TopNavbar({
           </div>
 
           <div 
-            className={`${styles.dropdownContainer} ${styles.editorBtnWrap}`}
+            className={styles.dropdownContainer}
             onMouseEnter={() => setIsEditorsOpen(true)}
             onMouseLeave={() => setIsEditorsOpen(false)}
           >
-            <span className={`${styles.navLink} ${styles.navLinkBorder}`}>
+            <span className={styles.navLink}>
               티끌러 <span className={styles.miniArrow}>▼</span>
             </span>
             {isEditorsOpen && (
