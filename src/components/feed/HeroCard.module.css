@@ -111,15 +111,17 @@
   font-family: var(--font-noto-sans), sans-serif;
   font-size: clamp(1.61rem, 4.5vw, 3.63rem); /* Further reduced by 5% for optimal fit */
   font-weight: 900;
-  line-height: 1.15;
+  line-height: 1.25; /* Increased from 1.15 to prevent descender clipping (g, j, p, q, y) */
   margin-bottom: 32px;
+  padding-bottom: 0.1em; /* Added safe space for descenders */
   letter-spacing: -0.02em;
   word-break: keep-all;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
   -webkit-box-orient: vertical;
-  overflow: hidden;
+  overflow: visible; /* Changed from hidden to prevent clipping of the last line's descenders */
+  z-index: 11;
 }
 
 
