@@ -26,5 +26,5 @@ export async function GET(request: Request) {
   }
 
   // return the user to an error page with instructions
-  return NextResponse.redirect(`${origin}/login?error=Could not authenticate user`)
+  return NextResponse.redirect(`${origin}/login?error=${encodeURIComponent('인증에 실패했습니다. 다시 시도해 주세요.')}`)
 }

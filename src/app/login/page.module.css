@@ -8,7 +8,7 @@
 
 .card {
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
   background-color: var(--bg-hover);
   padding: 40px;
   border-radius: 20px;
@@ -27,9 +27,10 @@
   color: var(--text-muted);
   text-align: center;
   font-size: 0.95rem;
-  margin-bottom: 30px;
+  margin-bottom: 28px;
 }
 
+/* 알림 메시지 */
 .errorAlert {
   background-color: rgba(255, 51, 51, 0.1);
   color: #ff3333;
@@ -53,20 +54,79 @@
   line-height: 1.5;
 }
 
+/* 소셜 로그인 */
+.socialSection {
+  margin-bottom: 8px;
+}
+
+.googleBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 13px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background-color: var(--background);
+  color: var(--text-main);
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.googleBtn:hover {
+  background-color: var(--bg-hover);
+  border-color: var(--text-muted);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.googleBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.googleIcon {
+  flex-shrink: 0;
+}
+
+/* 구분선 */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: var(--border);
+}
+
+/* 폼 */
 .form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
 .inputGroup {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .inputGroup label {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   color: var(--text-main);
   font-weight: 500;
 }
@@ -84,17 +144,15 @@
 }
 
 .input:focus {
-  border-color: #0a467d;
+  border-color: #ff4804;
 }
 
+/* 버튼 */
 .actionButtons {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 10px;
+  margin-top: 4px;
 }
 
-.loginBtn, .signupBtn {
+.loginBtn {
   width: 100%;
   padding: 14px;
   border-radius: 12px;
@@ -103,49 +161,29 @@
   cursor: pointer;
   transition: all 0.2s;
   border: none;
-}
-
-.loginBtn {
-  background-color: #0a467d;
+  background-color: #ff4804;
   color: white;
+  font-family: inherit;
 }
 
 .loginBtn:hover {
-  background-color: #083863;
+  background-color: #e03e00;
   transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(255, 72, 4, 0.3);
 }
 
-.signupBtn {
-  background-color: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-main);
+.loginBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
-.signupBtn:hover {
-  background-color: var(--border);
-}
-
-.footer {
-  margin-top: 30px;
-  text-align: center;
-}
-
-.backLink {
-  color: var(--text-muted);
-  text-decoration: none;
-  font-size: 0.9rem;
-}
-
-.backLink:hover {
-  text-decoration: underline;
-}
-
+/* 비밀번호 재설정 */
 .resetRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 4px;
-  padding-top: 16px;
+  padding-top: 12px;
   border-top: 1px solid var(--border);
   gap: 12px;
 }
@@ -159,7 +197,7 @@
 .resetBtn {
   font-size: 0.82rem;
   font-weight: 600;
-  color: #0a467d;
+  color: #ff4804;
   background: none;
   border: none;
   cursor: pointer;
@@ -175,3 +213,53 @@
   opacity: 0.7;
 }
 
+/* 회원가입 링크 */
+.signupRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.signupLink {
+  color: #ff4804;
+  font-weight: 700;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.signupLink:hover {
+  text-decoration: underline;
+}
+
+/* 푸터 */
+.footer {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.backLink {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+}
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
+  .card {
+    padding: 28px 20px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+}

@@ -31,7 +31,7 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   const protectedRoutes = ['/write', '/admin']
   const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route))
-  const isLoginPage = pathname.startsWith('/login')
+  const isLoginPage = pathname.startsWith('/login') || pathname.startsWith('/signup')
 
   try {
     if (isProtectedRoute || isLoginPage) {

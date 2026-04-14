@@ -1,0 +1,96 @@
+.container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: calc(100vh - 100px);
+  padding: 40px 20px;
+}
+
+.card {
+  width: 100%;
+  max-width: 720px;
+  background-color: var(--bg-hover);
+  padding: 48px 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.updated {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 36px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section {
+  margin-bottom: 28px;
+}
+
+.section h2 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 10px;
+}
+
+.section p {
+  font-size: 0.92rem;
+  color: var(--text-sub);
+  line-height: 1.7;
+  margin-bottom: 8px;
+}
+
+.section ul {
+  list-style: disc;
+  padding-left: 20px;
+  margin: 0;
+}
+
+.section li {
+  font-size: 0.92rem;
+  color: var(--text-sub);
+  line-height: 1.7;
+  margin-bottom: 4px;
+}
+
+.section li strong {
+  color: var(--text-main);
+}
+
+.footer {
+  margin-top: 36px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.backLink {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+
+.backLink:hover {
+  color: var(--text-main);
+  text-decoration: underline;
+}
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
+  .card {
+    padding: 28px 20px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+}

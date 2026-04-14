@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/admin/', '/login/', '/write/'],
+      disallow: ['/admin/', '/login/', '/signup/', '/write/'],
     },
     sitemap: 'https://ticgle.kr/sitemap.xml',
   }

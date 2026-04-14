@@ -28,12 +28,24 @@ export async function signup(formData: FormData) {
   
   const origin = (await headers()).get('origin')
   
+  const email = formData.get('email') as string
+  const password = formData.get('password') as string
+  const displayName = formData.get('displayName') as string
+
+  if (!displayName || displayName.trim().length === 0) {
+    redirect('/signup?error=' + encodeURIComponent('닉네임을 입력해 주세요.'))
+  }
+
+  if (password.length < 6) {
+    redirect('/signup?error=' + encodeURIComponent('비밀번호는 최소 6자 이상이어야 합니다.'))
+  }
+
   const signUpParams = {
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
+    email,
+    password,
     options: {
       data: {
-        full_name: formData.get('displayName') as string,
+        full_name: displayName.trim(),
       },
       emailRedirectTo: `${origin}/auth/callback`,
     }
@@ -42,7 +54,7 @@ export async function signup(formData: FormData) {
   const { data, error } = await supabase.auth.signUp(signUpParams)
 
   if (error) {
-    redirect(`/login?error=${encodeURIComponent(error.message)}`)
+    redirect(`/signup?error=${encodeURIComponent(error.message)}`)
   }
 
   revalidatePath('/', 'layout')
@@ -68,7 +80,7 @@ export async function resetPassword(formData: FormData) {
   const email = formData.get('email') as string
 
   if (!email) {
-    redirect('/login?error=' + encodeURIComponent('비밀번호 재설정을 위해 위에 이메일을 먼저 입력해 주세요.'))
+    redirect('/login?error=' + encodeURIComponent('비밀번호 재설정을 위해 이메일을 입력해 주세요.'))
   }
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -80,4 +92,28 @@ export async function resetPassword(formData: FormData) {
   }
 
   redirect('/login?message=reset_sent')
+}
+
+export async function signInWithGoogle() {
+  const supabase = await createClient()
+  const origin = (await headers()).get('origin')
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: `${origin}/auth/callback`,
+      queryParams: {
+        access_type: 'offline',
+        prompt: 'consent',
+      },
+    },
+  })
+
+  if (error) {
+    redirect('/login?error=' + encodeURIComponent('구글 로그인에 실패했습니다.'))
+  }
+
+  if (data.url) {
+    redirect(data.url)
+  }
 }
