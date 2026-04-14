@@ -1585,6 +1585,10 @@
   .edBullets {
     gap: 5px;
   }
+  .editorsSection {
+    margin-top: 10px !important; 
+    margin-bottom: 20px !important;
+  }
 }
 
 .reviewHorizontalGrid {
@@ -1746,6 +1750,7 @@
     padding-left: 16px; /* Start aligned with header */
     padding-right: 16px;
     gap: 10px; /* Increased by ~20% for more breathing room */
+    padding-bottom: 15px !important; /* Significantly reduced from 40px to shrink gap below */
   }
   .miniReviewCard {
     flex: 0 0 64% !important; /* Increased twice to reach ~64% as requested */
