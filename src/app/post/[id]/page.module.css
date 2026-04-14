@@ -1333,11 +1333,100 @@
   border-color: var(--text-primary);
   opacity: 1;
 }
+.inlineQuoteBubble {
+  position: relative;
+  transform: translate(-50%, -100%);
+  margin-top: -15px;
+  background: var(--bg-primary);
+  border: 2px solid var(--accent-line);
+  padding: 16px;
+  border-radius: 16px;
+  box-shadow: 0 15px 45px rgba(0,0,0,0.2);
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: popInQuote 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.inlineQuoteHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.inlineQuotePreview {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.4;
+}
+
+.inlineCloseBtn {
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 2px;
+}
+
+.inlineTextarea {
+  width: 100%;
+  height: 80px;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  padding: 10px;
+  font-size: 0.9rem;
+  resize: none;
+  outline: none;
+  font-family: inherit;
+}
+
+.inlineTextarea:focus {
+  border-color: var(--border-medium);
+}
+
+.inlineActions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.inlineSubmitBtn {
+  background: var(--accent-line);
+  color: #fff;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.inlineSubmitBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.inlineSubmitBtn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+}
+
 .floatingQuoteBtn {
   position: absolute;
   transform: translate(-50%, -100%);
   margin-top: -10px;
-  background: var(--brand-primary);
+  background: var(--accent-line); /* Changed to orange for better visibility in all modes */
   color: #fff !important;
   padding: 8px 16px;
   border-radius: 40px;
@@ -1355,7 +1444,8 @@
 }
 
 .floatingQuoteBtn:hover {
-  background: var(--accent-line);
+  filter: brightness(1.1);
+  transform: translate(-50%, -102%) scale(1.05);
 }
 
 @keyframes popInQuote {

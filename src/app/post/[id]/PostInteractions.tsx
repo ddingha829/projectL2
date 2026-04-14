@@ -32,6 +32,8 @@ export default function PostInteractions({
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editContent, setEditContent] = useState("");
   const [selectionCoords, setSelectionCoords] = useState<{ x: number, y: number } | null>(null);
+  const [isInlineOpen, setIsInlineOpen] = useState(false);
+  const [inlineComment, setInlineComment] = useState("");
 
 
   const supabase = createClient();
@@ -62,7 +64,10 @@ export default function PostInteractions({
           y: rect.top + window.scrollY
         });
       } else {
-        setSelectionCoords(null);
+        if (!isInlineOpen) {
+          setSelectionCoords(null);
+          setActiveAnchor(null);
+        }
       }
     };
 
@@ -369,26 +374,85 @@ export default function PostInteractions({
       </section>
 
       {selectionCoords && activeAnchor && activeAnchor.text.length <= 30 && (
-        <button 
-          className={styles.floatingQuoteBtn}
+        <div 
+          className={isInlineOpen ? styles.inlineQuoteInputWrap : ""}
           style={{ 
+            position: 'absolute',
             left: `${selectionCoords.x}px`, 
-            top: `${selectionCoords.y}px` 
-          }}
-          onMouseDown={(e) => {
-            // Use onMouseDown to prevent losing focus/selection
-            e.preventDefault();
-            setSelectedAnchor(activeAnchor);
-            setSelectionCoords(null);
-            document.getElementById('comments')?.scrollIntoView({ behavior: 'smooth' });
+            top: `${selectionCoords.y}px`,
+            zIndex: 2500
           }}
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="9 11 12 14 22 4"></polyline>
-            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
-          </svg>
-          인용하기
-        </button>
+          {!isInlineOpen ? (
+            <button 
+              className={styles.floatingQuoteBtn}
+              style={{ position: 'relative', left: 0, top: 0, transform: 'translate(-50%, -100%)' }}
+              onMouseDown={(e) => {
+                e.preventDefault();
+                if (!user) {
+                  alert("댓글 작성을 위해 로그인이 필요합니다");
+                  return;
+                }
+                setIsInlineOpen(true);
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+              인용해서 댓글 달기
+            </button>
+          ) : (
+            <div className={styles.inlineQuoteBubble}>
+              <div className={styles.inlineQuoteHeader}>
+                <span className={styles.inlineQuotePreview}>"{activeAnchor.text}"</span>
+                <button className={styles.inlineCloseBtn} onClick={() => {
+                  setIsInlineOpen(false);
+                  setSelectionCoords(null);
+                }}>✕</button>
+              </div>
+              <textarea 
+                className={styles.inlineTextarea}
+                placeholder="내용을 입력하세요..."
+                autoFocus
+                value={inlineComment}
+                onChange={(e) => setInlineComment(e.target.value)}
+              />
+              <div className={styles.inlineActions}>
+                <button 
+                  className={styles.inlineSubmitBtn}
+                  disabled={isSubmitting || !inlineComment.trim()}
+                  onClick={async () => {
+                    if (!inlineComment.trim()) return;
+                    setIsSubmitting(true);
+                    
+                    const { data: profile } = await supabase.from('profiles').select('display_name, avatar_url').eq('id', user.id).single();
+                    const finalContent = `[quote:${activeAnchor.id}:${activeAnchor.text}] ${inlineComment.trim()}`;
+                    
+                    const { data, error } = await supabase.from('comments').insert({
+                      post_id: postId,
+                      user_id: user.id,
+                      content: finalContent
+                    }).select().single();
+
+                    if (!error && data) {
+                      setComments([{ ...data, user: profile }, ...comments]);
+                      setIsInlineOpen(false);
+                      setInlineComment("");
+                      setSelectionCoords(null);
+                      setActiveAnchor(null);
+                      router.refresh();
+                    } else {
+                      alert("등록 실패: " + (error?.message || "오류가 발생했습니다"));
+                    }
+                    setIsSubmitting(false);
+                  }}
+                >
+                  {isSubmitting ? "..." : "등록"}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       )}
     </>
   );
