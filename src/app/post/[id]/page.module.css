@@ -57,6 +57,65 @@
   color: #fff !important;
 }
 
+/* Share Menu Styles */
+.shareWrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.shareMenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 12px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-medium);
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  z-index: 1000;
+  min-width: 170px;
+  animation: slideInUp 0.25s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.shareItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+}
+
+.shareItem:hover {
+  background: var(--bg-secondary);
+  color: var(--brand-accent-soft-text);
+}
+
+.shareItemIcon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+@keyframes slideInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 
 
 .backBtn {
