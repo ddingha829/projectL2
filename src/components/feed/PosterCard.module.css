@@ -408,50 +408,69 @@
 }
 
 @media (max-width: 768px) {
+  /* MAGAZINE TOP (2-column grid) */
   .magazineCard {
     gap: 0 !important;
-    padding: 20px !important; /* Added inset padding to create card frame effect */
+    padding: 0 !important; /* Full-bleed for top cards */
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 380px !important; /* Fixed height to keep cards uniform */
   }
   
   .magImageWrapper {
-    aspect-ratio: 1.6 / 1 !important;
-    display: flex;
-    align-items: center; 
-    justify-content: center;
-    overflow: hidden;
-    border-radius: 8px; /* Rounded corners for the inset image */
-    border-bottom: none !important;
-  }
-
-  .posterImage {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center; /* Explicitly center */
+    aspect-ratio: 1.5 / 1 !important;
+    width: 100% !important;
+    border-radius: 0 !important;
+    border-bottom: 1px solid var(--border-medium);
   }
 
   .magContentArea {
-    padding: 40px 10px 20px 10px !important; /* Increased vertical padding per user request */
+    padding: 12px 10px !important; /* Significantly reduced padding for top */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
   }
 
-  .magTitle {
-    font-size: 1.05rem;
-    -webkit-line-clamp: 2; 
-    line-clamp: 2;
-    height: auto; 
-    min-height: auto;
-    word-break: break-word;
-    margin-bottom: 12px;
+  /* MAGAZINE BOTTOM (1-column list) */
+  .oneColCard.magazineCard {
+    flex-direction: row !important; /* Horizontal layout like PC */
+    min-height: auto !important;
+    padding: 16px !important;
+    gap: 16px !important;
+    align-items: center;
   }
-  .magExcerpt {
-    font-size: 0.88rem;
+
+  .oneColCard .magImageWrapper {
+    width: 120px !important; /* Fixed width for thumbnail effect */
+    height: 90px !important;
+    aspect-ratio: auto !important;
+    border-radius: 8px !important;
+    border: 1px solid var(--border-medium);
+    flex-shrink: 0;
+  }
+
+  .oneColCard .magContentArea {
+    padding: 0 !important;
+    justify-content: center;
+  }
+
+  .oneColCard .magTitle {
+    font-size: 0.95rem !important;
+    margin-bottom: 4px !important;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    min-height: auto;
+  }
+
+  .oneColCard .magExcerpt {
+    font-size: 0.82rem !important;
+    margin-bottom: 8px !important;
     -webkit-line-clamp: 2;
     line-clamp: 2;
-    height: auto; 
     min-height: auto;
-    white-space: pre-wrap; 
-    margin-bottom: 16px;
   }
+
   .magAuthorBadge {
     font-size: 0.65rem;
   }
