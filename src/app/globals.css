@@ -14,6 +14,8 @@
   --brand-primary-hover: #2c2c2c;
   --brand-accent-line: #ff4804; 
   --brand-secondary: #4a4a4a;
+  --brand-accent-soft: #fff2e8;
+  --brand-accent-soft-text: #c83a02;
   
   --accent-primary: var(--brand-primary);
   --accent-hover: var(--brand-primary-hover);
@@ -67,6 +69,9 @@
     
     --brand-primary: #f9fafb;
     --brand-primary-hover: #e5e7eb;
+    --brand-accent-soft: #2e2019; /* A deep, warm brown for dark mode */
+    --brand-accent-soft-text: #ff8c4f; /* A brighter orange for dark mode text */
+
     
     /* Semantic Badges Dark */
     --badge-bg-admin: rgba(239, 68, 68, 0.15);
@@ -247,4 +252,3 @@ li {
 .ql-line-height-2-0 { line-height: 2.0 !important; }
 .ql-line-height-2-5 { line-height: 2.5 !important; }
 .ql-line-height-3-0 { line-height: 3.0 !important; }
-

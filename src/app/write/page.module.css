@@ -75,20 +75,23 @@
 }
 
 .submitBtn {
-  flex: 1;
+  background: var(--brand-accent-line);
+  color: #fff;
   padding: 16px;
-  background-color: #0a467d;
-  color: white;
   border: none;
   border-radius: 12px;
   font-size: 1.1rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .submitBtn:hover {
-  background-color: #083863;
+  background: #c83a02;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
@@ -281,4 +284,6 @@
   color: var(--accent-primary);
 }
 
-
+.submitGroup {
+    display: contents;
+}

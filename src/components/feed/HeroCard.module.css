@@ -146,13 +146,12 @@
 .authorNameBadge {
   display: flex;
   align-items: center;
-  background: var(--bg-primary);
-  color: var(--brand-primary);
-  padding: 4px 14px;
-  border-radius: 20px;
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
   font-weight: 800;
   font-size: 0.85rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   letter-spacing: -0.01em;
 }
 
@@ -168,6 +167,7 @@
 
 .authorName {
   display: inline-block;
+  color: var(--text-primary-inverse, #fff);
 }
 
 .footer {

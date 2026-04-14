@@ -73,9 +73,18 @@ Systematic dimensions for a consistent grid.
 ## 6. CSS Token Reference (for Devs)
 ```css
 :root {
-  --brand-primary: #204bb8;
+  /* Core Brand Tokens */
+  --brand-primary: #121212;
+  --brand-accent-line: #ff4804;
+
+  /* Layout Tokens */
   --header-height: 62px;
+  --container-max-width: 1200px;
+  
+  /* Radius Tokens */
   --radius-md: 16px;
+  --radius-lg: 24px;
+  
   /* ... see globals.css for full list */
 }
 ```

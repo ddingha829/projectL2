@@ -1,7 +1,6 @@
 'use server'
 
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 
 export async function createPost(formData: FormData) {
@@ -9,11 +8,10 @@ export async function createPost(formData: FormData) {
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect('/login');
+    return { error: 'Not authenticated', reauth: true };
   }
 
   try {
-    // 1. 프로필 권한 확인
     const { data: profile } = await supabase
       .from('profiles')
       .select('role')
@@ -21,10 +19,9 @@ export async function createPost(formData: FormData) {
       .maybeSingle();
 
     if (!profile || (profile.role !== 'editor' && profile.role !== 'admin')) {
-      redirect('/write?error=No permission');
+      return { error: 'Permission denied. You must be an editor or admin.' };
     }
 
-    // 2. 폼 데이터 추출 및 검증
     const category = formData.get('category') as string;
     const title = (formData.get('title') as string || '').trim();
     const imageUrl = (formData.get('imageUrl') as string || '').trim();
@@ -33,23 +30,19 @@ export async function createPost(formData: FormData) {
     const isPublic = formData.get('isPublic') === 'on';
     const isFeature = formData.get('isFeature') === 'on';
     const showMainImage = formData.get('showMainImage') !== 'off';
-
-    // [신규] 한줄평 평가 항목
     const reviewSubject = (formData.get('reviewSubject') as string || '').trim();
     const reviewRating = parseInt(formData.get('reviewRating') as string || '0');
     const reviewComment = (formData.get('reviewComment') as string || '').trim();
 
     if (!title || !content) {
-      redirect('/write?error=Title and content are required');
+      return { error: 'Title and content are required.' };
     }
 
-    // 3. 게시판 타입별 권한 재검증
     if (category === 'notice' && profile.role !== 'admin') {
-      redirect('/write?error=Only admin can post notices');
+      return { error: 'Only admins can post notices.' };
     }
 
-    // 4. 데이터베이스 저장
-    const { error } = await supabase
+    const { data: postData, error } = await supabase
       .from('posts')
       .insert([
         {
@@ -66,25 +59,25 @@ export async function createPost(formData: FormData) {
           review_rating: reviewRating || 0,
           review_comment: reviewComment || null
         }
-      ]);
+      ])
+      .select('id')
+      .single();
 
     if (error) {
       console.error('Insert post error:', error);
-      redirect(`/write?error=${encodeURIComponent(error.message)}`);
+      return { error: `Database error: ${error.message}` };
     }
 
-    // 5. 임시저장 데이터 삭제
     await supabase.from('drafts').delete().eq('user_id', user.id);
 
     revalidatePath('/', 'layout');
-  } catch (err: any) {
-    if (err?.digest?.includes('NEXT_REDIRECT')) throw err;
-    console.error('Action unexpected error:', err);
-    redirect(`/write?error=Unexpected failure: ${encodeURIComponent(err.message || 'Unknown error')}`);
-  }
 
-  // try-catch 밖에서 최종 리다이렉트
-  redirect('/');
+    return { success: true, postId: postData.id };
+
+  } catch (err: any) {
+    console.error('Action unexpected error:', err);
+    return { error: `An unexpected error occurred: ${err.message || 'Unknown error'}` };
+  }
 }
 
 /** 평가 항목 중복 조회를 위한 자동완성 목록용 액션 */
@@ -99,7 +92,6 @@ export async function getUniqueReviewSubjects(query: string) {
     .limit(10);
 
   if (error || !data) return [];
-  // 중복 제거 후 반환
   const subjects = data
     .map((d: any) => d.review_subject as string)
     .filter((s, i, arr) => s && arr.indexOf(s) === i);
@@ -164,4 +156,3 @@ export async function getDraft() {
   if (error) return null;
   return data;
 }
-

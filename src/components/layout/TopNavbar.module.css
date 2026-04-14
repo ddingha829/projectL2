@@ -53,21 +53,22 @@
 }
 
 .navLink:hover {
-  background: var(--text-primary);
-  color: var(--bg-primary);
+  background: var(--brand-accent-line);
+  color: #fff;
   transform: translateY(-1px);
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-.editorBtnWrap .navLink {
-  background: #ff4804;
-  color: #fff !important;
-}
-
-.editorBtnWrap:hover .navLink {
-  background: #ff4804 !important;
+.mainNav:hover .editorBtnWrap .navLink {
+  background: var(--brand-accent-line);
   color: #fff !important;
   box-shadow: 0 4px 12px rgba(255, 72, 4, 0.2);
+}
+
+.mainNav .navLink:hover ~ .editorBtnWrap .navLink {
+  background: transparent;
+  color: var(--text-secondary);
+  box-shadow: none;
 }
 
 .miniArrow {
@@ -250,20 +251,24 @@
 }
 
 .writeButton {
-  background: #ff4804;
+  background: var(--brand-accent-line);
   color: #fff;
-  padding: 6px 14px;
+  padding: 8px 18px;
   border-radius: 30px;
-  font-size: 0.78rem;
+  font-size: 0.85rem;
   font-weight: 800;
   text-decoration: none;
   transition: all 0.2s;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .writeButton:hover {
-  background: #e63e00;
-  transform: translateY(-1px);
+  background: #c83a02;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 72, 4, 0.2);
 }
 
 .navActions {
