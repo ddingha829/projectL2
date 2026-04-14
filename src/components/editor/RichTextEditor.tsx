@@ -33,7 +33,6 @@ const ReactQuill = dynamic(async () => {
                 RQ.Quill.register(Font, true);
             }
 
-
             // 줄간격(Line Height) 등록 - 클래스 방식이 오버라이드에 유리함
             const Parchment = RQ.Quill.import('parchment');
             const ClassAttributor = (Parchment as any).Attributor?.Class || (Parchment as any).ClassAttributor;
@@ -272,11 +271,11 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             container: [
                 [{ 'header': [1, 2, 3, false] }],
                 [{ 'font': [
-                    'notosans', 'notosans-thin', 'notosans-light', 'notosans-medium', 'notosans-bold', 'notosans-black',
+                    false, 'notosans', 'notosans-thin', 'notosans-light', 'notosans-medium', 'notosans-bold', 'notosans-black',
                     'nanummyeongjo', 'nanumgothic', 'inter', 'merriweather'
                 ] }],
-                [{ 'size': ['0.75rem', '0.875rem', '1rem', '1.125rem', '1.25rem', '1.5rem', '2rem', '2.5rem'] }],
-                [{ 'lineheight': ['1-0', '1-2', '1-4', '1-5', '1-6', '1-8', '2-0', '2-5', '3-0'] }],
+                [{ 'size': [false, '0.75rem', '0.875rem', '1rem', '1.125rem', '1.25rem', '1.5rem', '2rem', '2.5rem'] }],
+                [{ 'lineheight': [false, '1-0', '1-2', '1-4', '1-5', '1-6', '1-8', '2-0', '2-5', '3-0'] }],
                 ['bold', 'italic', 'underline', 'strike'],
 
                 [{ 'color': [] }, { 'background': [] }],
@@ -349,8 +348,23 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                     line-height: 1.8;
                     padding: 40px !important;
                     font-family: var(--font-noto-sans), sans-serif;
+                    font-weight: 300; /* 기본 노토산스 Light 설정 */
                     color: var(--text-primary);
                 }
+                
+                /* [신규] 폰트 영속성 해결을 위한 클래스 정의 */
+                :global(.ql-font-notosans) { font-family: var(--font-noto-sans) !important; }
+                :global(.ql-font-notosans-thin) { font-family: var(--font-noto-sans) !important; font-weight: 100 !important; }
+                :global(.ql-font-notosans-light) { font-family: var(--font-noto-sans) !important; font-weight: 300 !important; }
+                :global(.ql-font-notosans-medium) { font-family: var(--font-noto-sans) !important; font-weight: 500 !important; }
+                :global(.ql-font-notosans-bold) { font-family: var(--font-noto-sans) !important; font-weight: 700 !important; }
+                :global(.ql-font-notosans-black) { font-family: var(--font-noto-sans) !important; font-weight: 900 !important; }
+                
+                :global(.ql-font-nanummyeongjo) { font-family: var(--font-nanum-myeongjo) !important; }
+                :global(.ql-font-nanumgothic) { font-family: var(--font-nanum-gothic) !important; }
+                :global(.ql-font-inter) { font-family: var(--font-inter) !important; }
+                :global(.ql-font-merriweather) { font-family: var(--font-merriweather) !important; }
+
                 /* 티끌러 내 문단 간격 초기화 (실제 게시물과 동일하게) */
                 .ql-editor p {
                     margin: 0;
@@ -360,7 +374,12 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                 :global(.ql-snow .ql-picker.ql-size .ql-picker-item::before) {
                     content: attr(data-value) !important;
                 }
+                :global(.ql-snow .ql-picker.ql-size .ql-picker-label:not([data-value])::before) { content: '1rem'; }
+
                 :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label::before) { content: 'Line Height'; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label[data-value="1-8"]::before) { content: '1.8'; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label:not([data-value])::before) { content: '1.8'; }
+
                 :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1-0"]::before) { content: '1.0'; }
                 :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1-2"]::before) { content: '1.2'; }
                 :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1-4"]::before) { content: '1.4'; }
@@ -370,11 +389,13 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                 :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="2-0"]::before) { content: '2.0'; }
                 :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="2-5"]::before) { content: '2.5'; }
                 :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="3-0"]::before) { content: '3.0'; }
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label::before) { content: 'Line Height'; }
 
-                :global(.ql-snow .ql-picker.ql-font.ql-header .ql-picker-label::before) { content: 'Heading'; }
+                :global(.ql-snow .ql-picker.ql-header .ql-picker-label::before) { content: 'Heading'; }
+                :global(.ql-snow .ql-picker.ql-header .ql-picker-label:not([data-value])::before) { content: '본문 (P)'; }
 
                 /* Noto Sans 두께별 라벨 설정 */
+                :global(.ql-snow .ql-picker.ql-font .ql-picker-label:not([data-value])::before) { content: '기본 (노토산스 Light)'; font-family: var(--font-noto-sans); font-weight: 300; }
+
                 :global(.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="notosans"]::before),
                 :global(.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="notosans"]::before) { content: '노토산스 (Regular)'; font-family: var(--font-noto-sans); }
                 
@@ -406,7 +427,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
 
                     .ql-editor {
                         padding: 20px 16px !important;
-                        font-size: 1.05rem;
+                        font-size: 1rem; /* 모바일도 1rem으로 유지 */
                     }
                     .ql-toolbar.ql-snow {
                         padding: 8px 12px;

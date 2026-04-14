@@ -139,7 +139,8 @@
   line-height: 1.8; /* 기본 간격을 사용자 요청에 따라 1.8로 설정 */
   color: var(--text-primary);
   margin-bottom: 30px;
-  font-weight: 400;
+  font-family: var(--font-noto-sans), sans-serif;
+  font-weight: 300; /* 기본 노토산스 Light 설정 */
   letter-spacing: -0.015em;
   word-break: keep-all;
   overflow-wrap: break-word;
