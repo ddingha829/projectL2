@@ -1512,12 +1512,41 @@
 
 @media (max-width: 768px) {
   .editorsGrid {
-    grid-template-columns: 1fr;
-    gap: 16px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
   .editorProfileCard {
     min-height: auto;
-    padding: 24px 20px;
+    padding: 20px 12px;
+    border-radius: 16px;
+  }
+  .edAvatarWrapper {
+    width: 54px;
+    height: 54px;
+    margin-bottom: 12px;
+  }
+  .edName {
+    font-size: 0.92rem;
+  }
+  .edRole {
+    font-size: 0.7rem;
+    margin-bottom: 10px;
+  }
+  .edBio {
+    font-size: 0.76rem;
+    line-height: 1.45;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    margin-bottom: 12px;
+    max-width: 100%;
+  }
+  .edBulletPill {
+    font-size: 0.62rem;
+    padding: 3px 8px;
+    font-weight: 800;
+  }
+  .edBullets {
+    gap: 5px;
   }
 }
 
