@@ -1555,6 +1555,7 @@
     min-height: auto;
     padding: 20px 12px;
     border-radius: 16px;
+    border: 1.2px solid var(--border-medium) !important;
   }
   .edAvatarWrapper {
     width: 54px;
@@ -1566,7 +1567,7 @@
   }
   .edRole {
     font-size: 0.7rem;
-    margin-bottom: 10px;
+    margin-bottom: 5px; /* Reduced 50% from 10px */
   }
   .edBio {
     font-size: 0.76rem;
