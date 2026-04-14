@@ -303,42 +303,39 @@
 
 
 /* MAGAZINE MODE STYLES */
+/* MAGAZINE MODE STYLES */
 .magazineCard {
   aspect-ratio: auto !important;
   background: var(--bg-primary) !important;
-  border: 1px solid var(--border-light) !important;
-  box-shadow: var(--shadow-sm) !important;
+  border: 1.2px solid var(--border-light) !important;
+  box-shadow: none !important;
   overflow: hidden !important;
   display: flex !important;
-  flex-direction: row-reverse !important; /* Image on right per reference */
-  gap: 20px !important;
-  padding: 18px !important;
+  flex-direction: column !important; /* Reverted to original vertical layout */
+  gap: 12px !important;
+  padding: 0 !important; /* No padding for full-bleed image style initially */
   border-radius: 12px !important;
-  transition: all 0.3s cubic-bezier(0.2, 0, 0, 1) !important;
-  align-items: center !important;
+  transition: all 0.25s ease !important;
 }
 
 .magazineCard:hover {
   border-color: var(--accent-line) !important; /* Orange border on hover */
-  transform: translateY(-4px) !important;
-  box-shadow: 0 12px 40px rgba(255, 72, 4, 0.1) !important;
   background: var(--bg-primary) !important;
+  box-shadow: 0 8px 24px rgba(255, 72, 4, 0.08) !important;
 }
 
 .magImageWrapper {
   position: relative;
-  width: 100px !important;
-  height: 100px !important;
-  aspect-ratio: 1 / 1 !important;
-  border-radius: 8px;
+  width: 100% !important;
+  aspect-ratio: 1.5 / 1 !important; /* Original landscape Magazine ratio */
+  border-radius: 0; /* Full bleed top */
   overflow: hidden;
   background-color: var(--bg-tertiary);
-  border: 1.5px solid var(--border-light);
-  flex-shrink: 0;
+  border-bottom: 1.2px solid var(--border-light);
 }
 
 .magazineCard:hover .posterImage {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 .magCategoryLabel {
@@ -346,21 +343,18 @@
 }
 
 .magContentArea {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 0 !important;
+  padding: 16px !important; /* Padding for the content inside bordered card */
   background: transparent !important;
   color: var(--text-primary) !important;
-  justify-content: center;
 }
 
 .magCategorySmall {
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   color: var(--text-muted);
   font-weight: 600;
   margin-bottom: 6px;
-  letter-spacing: -0.01em;
 }
 
 .magTitle {
@@ -369,14 +363,14 @@
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1.4;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   word-break: keep-all;
-  min-height: auto;
+  min-height: 2.8em; /* Original height logic */
 }
 
 .magTitle a {
@@ -400,11 +394,11 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   white-space: pre-wrap;
-  min-height: auto;
+  min-height: 3.2em; /* Original height logic */
 }
 
 .magMetaInfo {
-  margin-top: 8px;
+  margin-top: auto;
 }
 
 .magDate {
@@ -414,33 +408,21 @@
 }
 
 @media (max-width: 768px) {
-  .magazineCard {
-    flex-direction: column !important; /* Mobile still vertical or smaller horizontal? Image suggested horizontal */
-    padding: 14px !important;
-    gap: 12px !important;
-  }
-  .magImageWrapper {
-    width: 60px !important;
-    height: 60px !important;
-    position: absolute !important;
-    right: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-  /* Adjusted mobile layout for horizontal feeling or keep vertical? */
-  .magazineCard {
-    flex-direction: row-reverse !important;
-    min-height: 90px;
-  }
-  .magContentArea {
-    padding-right: 70px !important; /* Space for absolute image on mobile */
-  }
   .magTitle {
-    font-size: 1.05rem;
-    margin-bottom: 4px;
+    font-size: 0.95rem;
+    -webkit-line-clamp: 2; 
+    line-clamp: 2;
+    height: 2.8em; 
+    word-break: break-word;
+    margin-bottom: 8px;
   }
   .magExcerpt {
-    display: none; /* Hide excerpt on densified mobile magazine card */
+    font-size: 0.82rem;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    height: 3.2em; 
+    white-space: pre-wrap; 
+    margin-bottom: 12px;
   }
 }
 
