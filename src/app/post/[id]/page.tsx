@@ -120,7 +120,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const description = post.content.replace(/<[^>]+>/g, '').substring(0, 160).trim();
   
   return {
-    title: `${post.title} | 티끌`,
+    title: `${post.title} | 티끌 ticgle`,
     description: description,
     openGraph: {
       title: post.title,
@@ -132,7 +132,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       section: post.category,
       images: [
         {
-          url: post.image_url || '/logo.png',
+          url: post.image_url || '/preview.png',
           width: 1200,
           height: 630,
           alt: post.title,
@@ -143,7 +143,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       card: 'summary_large_image',
       title: post.title,
       description: description,
-      images: [post.image_url || '/logo.png'],
+      images: [post.image_url || '/preview.png'],
     },
   };
 }

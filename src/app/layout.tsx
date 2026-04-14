@@ -36,8 +36,8 @@ const nanumGothic = Nanum_Gothic({
 export const metadata: Metadata = {
   metadataBase: new URL("https://project-l2.vercel.app"),
   title: {
-    default: "티끌 Ticgle | 티끌 모아 반짝이는, 일상 매거진",
-    template: "%s | 티끌"
+    default: "티끌 ticgle | 티끌 모아 반짝이는, 일상 매거진",
+    template: "%s | 티끌 ticgle"
   },
   description: "티끌 모아 반짝이는, 일상 매거진",
   keywords: ["리뷰", "매거진", "일상", "에세이", "티끌", "Ticgle"],
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "티끌 Ticgle",
+    title: "티끌 ticgle",
     description: "티끌 모아 반짝이는, 일상 매거진",
     url: "https://project-l2.vercel.app",
     siteName: "Ticgle",
@@ -57,18 +57,18 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/logo.png",
-        width: 800,
-        height: 400,
-        alt: "Ticgle Logo",
+        url: "/preview.png",
+        width: 1200,
+        height: 630,
+        alt: "Ticgle Preview",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "티끌 Ticgle",
+    title: "티끌 ticgle",
     description: "티끌 모아 반짝이는, 일상 매거진",
-    images: ["/logo.png"],
+    images: ["/preview.png"],
   },
 };
 

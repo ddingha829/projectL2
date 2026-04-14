@@ -1,7 +1,6 @@
 "use client";
  
 import { useState, useEffect, useCallback, useRef } from "react";
-import IntroAnimation from "@/components/common/IntroAnimation";
 import styles from "./page.module.css";
 import HeroCard from "@/components/feed/HeroCard";
 import PosterCard from "@/components/feed/PosterCard";
@@ -106,7 +105,6 @@ export default function HomeContent({
   const [hasInitialized, setHasInitialized] = useState(false);
   const [visibleCount, setVisibleCount] = useState(6);
 
-  const [showIntro, setShowIntro] = useState(false);
   const [heroIndex, setHeroIndex] = useState(0);
   const [slideDir, setSlideDir] = useState<'next' | 'prev'>('next');
 
@@ -225,14 +223,7 @@ export default function HomeContent({
     setVisibleCount(isMobile ? 6 : (cardCols === 4 ? 8 : 6));
   }, [animationKey, categoryFilter, authorFilter, searchFilter, isViewMore, cardCols, isMobile]);
 
-  useEffect(() => {
-    if (isInitialVisit && !isMobile) {
-      const visited = localStorage.getItem("introVisited");
-      if (!visited) {
-        setShowIntro(true);
-      }
-    }
-  }, [isInitialVisit, isMobile]);
+
 
   // Scroll to top when view or page changes
   useEffect(() => {
@@ -253,10 +244,7 @@ export default function HomeContent({
 
 
 
-  const handleIntroComplete = useCallback(() => {
-    setShowIntro(false);
-    localStorage.setItem("introVisited", "true");
-  }, []);
+
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStart(e.targetTouches[0].clientX);
@@ -368,7 +356,6 @@ export default function HomeContent({
 
   return (
     <>
-      {showIntro && <IntroAnimation onComplete={handleIntroComplete} />}
       
       <div className={styles.container}>
         {!showFullGrid ? (
