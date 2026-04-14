@@ -450,6 +450,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                     margin-top: 20px;
                     margin-bottom: 20px;
                     max-width: 100%;
+                    height: auto !important;
                     cursor: pointer;
                 }
                 .ql-image-resizer {

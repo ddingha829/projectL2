@@ -1,45 +1,85 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import Cropper from "react-easy-crop";
+import ReactCrop, { type Crop } from "react-image-crop";
+import "react-image-crop/dist/ReactCrop.css";
 import styles from "./RichTextEditor.module.css";
 
 interface ImageCropModalProps {
   image: string;
   onCropComplete: (croppedImage: Blob) => void;
-  onUseOriginal?: () => void; // 원본 사용 콜백 추가
+  onUseOriginal?: () => void;
   onCancel: () => void;
 }
 
+type AspectPreset = "free" | "1:1" | "4:3" | "5:4" | "16:9";
+
+const ASPECT_VALUES: Record<Exclude<AspectPreset, "free">, number> = {
+  "1:1": 1,
+  "4:3": 4 / 3,
+  "5:4": 5 / 4,
+  "16:9": 16 / 9,
+};
+
 export default function ImageCropModal({ image, onCropComplete, onUseOriginal, onCancel }: ImageCropModalProps) {
+  // --- Common State ---
+  const [selectedPreset, setSelectedPreset] = useState<AspectPreset>("free");
+  const [isPortrait, setIsPortrait] = useState(false); // false = 가로, true = 세로
+
+  // --- react-easy-crop State (for preset ratios) ---
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
-  const [aspect, setAspect] = useState<number | undefined>(undefined);
-  const [freeAspect, setFreeAspect] = useState<number>(16 / 9); // 자유 비율 기본값
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
 
-  const onCropChange = (crop: any) => setCrop(crop);
-  const onZoomChange = (zoom: any) => setZoom(zoom);
+  // --- react-image-crop State (for free-form) ---
+  const [freeCrop, setFreeCrop] = useState<Crop>({ unit: "%", x: 10, y: 10, width: 80, height: 80 });
+  const freeImgRef = useRef<HTMLImageElement | null>(null);
 
+  const isFreeMode = selectedPreset === "free";
+
+  // Get current aspect ratio (accounting for portrait toggle)
+  const getCurrentAspect = (): number => {
+    if (isFreeMode) return 0; // not used
+    const base = ASPECT_VALUES[selectedPreset as Exclude<AspectPreset, "free">];
+    return isPortrait ? 1 / base : base;
+  };
+
+  // Get display label for current ratio
+  const getOrientationLabel = (): string => {
+    if (selectedPreset === "free" || selectedPreset === "1:1") return "";
+    const [a, b] = selectedPreset.split(":");
+    return isPortrait ? `${b}:${a}` : `${a}:${b}`;
+  };
+
+  // Reset crop/zoom when switching presets
+  useEffect(() => {
+    setCrop({ x: 0, y: 0 });
+    setZoom(1);
+    setFreeCrop({ unit: "%", x: 10, y: 10, width: 80, height: 80 });
+  }, [selectedPreset, isPortrait]);
+
+  // --- react-easy-crop callbacks ---
   const onCropAreaChange = useCallback((_: any, croppedAreaPixels: any) => {
     setCroppedAreaPixels(croppedAreaPixels);
   }, []);
 
+  // --- Image helpers ---
   const createImage = (url: string): Promise<HTMLImageElement> =>
     new Promise((resolve, reject) => {
-      const image = new Image();
-      image.addEventListener("load", () => resolve(image));
-      image.addEventListener("error", (error) => reject(error));
-      image.src = url;
+      const img = new Image();
+      img.addEventListener("load", () => resolve(img));
+      img.addEventListener("error", (error) => reject(error));
+      img.src = url;
     });
 
-  const getCroppedImg = async () => {
+  // Crop with react-easy-crop data
+  const getCroppedImgFromEasyCrop = async (): Promise<Blob | null> => {
     try {
       const img = await createImage(image);
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");
-
-      if (!ctx) return;
+      if (!ctx || !croppedAreaPixels) return null;
 
       canvas.width = croppedAreaPixels.width;
       canvas.height = croppedAreaPixels.height;
@@ -50,8 +90,7 @@ export default function ImageCropModal({ image, onCropComplete, onUseOriginal, o
         croppedAreaPixels.y,
         croppedAreaPixels.width,
         croppedAreaPixels.height,
-        0,
-        0,
+        0, 0,
         croppedAreaPixels.width,
         croppedAreaPixels.height
       );
@@ -68,59 +107,141 @@ export default function ImageCropModal({ image, onCropComplete, onUseOriginal, o
     }
   };
 
+  // Crop with react-image-crop data
+  const getCroppedImgFromFreeCrop = async (): Promise<Blob | null> => {
+    try {
+      const imgEl = freeImgRef.current;
+      if (!imgEl) return null;
+
+      const scaleX = imgEl.naturalWidth / imgEl.width;
+      const scaleY = imgEl.naturalHeight / imgEl.height;
+
+      const pixelX = freeCrop.x * scaleX;
+      const pixelY = freeCrop.y * scaleY;
+      const pixelW = freeCrop.width * scaleX;
+      const pixelH = freeCrop.height * scaleY;
+
+      const canvas = document.createElement("canvas");
+      canvas.width = pixelW;
+      canvas.height = pixelH;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return null;
+
+      const srcImg = await createImage(image);
+      ctx.drawImage(srcImg, pixelX, pixelY, pixelW, pixelH, 0, 0, pixelW, pixelH);
+
+      return new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob((blob) => {
+          if (blob) resolve(blob);
+          else reject(new Error("Canvas to Blob failed"));
+        }, "image/jpeg", 0.9);
+      });
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
+  };
+
   const handleDone = async () => {
-    const croppedBlob = await getCroppedImg();
+    const croppedBlob = isFreeMode
+      ? await getCroppedImgFromFreeCrop()
+      : await getCroppedImgFromEasyCrop();
     if (croppedBlob) {
       onCropComplete(croppedBlob);
     }
   };
 
+  // Convert freeCrop from % to px when image loads for react-image-crop
+  const onFreeImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    freeImgRef.current = e.currentTarget;
+    // Initialize with a centered 80% crop
+    const { width, height } = e.currentTarget;
+    setFreeCrop({
+      unit: "px",
+      x: width * 0.1,
+      y: height * 0.1,
+      width: width * 0.8,
+      height: height * 0.8,
+    });
+  };
+
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
+        {/* Preset Buttons */}
         <div className={styles.aspectControls}>
-          <button type="button" className={aspect === undefined ? styles.activeAspect : ""} onClick={() => setAspect(undefined)}>자유 비율</button>
-          <button type="button" className={aspect === 1 ? styles.activeAspect : ""} onClick={() => setAspect(1)}>1:1</button>
-          <button type="button" className={aspect === 4/5 ? styles.activeAspect : ""} onClick={() => setAspect(4/5)}>4:5</button>
-          <button type="button" className={aspect === 16/9 ? styles.activeAspect : ""} onClick={() => setAspect(16/9)}>16:9</button>
+          {(["free", "1:1", "4:3", "5:4", "16:9"] as AspectPreset[]).map((preset) => (
+            <button
+              key={preset}
+              type="button"
+              className={selectedPreset === preset ? styles.activeAspect : ""}
+              onClick={() => { setSelectedPreset(preset); setIsPortrait(false); }}
+            >
+              {preset === "free" ? "자유" : preset}
+            </button>
+          ))}
+
+          {/* Orientation toggle (hide for free & 1:1) */}
+          {selectedPreset !== "free" && selectedPreset !== "1:1" && (
+            <button
+              type="button"
+              className={styles.orientationToggle}
+              onClick={() => setIsPortrait(!isPortrait)}
+              title="가로/세로 전환"
+            >
+              🔄 {getOrientationLabel()}
+            </button>
+          )}
         </div>
+
+        {/* Cropper Area */}
         <div className={styles.cropperWrapper}>
-          <Cropper
-            image={image}
-            crop={crop}
-            zoom={zoom}
-            aspect={aspect === undefined ? freeAspect : aspect}
-            onCropChange={onCropChange}
-            onCropComplete={onCropAreaChange}
-            onZoomChange={onZoomChange}
-          />
+          {isFreeMode ? (
+            /* Free-form: react-image-crop with draggable borders */
+            <div style={{ position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "#000" }}>
+              <ReactCrop
+                crop={freeCrop}
+                onChange={(c) => setFreeCrop(c)}
+                style={{ maxHeight: "100%", maxWidth: "100%" }}
+              >
+                <img
+                  src={image}
+                  alt="crop"
+                  onLoad={onFreeImageLoad}
+                  style={{ maxHeight: "400px", maxWidth: "100%", display: "block" }}
+                />
+              </ReactCrop>
+            </div>
+          ) : (
+            /* Preset ratios: react-easy-crop */
+            <Cropper
+              image={image}
+              crop={crop}
+              zoom={zoom}
+              aspect={getCurrentAspect()}
+              onCropChange={setCrop}
+              onCropComplete={onCropAreaChange}
+              onZoomChange={setZoom}
+            />
+          )}
         </div>
+
+        {/* Controls */}
         <div className={styles.controls}>
-          {aspect === undefined && (
+          {!isFreeMode && (
             <div className={styles.zoomControl}>
-              <label>비율 조절</label>
+              <label>확대</label>
               <input
                 type="range"
-                value={freeAspect}
-                min={0.5}
-                max={3.0}
+                value={zoom}
+                min={1}
+                max={3}
                 step={0.1}
-                onChange={(e) => setFreeAspect(Number(e.target.value))}
+                onChange={(e) => setZoom(Number(e.target.value))}
               />
-              <span style={{ fontSize: '0.8rem', minWidth: '40px', color: '#666' }}>{freeAspect.toFixed(1)}:1</span>
             </div>
           )}
-          <div className={styles.zoomControl}>
-            <label>확대 슬라이더</label>
-            <input
-              type="range"
-              value={zoom}
-              min={1}
-              max={3}
-              step={0.1}
-              onChange={(e) => setZoom(Number(e.target.value))}
-            />
-          </div>
+
           <div className={styles.buttonGroup}>
             <button type="button" className={styles.cancelBtn} onClick={onCancel}>취소</button>
             {onUseOriginal && (

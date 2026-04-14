@@ -298,8 +298,6 @@
 .mainImage {
   width: 100%;
   height: auto;
-  max-height: 600px;
-  object-fit: cover;
   display: block;
   transition: max-height 0.3s ease;
 }
@@ -333,7 +331,7 @@
     line-height: 1.8; /* 모바일도 사용자 요청에 따라 1.8로 통일 */
   }
   .mainImage {
-    max-height: 350px;
+    height: auto;
     border-radius: 12px;
   }
   .mainImageWrapper {
@@ -695,6 +693,7 @@
 
 .content img {
   max-width: 100%;
+  height: auto !important;
   border-radius: 8px;
   margin: 1.5em 0;
 }
