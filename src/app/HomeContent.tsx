@@ -58,6 +58,7 @@ interface HomeContentProps {
   } | null;
   isMobileServer?: boolean;
   initialViewType?: "card" | "magazine";
+  editors?: any[];
 }
 
 export default function HomeContent({ 
@@ -71,7 +72,8 @@ export default function HomeContent({
   featurePosts = [],
   userProfile,
   isMobileServer = false,
-  initialViewType
+  initialViewType,
+  editors = []
 }: HomeContentProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -545,6 +547,40 @@ export default function HomeContent({
                     <button className={`${styles.scrollBtn} ${styles.scrollBtnRight}`} onClick={() => scrollReviews('right')}>
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
                     </button>
+                  </div>
+                </div>
+              )}
+ 
+              {/* [신규] 티끌러(에디터) 섹션 - 홈 메인에서만 노출 */}
+              {!isFiltered && (
+                <div className={styles.editorsSection}>
+                  <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '25px' }}>
+                    <h2 className={styles.sectionTitle}>티끌러</h2>
+                    <div className={styles.headerSpacer}></div>
+                  </header>
+                  
+                  <div className={styles.editorsGrid}>
+                    {editors.map((ed: any) => (
+                      <Link key={ed.id} href={`/?author=${ed.id}`} className={styles.editorProfileCard}>
+                        <div className={styles.edAvatarWrapper}>
+                          <img src={ed.avatar_url || '👤'} alt={ed.display_name} className={styles.edAvatarImg} />
+                        </div>
+                        <div className={styles.edInfo}>
+                          <h3 className={styles.edName}>{ed.display_name}</h3>
+                          <span className={styles.edRole}>{ed.role === 'admin' ? '운영자' : '티끌러'}</span>
+                          <p className={styles.edBio}>
+                            {ed.bio || "생동감 넘치는 리뷰를 작성하는 티끌러입니다."}
+                          </p>
+                        </div>
+                        {ed.bullets && ed.bullets.length > 0 && (
+                          <div className={styles.edBullets}>
+                            {ed.bullets.slice(0, 3).map((b: string, i: number) => (
+                              <span key={i} className={styles.edBulletPill}>{b}</span>
+                            ))}
+                          </div>
+                        )}
+                      </Link>
+                    ))}
                   </div>
                 </div>
               )}

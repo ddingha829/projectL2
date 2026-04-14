@@ -141,7 +141,19 @@ export default function TopNavbar({
           onClick={() => setIsOpen(!isOpen)} 
           aria-label="필터 및 보기 설정"
         >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+          {vType === 'magazine' ? (
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 6h16M4 12h10M4 18h16"></path>
+              <path d="M14 12l2 2 4-4"></path>
+            </svg>
+          ) : (
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+          )}
         </button>
         {isOpen && (
           <div className={`${styles.vMenu} ${styles.vMenuRight} ${!isPC ? styles.vMobileMenu : ''}`}>

@@ -307,7 +307,7 @@
 .magazineCard {
   aspect-ratio: auto !important;
   background: var(--bg-primary) !important;
-  border: 1.2px solid var(--border-light) !important;
+  border: 1.4px solid var(--border-medium) !important;
   box-shadow: none !important;
   overflow: hidden !important;
   display: flex !important;
@@ -331,7 +331,7 @@
   border-radius: 0; /* Full bleed top */
   overflow: hidden;
   background-color: var(--bg-tertiary);
-  border-bottom: 1.2px solid var(--border-light);
+  border-bottom: 1.4px solid var(--border-medium);
 }
 
 .magazineCard:hover .posterImage {

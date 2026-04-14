@@ -179,6 +179,14 @@ export default async function Home({
     .limit(3);
 
   const heroPosts = heroDbPosts?.map(mapToPost) || [];
+  
+  // 5. Fetch Editors (profiles with admin/editor roles)
+  const { data: editorsData } = await supabase
+    .from('profiles')
+    .select('id, display_name, avatar_url, bio, bullets, role')
+    .in('role', ['admin', 'editor'])
+    .order('display_name');
+
   const livePosts = dbPosts?.map(mapToPost) || [];
 
   // Sort: DB posts (2026) always come before MOCK_POSTS (2024)
@@ -281,6 +289,7 @@ export default async function Home({
         userProfile={userProfile}
         isMobileServer={isMobileServer}
         initialViewType={initialViewType as any}
+        editors={editorsData || []}
       />
     </Suspense>
   );
