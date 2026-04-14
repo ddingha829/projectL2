@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import HomeContent from "./HomeContent";
 import { Suspense } from "react";
 import { headers, cookies } from "next/headers";
+import { getAdminStatus } from "@/app/actions/hero";
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -101,27 +102,50 @@ export default async function Home({
   };
 
   const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const { isAdmin } = await getAdminStatus();
   
+  // Helper for privacy filter
+  const applyPrivacyFilter = (query: any) => {
+    if (isAdmin) return query; // Admins see everything
+    if (user) {
+      return query.or(`is_public.eq.true,author_id.eq.${user.id}`);
+    }
+    return query.eq('is_public', true); // Guests only see public
+  };
+
   // 1. Fetch Hero posts (designated by admin)
-  const { data: heroDbPosts } = await supabase
+  let heroQuery = supabase
     .from('posts')
     .select('*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')
-    .eq('is_hero', true)
+    .eq('is_hero', true);
+  
+  heroQuery = applyPrivacyFilter(heroQuery);
+  
+  const { data: heroDbPosts } = await heroQuery
     .order('hero_at', { ascending: false })
     .limit(3);
 
-  // 2. Fetch all posts for the feed (excluding or including hero posts - user's preference usually separate them)
-  const { data: dbPosts, error: dbError } = await supabase
+  // 2. Fetch all posts for the feed
+  let feedQuery = supabase
     .from('posts')
     .select('*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')
-    .neq('category', 'notice')
+    .neq('category', 'notice');
+
+  feedQuery = applyPrivacyFilter(feedQuery);
+
+  const { data: dbPosts, error: dbError } = await feedQuery
     .order('created_at', { ascending: false });
 
-  // 3. Fetch Recent Reviews (for the new section)
-  const { data: reviewDbPosts } = await supabase
+  // 3. Fetch Recent Reviews
+  let reviewQuery = supabase
     .from('posts')
     .select('id, review_subject, review_rating, review_comment, created_at, author:profiles!author_id(display_name)')
-    .not('review_subject', 'is', null)
+    .not('review_subject', 'is', null);
+
+  reviewQuery = applyPrivacyFilter(reviewQuery);
+
+  const { data: reviewDbPosts } = await reviewQuery
     .order('created_at', { ascending: false })
     .limit(7);
 
@@ -171,10 +195,14 @@ export default async function Home({
   };
 
   // 4. Fetch Special Feature posts (is_feature = true)
-  const { data: featureDbPosts } = await supabase
+  let featureQuery = supabase
     .from('posts')
     .select('*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')
-    .or('is_feature.eq.true,category.eq.feature')
+    .or('is_feature.eq.true,category.eq.feature');
+
+  featureQuery = applyPrivacyFilter(featureQuery);
+
+  const { data: featureDbPosts } = await featureQuery
     .order('created_at', { ascending: false })
     .limit(3);
 
@@ -250,7 +278,6 @@ export default async function Home({
   const featurePosts = featureDbPosts?.map(mapToPost) || [];
 
   // 5. Fetch User Profile for persistence
-  const { data: { user } } = await supabase.auth.getUser();
   let userProfile = null;
   if (user) {
     const { data } = await supabase

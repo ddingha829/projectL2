@@ -149,21 +149,32 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 }
 
 export default async function PostDetail({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
+  const id = (await params).id;
   const data = await getPost(id);
-  
-  if (!data) notFound();
-  
+  if (!data || !data.post) notFound();
   const { post, comments: commentsData, isDbPost, actualId } = data;
   const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const { isAdmin } = await getAdminStatus();
+
+  // [신규] 비밀글 접근 권한 관리
+  // 1. 글이 존재하지 않으면 404
+  if (!post) notFound();
+
+  // 2. 비밀글(is_public: false)인 경우 검증
+  if (post.is_public === false) {
+    const isAuthor = user && (user.id === post.author?.id || user.id === post.author_id);
+    
+    // 작성자도 아니고 관리자도 아니면 404 (보안상 403보다 404 권장)
+    if (!isAuthor && !isAdmin) {
+      notFound();
+    }
+  }
 
   // Increment Views (side effect, done only on page load)
   if (isDbPost) {
     supabase.rpc('increment_post_views', { post_id: actualId }).then();
   }
-
-  const { data: { user } } = await supabase.auth.getUser();
-  const { isAdmin } = await getAdminStatus();
   
   let currentUserRole = 'user'
   if (user) {
