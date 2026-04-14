@@ -409,7 +409,8 @@
 
 @media (max-width: 768px) {
   .magazineCard {
-    gap: 0 !important; /* Managed by larger internal padding */
+    gap: 0 !important;
+    padding: 20px !important; /* Added inset padding to create card frame effect */
   }
   
   .magImageWrapper {
@@ -418,10 +419,19 @@
     align-items: center; 
     justify-content: center;
     overflow: hidden;
+    border-radius: 8px; /* Rounded corners for the inset image */
+    border-bottom: none !important;
+  }
+
+  .posterImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center; /* Explicitly center */
   }
 
   .magContentArea {
-    padding: 48px 24px !important; /* Increased padding per user request */
+    padding: 40px 10px 20px 10px !important; /* Increased vertical padding per user request */
   }
 
   .magTitle {
