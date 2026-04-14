@@ -1204,6 +1204,12 @@
   gap: 16px;
 }
 
+@media (max-width: 768px) {
+  .magList {
+    gap: 11px;
+  }
+}
+
 .magListItem {
   display: flex;
   gap: 16px;

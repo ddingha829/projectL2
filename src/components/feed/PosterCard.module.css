@@ -408,42 +408,39 @@
 }
 
 @media (max-width: 768px) {
+  .magazineCard {
+    gap: 0 !important; /* Managed by larger internal padding */
+  }
+  
+  .magImageWrapper {
+    aspect-ratio: 1.6 / 1 !important; /* Slightly wider for better mobile balance */
+    display: flex;
+    align-items: center; /* Center image vertically */
+    justify-content: center;
+  }
+
+  .magContentArea {
+    padding: 32px !important; /* 2x increase from 16px */
+  }
+
   .magTitle {
-    font-size: 0.95rem;
+    font-size: 1.05rem;
     -webkit-line-clamp: 2; 
     line-clamp: 2;
-    height: 2.8em; 
+    height: auto; 
+    min-height: auto;
     word-break: break-word;
-    margin-bottom: 8px;
-  }
-  .magExcerpt {
-    font-size: 0.82rem;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    height: 3.2em; 
-    white-space: pre-wrap; 
     margin-bottom: 12px;
   }
-}
-
-.magMetaRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-}
-
-.magAuthorBadge {
-  font-size: 0.75rem;
-  color: var(--brand-primary);
-  font-weight: 800;
-  background: transparent;
-  border: none;
-  padding: 0;
-  border-radius: 0;
-}
-
-@media (max-width: 768px) {
+  .magExcerpt {
+    font-size: 0.88rem;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    height: auto; 
+    min-height: auto;
+    white-space: pre-wrap; 
+    margin-bottom: 16px;
+  }
   .magAuthorBadge {
     font-size: 0.65rem;
   }
