@@ -47,22 +47,26 @@ export default function ShareBtn({ title }: ShareBtnProps) {
   }
 
   const shareToKakao = () => {
-    // If native share is available and it's a mobile device, use it as it's more reliable
-    if (typeof navigator !== 'undefined' && navigator.share) {
-      navigator.share({
-        title: `[티끌] ${title}`,
-        url: url
-      }).catch(err => {
-        console.error('Native share failed:', err);
-        // Fallback to sharer URL
-        const shareUrl = encodeURIComponent(url);
-        window.open(`https://sharer.kakao.com/talk/friends/picker/link?url=${shareUrl}`, '_blank');
-      });
-    } else {
-      const shareUrl = encodeURIComponent(url);
-      window.open(`https://sharer.kakao.com/talk/friends/picker/link?url=${shareUrl}`, '_blank');
-    }
+    const shareUrl = encodeURIComponent(url);
+    window.open(`https://sharer.kakao.com/talk/friends/picker/link?url=${shareUrl}`, '_blank', 'width=400,height=600');
     setIsOpen(false);
+  }
+
+  const handleNativeShare = async () => {
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({
+          title: `[티끌] ${title}`,
+          url: url
+        });
+        setIsOpen(false);
+      } catch (err: any) {
+        if (err.name !== 'AbortError') {
+          console.error('System share failed:', err);
+          handleCopy(); // Fallback to copy
+        }
+      }
+    }
   }
 
   return (
@@ -83,6 +87,15 @@ export default function ShareBtn({ title }: ShareBtnProps) {
 
       {isOpen && (
         <div className={styles.shareMenu}>
+          {typeof window !== 'undefined' && !!navigator.share && (
+            <button className={`${styles.shareItem} ${styles.shareItemPrimary}`} onClick={handleNativeShare}>
+              <div className={styles.shareItemIcon}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
+              </div>
+              시스템 공유하기
+            </button>
+          )}
+
           <button className={styles.shareItem} onClick={shareToKakao}>
             <div className={styles.shareItemIcon}>
                <svg width="18" height="18" viewBox="0 0 24 24" fill="#3A1D1D"><path d="M12 3c-4.97 0-9 3.185-9 7.115 0 2.553 1.706 4.8 4.315 6.091l-1.091 4.015 4.612-3.076c.381.054.769.085 1.164.085 4.97 0 9-3.185 9-7.115S16.97 3 12 3z"/></svg>

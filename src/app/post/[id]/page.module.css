@@ -102,6 +102,18 @@
   color: var(--brand-accent-soft-text);
 }
 
+.shareItemPrimary {
+  background: var(--brand-accent-soft) !important;
+  color: var(--brand-accent-soft-text) !important;
+  font-weight: 800 !important;
+  margin-bottom: 6px;
+}
+
+.shareItemPrimary:hover {
+  background: var(--brand-accent-line) !important;
+  color: #fff !important;
+}
+
 .shareItemIcon {
   width: 20px;
   height: 20px;
