@@ -4,6 +4,7 @@ import "./globals.css";
 import gridStyles from "./layout.module.css";
 import AppShell from "@/components/layout/AppShell";
 import { Suspense } from "react";
+import { Analytics } from '@vercel/analytics/next';
 
 const notoSans = Noto_Sans_KR({
   variable: "--font-noto-sans",
@@ -86,6 +87,7 @@ export default function RootLayout({
             {children}
           </AppShell>
         </Suspense>
+        <Analytics />
       </body>
     </html>
   );
