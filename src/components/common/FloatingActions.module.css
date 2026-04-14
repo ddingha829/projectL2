@@ -62,7 +62,9 @@
   
   @media (max-width: 768px) {
     .actionBtn {
-      background: rgba(40, 40, 40, 0.95);
+      background: #1a1a1a !important; /* Solid dark for visibility */
+      border-color: rgba(255, 255, 255, 0.2) !important;
+      color: #fff !important;
     }
   }
 }

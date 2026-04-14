@@ -773,28 +773,7 @@ export default function HomeContent({
             </div>
           </div>
         )}
-        <MobileScrollFab isMobile={isMobile} isViewMore={isViewMore} showMobileFab={showMobileFab} />
       </div>
     </>
-  );
-}
-
-// Separate component for the Floating FAB to avoid unnecessary re-renders of the whole page
-function MobileScrollFab({ isMobile, isViewMore, showMobileFab }: { isMobile: boolean, isViewMore: boolean, showMobileFab: boolean }) {
-  const router = useRouter();
-  if (!isMobile || isViewMore) return null;
-  
-  return (
-    <div className={`${styles.mobileViewAllContainer} ${showMobileFab ? styles.visibleFab : ""}`}>
-      <button 
-        className={styles.mobileViewAllBtn}
-        onClick={() => router.push('/?view=all')}
-      >
-        전체 티끌 더보기
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="9 18 15 12 9 6"></polyline>
-        </svg>
-      </button>
-    </div>
   );
 }

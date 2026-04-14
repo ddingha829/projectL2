@@ -520,8 +520,8 @@
   .mobileWriteBtn {
     font-size: 0.7rem;
     font-weight: 800;
-    color: #fff;
-    background: var(--accent-primary);
+    color: #fff !important; /* Ensure white text */
+    background: var(--brand-accent-line) !important; /* Force orange for visibility */
     padding: 5px 12px;
     border-radius: 6px;
     text-decoration: none;
