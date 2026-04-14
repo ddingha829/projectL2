@@ -47,8 +47,21 @@ export default function ShareBtn({ title }: ShareBtnProps) {
   }
 
   const shareToKakao = () => {
-    const shareUrl = encodeURIComponent(url);
-    window.open(`https://sharer.kakao.com/talk/friends/picker/link?url=${shareUrl}`, '_blank');
+    // If native share is available and it's a mobile device, use it as it's more reliable
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      navigator.share({
+        title: `[티끌] ${title}`,
+        url: url
+      }).catch(err => {
+        console.error('Native share failed:', err);
+        // Fallback to sharer URL
+        const shareUrl = encodeURIComponent(url);
+        window.open(`https://sharer.kakao.com/talk/friends/picker/link?url=${shareUrl}`, '_blank');
+      });
+    } else {
+      const shareUrl = encodeURIComponent(url);
+      window.open(`https://sharer.kakao.com/talk/friends/picker/link?url=${shareUrl}`, '_blank');
+    }
     setIsOpen(false);
   }
 

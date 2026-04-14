@@ -120,7 +120,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const description = post.content.replace(/<[^>]+>/g, '').substring(0, 160).trim();
   
   return {
-    title: `${post.title} | 티끌 ticgle`,
+    title: post.title,
     description: description,
     openGraph: {
       title: post.title,
