@@ -305,27 +305,40 @@
 /* MAGAZINE MODE STYLES */
 .magazineCard {
   aspect-ratio: auto !important;
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  overflow: visible !important;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  background: var(--bg-primary) !important;
+  border: 1px solid var(--border-light) !important;
+  box-shadow: var(--shadow-sm) !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: row-reverse !important; /* Image on right per reference */
+  gap: 20px !important;
+  padding: 18px !important;
+  border-radius: 12px !important;
+  transition: all 0.3s cubic-bezier(0.2, 0, 0, 1) !important;
+  align-items: center !important;
+}
+
+.magazineCard:hover {
+  border-color: var(--accent-line) !important; /* Orange border on hover */
+  transform: translateY(-4px) !important;
+  box-shadow: 0 12px 40px rgba(255, 72, 4, 0.1) !important;
+  background: var(--bg-primary) !important;
 }
 
 .magImageWrapper {
   position: relative;
-  width: 100%;
-  aspect-ratio: 1.5 / 1; /* Landscape for Magazine view */
-  border-radius: 12px;
+  width: 100px !important;
+  height: 100px !important;
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 8px;
   overflow: hidden;
   background-color: var(--bg-tertiary);
-  border: 1px solid var(--border-light);
+  border: 1.5px solid var(--border-light);
+  flex-shrink: 0;
 }
 
 .magazineCard:hover .posterImage {
-  transform: scale(1.05);
+  transform: scale(1.1);
 }
 
 .magCategoryLabel {
@@ -333,18 +346,21 @@
 }
 
 .magContentArea {
+  flex: 1;
   display: flex;
   flex-direction: column;
   padding: 0 !important;
   background: transparent !important;
   color: var(--text-primary) !important;
+  justify-content: center;
 }
 
 .magCategorySmall {
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   color: var(--text-muted);
   font-weight: 600;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
 }
 
 .magTitle {
@@ -353,14 +369,14 @@
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1.4;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   word-break: keep-all;
-  min-height: 2.8em; /* 2 lines of 1.4 line-height */
+  min-height: auto;
 }
 
 .magTitle a {
@@ -370,7 +386,7 @@
 }
 
 .magTitle a:hover {
-  color: var(--brand-primary);
+  color: var(--brand-accent-soft-text);
 }
 
 .magExcerpt {
@@ -384,11 +400,11 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   white-space: pre-wrap;
-  min-height: 3.2em; /* 2 lines of 1.6 line-height */
+  min-height: auto;
 }
 
 .magMetaInfo {
-  margin-top: auto;
+  margin-top: 8px;
 }
 
 .magDate {
@@ -398,33 +414,33 @@
 }
 
 @media (max-width: 768px) {
-  .magTitle {
-    font-size: 0.95rem;
-    -webkit-line-clamp: 2; /* Max 2 lines as requested */
-    line-clamp: 2;
-    height: 2.8em; /* Fixed height for 2 lines (line-height 1.4) */
-    word-break: break-word;
-    margin-bottom: 8px;
+  .magazineCard {
+    flex-direction: column !important; /* Mobile still vertical or smaller horizontal? Image suggested horizontal */
+    padding: 14px !important;
+    gap: 12px !important;
   }
-  .magExcerpt {
-    font-size: 0.82rem;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    height: 3.2em; /* Fixed height for 2 lines (line-height 1.6) */
-    white-space: pre-wrap; /* Better preservation of breaks with clamping */
-    margin-bottom: 12px;
+  .magImageWrapper {
+    width: 60px !important;
+    height: 60px !important;
+    position: absolute !important;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
   }
-  .categoryBadge {
-    left: 16px !important; /* Premium 16px inset */
-    top: 12px !important;
-  }
-  .contentArea {
-    padding-left: 12px !important; /* Reduced ~20% from 16px */
-    padding-right: 12px !important;
+  /* Adjusted mobile layout for horizontal feeling or keep vertical? */
+  .magazineCard {
+    flex-direction: row-reverse !important;
+    min-height: 90px;
   }
   .magContentArea {
-    padding-left: 12px !important;
-    padding-right: 12px !important;
+    padding-right: 70px !important; /* Space for absolute image on mobile */
+  }
+  .magTitle {
+    font-size: 1.05rem;
+    margin-bottom: 4px;
+  }
+  .magExcerpt {
+    display: none; /* Hide excerpt on densified mobile magazine card */
   }
 }
 
