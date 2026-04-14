@@ -64,19 +64,17 @@ export async function createPost(formData: FormData) {
       .select('id')
       .single();
 
-    if (error) {
+    if (error || !postData) {
       console.error('Insert post error:', error);
-      return { error: `Database error: ${error.message}` };
+      return { error: error ? `Database error: ${error.message}` : 'Failed to create post' };
     }
 
     await supabase.from('drafts').delete().eq('user_id', user.id);
-
     revalidatePath('/', 'layout');
     redirect('/');
 
-    return { success: true, postId: postData.id };
-
   } catch (err: any) {
+    if (err.digest?.startsWith('NEXT_REDIRECT')) throw err;
     console.error('Action unexpected error:', err);
     return { error: `An unexpected error occurred: ${err.message || 'Unknown error'}` };
   }
