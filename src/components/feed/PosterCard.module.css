@@ -445,3 +445,23 @@
     font-size: 0.65rem;
   }
 }
+
+.magMetaRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.magAuthorBadge {
+  font-family: var(--font-noto-sans), sans-serif;
+  font-size: 0.82rem;
+  color: var(--brand-primary);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  background: transparent;
+  border: none;
+  padding: 0;
+  border-radius: 0;
+}
