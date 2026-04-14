@@ -350,6 +350,8 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                     font-family: var(--font-noto-sans), sans-serif;
                     font-weight: 300; /* 기본 노토산스 Light 설정 */
                     color: var(--text-primary);
+                    word-break: keep-all; 
+                    overflow-wrap: break-word;
                 }
                 
                 /* [신규] 폰트 영속성 해결을 위한 클래스 정의 */
