@@ -95,13 +95,24 @@ export default function HomeContent({
     });
   };
   
-  // Find author data from static list OR from the actual posts (for live DB users)
+  // 1. Find from static AUTHORS constant
   const staticAuthor = AUTHORS.find(a => a.id === authorFilter);
-  const foundInPosts = !staticAuthor && authorFilter 
+  
+  // 2. Find from the passed 'editors' prop (DB Profiles)
+  const dbAuthorProfile = editors.find(ed => String(ed.id) === authorFilter);
+  
+  // 3. Fallback: find from the posts themselves (if profile missing from editors prop)
+  const foundInPosts = !staticAuthor && !dbAuthorProfile && authorFilter 
     ? allPosts.find(p => String(p.author_id) === authorFilter || String(p.author?.id) === authorFilter) 
     : null;
     
-  const liveAuthor = foundInPosts ? {
+  const liveAuthor = dbAuthorProfile ? {
+    id: authorFilter,
+    name: dbAuthorProfile.display_name || dbAuthorProfile.name || "에디터",
+    avatar: dbAuthorProfile.avatar_url || dbAuthorProfile.avatar || "/default-avatar.png",
+    bio: dbAuthorProfile.bio || "티끌 매거진 에디터입니다.",
+    role: dbAuthorProfile.role === 'admin' ? '운영자' : '티끌러'
+  } : foundInPosts ? {
     id: authorFilter,
     name: foundInPosts.author?.name || foundInPosts.authorProfile?.display_name || "에디터",
     avatar: foundInPosts.author?.avatar || foundInPosts.authorProfile?.avatar_url || "/default-avatar.png",

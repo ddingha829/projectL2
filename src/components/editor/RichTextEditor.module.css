@@ -101,9 +101,11 @@
 @media (min-width: 769px) {
   .content :global(img) {
     max-height: 650px;
+    width: auto !important;
+    height: auto !important;
     object-fit: contain;
     display: block;
-    margin: 1.5em 0;
+    margin: 1.5em auto;
   }
 }
 

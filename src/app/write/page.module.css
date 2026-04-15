@@ -237,7 +237,11 @@
 @media (min-width: 769px) {
   .previewImage {
     max-height: 650px;
+    width: auto !important;
+    height: auto !important;
     object-fit: contain;
+    display: block;
+    margin: 0 auto;
   }
 }
 
