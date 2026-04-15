@@ -73,10 +73,13 @@ export async function updatePost(postId: string, formData: FormData) {
     redirect(`/post/db-${postId}?error=update_failed_policy`)
   }
 
-  revalidatePath('/', 'layout')
-  
   // 수정한 글의 숫자 ID(serial_id)가 있으면 그 주소로, 없으면 UUID 주소로 이동
   const targetId = updatedData.serial_id ? String(updatedData.serial_id) : `db-${updatedData.id}`
+  
+  // 전체 레이아웃 대신 해당 경로와 홈 페이지만 정밀 갱신
+  revalidatePath('/', 'page')
+  revalidatePath(`/post/${targetId}`, 'page')
+  
   redirect(`/post/${targetId}`)
 }
 
