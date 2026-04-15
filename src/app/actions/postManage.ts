@@ -75,8 +75,8 @@ export async function updatePost(postId: string, formData: FormData): Promise<{ 
   // 수정한 글의 숫자 ID(serial_id)가 있으면 그 주소로, 없으면 UUID 주소로 이동
   const targetId = updatedData.serial_id ? String(updatedData.serial_id) : `db-${updatedData.id}`
   
-  // 수정된 글 페이지만 정밀하게 갱신
-  revalidatePath(`/post/${targetId}`, 'page')
+  // [강력한 갱신] 수정된 글 페이지와 홈, 레이아웃 전체를 새로고침 유도
+  revalidatePath(`/post/${targetId}`)
   revalidatePath('/', 'layout')
   
   return { ok: true, redirectTo: `/post/${targetId}` }
@@ -85,7 +85,10 @@ export async function updatePost(postId: string, formData: FormData): Promise<{ 
 /** 게시물 삭제 */
 export async function deletePost(postId: string): Promise<{ ok: boolean; redirectTo: string }> {
   const { supabase, user, profile, post, error } = await getProfileAndPost(postId)
-  if (error || !user || !profile || !post) return { ok: false, redirectTo: '/login' }
+  if (error || !user || !profile || !post) {
+    console.error('Delete auth/access error:', error);
+    return { ok: false, redirectTo: '/login' }
+  }
 
   if (!canModify(profile.role, user.id, post.author_id)) {
     return { ok: false, redirectTo: `/post/db-${postId}?error=no_permission` }
@@ -101,7 +104,9 @@ export async function deletePost(postId: string): Promise<{ ok: boolean; redirec
     return { ok: false, redirectTo: `/post/db-${postId}?error=delete_failed` }
   }
 
+  // 홈화면과 레이아웃 전체 캐시 갱신
   revalidatePath('/', 'layout')
+  
   return { ok: true, redirectTo: '/' }
 }
 

@@ -131,8 +131,20 @@ export default function EditPostForm({
     isSubmittingRef.current = true;
     setIsSubmitting(true);
     startTransition(async () => {
-      const result = await updatePost(postId, formData)
-      router.push(result.redirectTo)
+      try {
+        const result = await updatePost(postId, formData)
+        if (result.ok) {
+          // [복구] 수정 완료 후 Hard Redirect를 통해 캐시된 구버전 페이지가 나오는 것을 방지
+          window.location.href = result.redirectTo
+        } else {
+          alert('수정에 실패했습니다. 권한이 없거나 이미 삭제된 글일 수 있습니다.')
+          setIsSubmitting(false)
+        }
+      } catch (err) {
+        console.error("Update submit error:", err)
+        alert('네트워크 오류가 발생했습니다.')
+        setIsSubmitting(false)
+      }
     })
   }
 

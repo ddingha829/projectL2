@@ -23,16 +23,23 @@ export default function PostManageBtns({ postId, displayId, authorId, currentUse
 
   if (!canEdit && !canDelete) return null
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!confirm('정말 이 게시물을 삭제하시겠습니까?')) return
-    startTransition(async () => {
-      try {
-        const result = await deletePost(postId)
-        router.push(result.redirectTo)
-      } catch (err) {
-        console.error("Delete access error:", err);
+    
+    // UI 즉시 반응을 위해 버튼 텍스트 등을 바꿀 수도 있지만, 
+    // 여기서는 동기적으로 처리하여 확실하게 피드백을 줍니다.
+    try {
+      const result = await deletePost(postId)
+      if (result.ok) {
+        // [복구] Hard Redirect를 통해 캐시된 결과를 무시하고 완벽하게 홈으로 이동
+        window.location.href = result.redirectTo
+      } else {
+        alert('삭제 요청이 거부되었습니다. 권한을 확인하세요.')
       }
-    })
+    } catch (err) {
+      console.error("Delete call error:", err);
+      alert('삭제 중 오류가 발생했습니다.');
+    }
   }
 
 
