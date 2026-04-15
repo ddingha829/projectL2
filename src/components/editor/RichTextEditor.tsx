@@ -426,14 +426,17 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                 :global(.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="merriweather"]::before) { content: 'Merriweather (Serif)'; font-family: var(--font-merriweather); }
 
                 @media (max-width: 768px) {
-
                     .ql-editor {
-                        padding: 20px 16px !important;
-                        font-size: 1rem; /* 모바일도 1rem으로 유지 */
+                        padding: 24px 11px !important; /* Adjusted to match ticgle.kr mobile padding */
+                        font-size: 0.98rem; /* Match actual post detail page mobile font size */
                     }
                     .ql-toolbar.ql-snow {
-                        padding: 8px 12px;
+                        padding: 4px 6px;
                     }
+                    :global(.ql-snow .ql-picker.ql-header .ql-picker-label::before) { content: 'H' !important; }
+                    :global(.ql-snow .ql-picker.ql-font .ql-picker-label::before) { content: 'Font' !important; }
+                    :global(.ql-snow .ql-picker.ql-size .ql-picker-label::before) { content: 'Size' !important; }
+                    :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label::before) { content: 'LH' !important; }
                 }
                 .ql-editor h1 { font-size: 2.5rem; margin-top: 1.5em; margin-bottom: 0.5em; font-weight: 800; }
                 .ql-editor h2 { font-size: 1.8rem; margin-top: 1.2em; margin-bottom: 0.4em; }

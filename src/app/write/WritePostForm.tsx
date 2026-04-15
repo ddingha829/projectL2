@@ -269,7 +269,7 @@ export default function WritePostForm({ role }: { role: string }) {
             <img src={mainImageUrl} alt="Preview" className={styles.previewImage} />
           ) : (
             <div className={styles.uploadPlaceholder}>
-              <span>📸 클릭하여 이미지 업로드</span>
+              <span style={{ fontSize: '1rem', fontWeight: 600 }}>클릭하여 이미지 업로드</span>
               <p>권장 비율 4:5 (인스타 스타일)</p>
             </div>
           )}
@@ -285,7 +285,7 @@ export default function WritePostForm({ role }: { role: string }) {
             checked={showMainImage}
             onChange={(e) => setShowMainImage(e.target.checked)}
           />
-          <label htmlFor="showMainImage" className={styles.checkboxLabel}>🖼️ 본문에 대표 이미지 포함하기 (배너 이미지를 본문 상단에도 노출합니다)</label>
+          <label htmlFor="showMainImage" className={styles.checkboxLabel} style={{ fontSize: '0.85rem' }}>본문에 대표 이미지 포함하기 (배너 이미지를 본문 상단에도 노출합니다)</label>
         </div>
       </div>
 

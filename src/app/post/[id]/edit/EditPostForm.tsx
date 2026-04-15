@@ -180,7 +180,7 @@ export default function EditPostForm({
             <img src={imageUrl} alt="Preview" className={styles.previewImage} />
           ) : (
             <div className={styles.uploadPlaceholder}>
-              <span>📸 클릭하여 이미지 업로드</span>
+              <span style={{ fontSize: '1rem', fontWeight: 600 }}>클릭하여 이미지 업로드</span>
             </div>
           )}
           <input type="file" ref={fileInputRef} onChange={handleImageUpload} className={styles.hiddenInput} accept="image/*" />
@@ -195,7 +195,7 @@ export default function EditPostForm({
             checked={showMainImage}
             onChange={(e) => setShowMainImage(e.target.checked)}
           />
-          <label htmlFor="showMainImage" className={styles.checkboxLabel}>🖼️ 본문에 대표 이미지 포함하기</label>
+          <label htmlFor="showMainImage" className={styles.checkboxLabel} style={{ fontSize: '0.85rem' }}>본문에 대표 이미지 포함하기</label>
         </div>
       </div>
 

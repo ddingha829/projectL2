@@ -288,3 +288,18 @@
 .submitGroup {
     display: contents;
 }
+
+@media (max-width: 768px) {
+  .container {
+    padding: 20px 0;
+  }
+  .inputGroup {
+    padding: 0 4px;
+  }
+  .title {
+    font-size: 1.5rem;
+  }
+  .uploadBox {
+    min-height: 150px;
+  }
+}

@@ -258,6 +258,32 @@
   transform: translateY(-2px);
 }
 
+@media (max-width: 768px) {
+  .editorContainer {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+  
+  :global(.ql-toolbar.ql-snow) {
+    padding: 6px 4px !important;
+  }
+
+  :global(.ql-snow .ql-picker) {
+    height: 28px !important;
+    font-size: 0.75rem !important;
+  }
+
+  :global(.ql-snow .ql-picker.ql-header) { width: 70px !important; }
+  :global(.ql-snow .ql-picker.ql-font) { width: 100px !important; }
+  :global(.ql-snow .ql-picker.ql-size) { width: 70px !important; }
+  :global(.ql-snow .ql-picker.ql-lineheight) { width: 80px !important; }
+  
+  :global(.ql-snow .ql-formats) {
+    margin-right: 6px !important;
+  }
+}
+
 /* Mobile crop modal compact layout */
 @media (max-width: 768px) {
   .modalContent {
