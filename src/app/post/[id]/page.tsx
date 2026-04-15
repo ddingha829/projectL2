@@ -369,9 +369,13 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
             <div className={styles.authorCardContent}>
               <div className={styles.authorAvatarArea}>
                 <div className={styles.authorAvatarLarge}>
-                   {post.authorProfile.avatar_url ? (
-                     <img src={post.authorProfile.avatar_url} alt={post.authorProfile.display_name} />
-                   ) : "👤"}
+                   <Image 
+                     src={(post.authorProfile.avatar_url && post.authorProfile.avatar_url.length > 5) ? post.authorProfile.avatar_url : "https://ujitunfexivstveydmgs.supabase.co/storage/v1/object/public/post-images/default-avatar.png"} 
+                     alt={post.authorProfile.display_name} 
+                     width={96}
+                     height={96}
+                     style={{ objectFit: 'cover' }}
+                   />
                 </div>
               </div>
               <div className={styles.authorDetailsArea}>
@@ -403,6 +407,24 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
           prevId={post.prevId}
           nextId={post.nextId}
           initialIsLiked={isLiked}
+        />
+
+        {/* JSON-LD Structured Data for SEO */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Article",
+              "headline": post.title,
+              "image": [post.image_url],
+              "datePublished": post.created_at,
+              "author": {
+                "@type": "Person",
+                "name": post.authorProfile?.display_name || post.author?.display_name
+              }
+            })
+          }}
         />
       </article>
     </div>

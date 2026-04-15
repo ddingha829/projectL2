@@ -65,15 +65,19 @@ export async function updatePost(postId: string, formData: FormData) {
     .from('posts')
     .update(updateData)
     .eq('id', postId)
-    .select()
+    .select('id, serial_id')
+    .single()
 
-  if (updateError || !updatedData || updatedData.length === 0) {
+  if (updateError || !updatedData) {
     console.error('Update post error (Policy or DB):', updateError)
     redirect(`/post/db-${postId}?error=update_failed_policy`)
   }
 
   revalidatePath('/', 'layout')
-  redirect(`/post/db-${postId}`)
+  
+  // 수정한 글의 숫자 ID(serial_id)가 있으면 그 주소로, 없으면 UUID 주소로 이동
+  const targetId = updatedData.serial_id ? String(updatedData.serial_id) : `db-${updatedData.id}`
+  redirect(`/post/${targetId}`)
 }
 
 /** 게시물 삭제 (admin만 가능) */

@@ -61,7 +61,7 @@ export async function createPost(formData: FormData) {
           review_comment: reviewComment || null
         }
       ])
-      .select('id')
+      .select('id, serial_id')
       .single();
 
     if (error || !postData) {
@@ -71,7 +71,9 @@ export async function createPost(formData: FormData) {
 
     await supabase.from('drafts').delete().eq('user_id', user.id);
     revalidatePath('/', 'layout');
-    redirect('/');
+    
+    const targetId = postData.serial_id ? String(postData.serial_id) : `db-${postData.id}`;
+    redirect(`/post/${targetId}`);
 
   } catch (err: any) {
     if (err.digest?.startsWith('NEXT_REDIRECT')) throw err;

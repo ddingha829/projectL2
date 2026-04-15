@@ -91,6 +91,8 @@ export default function ContentSegmenter({
       'table', 'thead', 'tbody', 'tr', 'th', 'td', 'sub', 'sup'],
     ALLOWED_ATTR: ['href', 'src', 'alt', 'class', 'style', 'target', 'rel', 'width', 'height', 'data-*'],
     ALLOW_DATA_ATTR: true,
+    // [보완] 인라인 스타일이 삭제되지 않도록 명시
+    ADD_ATTR: ['style']
   }), [content]);
 
   return (

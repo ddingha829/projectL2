@@ -1546,6 +1546,35 @@
   color: var(--text-primary);
 }
 
+.skeletonGrid {
+  display: grid !important;
+  grid-template-columns: repeat(var(--desktop-cols, 4), 1fr) !important;
+  gap: 24px !important;
+  width: 100% !important;
+}
+
+@media (max-width: 768px) {
+  .skeletonGrid {
+    grid-template-columns: repeat(var(--mobile-cols, 2), 1fr) !important;
+    gap: 6px !important;
+  }
+}
+
+.mobileHidden {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .mobileHidden {
+    display: none;
+  }
+}
+
+.sentinel {
+  padding: 40px 0;
+  width: 100%;
+}
+
 @media (max-width: 768px) {
   .editorsGrid {
     grid-template-columns: repeat(2, 1fr);

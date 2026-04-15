@@ -1,0 +1,82 @@
+.skeletonCard {
+  width: 100%;
+  aspect-ratio: 4/5;
+  background: var(--bg-tertiary);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border: 1px solid var(--border-light);
+}
+
+.imagePlaceholder {
+  flex: 1;
+  position: relative;
+  background: #eee;
+  overflow: hidden;
+}
+
+.contentPlaceholder {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.titleLine, .titleLineShort, .metaLine {
+  height: 14px;
+  background: #eee;
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.titleLine { width: 90%; height: 20px; }
+.titleLineShort { width: 60%; height: 20px; }
+.metaLine { width: 40%; }
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.metaCircle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #eee;
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Dark mode overrides if needed */
+:global(.dark-mode) .imagePlaceholder,
+:global(.dark-mode) .titleLine,
+:global(.dark-mode) .titleLineShort,
+:global(.dark-mode) .metaLine,
+:global(.dark-mode) .metaCircle {
+  background: #333;
+}

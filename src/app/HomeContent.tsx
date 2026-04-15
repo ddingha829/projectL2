@@ -2,12 +2,14 @@
  
 import { useState, useEffect, useCallback, useRef } from "react";
 import styles from "./page.module.css";
+import Image from "next/image";
 import HeroCard from "@/components/feed/HeroCard";
 import PosterCard from "@/components/feed/PosterCard";
 import { AUTHORS } from "@/lib/constants/authors";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import ReviewRequest from "@/components/feed/ReviewRequest";
+import SkeletonCard from "@/components/feed/SkeletonCard";
 
 const MOCK_REVIEWS = [
   { id: 'm1', subject: '크라임 101', rating: 6, comment: '반전은 보이나 몰입감 부족', authorName: '황수정 티끌러' },
@@ -483,7 +485,14 @@ export default function HomeContent({
                       { id: 'f1', title: '티끌러 선정 2026.4 최고의 점심메뉴', imageUrl: 'https://images.unsplash.com/photo-1525648199074-cee30ba79a4a?auto=format&fit=crop&w=1600&q=80' }
                     ]).map((feature: any) => (
                       <Link key={feature.id} href={feature.id.startsWith('db-') ? `/post/${feature.id}` : '#'} className={styles.featureBanner}>
-                        <img src={feature.imageUrl} alt={feature.title} className={styles.featureImage} />
+                        <Image 
+                          src={feature.imageUrl} 
+                          alt={feature.title} 
+                          className={styles.featureImage} 
+                          fill
+                          sizes="(max-width: 768px) 100vw, 50vw"
+                          style={{ objectFit: 'cover' }}
+                        />
                         <div className={styles.featureOverlay}>
                           <h3 className={styles.featureTitle}>{feature.title}</h3>
                         </div>
@@ -551,7 +560,14 @@ export default function HomeContent({
                     {editors.map((ed: any) => (
                       <Link key={ed.id} href={`/?author=${ed.id}`} className={styles.editorProfileCard}>
                         <div className={styles.edAvatarWrapper}>
-                          <img src={ed.avatar_url || '👤'} alt={ed.display_name} className={styles.edAvatarImg} />
+                          <Image 
+                            src={ed.avatar_url && ed.avatar_url.length > 5 ? ed.avatar_url : "https://ujitunfexivstveydmgs.supabase.co/storage/v1/object/public/post-images/default-avatar.png"} 
+                            alt={ed.display_name} 
+                            className={styles.edAvatarImg} 
+                            width={100}
+                            height={100}
+                            style={{ objectFit: 'cover' }}
+                          />
                         </div>
                         <div className={styles.edInfo}>
                           <h3 className={styles.edName}>{ed.display_name}</h3>
@@ -578,7 +594,13 @@ export default function HomeContent({
               {/* Sentinel (Unified) */}
               {showFullGrid && displayPosts.length < paginatedData.length && (
                 <div ref={sentinelRef} className={styles.sentinel}>
-                  <div className={styles.shimmer}>Loading...</div>
+                  <div className={styles.skeletonGrid}>
+                    {[1, 2, 3, 4].map(i => (
+                      <div key={i} className={isMobile && i > 2 ? styles.mobileHidden : ""}>
+                        <SkeletonCard />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
@@ -596,7 +618,13 @@ export default function HomeContent({
                 <div className={styles.authorCardContent}>
                   <div className={styles.authorAvatarArea}>
                     <div className={styles.authorAvatarLarge}>
-                      <img src={authorData.avatar} alt={authorData.name} />
+                      <Image 
+                        src={(authorData.avatar && authorData.avatar.length > 5) ? authorData.avatar : "https://ujitunfexivstveydmgs.supabase.co/storage/v1/object/public/post-images/default-avatar.png"} 
+                        alt={authorData.name} 
+                        width={120}
+                        height={120}
+                        style={{ objectFit: 'cover' }}
+                      />
                     </div>
                   </div>
                   <div className={styles.authorDetailsArea}>
@@ -746,7 +774,14 @@ export default function HomeContent({
                             {catPosts.map(post => (
                               <Link href={`/post/${post.id}`} key={post.id} className={styles.magListItem}>
                                 <div className={styles.magThumbWrap}>
-                                  <img src={post.imageUrl} alt={post.title} className={styles.magThumb} />
+                                  <Image 
+                                    src={post.imageUrl} 
+                                    alt={post.title} 
+                                    className={styles.magThumb} 
+                                    fill
+                                    sizes="120px"
+                                    style={{ objectFit: 'cover' }}
+                                  />
                                 </div>
                                 <div className={styles.magListInfo}>
                                   <h4 className={styles.magListTitle}>{post.title}</h4>

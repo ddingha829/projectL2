@@ -65,10 +65,23 @@ export default function HeroCard({
                   <div className={styles.footer}>
                     <div className={styles.authorSection}>
                       <div className={styles.avatarWrapper}>
-                        {author.avatar.startsWith("/") || author.avatar.startsWith("http") ? (
-                          <img src={author.avatar} alt={author.name} className={styles.avatarImg} />
+                        {author.avatar && author.avatar.length > 2 && (author.avatar.startsWith("/") || author.avatar.startsWith("http")) ? (
+                          <Image 
+                            src={author.avatar} 
+                            alt={author.name} 
+                            className={styles.avatarImg} 
+                            width={32}
+                            height={32}
+                            style={{ objectFit: 'cover' }}
+                          />
                         ) : (
-                          <span className={styles.avatarEmoji}>{author.avatar}</span>
+                          <Image 
+                            src="https://ujitunfexivstveydmgs.supabase.co/storage/v1/object/public/post-images/default-avatar.png" 
+                            alt={author.name} 
+                            className={styles.avatarImg} 
+                            width={32}
+                            height={32}
+                          />
                         )}
                       </div>
                       <div className={styles.authorNameBadge}>
