@@ -6,23 +6,12 @@ import { createClient } from '@/lib/supabase/server'
 async function getProfileAndPost(postId: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) {
-    console.error('DEBUG: No user found in session');
-    return { error: 'unauthenticated' as const, supabase, user: null, profile: null, post: null }
-  }
+  if (!user) return { error: 'unauthenticated' as const, supabase, user: null, profile: null, post: null }
 
   const [{ data: profile }, { data: post }] = await Promise.all([
     supabase.from('profiles').select('role').eq('id', user.id).single(),
     supabase.from('posts').select('id, author_id').eq('id', postId).single(),
   ])
-
-  console.log('DEBUG [getProfileAndPost]:', {
-    inputPostId: postId,
-    currentUserId: user.id,
-    foundProfileRole: profile?.role,
-    foundPostAuthorId: post?.author_id,
-    postFound: !!post
-  });
 
   return { supabase, user, profile, post, error: null }
 }
