@@ -137,13 +137,14 @@
 }
 
 .headerColBtn:hover:not(.headerColActive) {
-  background: rgba(0,0,0,0.05);
+  background: rgba(var(--bg-tertiary-rgb, 128, 128, 128), 0.2);
   color: var(--text-primary);
 }
 
 .headerColActive {
   background: var(--brand-primary);
-  color: #fff !important;
+  color: #ffffff !important; /* Ensure clear white text in all modes */
+  box-shadow: 0 2px 8px rgba(255, 72, 4, 0.4);
 }
 
 .controlsLeft, .controlsRight {
