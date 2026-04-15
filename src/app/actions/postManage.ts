@@ -16,10 +16,14 @@ async function getProfileAndPost(postId: string) {
   return { supabase, user, profile, post, error: null }
 }
 
-function canModify(role: string, userId: string, authorId: string) {
-  if (role === 'admin') return true                                // admin: 모든 글
-  if ((role === 'editor' || role === 'user') && userId === authorId) return true // 본인 글
-  return false
+function canModify(role: string | null | undefined, userId: string, authorId: string) {
+  // admin은 무조건 통과
+  if (role === 'admin') return true;
+  
+  // 본인 글인 경우 통과 (role이 null이어도 본인글이면 삭제 가능하도록)
+  if (userId === authorId) return true;
+  
+  return false;
 }
 
 /** 게시물 수정 */
