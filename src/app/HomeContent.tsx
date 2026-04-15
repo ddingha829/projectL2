@@ -1,14 +1,15 @@
 "use client";
  
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import styles from "./page.module.css";
 import Image from "next/image";
 import HeroCard from "@/components/feed/HeroCard";
 import PosterCard from "@/components/feed/PosterCard";
 import { AUTHORS } from "@/lib/constants/authors";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useSearchParams, useRouter } from "next/navigation";
-import ReviewRequest from "@/components/feed/ReviewRequest";
+const ReviewRequest = dynamic(() => import("@/components/feed/ReviewRequest"), { ssr: false });
 import SkeletonCard from "@/components/feed/SkeletonCard";
 
 const MOCK_REVIEWS = [
@@ -211,12 +212,24 @@ export default function HomeContent({
     // For now, these effects are mostly for page resets.
   }, [isViewMore, isFiltered]);
 
-  // Detect mobile environment (Client-side)
+  const prevWidth = useRef(0);
+
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    const handleResize = () => {
+      const width = window.innerWidth;
+      const mobile = width <= 768;
+      
+      // 768px 임계값을 넘나들 때만 상태 변경
+      if (mobile !== (prevWidth.current <= 768)) {
+        setIsMobile(mobile);
+        if (mobile) updateParam("viewType", "card");
+      }
+      prevWidth.current = width;
+    };
+    
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   // Reset counters on filter change (Includes categoryFilter to ensure count resets even if animationKey is same)
@@ -330,7 +343,7 @@ export default function HomeContent({
 
   // Grid posts logic
   const showFullGrid = isFiltered || isViewMore;
-  const paginatedData = filteredPosts;
+  const paginatedData = useMemo(() => filteredPosts, [filteredPosts]);
 
   // Selection logic: Infinite Scroll for results, but 2 for the main page
   const displayPosts = showFullGrid 
@@ -772,29 +785,36 @@ export default function HomeContent({
                         <div key={catId} className={styles.magSection}>
                           <h3 className={styles.magSecTitle}>{catName}</h3>
                           <div className={styles.magList}>
-                            {catPosts.map(post => (
-                              <Link href={`/post/${post.id}`} key={post.id} className={styles.magListItem}>
-                                <div className={styles.magThumbWrap}>
-                                  <Image 
-                                    src={post.imageUrl} 
-                                    alt={post.title} 
-                                    className={styles.magThumb} 
-                                    fill
-                                    sizes="100px"
-                                    quality={65}
-                                    style={{ objectFit: 'cover' }}
-                                  />
-                                </div>
-                                <div className={styles.magListInfo}>
-                                  <h4 className={styles.magListTitle}>{post.title}</h4>
-                                  <p className={styles.magListExcerpt}>{stripHtml(post.content).slice(0, 100)}...</p>
-                                  <div className={styles.magMetaRow}>
-                                    <span className={styles.magListAuthor}>{post.author.name}</span>
-                                    <span className={styles.magListDate}>{post.displayDate}</span>
+                            {catPosts.map((post: any) => {
+                              // HTML 태그 제거 및 요약본 캐싱 (성능 최적화)
+                              if (!post._cachedExcerpt) {
+                                post._cachedExcerpt = stripHtml(post.content).slice(0, 100);
+                              }
+                              
+                              return (
+                                <Link href={`/post/${post.id}`} key={post.id} className={styles.magListItem}>
+                                  <div className={styles.magThumbWrap}>
+                                    <Image 
+                                      src={post.imageUrl} 
+                                      alt={post.title} 
+                                      className={styles.magThumb} 
+                                      fill
+                                      sizes="100px"
+                                      quality={65}
+                                      style={{ objectFit: 'cover' }}
+                                    />
                                   </div>
-                                </div>
-                              </Link>
-                            ))}
+                                  <div className={styles.magListInfo}>
+                                    <h4 className={styles.magListTitle}>{post.title}</h4>
+                                    <p className={styles.magListExcerpt}>{post._cachedExcerpt}...</p>
+                                    <div className={styles.magMetaRow}>
+                                      <span className={styles.magListAuthor}>{post.author?.name || post.authorProfile?.display_name}</span>
+                                      <span className={styles.magListDate}>{post.displayDate}</span>
+                                    </div>
+                                  </div>
+                                </Link>
+                              );
+                            })}
                           </div>
                         </div>
                       );
@@ -806,7 +826,13 @@ export default function HomeContent({
               {/* Unified Sentinel */}
               {displayPosts.length < paginatedData.length && (
                 <div ref={sentinelRef} className={styles.sentinel}>
-                  <div className={styles.shimmer}>Loading...</div>
+                  <div className={styles.skeletonGrid}>
+                    {[1, 2, 3, 4].map(i => (
+                      <div key={i} className={isMobile && i > 2 ? styles.mobileHidden : ""}>
+                        <SkeletonCard />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>

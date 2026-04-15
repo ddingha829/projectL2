@@ -1576,6 +1576,22 @@
 }
 
 @media (max-width: 768px) {
+  .card, .magListItem, .editorProfileCard {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06) !important; /* Lighter shadow for mobile */
+    will-change: transform; /* Hardware acceleration */
+  }
+
+  .card:hover, .magListItem:hover {
+    transform: none !important; /* Disable hover movement on mobile to save layout cycles */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06) !important;
+  }
+}
+
+.homeContainer {
+  contain: content; /* Layout isolation optimization */
+}
+
+@media (max-width: 768px) {
   .editorsGrid {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
