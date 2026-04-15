@@ -178,42 +178,39 @@
 
 
 .slideNavBtn {
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  color: #fff;
+  background: rgba(255, 255, 255, 0.8); /* 80% opaque white as requested */
+  border: 1px solid rgba(0, 0, 0, 0.05); /* Very subtle border to define shape on white bg */
+  color: #ffffff; /* White arrows */
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 5px; /* Slightly more compact padding */
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .slideNavBtn:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: scale(1.1);
-}
-
-.heroDotsView {
-  display: flex;
-  gap: 6px;
-  align-items: center;
+  background: rgba(255, 255, 255, 0.95);
+  transform: scale(1.05);
 }
 
 .activeHeroDot {
   width: 16px;
   height: 6px;
-  background: #fff;
+  background: #ff4804; /* Keep brand orange for active */
   border-radius: 3px;
   transition: width 0.3s;
 }
 
 .inactiveHeroDot {
-  width: 6px;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.4);
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.8); /* 80% opaque white as requested */
   border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
 .mobileViewAllContainer {
@@ -1930,18 +1927,19 @@
 /* Floating Hero Remote Styles (Restored Top-Right) */
 .heroNavFloating {
   position: absolute;
-  top: 30px;
-  right: 50px;
-  display: flex;
+  bottom: 24px; /* Relocated to bottom as requested */
+  right: 24px;
+  display: flex !important;
   align-items: center;
   gap: 16px;
-  z-index: 50; /* Above slide frames */
+  z-index: 50;
+  animation: floatIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .slideNavBtn {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
+  color: #000;
   width: 42px;
   height: 42px;
   border-radius: 50%;
