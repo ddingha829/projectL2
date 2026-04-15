@@ -67,13 +67,13 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <Link href={`/post/db-${id}`} style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '12px', display: 'inline-block' }}>
+        <Link href={`/post/${id}`} style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '12px', display: 'inline-block' }}>
           ← 돌아가기
         </Link>
         <h1 className={styles.title}>글 수정</h1>
       </header>
       <EditPostForm
-        postId={actualId}
+        postId={post.id} // URL ID가 아닌 실제 DB UUID를 전달
         initialTitle={post.title}
         initialContent={post.content}
         initialCategory={post.category}
