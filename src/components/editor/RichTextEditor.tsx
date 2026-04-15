@@ -167,6 +167,14 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                         }
                     }
                 }) as any, true); // Capture phase
+
+                // 3. 선택 영역 변경 시 툴바 강제 업데이트 (피드백 개선)
+                quillRef.current.getEditor().on('selection-change', (range: any) => {
+                    if (range) {
+                        const quill = quillRef.current.getEditor();
+                        quill.getFormat(range);
+                    }
+                });
             }
         };
 
@@ -361,7 +369,6 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                 :global(.ql-font-notosans-medium) { font-family: var(--font-noto-sans) !important; font-weight: 500 !important; }
                 :global(.ql-font-notosans-bold) { font-family: var(--font-noto-sans) !important; font-weight: 700 !important; }
                 :global(.ql-font-notosans-black) { font-family: var(--font-noto-sans) !important; font-weight: 900 !important; }
-                
                 :global(.ql-font-nanummyeongjo) { font-family: var(--font-nanum-myeongjo) !important; }
                 :global(.ql-font-nanumgothic) { font-family: var(--font-nanum-gothic) !important; }
                 :global(.ql-font-inter) { font-family: var(--font-inter) !important; }
@@ -372,31 +379,34 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                     margin: 0;
                     padding: 0;
                 }
+
+                /* 사이즈 툴바 라벨 설정 */
                 :global(.ql-snow .ql-picker.ql-size .ql-picker-label::before),
                 :global(.ql-snow .ql-picker.ql-size .ql-picker-item::before) {
                     content: attr(data-value) !important;
                 }
-                :global(.ql-snow .ql-picker.ql-size .ql-picker-label:not([data-value])::before) { content: '1rem'; }
+                :global(.ql-snow .ql-picker.ql-size .ql-picker-label:not([data-value])::before) { content: '1rem' !important; }
 
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label::before) { content: 'Line Height'; }
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label[data-value="1-8"]::before) { content: '1.8'; }
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label:not([data-value])::before) { content: '1.8'; }
+                /* 줄간격 툴바 라벨 설정 (data-value가 1-8 형태이므로 직접 매핑) */
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label::before) { content: '1.8'; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label:not([data-value])::before) { content: '1.8' !important; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label[data-value="1-0"]::before), :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1-0"]::before) { content: '1.0' !important; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label[data-value="1-2"]::before), :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1-2"]::before) { content: '1.2' !important; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label[data-value="1-4"]::before), :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1-4"]::before) { content: '1.4' !important; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label[data-value="1-5"]::before), :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1-5"]::before) { content: '1.5' !important; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label[data-value="1-6"]::before), :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1-6"]::before) { content: '1.6' !important; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label[data-value="1-8"]::before), :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1-8"]::before) { content: '1.8' !important; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label[data-value="2-0"]::before), :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="2-0"]::before) { content: '2.0' !important; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label[data-value="2-5"]::before), :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="2-5"]::before) { content: '2.5' !important; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label[data-value="3-0"]::before), :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="3-0"]::before) { content: '3.0' !important; }
 
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1-0"]::before) { content: '1.0'; }
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1-2"]::before) { content: '1.2'; }
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1-4"]::before) { content: '1.4'; }
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1-5"]::before) { content: '1.5'; }
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1-6"]::before) { content: '1.6'; }
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1-8"]::before) { content: '1.8'; }
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="2-0"]::before) { content: '2.0'; }
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="2-5"]::before) { content: '2.5'; }
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="3-0"]::before) { content: '3.0'; }
-
+                /* 헤더 툴바 라벨 설정 */
                 :global(.ql-snow .ql-picker.ql-header .ql-picker-label::before) { content: 'Heading'; }
-                :global(.ql-snow .ql-picker.ql-header .ql-picker-label:not([data-value])::before) { content: '본문 (P)'; }
+                :global(.ql-snow .ql-picker.ql-header .ql-picker-label:not([data-value])::before) { content: '본문' !important; }
 
                 /* Noto Sans 두께별 라벨 설정 */
                 :global(.ql-snow .ql-picker.ql-font .ql-picker-label:not([data-value])::before) { content: '기본 (노토산스 Light)'; font-family: var(--font-noto-sans); font-weight: 300; }
+
 
                 :global(.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="notosans"]::before),
                 :global(.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="notosans"]::before) { content: '노토산스 (Regular)'; font-family: var(--font-noto-sans); }

@@ -2,6 +2,8 @@ import { MetadataRoute } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { MOCK_POSTS } from './page'
 
+export const revalidate = 3600; // 1시간마다 갱신
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://ticgle.kr'
   const supabase = await createClient()
