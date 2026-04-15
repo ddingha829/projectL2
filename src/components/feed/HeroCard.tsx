@@ -18,29 +18,35 @@ interface HeroCardProps {
   totalCount?: number;
   isEditorsPick?: boolean;
   displayDate?: string;
+  isPriority?: boolean; // New prop for intelligence loading
 }
 
 export default function HeroCard({ 
   id, category, title, author, likes, comments, imageUrl, 
   heightRatio = 'full', onPrev, onNext, showNav,
   currentIndex = 0, totalCount = 3, isEditorsPick,
-  displayDate
+  displayDate, isPriority = false
 }: HeroCardProps) {
   const containerStyle = heightRatio === '1/3' ? styles.heightOneThird : 
                         heightRatio === '2/3' ? styles.heightTwoThird : 
                         heightRatio === 'compact' ? styles.heightCompact :
                         styles.heightFull;
 
+  // [최적화] Unsplash 이미지인 경우 캡핑하여 전송량 최소화
+  const optimizedImgUrl = imageUrl.includes('unsplash.com') 
+    ? `${imageUrl.split('?')[0]}?auto=format&fit=crop&w=1600&q=75` 
+    : imageUrl;
+
   return (
     <article className={`${styles.hero} ${containerStyle}`}>
       <Image 
-        src={imageUrl} 
+        src={optimizedImgUrl} 
         alt={title} 
         className={styles.bgImage} 
         fill
-        priority
-        sizes="(max-width: 1024px) 100vw, 80vw"
-        quality={85}
+        priority={isPriority}
+        sizes="(max-width: 1024px) 100vw, 85vw"
+        quality={75}
         style={{ objectFit: 'cover' }}
       />
       <div className={styles.overlay}>

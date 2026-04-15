@@ -312,9 +312,9 @@ export default function HomeContent({
                   className={styles.heroTrack} 
                   style={{ transform: `translateX(-${heroIndex * 100}%)` }}
                 >
-                  {heroPosts.map((post) => (
+                  {heroPosts.map((post, index) => (
                     <div key={post.id} className={styles.heroSlideItem}>
-                      <HeroCard {...post} heightRatio="2/3" showNav={false} />
+                      <HeroCard {...post} heightRatio="2/3" showNav={false} isPriority={index === 0} />
                     </div>
                   ))}
                 </div>
@@ -357,9 +357,9 @@ export default function HomeContent({
                   className={styles.heroTrack} 
                   style={{ transform: `translateX(-${heroIndex * 100}%)` }}
                 >
-                  {heroPosts.map((post) => (
+                  {heroPosts.map((post, index) => (
                     <div key={post.id} className={styles.heroSlideItem}>
-                      <HeroCard {...post} heightRatio="2/3" />
+                      <HeroCard {...post} heightRatio="2/3" isPriority={index === 0} />
                     </div>
                   ))}
                 </div>
