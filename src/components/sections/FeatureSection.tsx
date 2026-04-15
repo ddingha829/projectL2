@@ -1,6 +1,8 @@
+"use client";
+
+import styles from "../../app/page.module.css";
 import Link from "next/link";
 import Image from "next/image";
-import styles from "../../app/page.module.css";
 
 export function FeatureSection({ featurePosts, isMobile }: { featurePosts: any[], isMobile: boolean }) {
   return (

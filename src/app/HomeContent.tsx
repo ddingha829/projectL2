@@ -12,6 +12,20 @@ import { useSearchParams, useRouter } from "next/navigation";
 const ReviewRequest = dynamic(() => import("@/components/feed/ReviewRequest"), { ssr: false });
 import SkeletonCard from "@/components/feed/SkeletonCard";
 
+// [최적화] 하단 섹션들을 동적 임포트하여 초기 JS 번들 크기를 줄이고 로딩 속도 개선
+const FeatureSection = dynamic(() => import("@/components/sections/FeatureSection").then(mod => mod.FeatureSection), { 
+  loading: () => <div style={{ height: '300px', background: '#f5f5f5', borderRadius: '12px', margin: '20px 0' }} />,
+  ssr: true 
+});
+const ReviewsSection = dynamic(() => import("@/components/sections/ReviewsSection").then(mod => mod.ReviewsSection), { 
+  loading: () => <div style={{ height: '200px', background: '#f5f5f5', borderRadius: '12px', margin: '20px 0' }} />,
+  ssr: true 
+});
+const EditorsSection = dynamic(() => import("@/components/sections/EditorsSection").then(mod => mod.EditorsSection), { 
+  loading: () => <div style={{ height: '250px', background: '#f5f5f5', borderRadius: '12px', margin: '20px 0' }} />,
+  ssr: true 
+});
+
 const MOCK_REVIEWS = [
   { id: 'm1', subject: '크라임 101', rating: 6, comment: '반전은 보이나 몰입감 부족', authorName: '황수정 티끌러' },
   { id: 'm2', subject: '샷 콜러', rating: 7, comment: '연기가 돋보이는 처절한 사투', authorName: '박펜 티끌러' },
@@ -385,115 +399,21 @@ export default function HomeContent({
                   })}
               </div>
 
-              {/* Feature Section */}
-              <div className={styles.featureSection}>
-                <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '25px' }}>
-                  <h2 className={styles.sectionTitle}>태산 : 티끌 모아 봄</h2>
-                  <div className={styles.headerSpacer}></div>
-                  <Link href="/?category=feature" className={styles.viewAllLink}>
-                    MORE <span className={styles.linkIcon}>{'>'}</span>
-                  </Link>
-                </header>
-                <div className={styles.featureGrid}>
-                  {(featurePosts.length > 0 ? featurePosts : [
-                    { id: 'f1', title: '티끌러 선정 2026.4 최고의 점심메뉴', imageUrl: 'https://images.unsplash.com/photo-1525648199074-cee30ba79a4a?auto=format&fit=crop&w=1600&q=80' }
-                  ]).map((feature: any) => (
-                    <Link key={feature.id} href={feature.id.startsWith('db-') ? `/post/${feature.id}` : '#'} className={styles.featureBanner}>
-                      <Image 
-                        src={feature.imageUrl} 
-                        alt={feature.title} 
-                        className={styles.featureImage} 
-                        fill
-                        sizes="(max-width: 768px) 100vw, 1200px"
-                        quality={80}
-                        style={{ objectFit: 'cover' }}
-                      />
-                      <div className={styles.featureOverlay}>
-                        <h3 className={styles.featureTitle}>{feature.title}</h3>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
+              {/* Feature Section (Dynamically Loaded) */}
+              <FeatureSection featurePosts={featurePosts} isMobile={isMobile} />
 
-              {/* Reviews Section */}
-              <div className={styles.recentReviewsSection}>
-                <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '15px' }}>
-                  <h2 className={styles.sectionTitle}>한줄 평</h2>
-                  <div className={styles.headerSpacer}></div>
-                </header>
-                <div className={styles.recentReviewsWrapper}>
-                  <button className={`${styles.scrollBtn} ${styles.scrollBtnLeft}`} onClick={() => scrollReviews('left')}>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                  </button>
-                  <div className={styles.reviewHorizontalGrid} ref={reviewRef}>
-                    {(recentReviews && recentReviews.length > 0 ? recentReviews : MOCK_REVIEWS).slice(0, 7).map((rev) => (
-                      <div key={rev.id} className={styles.miniReviewCard} onClick={() => router.push(`/reviews?search=${encodeURIComponent(rev.subject)}`)}>
-                        <h4 className={styles.miniRevSubject}>{rev.subject}</h4>
-                        <div className={styles.miniRevRating}>
-                          <div className={styles.miniRevInnerRow}>
-                            <div className={styles.miniRevStars}>
-                              {[1, 2, 3, 4, 5].map(i => (
-                                <span key={i} style={{ color: (rev.rating >= i * 2) ? '#ff4804' : '#ddd' }}>★</span>
-                              ))}
-                            </div>
-                            <span className={styles.miniRevScore}>{rev.rating}</span>
-                            <span className={styles.miniRevCommunityScore}>유저 {(rev.rating * 0.7 + 1.5).toFixed(1)}</span>
-                          </div>
-                        </div>
-                        <p className={styles.miniRevText}>{rev.comment}</p>
-                        <div className={styles.miniRevFooter}>
-                          <span className={styles.miniRevAuthor}>{rev.authorName}</span>
-                          {(rev.id && !String(rev.id).startsWith('m')) && (
-                            <Link href={`/post/db-${rev.id}`} className={styles.miniRevLink} onClick={(e) => e.stopPropagation()}>리뷰 보기 →</Link>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <button className={`${styles.scrollBtn} ${styles.scrollBtnRight}`} onClick={() => scrollReviews('right')}>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                  </button>
-                </div>
-              </div>
+              {/* Reviews Section (Dynamically Loaded) */}
+              <ReviewsSection 
+                recentReviews={recentReviews} 
+                isMobile={isMobile} 
+                scrollReviews={scrollReviews} 
+                reviewRef={reviewRef} 
+                router={router} 
+                MOCK_REVIEWS={MOCK_REVIEWS} 
+              />
 
-              {/* Editors Section */}
-              <div className={styles.editorsSection}>
-                <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '25px' }}>
-                  <h2 className={styles.sectionTitle}>티끌러</h2>
-                  <div className={styles.headerSpacer}></div>
-                </header>
-                <div className={styles.editorsGrid}>
-                  {editors.map((ed: any) => (
-                    <Link key={ed.id} href={`/?author=${ed.id}`} className={styles.editorProfileCard}>
-                      <div className={styles.edAvatarWrapper}>
-                        <Image 
-                          src={(ed.avatar_url && (ed.avatar_url.startsWith('http') || ed.avatar_url.startsWith('/'))) ? ed.avatar_url : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"} 
-                          alt={ed.display_name} 
-                          className={styles.edAvatarImg} 
-                          width={100}
-                          height={100}
-                          style={{ objectFit: 'cover' }}
-                        />
-                      </div>
-                      <div className={styles.edInfo}>
-                        <h3 className={styles.edName}>{ed.display_name}</h3>
-                        <span className={styles.edRole}>{ed.role === 'admin' ? '운영자' : '티끌러'}</span>
-                        <p className={styles.edBio}>
-                          {ed.bio || "생동감 넘치는 리뷰를 작성하는 티끌러입니다."}
-                        </p>
-                      </div>
-                      {ed.bullets && ed.bullets.length > 0 && (
-                        <div className={styles.edBullets}>
-                          {ed.bullets.slice(0, 3).map((b: string, i: number) => (
-                            <span key={i} className={styles.edBulletPill}>{b}</span>
-                          ))}
-                        </div>
-                      )}
-                    </Link>
-                  ))}
-                </div>
-              </div>
+              {/* Editors Section (Dynamically Loaded) */}
+              <EditorsSection editors={editors} isMobile={isMobile} />
             </div>
           </div>
         ) : (

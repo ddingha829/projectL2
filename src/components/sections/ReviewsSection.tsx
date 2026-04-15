@@ -1,7 +1,9 @@
-import Link from "next/link";
-import styles from "../../app/page.module.css";
+"use client";
 
-export function ReviewsSection({ recentReviews, MOCK_REVIEWS, isMobile, scrollReviews, reviewRef, router }: any) {
+import styles from "../../app/page.module.css";
+import Link from "next/link";
+
+export function ReviewsSection({ recentReviews, isMobile, scrollReviews, reviewRef, router, MOCK_REVIEWS }: any) {
   return (
     <div className={styles.recentReviewsSection}>
       <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '15px' }}>
