@@ -210,18 +210,8 @@ export default function HomeContent({
     if (typeof window === 'undefined') return;
     const isMob = isMobileServer || window.innerWidth <= 768;
     setIsMobile(isMob);
-    if (!searchParams.get('viewType') && !hasInitialized) {
-      const params = new URLSearchParams(window.location.search);
-      if (initialViewType) params.set('viewType', initialViewType);
-      else {
-        params.set('viewType', isMob ? 'card' : 'magazine');
-        if (isMob) { if (!params.get('mCols')) params.set('mCols', '2'); }
-        else { if (!params.get('dCols')) params.set('dCols', '4'); }
-      }
-      router.replace(`?${params.toString()}`, { scroll: false });
-      setHasInitialized(true);
-    }
-  }, [searchParams, hasInitialized, router, isMobileServer, initialViewType]);
+    setHasInitialized(true); // Just mark as initialized without forced redirect
+  }, [isMobileServer]);
 
   useEffect(() => {
     const handleResize = () => {

@@ -44,32 +44,15 @@ export default function TopNavbar({
     fetchEditors();
   }, []);
 
+  // [개선] 기기 및 선호도 체크 (리다이렉트 제거)
   useEffect(() => {
-    const checkMobileAndSetView = () => {
-      const isMob = window.innerWidth <= 768;
-      setIsMobile(isMob);
-      
-      const storedView = localStorage.getItem('viewType');
-      const currentView = searchParams.get('viewType');
-      
-      if (!currentView) {
-        const defaultView = isMob ? 'card' : 'magazine';
-        const finalView = storedView || defaultView;
-        
-        const params = new URLSearchParams(window.location.search);
-        params.set('viewType', finalView);
-        if (window.location.pathname === '/' || window.location.search.includes('view=all')) {
-          router.replace(`?${params.toString()}`, { scroll: false });
-        }
-      } else {
-        localStorage.setItem('viewType', currentView);
-      }
-    };
+    const isMob = window.innerWidth <= 768;
+    setIsMobile(isMob);
     
-    checkMobileAndSetView();
-    window.addEventListener("resize", checkMobileAndSetView);
-    return () => window.removeEventListener("resize", checkMobileAndSetView);
-  }, [searchParams, router]);
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Close menu on click outside
   useEffect(() => {
@@ -127,9 +110,15 @@ export default function TopNavbar({
     const updateParam = (key: string, val: string) => {
       const params = new URLSearchParams(searchParams.toString());
       params.set(key, val);
+      
+      // 선호도 저장 (localStorage + Cookie)
       if (key === 'viewType') {
         localStorage.setItem('viewType', val);
+        // 서버와 동기화하기 위해 쿠키에 저장 (1년 만료)
+        const cookieName = isMobile ? 'viewType_mobile' : 'viewType_pc';
+        document.cookie = `${cookieName}=${val}; path=/; max-age=${60*60*24*365}`;
       }
+      
       router.replace(`?${params.toString()}`, { scroll: false });
       setIsOpen(false);
     };
