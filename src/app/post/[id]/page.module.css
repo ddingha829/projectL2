@@ -359,7 +359,7 @@
 
 @media (min-width: 769px) {
   .authorCardWrapper {
-    width: 70% !important;
+    width: 65% !important; /* Reduced 5% from 70% */
     max-width: 1000px;
     margin-left: auto !important;
     margin-right: auto !important;
@@ -973,7 +973,7 @@
 
 .postReviewSection {
   margin: 40px auto 20px auto; /* Reduced from 80px/40px */
-  max-width: 550px;
+  max-width: 65%; /* Increased to match author card width (65%) */
   width: 100%;
 }
 

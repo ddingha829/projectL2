@@ -51,16 +51,16 @@ export default async function Home({
   // 모든 데이터를 병렬로 요청하여 대기 시간 단축
   const [heroRes, feedRes, reviewRes, featureRes, editorsRes, userProfileRes] = await Promise.all([
     // Hero posts
-    applyPrivacyFilter(supabase.from('posts').select('*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).eq('is_hero', true).order('hero_at', { ascending: false }).limit(3),
+    applyPrivacyFilter(supabase.from('posts').select('*, serial_id, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).eq('is_hero', true).order('hero_at', { ascending: false }).limit(3),
     
     // Feed posts
-    applyPrivacyFilter(supabase.from('posts').select('*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).neq('category', 'notice').order('created_at', { ascending: false }),
+    applyPrivacyFilter(supabase.from('posts').select('*, serial_id, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).neq('category', 'notice').order('created_at', { ascending: false }),
     
     // Reviews
-    applyPrivacyFilter(supabase.from('posts').select('id, review_subject, review_rating, review_comment, created_at, author:profiles!author_id(display_name)')).not('review_subject', 'is', null).order('created_at', { ascending: false }).limit(7),
+    applyPrivacyFilter(supabase.from('posts').select('id, serial_id, review_subject, review_rating, review_comment, created_at, author:profiles!author_id(display_name)')).not('review_subject', 'is', null).order('created_at', { ascending: false }).limit(7),
     
     // Feature posts
-    applyPrivacyFilter(supabase.from('posts').select('*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).or('is_feature.eq.true,category.eq.feature').order('created_at', { ascending: false }).limit(3),
+    applyPrivacyFilter(supabase.from('posts').select('*, serial_id, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).or('is_feature.eq.true,category.eq.feature').order('created_at', { ascending: false }).limit(3),
     
     // Editors
     supabase.from('profiles').select('id, display_name, avatar_url, bio, bullets, role').in('role', ['admin', 'editor']).order('display_name'),
@@ -88,8 +88,9 @@ export default async function Home({
     const authorData = p.author || {};
 
     return {
-      id: `db-${p.id}`,
+      id: p.serial_id ? String(p.serial_id) : `db-${p.id}`, // Use numeric ID if available for cleaner URLs
       dbId: p.id,
+      serialId: p.serial_id,
       categoryId: p.category,
       category: CATEGORY_MAP[p.category] || p.category,
       title: p.title,
@@ -168,7 +169,7 @@ export default async function Home({
   }
 
   const mappedReviews = reviewDbPosts?.map((p: any) => ({
-    id: p.id,
+    id: p.serial_id ? String(p.serial_id) : p.id,
     subject: p.review_subject,
     rating: p.review_rating,
     comment: p.review_comment,

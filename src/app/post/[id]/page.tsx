@@ -30,8 +30,9 @@ const getPost = cache(async (id: string) => {
 
   let post;
   let commentsData: any[] = [];
+  const isNumericId = /^\d+$/.test(id);
 
-  if (!isDbPost) {
+  if (!isNumericId && !isDbPost) {
     const mockPost = MOCK_POSTS.find(p => p.id === id);
     if (!mockPost) return null;
     
@@ -54,11 +55,18 @@ const getPost = cache(async (id: string) => {
       { id: "c2", content: "저도 여기 가봤는데 분위기 진짜 좋더라구요.", created_at: "2024-03-22T13:00:00Z", user: { display_name: "맛집탐험대" } }
     ];
   } else {
-    const { data: dbPost, error } = await supabase
+    // Determine query filter
+    const query = supabase
       .from('posts')
-      .select('*, author:profiles!author_id(id, display_name, avatar_url, bio, bullets)')
-      .eq('id', actualId)
-      .single();
+      .select('*, serial_id, author:profiles!author_id(id, display_name, avatar_url, bio, bullets)');
+    
+    if (isNumericId) {
+      query.eq('serial_id', parseInt(id));
+    } else {
+      query.eq('id', actualId);
+    }
+
+    const { data: dbPost, error } = await query.single();
 
     if (error || !dbPost) {
       console.error('Post fetch error:', error);
@@ -330,7 +338,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
         {post.authorProfile && (
           <div className={styles.authorCardWrapper}>
             <div className={styles.authorCardHeader}>
-              <span>EDITOR</span>
+              <span>TICGLER</span>
               <Link href={`/requests/${post.authorProfile.id}`} className={styles.headerRequestLink}>
                 티끌러님, 이것도 리뷰해주세요! 💬
               </Link>
