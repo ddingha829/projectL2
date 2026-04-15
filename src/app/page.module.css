@@ -1231,31 +1231,39 @@
 .magListItem {
   display: flex !important;
   flex-direction: row !important;
-  align-items: center;
-  gap: 20px;
+  align-items: stretch !important; /* Image fills vertical space */
+  gap: 0 !important; /* Padding handled inside ListInfo */
   width: 100%;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border-light);
+  padding: 0 !important;
+  border-radius: 12px;
+  border: 1.4px solid var(--border-medium);
+  background: var(--bg-primary);
   text-decoration: none;
-  transition: background 0.2s;
+  transition: all 0.25s ease;
+  overflow: hidden;
+  margin-bottom: 8px; /* Added spacing between items */
 }
 
 .magListItem:hover {
-  background: rgba(0, 0, 0, 0.02);
+  border-color: var(--accent-line);
+  box-shadow: 0 8px 24px rgba(255, 72, 4, 0.08);
+  transform: translateY(-2px);
 }
 
 .magThumbWrap {
-  width: 130px !important;
-  height: 90px !important;
+  width: 135px !important; /* Optimized width for grid */
+  height: auto !important;
   flex-shrink: 0 !important;
-  border-radius: 8px;
+  border-radius: 0 !important;
   overflow: hidden;
   position: relative;
   background: var(--bg-tertiary);
 }
 
 .magThumb {
-  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover !important;
 }
 
 .magListInfo {
@@ -1350,43 +1358,16 @@
   }
 }
 
-.magListItem {
-  display: flex;
-  gap: 16px;
-  text-decoration: none;
-  padding: 16px;
-  border-radius: 12px;
-  border: 1.4px solid var(--border-medium);
-  background: var(--bg-primary);
-  transition: all 0.25s ease;
-}
-
-.magListItem:hover {
-  border-color: var(--accent-line);
-  box-shadow: 0 8px 24px rgba(255, 72, 4, 0.08);
-}
-
-.magThumbWrap {
-  width: 155px; /* Increased to cover title to badge area */
-  height: 105px;
-  flex-shrink: 0;
-  border-radius: 8px;
-  overflow: hidden;
-  background: var(--bg-tertiary);
-  border: 1.4px solid var(--border-medium);
-}
-
-.magThumb {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+/* Removed old duplicate definition to keep it clean */
 
 .magListInfo {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 4px;
+  padding: 12px 16px; /* Moved padding here for full-bleed image */
 }
 
 .magListTitle {

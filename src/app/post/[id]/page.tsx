@@ -318,7 +318,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
                 height={800}
                 priority
                 sizes="(max-width: 768px) 100vw, 1200px"
-                style={{ cursor: 'zoom-in', objectFit: 'cover' }} 
+                style={{ cursor: 'zoom-in' }} 
                 title="클릭하여 원본 이미지 보기" 
               />
             </a>

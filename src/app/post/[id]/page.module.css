@@ -311,14 +311,14 @@
 
 .mainImageWrapper {
   margin-bottom: 40px;
-  border-radius: 16px;
-  overflow: hidden;
   width: 100%;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: center;
+  /* Removed border-radius and box-shadow to prevent 'card' look in post */
 }
 
 .mainImage {
-  width: 100%;
+  max-width: 100%;
   height: auto;
   display: block;
   transition: all 0.3s ease;
@@ -331,7 +331,6 @@
     height: auto !important;
     object-fit: contain;
     margin: 0 auto;
-    display: block;
   }
 }
 
@@ -734,11 +733,12 @@
 @media (min-width: 769px) {
   .content img {
     max-height: 650px;
+    max-width: 100%;
     width: auto !important;
     height: auto !important;
     object-fit: contain;
     display: block;
-    margin: 1.5em auto; /* Center with margin */
+    margin: 1.5em auto;
   }
 }
 
