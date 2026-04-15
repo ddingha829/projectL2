@@ -209,7 +209,7 @@ export default function ImageCropModal({ image, onCropComplete, onUseOriginal, o
                   src={image}
                   alt="crop"
                   onLoad={onFreeImageLoad}
-                  style={{ maxHeight: "400px", maxWidth: "100%", display: "block" }}
+                  style={{ maxHeight: "100%", maxWidth: "100%", display: "block" }}
                 />
               </ReactCrop>
             </div>
