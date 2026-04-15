@@ -11,8 +11,8 @@ const CATEGORY_MAP: Record<string, string> = {
 
 export default async function EditPostPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const isDbPost = id.startsWith('db-');
-  const actualId = isDbPost ? id.replace('db-', '') : id;
+  const isNumericId = /^\d+$/.test(id);
+  const actualId = !isNumericId && id.startsWith('db-') ? id.replace('db-', '') : id;
   
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -22,11 +22,17 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
   const { data: profile } = await supabase
     .from('profiles').select('role').eq('id', user.id).single()
 
-  const { data: post, error } = await supabase
+  const query = supabase
     .from('posts')
-    .select('*')
-    .eq('id', actualId)
-    .single()
+    .select('*, serial_id');
+  
+  if (isNumericId) {
+    query.eq('serial_id', parseInt(id));
+  } else {
+    query.eq('id', actualId);
+  }
+
+  const { data: post, error } = await query.single();
 
   if (error || !post) notFound()
 

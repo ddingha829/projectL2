@@ -102,21 +102,49 @@
 
 .actionsFooter {
   display: flex;
-  gap: 16px;
-  margin-top: 24px;
+  gap: 12px;
+  margin-top: 32px;
+  align-items: stretch;
+}
+
+.draftActionsGroup {
+  display: flex;
+  gap: 8px;
+  flex: 0.6; /* Reduced relative size for draft actions */
 }
 
 .draftBtn {
-  flex: 0.4;
-  padding: 16px;
+  flex: 1;
+  padding: 16px 8px;
   background-color: var(--bg-tertiary);
   color: var(--text-secondary);
   border: 1px solid var(--border-light);
   border-radius: 12px;
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+}
+
+.draftDeleteBtn {
+  flex: 1;
+  padding: 16px 8px;
+  background-color: #fff1f1;
+  color: #ff4d4d;
+  border: 1px solid #ffebeb;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.draftDeleteBtn:hover:not(:disabled) {
+  background-color: #ffe5e5;
+  border-color: #ffb3b3;
+  transform: translateY(-2px);
 }
 
 .draftBtn:hover:not(:disabled) {
@@ -126,7 +154,7 @@
   transform: translateY(-2px);
 }
 
-.submitBtn:disabled, .draftBtn:disabled {
+.submitBtn:disabled, .draftBtn:disabled, .draftDeleteBtn:disabled {
   background-color: #ccc !important;
   color: #888 !important;
   border-color: #ddd !important;
@@ -286,7 +314,7 @@
 }
 
 .submitGroup {
-    display: contents;
+  flex: 1.4; /* Doubled relative width compared to before */
 }
 
 @media (max-width: 768px) {

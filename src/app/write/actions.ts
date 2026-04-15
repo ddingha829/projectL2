@@ -156,3 +156,21 @@ export async function getDraft() {
   if (error) return null;
   return data;
 }
+
+/** 임시저장 데이터 완전 삭제 */
+export async function deleteDraft() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: 'Unauthorized' };
+
+  const { error } = await supabase
+    .from('drafts')
+    .delete()
+    .eq('user_id', user.id);
+
+  if (error) {
+    console.error('Delete draft error:', error);
+    return { error: error.message };
+  }
+  return { success: true };
+}

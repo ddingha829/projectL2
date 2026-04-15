@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { createPost, saveDraft, getDraft, getUniqueReviewSubjects } from "./actions";
+import { createPost, saveDraft, getDraft, getUniqueReviewSubjects, deleteDraft } from "./actions";
 import styles from "./page.module.css";
 import { useFormStatus } from "react-dom";
 import dynamic from "next/dynamic";
@@ -49,6 +49,7 @@ export default function WritePostForm({ role }: { role: string }) {
   
   const [isUploading, setIsUploading] = useState(false);
   const [isDraftSaving, setIsDraftSaving] = useState(false);
+  const [isDraftDeleting, setIsDraftDeleting] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
@@ -154,6 +155,38 @@ export default function WritePostForm({ role }: { role: string }) {
       alert(`임시저장 실패: ${result.error}`);
     }
     setIsDraftSaving(false);
+  };
+
+  const handleDeleteDraft = async () => {
+    if (!confirm("저장된 모든 임시저장 기록(DB 및 로컬 백업)을 삭제하시겠습니까? \n이 작업은 취소할 수 없습니다.")) return;
+    
+    setIsDraftDeleting(true);
+    try {
+      // 1. DB 삭제
+      const result = await deleteDraft();
+      
+      // 2. 로컬 삭제
+      localStorage.removeItem('write_backup');
+      
+      if (result.success) {
+        alert("임시저장 기록이 모두 삭제되었습니다.");
+        // 3. 폼 초기화 (선택 사항이지만 유저 경험을 위해 권장)
+        setTitle("");
+        setContent("");
+        setMainImageUrl("");
+        setReviewSubject("");
+        setReviewComment("");
+        setReviewRating(0);
+        setShowReview(false);
+      } else {
+        alert(`DB 삭제 중 오류 발생: ${result.error}`);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("삭제 중 예기치 못한 오류가 발생했습니다.");
+    } finally {
+      setIsDraftDeleting(false);
+    }
   };
 
   const handleMainImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -428,14 +461,24 @@ export default function WritePostForm({ role }: { role: string }) {
       </div>
 
       <div className={styles.actionsFooter}>
-        <button 
-          type="button" 
-          className={styles.draftBtn} 
-          onClick={handleSaveDraft}
-          disabled={isUploading || isDraftSaving}
-        >
-          {isDraftSaving ? "임시저장 중..." : "임시저장"}
-        </button>
+        <div className={styles.draftActionsGroup}>
+          <button 
+            type="button" 
+            className={styles.draftBtn} 
+            onClick={handleSaveDraft}
+            disabled={isUploading || isDraftSaving || isDraftDeleting}
+          >
+            {isDraftSaving ? "저장 중..." : "임시저장"}
+          </button>
+          <button 
+            type="button" 
+            className={styles.draftDeleteBtn} 
+            onClick={handleDeleteDraft}
+            disabled={isUploading || isDraftSaving || isDraftDeleting}
+          >
+            {isDraftDeleting ? "삭제 중..." : "기록 삭제"}
+          </button>
+        </div>
         <SubmitButton isUploading={isUploading} isDraftSaving={isDraftSaving} />
       </div>
 
