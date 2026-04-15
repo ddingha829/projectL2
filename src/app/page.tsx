@@ -140,11 +140,10 @@ export default async function Home({
     filteredPosts = filteredPosts.filter(p => p.categoryId === categoryFilter);
   }
   if (authorFilter && authorFilter !== 'all') {
-    const decodedAuthor = decodeURIComponent(authorFilter);
     filteredPosts = filteredPosts.filter(p => 
-      String(p.author?.id) === decodedAuthor || 
-      String(p.author_id) === decodedAuthor || 
-      p.author?.name === decodedAuthor
+      String(p.author?.id) === authorFilter || 
+      String(p.author_id) === authorFilter || 
+      p.author?.name === authorFilter
     );
   }
   if (searchFilter) {
@@ -163,11 +162,10 @@ export default async function Home({
   const categoryName = categoryFilter ? CATEGORY_MAP[categoryFilter] || categoryFilter : "";
   
   // Find author name from the actual editors profile data (reliable even with 0 posts)
-  const decodedAuthor = authorFilter ? decodeURIComponent(authorFilter) : null;
-  const targetEditor = decodedAuthor ? editorsData.find((ed: any) => 
-    String(ed.id) === decodedAuthor || ed.display_name === decodedAuthor || ed.name === decodedAuthor
+  const targetEditor = authorFilter ? editorsData.find((ed: any) => 
+    String(ed.id) === authorFilter || ed.display_name === authorFilter || ed.name === authorFilter
   ) : null;
-  const authorName = targetEditor ? targetEditor.display_name : (decodedAuthor || "");
+  const authorName = targetEditor ? targetEditor.display_name : (authorFilter || "");
 
   let displayTitle = "Home";
   if (isViewMore) {
