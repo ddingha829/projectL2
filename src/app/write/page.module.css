@@ -236,7 +236,7 @@
 
 @media (min-width: 769px) {
   .previewImage {
-    max-height: 550px;
+    max-height: 650px;
     object-fit: contain;
   }
 }

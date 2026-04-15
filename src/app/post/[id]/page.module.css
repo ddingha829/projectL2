@@ -326,7 +326,7 @@
 
 @media (min-width: 769px) {
   .mainImage {
-    max-height: 550px;
+    max-height: 650px;
     object-fit: contain;
   }
 }
@@ -729,7 +729,7 @@
 
 @media (min-width: 769px) {
   .content img {
-    max-height: 550px;
+    max-height: 650px;
     object-fit: contain;
   }
 }

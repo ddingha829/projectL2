@@ -100,7 +100,7 @@
 
 @media (min-width: 769px) {
   .content :global(img) {
-    max-height: 550px;
+    max-height: 650px;
     object-fit: contain;
     display: block;
     margin: 1.5em 0;

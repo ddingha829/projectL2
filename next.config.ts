@@ -25,6 +25,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: '*.supabase.co',
       },
+      {
+        protocol: 'https',
+        hostname: 'ichef.bbci.co.uk',
+      },
     ],
   },
   // 보안 헤더 설정

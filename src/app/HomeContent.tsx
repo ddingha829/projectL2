@@ -97,9 +97,17 @@ export default function HomeContent({
   
   // Find author data from static list OR from the actual posts (for live DB users)
   const staticAuthor = AUTHORS.find(a => a.id === authorFilter);
-  const liveAuthor = !staticAuthor && authorFilter 
-    ? allPosts.find(p => p.author.id === authorFilter)?.author 
+  const foundInPosts = !staticAuthor && authorFilter 
+    ? allPosts.find(p => String(p.author_id) === authorFilter || String(p.author?.id) === authorFilter) 
     : null;
+    
+  const liveAuthor = foundInPosts ? {
+    id: authorFilter,
+    name: foundInPosts.author?.name || foundInPosts.authorProfile?.display_name || "에디터",
+    avatar: foundInPosts.author?.avatar || foundInPosts.authorProfile?.avatar_url || "/default-avatar.png",
+    bio: foundInPosts.author?.bio || foundInPosts.authorProfile?.bio || "티끌 매거진 에디터입니다.",
+    role: "Editor"
+  } : null;
     
   const authorData = staticAuthor || liveAuthor;
 
@@ -112,36 +120,40 @@ export default function HomeContent({
   const [slideDir, setSlideDir] = useState<'next' | 'prev'>('next');
 
   useEffect(() => {
-    // 1. Determine Device Type (Prioritize Server-side, fallback to client-side)
-    const isMob = isMobileServer || (typeof window !== 'undefined' ? window.innerWidth <= 768 : false);
+    if (typeof window === 'undefined') return;
+
+    // 1. Determine Device Type
+    const isMob = isMobileServer || window.innerWidth <= 768;
     setIsMobile(isMob);
     
-    // 2. Defaulting Logic
+    // 2. Defaulting Logic with preservation
     const currentView = searchParams.get('viewType');
     
     if (!currentView && !hasInitialized) {
       const params = new URLSearchParams(window.location.search);
       
-      // Use initialViewType passed from server (which already considers Cookie/Profile/Default)
+      // Preserve existing important flags
+      const isActuallyViewMore = params.get('view') === 'all';
+      
       if (initialViewType) {
         params.set('viewType', initialViewType);
       } else {
-        // Fallback safety
         if (isMob) {
           params.set('viewType', 'card');
-          params.set('mCols', '2');
+          if (!params.get('mCols')) params.set('mCols', '2');
         } else {
           params.set('viewType', 'magazine');
-          params.set('dCols', '4');
+          if (!params.get('dCols')) params.set('dCols', '4');
         }
       }
 
-      if (window.location.pathname === '/' || window.location.search.includes('view=all')) {
-        router.replace(`?${params.toString()}`, { scroll: false });
-      }
+      // Re-apply view=all just in case
+      if (isActuallyViewMore) params.set('view', 'all');
+
+      router.replace(`?${params.toString()}`, { scroll: false });
       setHasInitialized(true);
     }
-  }, [searchParams, userProfile, isInitialVisit, hasInitialized, router, isMobileServer, initialViewType]);
+  }, [searchParams, hasInitialized, router, isMobileServer, initialViewType]);
 
   // View Sync Helper (Cookies & DB)
   const setCookie = (name: string, value: string) => {
@@ -342,7 +354,15 @@ export default function HomeContent({
   }
 
   // Grid posts logic
-  const showFullGrid = isFiltered || isViewMore;
+  // Unified state for determining if we should show the full grid vs home page sections
+  const showFullGrid = useMemo(() => {
+    const fromParams = isFiltered || isViewMore;
+    if (typeof window === 'undefined') return fromParams;
+    
+    // Supplement with direct check if client-side to prevent hydration flicker
+    const rawSearch = window.location.search;
+    return fromParams || rawSearch.includes('view=all') || rawSearch.includes('category=') || rawSearch.includes('author=') || rawSearch.includes('search=');
+  }, [isFiltered, isViewMore]);
   const paginatedData = useMemo(() => filteredPosts, [filteredPosts]);
 
   // Selection logic: Infinite Scroll for results, but 2 for the main page
@@ -371,10 +391,11 @@ export default function HomeContent({
 
   return (
     <>
-      
       <div className={styles.container}>
+        {/* Branch 1: Home Page View (Mixed Sections) */}
         {!showFullGrid ? (
-          <>
+          <div className={styles.homeContainer}>
+            {/* Hero Section */}
             <div 
               className={styles.heroWrapper}
               onMouseEnter={() => setIsHeroPaused(true)}
@@ -383,45 +404,42 @@ export default function HomeContent({
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
             >
-            <>
               <div className={styles.desktopOnly}>
-                <div className={styles.heroWrapper}>
-                  <div className={styles.heroFrame}></div>
-                  <div 
-                    className={styles.heroTrack} 
-                    style={{ transform: `translateX(-${heroIndex * 100}%)` }}
-                  >
-                    {heroPosts.map((post) => (
-                      <div key={post.id} className={styles.heroSlideItem}>
-                        <HeroCard {...post} heightRatio="2/3" showNav={false} />
-                      </div>
-                    ))}
-                  </div>
-                  
-                  {heroPosts.length > 1 && (
-                    <div className={styles.heroNavFloating}>
-                      <button className={styles.slideNavBtn} onClick={prevHero}>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="15 18 9 12 15 6"></polyline>
-                        </svg>
-                      </button>
-                      <div className={styles.heroDotsView}>
-                        {heroPosts.map((_, idx) => (
-                          <span 
-                            key={idx} 
-                            className={idx === heroIndex ? styles.activeHeroDot : styles.inactiveHeroDot}
-                          ></span>
-                        ))}
-                      </div>
-                      <button className={styles.slideNavBtn} onClick={nextHero}>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="9 18 15 12 9 6"></polyline>
-                        </svg>
-                      </button>
+                <div className={styles.heroFrame}></div>
+                <div 
+                  className={styles.heroTrack} 
+                  style={{ transform: `translateX(-${heroIndex * 100}%)` }}
+                >
+                  {heroPosts.map((post) => (
+                    <div key={post.id} className={styles.heroSlideItem}>
+                      <HeroCard {...post} heightRatio="2/3" showNav={false} />
                     </div>
-                  )}
+                  ))}
                 </div>
+                {heroPosts.length > 1 && (
+                  <div className={styles.heroNavFloating}>
+                    <button className={styles.slideNavBtn} onClick={prevHero}>
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                      </svg>
+                    </button>
+                    <div className={styles.heroDotsView}>
+                      {heroPosts.map((_, idx) => (
+                        <span 
+                          key={idx} 
+                          className={idx === heroIndex ? styles.activeHeroDot : styles.inactiveHeroDot}
+                        ></span>
+                      ))}
+                    </div>
+                    <button className={styles.slideNavBtn} onClick={nextHero}>
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                      </svg>
+                    </button>
+                  </div>
+                )}
               </div>
+
               <div className={styles.mobileOnly}>
                 {heroPosts.length > 1 && (
                   <div className={styles.mobileHeroDots}>
@@ -444,14 +462,13 @@ export default function HomeContent({
                   ))}
                 </div>
               </div>
-            </>
             </div>
 
+            {/* New Posts Section (Horizontal Scroll/Mixed Grid) */}
             <div className={styles.gridSection}>
               <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '0' }}>
                 <h2 className={styles.sectionTitle}>새로운 티끌</h2>
                 <div className={styles.headerSpacer}></div>
-                
                 {filteredPosts.length > 0 && (
                   <button className={`${styles.viewAllLink} ${styles.desktopOnly}`} onClick={() => router.push('/?view=all')}>
                     MORE <span className={styles.linkIcon}>{'>'}</span>
@@ -459,168 +476,142 @@ export default function HomeContent({
                 )}
               </header>
 
-               {/* Removed mobile grid controls on main screen as requested */}
-                
               <div 
-                className={`${vType === 'magazine' ? styles.magMainGrid : styles.mainGrid} ${!showFullGrid ? styles.horizontalScrollGrid : ''} ${(isFiltered || isViewMore) && vType === 'card' ? styles.mixedGrid : ''}`}
+                className={`${vType === 'magazine' ? styles.magMainGrid : styles.mainGrid} ${styles.horizontalScrollGrid}`}
                 style={{ '--mobile-cols': mobileGridCols } as React.CSSProperties}
               >
-                 {displayPosts.map((post, index) => {
-                   const excerpt = stripHtml(post.content).slice(0, 160) + (stripHtml(post.content).length > 160 ? '...' : '');
-                   return (
-                     <PosterCard 
-                       key={post.id} 
-                       {...post} 
-                       aspectRatio={isMobile ? 'default' : 'card45'} 
-                       isOneCol={isMobile && mobileGridCols === 1}
-                       isMinimal={false} 
-                       viewType={vType}
-                       excerpt={excerpt}
-                       priority={index < (isMobile ? 2 : 4)}
-                     />
-                   );
-                 })}
+                  {displayPosts.map((post, index) => {
+                    const excerpt = stripHtml(post.content).slice(0, 160) + (stripHtml(post.content).length > 160 ? '...' : '');
+                    return (
+                      <PosterCard 
+                        key={post.id} 
+                        {...post} 
+                        aspectRatio={isMobile ? 'default' : 'card45'} 
+                        isOneCol={isMobile && mobileGridCols === 1}
+                        isMinimal={false} 
+                        viewType={vType}
+                        excerpt={excerpt}
+                        priority={index < (isMobile ? 2 : 4)}
+                      />
+                    );
+                  })}
               </div>
 
-              {/* [신규] 기획전 섹션 - 홈 메인에서만 노출 */}
-              {!isFiltered && (
-                <div className={styles.featureSection}>
-                  <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '25px' }}>
-                    <h2 className={styles.sectionTitle}>태산 : 티끌 모아 봄</h2>
-                    <div className={styles.headerSpacer}></div>
-                    <Link href="/?category=feature" className={styles.viewAllLink}>
-                      MORE <span className={styles.linkIcon}>{'>'}</span>
+              {/* Feature Section */}
+              <div className={styles.featureSection}>
+                <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '25px' }}>
+                  <h2 className={styles.sectionTitle}>태산 : 티끌 모아 봄</h2>
+                  <div className={styles.headerSpacer}></div>
+                  <Link href="/?category=feature" className={styles.viewAllLink}>
+                    MORE <span className={styles.linkIcon}>{'>'}</span>
+                  </Link>
+                </header>
+                <div className={styles.featureGrid}>
+                  {(featurePosts.length > 0 ? featurePosts : [
+                    { id: 'f1', title: '티끌러 선정 2026.4 최고의 점심메뉴', imageUrl: 'https://images.unsplash.com/photo-1525648199074-cee30ba79a4a?auto=format&fit=crop&w=1600&q=80' }
+                  ]).map((feature: any) => (
+                    <Link key={feature.id} href={feature.id.startsWith('db-') ? `/post/${feature.id}` : '#'} className={styles.featureBanner}>
+                      <Image 
+                        src={feature.imageUrl} 
+                        alt={feature.title} 
+                        className={styles.featureImage} 
+                        fill
+                        sizes="(max-width: 768px) 100vw, 1200px"
+                        quality={80}
+                        style={{ objectFit: 'cover' }}
+                      />
+                      <div className={styles.featureOverlay}>
+                        <h3 className={styles.featureTitle}>{feature.title}</h3>
+                      </div>
                     </Link>
-                  </header>
-                  
-                  <div className={styles.featureGrid}>
-                    {(featurePosts.length > 0 ? featurePosts : [
-                      { id: 'f1', title: '티끌러 선정 2026.4 최고의 점심메뉴', imageUrl: 'https://images.unsplash.com/photo-1525648199074-cee30ba79a4a?auto=format&fit=crop&w=1600&q=80' }
-                    ]).map((feature: any) => (
-                      <Link key={feature.id} href={feature.id.startsWith('db-') ? `/post/${feature.id}` : '#'} className={styles.featureBanner}>
-                        <Image 
-                          src={feature.imageUrl} 
-                          alt={feature.title} 
-                          className={styles.featureImage} 
-                          fill
-                          sizes="(max-width: 768px) 100vw, 1200px"
-                          quality={80}
-                          style={{ objectFit: 'cover' }}
-                        />
-                        <div className={styles.featureOverlay}>
-                          <h3 className={styles.featureTitle}>{feature.title}</h3>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
+                  ))}
                 </div>
-              )}
+              </div>
 
-              {/* [신규] 한줄 평 섹션 - 홈 메인에서만 노출 */}
-              {!isFiltered && (
-                <div className={styles.recentReviewsSection}>
-                  <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '15px' }}>
-                    <h2 className={styles.sectionTitle}>한줄 평</h2>
-                    <div className={styles.headerSpacer}></div>
-                  </header>
-                  
-                  <div className={styles.recentReviewsWrapper}>
-                    <button className={`${styles.scrollBtn} ${styles.scrollBtnLeft}`} onClick={() => scrollReviews('left')}>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                    </button>
-
-                    <div className={styles.reviewHorizontalGrid} ref={reviewRef}>
-                      {(recentReviews && recentReviews.length > 0 ? recentReviews : MOCK_REVIEWS).slice(0, 7).map((rev) => (
-                        <div key={rev.id} className={styles.miniReviewCard} onClick={() => router.push(`/reviews?search=${encodeURIComponent(rev.subject)}`)}>
-                          <h4 className={styles.miniRevSubject}>{rev.subject}</h4>
-                          <div className={styles.miniRevRating}>
-                            <div className={styles.miniRevInnerRow}>
-                              <div className={styles.miniRevStars}>
-                                {[1, 2, 3, 4, 5].map(i => (
-                                  <span key={i} style={{ color: (rev.rating >= i * 2) ? '#ff4804' : '#ddd' }}>★</span>
-                                ))}
-                              </div>
-                              <span className={styles.miniRevScore}>{rev.rating}</span>
-                              <span className={styles.miniRevCommunityScore}>유저 {(rev.rating * 0.7 + 1.5).toFixed(1)}</span>
+              {/* Reviews Section */}
+              <div className={styles.recentReviewsSection}>
+                <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '15px' }}>
+                  <h2 className={styles.sectionTitle}>한줄 평</h2>
+                  <div className={styles.headerSpacer}></div>
+                </header>
+                <div className={styles.recentReviewsWrapper}>
+                  <button className={`${styles.scrollBtn} ${styles.scrollBtnLeft}`} onClick={() => scrollReviews('left')}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                  </button>
+                  <div className={styles.reviewHorizontalGrid} ref={reviewRef}>
+                    {(recentReviews && recentReviews.length > 0 ? recentReviews : MOCK_REVIEWS).slice(0, 7).map((rev) => (
+                      <div key={rev.id} className={styles.miniReviewCard} onClick={() => router.push(`/reviews?search=${encodeURIComponent(rev.subject)}`)}>
+                        <h4 className={styles.miniRevSubject}>{rev.subject}</h4>
+                        <div className={styles.miniRevRating}>
+                          <div className={styles.miniRevInnerRow}>
+                            <div className={styles.miniRevStars}>
+                              {[1, 2, 3, 4, 5].map(i => (
+                                <span key={i} style={{ color: (rev.rating >= i * 2) ? '#ff4804' : '#ddd' }}>★</span>
+                              ))}
                             </div>
-                          </div>
-                          <p className={styles.miniRevText}>{rev.comment}</p>
-                          <div className={styles.miniRevFooter}>
-                            <span className={styles.miniRevAuthor}>{rev.authorName}</span>
-                            {(rev.id && !String(rev.id).startsWith('m')) && (
-                              <Link href={`/post/db-${rev.id}`} className={styles.miniRevLink} onClick={(e) => e.stopPropagation()}>리뷰 보기 →</Link>
-                            )}
+                            <span className={styles.miniRevScore}>{rev.rating}</span>
+                            <span className={styles.miniRevCommunityScore}>유저 {(rev.rating * 0.7 + 1.5).toFixed(1)}</span>
                           </div>
                         </div>
-                      ))}
-                    </div>
-
-                    <button className={`${styles.scrollBtn} ${styles.scrollBtnRight}`} onClick={() => scrollReviews('right')}>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                    </button>
-                  </div>
-                </div>
-              )}
- 
-              {/* [신규] 티끌러(에디터) 섹션 - 홈 메인에서만 노출 */}
-              {!isFiltered && (
-                <div className={styles.editorsSection}>
-                  <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '25px' }}>
-                    <h2 className={styles.sectionTitle}>티끌러</h2>
-                    <div className={styles.headerSpacer}></div>
-                  </header>
-                  
-                  <div className={styles.editorsGrid}>
-                    {editors.map((ed: any) => (
-                      <Link key={ed.id} href={`/?author=${ed.id}`} className={styles.editorProfileCard}>
-                        <div className={styles.edAvatarWrapper}>
-                          <Image 
-                            src={(ed.avatar_url && (ed.avatar_url.startsWith('http') || ed.avatar_url.startsWith('/'))) ? ed.avatar_url : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"} 
-                            alt={ed.display_name} 
-                            className={styles.edAvatarImg} 
-                            width={100}
-                            height={100}
-                            style={{ objectFit: 'cover' }}
-                          />
+                        <p className={styles.miniRevText}>{rev.comment}</p>
+                        <div className={styles.miniRevFooter}>
+                          <span className={styles.miniRevAuthor}>{rev.authorName}</span>
+                          {(rev.id && !String(rev.id).startsWith('m')) && (
+                            <Link href={`/post/db-${rev.id}`} className={styles.miniRevLink} onClick={(e) => e.stopPropagation()}>리뷰 보기 →</Link>
+                          )}
                         </div>
-                        <div className={styles.edInfo}>
-                          <h3 className={styles.edName}>{ed.display_name}</h3>
-                          <span className={styles.edRole}>{ed.role === 'admin' ? '운영자' : '티끌러'}</span>
-                          <p className={styles.edBio}>
-                            {ed.bio || "생동감 넘치는 리뷰를 작성하는 티끌러입니다."}
-                          </p>
-                        </div>
-                        {ed.bullets && ed.bullets.length > 0 && (
-                          <div className={styles.edBullets}>
-                            {ed.bullets.slice(0, 3).map((b: string, i: number) => (
-                              <span key={i} className={styles.edBulletPill}>{b}</span>
-                            ))}
-                          </div>
-                        )}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-
-              
-              {/* Sentinel (Unified) */}
-              {showFullGrid && displayPosts.length < paginatedData.length && (
-                <div ref={sentinelRef} className={styles.sentinel}>
-                  <div className={styles.skeletonGrid}>
-                    {[1, 2, 3, 4].map(i => (
-                      <div key={i} className={isMobile && i > 2 ? styles.mobileHidden : ""}>
-                        <SkeletonCard />
                       </div>
                     ))}
                   </div>
+                  <button className={`${styles.scrollBtn} ${styles.scrollBtnRight}`} onClick={() => scrollReviews('right')}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                  </button>
                 </div>
-              )}
+              </div>
+
+              {/* Editors Section */}
+              <div className={styles.editorsSection}>
+                <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '25px' }}>
+                  <h2 className={styles.sectionTitle}>티끌러</h2>
+                  <div className={styles.headerSpacer}></div>
+                </header>
+                <div className={styles.editorsGrid}>
+                  {editors.map((ed: any) => (
+                    <Link key={ed.id} href={`/?author=${ed.id}`} className={styles.editorProfileCard}>
+                      <div className={styles.edAvatarWrapper}>
+                        <Image 
+                          src={(ed.avatar_url && (ed.avatar_url.startsWith('http') || ed.avatar_url.startsWith('/'))) ? ed.avatar_url : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"} 
+                          alt={ed.display_name} 
+                          className={styles.edAvatarImg} 
+                          width={100}
+                          height={100}
+                          style={{ objectFit: 'cover' }}
+                        />
+                      </div>
+                      <div className={styles.edInfo}>
+                        <h3 className={styles.edName}>{ed.display_name}</h3>
+                        <span className={styles.edRole}>{ed.role === 'admin' ? '운영자' : '티끌러'}</span>
+                        <p className={styles.edBio}>
+                          {ed.bio || "생동감 넘치는 리뷰를 작성하는 티끌러입니다."}
+                        </p>
+                      </div>
+                      {ed.bullets && ed.bullets.length > 0 && (
+                        <div className={styles.edBullets}>
+                          {ed.bullets.slice(0, 3).map((b: string, i: number) => (
+                            <span key={i} className={styles.edBulletPill}>{b}</span>
+                          ))}
+                        </div>
+                      )}
+                    </Link>
+                  ))}
+                </div>
+              </div>
             </div>
-          </>
+          </div>
         ) : (
-          <div key={animationKey} className={styles.feedAnimator}>
+          /* Branch 2: Search/Filter/ViewAll Results View */
+          <div className={styles.homeContainer}>
+            {/* Author Card (for Author Filter) */}
             {authorData && (
               <div className={styles.authorCardWrapper}>
                 <div className={styles.authorCardHeader}>
@@ -642,9 +633,7 @@ export default function HomeContent({
                     </div>
                   </div>
                   <div className={styles.authorDetailsArea}>
-                    <div className={styles.authorNameLink}>
-                      {authorData.name}
-                    </div>
+                    <div className={styles.authorNameLink}>{authorData.name}</div>
                     <p className={styles.authorBio}>{authorData.description.bio || "생동감 넘치는 리뷰를 작성하는 티끌러입니다."}</p>
                     {authorData.description.bullets && authorData.description.bullets.length > 0 && (
                       <div className={styles.authorBullets}>
@@ -658,11 +647,11 @@ export default function HomeContent({
               </div>
             )}
 
+            {/* Results Title & Controls */}
             <div className={styles.resultsHeader}>
               <h1 className={styles.resultsTitle}>
                 { isViewMore ? "전체 티끌" : displayTitle}
               </h1>
-
               {vType === 'card' && (
                 <div className={`${styles.headerColControls} ${styles.mobileOnly}`}>
                   <div className={styles.headerColSelector}>
@@ -680,7 +669,7 @@ export default function HomeContent({
               )}
             </div>
 
-            {/* Unified Control Bar for Results View - Made more compact */}
+            {/* Category Pills & Desktop Controls */}
             <div className={styles.categoryPillRow}>
               <nav className={styles.categoryPillNav}>
                 <div className={styles.pillContainer}>
@@ -728,12 +717,12 @@ export default function HomeContent({
               )}
             </div>
 
-
+            {/* The Main Grid Results Area */}
             <div key={isMobile ? 'mobile-grid' : `grid-${vType}-${cardCols}`} className={styles.gridListFade}>
               {vType === 'card' ? (
                 <div 
                   className={styles.gridList}
-                   style={{ 
+                  style={{ 
                     '--mobile-cols': mobileGridCols,
                     '--desktop-cols': cardCols,
                     '--grid-gap': isMobile ? (mobileGridCols === 3 ? '4.8px' : mobileGridCols === 2 ? '6px' : '24px') : '24px'
@@ -754,43 +743,40 @@ export default function HomeContent({
                 </div>
               ) : (
                 <div className={styles.magazineLayout}>
-                  {/* Hero Row: Top 2 posts large */}
+                  {/* Hero Row: Top 2 Posts */}
                   <div className={styles.magHeroRow}>
                     {displayPosts.slice(0, 2).map((post, index) => (
                       <div key={post.id} className={styles.magHeroItem}>
-                        <PosterCard {...post} aspectRatio="mag53" viewType="magazine" excerpt={stripHtml(post.content)} priority={index < 2} />
+                        <PosterCard 
+                          {...post} 
+                          aspectRatio="mag53" 
+                          viewType="magazine" 
+                          excerpt={stripHtml(post.content)} 
+                          priority={index < 2} 
+                        />
                       </div>
                     ))}
-
-
                   </div>
 
-                  {/* Body: Group by categories */}
+                  {/* Body: Grouped by Category */}
                   <div className={styles.magBody}>
                     {['restaurant', 'travel', 'movie', 'game', 'book', 'exhibition', 'other'].map(catId => {
                       const label = CATEGORY_LABEL_MAP[catId];
-                      // Filter by category and exclude head posts for uniqueness
-                      const heroIds = paginatedData.slice(0, 2).map(p => p.id);
-                      const catPosts = paginatedData.filter(p => (
-                        p.category_id === catId || 
-                        p.categoryId === catId ||
-                        p.category === catId || 
-                        (label && p.category === label)
-                      ) && !heroIds.includes(p.id)).slice(0, 3);
+                      // Use displayPosts to respect infinite scroll
+                      const heroIds = displayPosts.slice(0, 2).map(p => String(p.id));
+                      const catPosts = displayPosts.filter(p => (
+                        String(p.category_id) === catId || String(p.categoryId) === catId || String(p.category) === catId || (label && p.category === label)
+                      ) && !heroIds.includes(String(p.id)));
                       
                       if (catPosts.length === 0) return null;
                       const catName = label || catPosts[0].category;
-
+                      
                       return (
                         <div key={catId} className={styles.magSection}>
                           <h3 className={styles.magSecTitle}>{catName}</h3>
                           <div className={styles.magList}>
                             {catPosts.map((post: any) => {
-                              // HTML 태그 제거 및 요약본 캐싱 (성능 최적화)
-                              if (!post._cachedExcerpt) {
-                                post._cachedExcerpt = stripHtml(post.content).slice(0, 100);
-                              }
-                              
+                              const excerpt = stripHtml(post.content).slice(0, 100);
                               return (
                                 <Link href={`/post/${post.id}`} key={post.id} className={styles.magListItem}>
                                   <div className={styles.magThumbWrap}>
@@ -798,15 +784,15 @@ export default function HomeContent({
                                       src={post.imageUrl} 
                                       alt={post.title} 
                                       className={styles.magThumb} 
-                                      fill
-                                      sizes="100px"
-                                      quality={65}
-                                      style={{ objectFit: 'cover' }}
+                                      width={130}
+                                      height={90}
+                                      quality={70} 
+                                      style={{ objectFit: 'cover' }} 
                                     />
                                   </div>
                                   <div className={styles.magListInfo}>
                                     <h4 className={styles.magListTitle}>{post.title}</h4>
-                                    <p className={styles.magListExcerpt}>{post._cachedExcerpt}...</p>
+                                    <p className={styles.magListExcerpt}>{excerpt}...</p>
                                     <div className={styles.magMetaRow}>
                                       <span className={styles.magListAuthor}>{post.author?.name || post.authorProfile?.display_name}</span>
                                       <span className={styles.magListDate}>{post.displayDate}</span>
@@ -822,20 +808,20 @@ export default function HomeContent({
                   </div>
                 </div>
               )}
-              
-              {/* Unified Sentinel */}
-              {displayPosts.length < paginatedData.length && (
-                <div ref={sentinelRef} className={styles.sentinel}>
-                  <div className={styles.skeletonGrid}>
-                    {[1, 2, 3, 4].map(i => (
-                      <div key={i} className={isMobile && i > 2 ? styles.mobileHidden : ""}>
-                        <SkeletonCard />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
+
+            {/* Bottom Sentinel for Infinite Scroll */}
+            {displayPosts.length < paginatedData.length && (
+              <div ref={sentinelRef} className={styles.sentinel}>
+                <div className={styles.skeletonGrid}>
+                  {[1, 2, 3, 4].map(i => (
+                    <div key={i} className={isMobile && i > 2 ? styles.mobileHidden : ""}>
+                      <SkeletonCard />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
