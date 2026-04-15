@@ -49,6 +49,7 @@ export default function WritePostForm({ role }: { role: string }) {
   
   const [isUploading, setIsUploading] = useState(false);
   const [isDraftSaving, setIsDraftSaving] = useState(false);
+  const [draftSaved, setDraftSaved] = useState(false);
   const [isDraftDeleting, setIsDraftDeleting] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -151,7 +152,8 @@ export default function WritePostForm({ role }: { role: string }) {
     });
     
     if (result.success) {
-      alert("임시저장이 완료되었습니다.");
+      setDraftSaved(true);
+      setTimeout(() => setDraftSaved(false), 3000);
     } else {
       alert(`임시저장 실패: ${result.error}`);
     }
@@ -482,6 +484,11 @@ export default function WritePostForm({ role }: { role: string }) {
           </button>
         </div>
         <SubmitButton isUploading={isUploading} isDraftSaving={isDraftSaving} />
+      </div>
+
+      {/* 임시저장 토스트 알림 */}
+      <div className={`${styles.draftToast} ${draftSaved ? styles.draftToastVisible : ''}`}>
+        ✅ 임시저장이 완료되었습니다
       </div>
 
       {showCropModal && (

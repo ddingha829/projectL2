@@ -1,7 +1,6 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 
 async function getProfileAndPost(postId: string) {
@@ -24,12 +23,12 @@ function canModify(role: string, userId: string, authorId: string) {
 }
 
 /** 게시물 수정 */
-export async function updatePost(postId: string, formData: FormData) {
+export async function updatePost(postId: string, formData: FormData): Promise<{ ok: boolean; redirectTo: string }> {
   const { supabase, user, profile, post, error } = await getProfileAndPost(postId)
-  if (error || !user || !profile || !post) redirect('/login')
+  if (error || !user || !profile || !post) return { ok: false, redirectTo: '/login' }
 
   if (!canModify(profile.role, user.id, post.author_id)) {
-    redirect(`/post/db-${postId}?error=no_permission`)
+    return { ok: false, redirectTo: `/post/db-${postId}?error=no_permission` }
   }
 
   const title = formData.get('title') as string
@@ -70,25 +69,26 @@ export async function updatePost(postId: string, formData: FormData) {
 
   if (updateError || !updatedData) {
     console.error('Update post error (Policy or DB):', updateError)
-    redirect(`/post/db-${postId}?error=update_failed_policy`)
+    return { ok: false, redirectTo: `/post/db-${postId}?error=update_failed_policy` }
   }
 
   // 수정한 글의 숫자 ID(serial_id)가 있으면 그 주소로, 없으면 UUID 주소로 이동
   const targetId = updatedData.serial_id ? String(updatedData.serial_id) : `db-${updatedData.id}`
   
-  // 수정된 글 페이지만 정밀하게 갱신하여 리다이렉트 안정성 확보
+  // 수정된 글 페이지만 정밀하게 갱신
   revalidatePath(`/post/${targetId}`, 'page')
+  revalidatePath('/', 'layout')
   
-  redirect(`/post/${targetId}`)
+  return { ok: true, redirectTo: `/post/${targetId}` }
 }
 
-/** 게시물 삭제 (admin만 가능) */
-export async function deletePost(postId: string) {
+/** 게시물 삭제 */
+export async function deletePost(postId: string): Promise<{ ok: boolean; redirectTo: string }> {
   const { supabase, user, profile, post, error } = await getProfileAndPost(postId)
-  if (error || !user || !profile || !post) redirect('/login')
+  if (error || !user || !profile || !post) return { ok: false, redirectTo: '/login' }
 
   if (!canModify(profile.role, user.id, post.author_id)) {
-    redirect(`/post/db-${postId}?error=no_permission`)
+    return { ok: false, redirectTo: `/post/db-${postId}?error=no_permission` }
   }
 
   const { error: deleteError } = await supabase
@@ -98,11 +98,11 @@ export async function deletePost(postId: string) {
 
   if (deleteError) {
     console.error('Delete post error:', deleteError)
-    redirect(`/post/db-${postId}?error=delete_failed`)
+    return { ok: false, redirectTo: `/post/db-${postId}?error=delete_failed` }
   }
 
   revalidatePath('/', 'layout')
-  redirect('/')
+  return { ok: true, redirectTo: '/' }
 }
 
 /** 평가 항목 중복 조회를 위한 자동완성 목록용 액션 */

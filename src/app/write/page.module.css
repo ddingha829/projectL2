@@ -341,4 +341,47 @@
   .uploadBox {
     min-height: 150px;
   }
+  .actionsFooter {
+    flex-direction: column;
+    align-items: center;
+  }
+  .draftActionsGroup {
+    width: 100%;
+    justify-content: center;
+  }
+  .draftBtn,
+  .draftDeleteBtn {
+    flex: 1;
+  }
+  .submitGroup {
+    width: 100%;
+  }
+  .submitBtn {
+    width: 100%;
+  }
+}
+
+/* 임시저장 토스트 알림 */
+.draftToast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: #1a1a1a;
+  color: #fff;
+  padding: 14px 24px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  white-space: nowrap;
+}
+
+.draftToastVisible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }

@@ -27,7 +27,8 @@ export default function PostManageBtns({ postId, displayId, authorId, currentUse
     if (!confirm('정말 이 게시물을 삭제하시겠습니까?')) return
     startTransition(async () => {
       try {
-        await deletePost(postId)
+        const result = await deletePost(postId)
+        router.push(result.redirectTo)
       } catch (err) {
         console.error("Delete access error:", err);
       }

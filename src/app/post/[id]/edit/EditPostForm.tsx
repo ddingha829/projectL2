@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useTransition, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { updatePost, getUniqueReviewSubjects } from '@/app/actions/postManage'
 import { saveDraft } from '@/app/write/actions'
 import styles from '@/app/write/page.module.css'
@@ -44,6 +45,7 @@ export default function EditPostForm({
   const [suggestions, setSuggestions] = useState<string[]>([])
   const [isUploading, setIsUploading] = useState(false)
   const [isPending, startTransition] = useTransition()
+  const router = useRouter()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const isSubmittingRef = useRef(false)
   const supabase = createClient()
@@ -128,7 +130,10 @@ export default function EditPostForm({
     formData.set('showMainImage', showMainImage ? 'on' : 'off')
     isSubmittingRef.current = true;
     setIsSubmitting(true);
-    startTransition(() => updatePost(postId, formData))
+    startTransition(async () => {
+      const result = await updatePost(postId, formData)
+      router.push(result.redirectTo)
+    })
   }
 
   const handleSaveDraft = async () => {
