@@ -130,7 +130,7 @@ export default async function Home({
 
   const finalHeroPosts = heroPosts.length > 0 ? heroPosts : allPosts.slice(0, 3);
   const finalOtherPosts = heroPosts.length > 0 
-    ? allPosts.filter(p => !heroPosts.find(h => h.id === p.id))
+    ? allPosts.filter(p => !heroPosts.find((h: any) => h.id === p.id))
     : allPosts.slice(3);
 
   // Unified Filtering

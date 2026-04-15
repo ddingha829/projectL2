@@ -78,33 +78,31 @@ const getPost = cache(async (id: string) => {
        authorProfile: dbPost.author
     };
 
-    const { data: dbComments } = await supabase
-      .from('comments')
-      .select('*, user:profiles(id, display_name, avatar_url)')
-      .eq('post_id', actualId) 
-      .order('created_at', { ascending: false });
+    const [dbCommentsRes, prevPostRes, nextPostRes] = await Promise.all([
+      supabase
+        .from('comments')
+        .select('*, user:profiles(id, display_name, avatar_url)')
+        .eq('post_id', actualId) 
+        .order('created_at', { ascending: false }),
+      supabase
+        .from('posts')
+        .select('id')
+        .lt('created_at', post.created_at)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single(),
+      supabase
+        .from('posts')
+        .select('id')
+        .gt('created_at', post.created_at)
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .single()
+    ]);
       
-    if (dbComments) commentsData = dbComments;
-    
-    // Fetch Prev/Next Posts
-    const { data: prevPost } = await supabase
-      .from('posts')
-      .select('id')
-      .lt('created_at', post.created_at)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .single();
-      
-    const { data: nextPost } = await supabase
-      .from('posts')
-      .select('id')
-      .gt('created_at', post.created_at)
-      .order('created_at', { ascending: true })
-      .limit(1)
-      .single();
-      
-    post.prevId = prevPost?.id;
-    post.nextId = nextPost?.id;
+    if (dbCommentsRes.data) commentsData = dbCommentsRes.data;
+    post.prevId = prevPostRes.data?.id;
+    post.nextId = nextPostRes.data?.id;
   }
 
   return { post, comments: commentsData, isDbPost, actualId };
@@ -150,12 +148,17 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function PostDetail({ params }: { params: Promise<{ id: string }> }) {
   const id = (await params).id;
-  const data = await getPost(id);
+  const supabase = await createClient();
+
+  // 1. 최상단 데이터 요청 병렬화 (포스트, 유저 정보, 어드민 여부 동시 요청)
+  const [data, { data: { user } }, { isAdmin }] = await Promise.all([
+    getPost(id),
+    supabase.auth.getUser(),
+    getAdminStatus()
+  ]);
+
   if (!data || !data.post) notFound();
   const { post, comments: commentsData, isDbPost, actualId } = data;
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  const { isAdmin } = await getAdminStatus();
 
   // [신규] 비밀글 접근 권한 관리
   // 1. 글이 존재하지 않으면 404
@@ -177,21 +180,18 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
   }
   
   let currentUserRole = 'user'
-  if (user) {
-    const { data: profile } = await supabase
-      .from('profiles').select('role').eq('id', user.id).single()
-    currentUserRole = profile?.role || 'user'
-  }
-
-  // Check if current user has liked this post
   let isLiked = false;
-  if (user && isDbPost) {
-    const { data: likeRecord } = await supabase
-      .from('likes')
-      .select('id')
-      .eq('post_id', actualId)
-      .eq('user_id', user.id)
-      .single();
+
+  // 2. 유저 특화 데이터 요청 병렬화 (권한, 좋아요 여부 동시 요청)
+  if (user) {
+    const rolePromise = supabase.from('profiles').select('role').eq('id', user.id).single();
+    const likePromise = isDbPost 
+      ? supabase.from('likes').select('id').eq('post_id', actualId).eq('user_id', user.id).single()
+      : Promise.resolve({ data: null });
+
+    const [{ data: profile }, { data: likeRecord }] = await Promise.all([rolePromise, likePromise]);
+    
+    currentUserRole = profile?.role || 'user';
     if (likeRecord) isLiked = true;
   }
 
