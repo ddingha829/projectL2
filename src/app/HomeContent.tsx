@@ -80,7 +80,8 @@ export default function HomeContent({
   const router = useRouter();
   const searchParams = useSearchParams();
   const categoryFilter = searchParams.get("category");
-  const authorFilter = searchParams.get("author");
+  const rawAuthor = searchParams.get("author");
+  const authorFilter = rawAuthor ? decodeURIComponent(rawAuthor) : null;
   const searchFilter = searchParams.get("search");
   
   const isViewMore = searchParams.get("view") === "all";

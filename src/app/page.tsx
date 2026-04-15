@@ -159,8 +159,11 @@ export default async function Home({
   const categoryName = categoryFilter ? CATEGORY_MAP[categoryFilter] || categoryFilter : "";
   
   // Find author name from the actual editors profile data (reliable even with 0 posts)
-  const targetEditor = authorFilter ? editorsData.find((ed: any) => String(ed.id) === authorFilter) : null;
-  const authorName = targetEditor ? targetEditor.display_name : "";
+  const decodedAuthor = authorFilter ? decodeURIComponent(authorFilter) : null;
+  const targetEditor = decodedAuthor ? editorsData.find((ed: any) => 
+    String(ed.id) === decodedAuthor || ed.display_name === decodedAuthor || ed.name === decodedAuthor
+  ) : null;
+  const authorName = targetEditor ? targetEditor.display_name : (decodedAuthor || "");
 
   let displayTitle = "Home";
   if (isViewMore) {
