@@ -2,6 +2,19 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // 이미지 최적화 도메인 허용
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.supabase.co',
+      },
+    ],
+  },
   // 보안 헤더 설정
   async headers() {
     return [
