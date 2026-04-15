@@ -69,7 +69,7 @@ export default function HomeContent({
   allPosts,
   displayTitle, 
   animationKey,
-  isInitialVisit,
+  isInitialVisit: _isInitialVisit,
   recentReviews = [],
   featurePosts = [],
   userProfile,
@@ -80,265 +80,12 @@ export default function HomeContent({
   const router = useRouter();
   const searchParams = useSearchParams();
   const categoryFilter = searchParams.get("category");
-  const authorFilter = searchParams.get("author");
+  const rawAuthor = searchParams.get("author");
   const searchFilter = searchParams.get("search");
-  
-  const isViewMore = searchParams.get("view") === "all";
-  const isFiltered = displayTitle !== "Home";
-  const reviewRef = useRef<HTMLDivElement>(null);
-  const scrollReviews = (direction: 'left' | 'right') => {
-    if (!reviewRef.current) return;
-    const scrollAmount = 350;
-    reviewRef.current.scrollBy({ 
-      left: direction === 'left' ? -scrollAmount : scrollAmount, 
-      behavior: 'smooth' 
-    });
-  };
-  
-  // 1. Find from static AUTHORS constant
-  const staticAuthor = AUTHORS.find(a => String(a.id) === authorFilter || a.name === authorFilter);
-  
-  // 2. Find from the passed 'editors' prop (DB Profiles)
-  const dbAuthorProfile = (editors || []).find(ed => (ed && String(ed.id) === authorFilter) || (ed && ed.display_name === authorFilter));
-  
-  // 3. Fallback: find from the posts themselves (ID or Name match)
-  const foundInPosts = !staticAuthor && !dbAuthorProfile && authorFilter 
-    ? allPosts.find(p => (p.author && (String(p.author_id) === authorFilter || String(p.author.id) === authorFilter || p.author.name === authorFilter))) 
-    : null;
-    
-  // Unified mapping with default safety
-  const liveAuthor = dbAuthorProfile ? {
-    id: dbAuthorProfile.id,
-    name: dbAuthorProfile.display_name || dbAuthorProfile.name || authorFilter || "에디터",
-    avatar: dbAuthorProfile.avatar_url || dbAuthorProfile.avatar || "/default-avatar.png",
-    bio: dbAuthorProfile.bio || "티끌 매거진 에디터입니다.",
-    role: dbAuthorProfile.role === 'admin' ? '운영자' : '티끌러'
-  } : foundInPosts ? {
-    id: foundInPosts.author?.id || authorFilter,
-    name: foundInPosts.author?.name || foundInPosts.authorProfile?.display_name || authorFilter || "에디터",
-    avatar: foundInPosts.author?.avatar || foundInPosts.authorProfile?.avatar_url || "/default-avatar.png",
-    bio: foundInPosts.author?.bio || foundInPosts.authorProfile?.bio || "티끌 매거진 에디터입니다.",
-    role: "Editor"
-  } : authorFilter ? {
-    id: authorFilter,
-    name: authorFilter, // Fallback to using the filter string as name if it's a slug
-    avatar: "/default-avatar.png",
-    bio: "티끌 매거진 에디터입니다.",
-    role: "Editor"
-  } : null;
-    
-  const authorData = staticAuthor || liveAuthor;
+  const isViewMoreFromUrl = searchParams.get("view") === "all";
 
-  const [currentPage, setCurrentPage] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
-  const [hasInitialized, setHasInitialized] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(6);
-
-  const [heroIndex, setHeroIndex] = useState(0);
-  const [slideDir, setSlideDir] = useState<'next' | 'prev'>('next');
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    // 1. Determine Device Type
-    const isMob = isMobileServer || window.innerWidth <= 768;
-    setIsMobile(isMob);
-    
-    // 2. Defaulting Logic with preservation
-    const currentView = searchParams.get('viewType');
-    
-    if (!currentView && !hasInitialized) {
-      const params = new URLSearchParams(window.location.search);
-      
-      // Preserve existing important flags
-      const isActuallyViewMore = params.get('view') === 'all';
-      
-      if (initialViewType) {
-        params.set('viewType', initialViewType);
-      } else {
-        if (isMob) {
-          params.set('viewType', 'card');
-          if (!params.get('mCols')) params.set('mCols', '2');
-        } else {
-          params.set('viewType', 'magazine');
-          if (!params.get('dCols')) params.set('dCols', '4');
-        }
-      }
-
-      // Re-apply view=all just in case
-      if (isActuallyViewMore) params.set('view', 'all');
-
-      router.replace(`?${params.toString()}`, { scroll: false });
-      setHasInitialized(true);
-    }
-  }, [searchParams, hasInitialized, router, isMobileServer, initialViewType]);
-
-  // View Sync Helper (Cookies & DB)
-  const setCookie = (name: string, value: string) => {
-    document.cookie = `${name}=${value}; path=/; max-age=31536000`; // 1 year
-  };
-
-  // Save selection (Cookies & DB)
-  useEffect(() => {
-    const currentView = searchParams.get('viewType');
-    if (!currentView) return;
-
-    // Sync to Cookie immediately for flicker prevention next time
-    if (isMobile) {
-      setCookie('viewType_mobile', currentView);
-    } else {
-      setCookie('viewType_pc', currentView);
-    }
-
-    if (!userProfile) return;
-    
-    // Debounced Save to DB
-    const saveToDb = async () => {
-      const { createClient } = await import('@/lib/supabase/client');
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const updateData: any = {
-        preferred_view_type: currentView // Compatibility fallback
-      };
-
-      if (isMobile) {
-        updateData.preferred_view_mobile = currentView;
-        updateData.preferred_m_cols = parseInt(searchParams.get('mCols') || '2');
-      } else {
-        updateData.preferred_view_pc = currentView;
-        updateData.preferred_d_cols = parseInt(searchParams.get('dCols') || '4');
-      }
-
-      await supabase.from('profiles').update(updateData).eq('id', user.id);
-    };
-
-    const timer = setTimeout(saveToDb, 2000); // 2s debounce
-    return () => clearTimeout(timer);
-  }, [searchParams, userProfile, isMobile]);
-
-  const vType = (searchParams.get("viewType") || initialViewType || (isMobile ? "card" : "magazine")) as "card" | "magazine";
-  const mobileGridCols = vType === 'magazine' ? 1 : parseInt(searchParams.get("mCols") || "2");
-  const cardCols = parseInt(searchParams.get("dCols") || "4"); // PC default grid 4 as requested
-
-  const [isHeroPaused, setIsHeroPaused] = useState(false);
-  const [touchStart, setTouchStart] = useState<number | null>(null);
-  const [touchEnd, setTouchEnd] = useState<number | null>(null);
-  const [showMobileFab, setShowMobileFab] = useState(false);
-  const sentinelRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowMobileFab(window.scrollY > 15);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // UseEffect to sync grid cols based on URL params (removed setters from local use)
-  useEffect(() => {
-    // We can no longer 'set' here, but we can redirect if needed. 
-    // For now, these effects are mostly for page resets.
-  }, [isViewMore, isFiltered]);
-
-  const prevWidth = useRef(0);
-
-  useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      const mobile = width <= 768;
-      
-      // 768px 임계값을 넘나들 때만 상태 변경
-      if (mobile !== (prevWidth.current <= 768)) {
-        setIsMobile(mobile);
-        if (mobile) updateParam("viewType", "card");
-      }
-      prevWidth.current = width;
-    };
-    
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // Reset counters on filter change (Includes categoryFilter to ensure count resets even if animationKey is same)
-  useEffect(() => {
-    setCurrentPage(0);
-    setVisibleCount(isMobile ? 6 : (cardCols === 4 ? 8 : 6));
-  }, [animationKey, categoryFilter, authorFilter, searchFilter, isViewMore, cardCols, isMobile]);
-
-
-
-  // Scroll to top when view or page changes
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: isMobile ? 'instant' as ScrollBehavior : 'smooth' });
-  }, [isViewMore, currentPage, isMobile]);
-
-  // Hero auto-slide functionality for all devices (Mobile & PC)
-  useEffect(() => {
-    if (!heroPosts || heroPosts.length <= 1 || isHeroPaused) return;
-    
-    const interval = setInterval(() => {
-      setSlideDir('next');
-      setHeroIndex((prev) => (prev + 1) % heroPosts.length);
-    }, isMobile ? 4000 : 5000); 
-    
-    return () => clearInterval(interval);
-  }, [heroPosts?.length, isHeroPaused, isMobile, heroIndex]);
-
-
-
-
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchStart(e.targetTouches[0].clientX);
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientX);
-  };
-
-  const handleTouchEnd = () => {
-    if (!touchStart || !touchEnd || !heroPosts) return;
-    const distance = touchStart - touchEnd;
-    const isLeftSwipe = distance > 50;
-    const isRightSwipe = distance < -50;
-
-    if (isLeftSwipe) {
-      setSlideDir('next');
-      setHeroIndex((prev) => (prev + 1) % heroPosts.length);
-    } else if (isRightSwipe) {
-      setSlideDir('prev');
-      setHeroIndex((prev) => (prev - 1 + heroPosts.length) % heroPosts.length);
-    }
-    
-    setTouchStart(null);
-    setTouchEnd(null);
-  };
-
-
-
-  const nextHero = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setSlideDir('next');
-    setHeroIndex((prev) => (prev + 1) % heroPosts.length);
-  };
-
-  const prevHero = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setSlideDir('prev');
-    setHeroIndex((prev) => (prev - 1 + heroPosts.length) % heroPosts.length);
-  };
-
-  const updateParam = (key: string, val: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set(key, val);
-    router.replace(`?${params.toString()}`, { scroll: false });
-  };
-
-
-  const CATEGORY_LABEL_MAP: Record<string, string> = {
+  // 1. Label Map (Define first to use in Memo)
+  const CATEGORY_LABEL_MAP: Record<string, string> = useMemo(() => ({
     'all': '전체',
     'restaurant': '맛집',
     'travel': '여행',
@@ -347,69 +94,200 @@ export default function HomeContent({
     'book': '책',
     'exhibition': '전시회',
     'other': '기타'
+  }), []);
+
+  // 2. Safe Author Parsing
+  const processedAuthorFilter = useMemo(() => {
+    if (!rawAuthor) return null;
+    try {
+      return rawAuthor.includes('%') ? decodeURIComponent(rawAuthor) : rawAuthor;
+    } catch { return rawAuthor; }
+  }, [rawAuthor]);
+
+  // 3. Memoized Author Data
+  const authorData = useMemo(() => {
+    if (!processedAuthorFilter) return null;
+    const staticAuth = AUTHORS.find(a => String(a.id) === processedAuthorFilter || a.name === processedAuthorFilter);
+    if (staticAuth) return staticAuth;
+    const dbAuth = (editors || []).find(ed => (ed && String(ed.id) === processedAuthorFilter) || (ed && ed.display_name === processedAuthorFilter));
+    if (dbAuth) {
+      return {
+        id: dbAuth.id,
+        name: dbAuth.display_name || dbAuth.name || processedAuthorFilter,
+        avatar: dbAuth.avatar_url || dbAuth.avatar || "/default-avatar.png",
+        bio: dbAuth.bio || "티끌 매거진 에디터입니다.",
+        role: dbAuth.role === 'admin' ? '운영자' : '티끌러',
+        description: { bio: dbAuth.bio, bullets: dbAuth.bullets }
+      };
+    }
+    const postWithAuth = allPosts.find(p => (p.author && (String(p.author_id) === processedAuthorFilter || String(p.author.id) === processedAuthorFilter || p.author.name === processedAuthorFilter)));
+    if (postWithAuth) {
+      return {
+        id: postWithAuth.author?.id || processedAuthorFilter,
+        name: postWithAuth.author?.name || postWithAuth.authorProfile?.display_name || processedAuthorFilter,
+        avatar: postWithAuth.author?.avatar || postWithAuth.authorProfile?.avatar_url || "/default-avatar.png",
+        bio: postWithAuth.author?.bio || postWithAuth.authorProfile?.bio || "티끌 매거진 에디터입니다.",
+        role: "Editor",
+        description: { bio: postWithAuth.author?.bio, bullets: [] }
+      };
+    }
+    return { id: processedAuthorFilter, name: processedAuthorFilter, avatar: "/default-avatar.png", bio: "티끌 매거진 에디터입니다.", role: "Editor", description: { bio: "", bullets: [] } };
+  }, [processedAuthorFilter, editors, allPosts]);
+
+  // 4. Main Filtering Engine (Performance Boost)
+  const filteredPosts = useMemo(() => {
+    let result = [...allPosts];
+    if (categoryFilter && categoryFilter !== 'all') {
+      const label = CATEGORY_LABEL_MAP[categoryFilter];
+      result = result.filter(p => p.categoryId === categoryFilter || p.category_id === categoryFilter || p.category === categoryFilter || (label && p.category === label));
+    }
+    if (processedAuthorFilter && processedAuthorFilter !== 'all') {
+      result = result.filter(p => String(p.author?.id) === processedAuthorFilter || String(p.author_id) === processedAuthorFilter || p.author?.name === processedAuthorFilter);
+    }
+    if (searchFilter) {
+      const lowerQuery = searchFilter.toLowerCase();
+      result = result.filter(p => p.title.toLowerCase().includes(lowerQuery) || p.content.toLowerCase().includes(lowerQuery));
+    }
+    return result;
+  }, [allPosts, categoryFilter, processedAuthorFilter, searchFilter, CATEGORY_LABEL_MAP]);
+
+  // Derived Values
+  const isFiltered = !!(categoryFilter && categoryFilter !== 'all') || !!processedAuthorFilter || !!searchFilter;
+  const isViewMore = isViewMoreFromUrl;
+  const isInitialVisit = !categoryFilter && !processedAuthorFilter && !searchFilter && !isViewMore;
+
+  // 5. States
+  const [currentPage, setCurrentPage] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const [hasInitialized, setHasInitialized] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(6);
+  const [heroIndex, setHeroIndex] = useState(0);
+  const [slideDir, setSlideDir] = useState<'next' | 'prev'>('next');
+  const [isHeroPaused, setIsHeroPaused] = useState(false);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [showMobileFab, setShowMobileFab] = useState(false);
+  const reviewRef = useRef<HTMLDivElement>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const prevWidth = useRef(0);
+
+  // 6. Helpers
+  const updateParam = useCallback((key: string, val: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set(key, val);
+    router.replace(`?${params.toString()}`, { scroll: false });
+  }, [searchParams, router]);
+
+  const scrollReviews = (direction: 'left' | 'right') => {
+    if (!reviewRef.current) return;
+    const scrollAmount = 350;
+    reviewRef.current.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
   };
 
-  // Unified Filtering for the grid
-  let filteredPosts = allPosts;
-  if (categoryFilter && categoryFilter !== 'all') {
-    const label = CATEGORY_LABEL_MAP[categoryFilter];
-    filteredPosts = filteredPosts.filter(p => 
-      p.categoryId === categoryFilter || 
-      p.category_id === categoryFilter || 
-      p.category === categoryFilter ||
-      (label && p.category === label)
-    );
-  }
-  if (authorFilter && authorFilter !== 'all') {
-    filteredPosts = filteredPosts.filter(p => 
-      String(p.author?.id) === authorFilter || 
-      String(p.author_id) === authorFilter ||
-      p.author?.name === authorFilter
-    );
-  }
-  if (searchFilter) {
-    const lowerQuery = searchFilter.toLowerCase();
-    filteredPosts = filteredPosts.filter(p => 
-      p.title.toLowerCase().includes(lowerQuery) || 
-      p.content.toLowerCase().includes(lowerQuery)
-    );
-  }
+  const nextHero = (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    setSlideDir('next');
+    setHeroIndex((prev) => (prev + 1) % heroPosts.length);
+  };
+  const prevHero = (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    setSlideDir('prev');
+    setHeroIndex((prev) => (prev - 1 + heroPosts.length) % heroPosts.length);
+  };
 
-  // Grid posts logic
-  // Unified state for determining if we should show the full grid vs home page sections
+  const handleTouchStart = (e: React.TouchEvent) => setTouchStart(e.targetTouches[0].clientX);
+  const handleTouchMove = (e: React.TouchEvent) => setTouchEnd(e.targetTouches[0].clientX);
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd || !heroPosts) return;
+    const distance = touchStart - touchEnd;
+    if (distance > 50) nextHero();
+    else if (distance < -50) prevHero();
+    setTouchStart(null); setTouchEnd(null);
+  };
+
+  // 7. Effects
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const isMob = isMobileServer || window.innerWidth <= 768;
+    setIsMobile(isMob);
+    if (!searchParams.get('viewType') && !hasInitialized) {
+      const params = new URLSearchParams(window.location.search);
+      if (initialViewType) params.set('viewType', initialViewType);
+      else {
+        params.set('viewType', isMob ? 'card' : 'magazine');
+        if (isMob) { if (!params.get('mCols')) params.set('mCols', '2'); }
+        else { if (!params.get('dCols')) params.set('dCols', '4'); }
+      }
+      router.replace(`?${params.toString()}`, { scroll: false });
+      setHasInitialized(true);
+    }
+  }, [searchParams, hasInitialized, router, isMobileServer, initialViewType]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      const mobile = width <= 768;
+      if (mobile !== (prevWidth.current <= 768)) {
+        setIsMobile(mobile);
+        if (mobile) {
+          const params = new URLSearchParams(window.location.search);
+          params.set("viewType", "card");
+          router.replace(`?${params.toString()}`, { scroll: false });
+        }
+      }
+      prevWidth.current = width;
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [router]);
+
+  useEffect(() => {
+    setCurrentPage(0);
+    const vTypeTmp = searchParams.get("viewType") || initialViewType || (isMobile ? "card" : "magazine");
+    const dColsTmp = parseInt(searchParams.get("dCols") || "4");
+    setVisibleCount(isMobile ? 6 : (dColsTmp === 4 ? 8 : 6));
+  }, [animationKey, categoryFilter, processedAuthorFilter, searchFilter, isViewMore, isMobile, searchParams, initialViewType]);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: isMobile ? 'instant' : 'smooth' });
+  }, [isViewMore, currentPage, isMobile]);
+
+  useEffect(() => {
+    if (!heroPosts || heroPosts.length <= 1 || isHeroPaused) return;
+    const interval = setInterval(nextHero, isMobile ? 4000 : 5000); 
+    return () => clearInterval(interval);
+  }, [heroPosts?.length, isHeroPaused, isMobile, heroIndex]);
+
   const showFullGrid = useMemo(() => {
     const fromParams = isFiltered || isViewMore;
     if (typeof window === 'undefined') return fromParams;
-    
-    // Supplement with direct check if client-side to prevent hydration flicker
     const rawSearch = window.location.search;
     return fromParams || rawSearch.includes('view=all') || rawSearch.includes('category=') || rawSearch.includes('author=') || rawSearch.includes('search=');
   }, [isFiltered, isViewMore]);
+  
   const paginatedData = useMemo(() => filteredPosts, [filteredPosts]);
+  const displayPosts = useMemo(() => showFullGrid ? paginatedData.slice(0, visibleCount) : otherPosts.slice(0, 4), [showFullGrid, paginatedData, visibleCount, otherPosts]);
 
-  // Selection logic: Infinite Scroll for results, but 2 for the main page
-  const displayPosts = showFullGrid 
-    ? paginatedData.slice(0, visibleCount) 
-    : otherPosts.slice(0, 4);
-
-  // Infinite Scroll Trigger (Unified for all devices)
   useEffect(() => {
     if (!showFullGrid) return;
-    
-    const pageSize = isMobile ? 6 : (cardCols === 4 ? 8 : 6);
+    const dColsTmp = parseInt(searchParams.get("dCols") || "4");
+    const pageSize = isMobile ? 6 : (dColsTmp === 4 ? 8 : 6);
     const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        setVisibleCount(prev => Math.min(prev + pageSize, paginatedData.length));
-      }
-    }, { 
-      threshold: 0.1,
-      rootMargin: '300px'
-    });
-
+      if (entries[0].isIntersecting) setVisibleCount(prev => Math.min(prev + pageSize, paginatedData.length));
+    }, { threshold: 0.1, rootMargin: '300px' });
     if (sentinelRef.current) observer.observe(sentinelRef.current);
-
     return () => observer.disconnect();
-  }, [paginatedData.length, showFullGrid, visibleCount]);
+  }, [paginatedData.length, showFullGrid, visibleCount, isMobile, searchParams]);
+
+  useEffect(() => {
+    const handleScroll = () => setShowMobileFab(window.scrollY > 15);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const vType = (searchParams.get("viewType") || initialViewType || (isMobile ? "card" : "magazine")) as "card" | "magazine";
+  const mobileGridCols = vType === 'magazine' ? 1 : parseInt(searchParams.get("mCols") || "2");
+  const cardCols = parseInt(searchParams.get("dCols") || "4");
 
   return (
     <>
