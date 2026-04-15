@@ -7,77 +7,9 @@ import { getAdminStatus } from "@/app/actions/hero";
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-export const MOCK_AUTHORS = {
-  chulsoo: { id: "chulsoo", name: "철수", color: "#FF3333", avatar: "👨" },
-  younghee: { id: "younghee", name: "영희", color: "#33CCFF", avatar: "👩" },
-  minsoo: { id: "minsoo", name: "민수", color: "#33FF99", avatar: "👦" },
-  jieun: { id: "jieun", name: "지은", color: "#FF9933", avatar: "👧" },
-};
+export const MOCK_AUTHORS = {};
 
-export const MOCK_POSTS = [
-  {
-    id: "1",
-    categoryId: "movie",
-    category: "영화",
-    title: "듄: 파트 2 (Dune: Part Two) - 압도적인 시각적 경험",
-    content: "전작보다 훨씬 더 방대해진 스케일과 탄탄한 스토리텔링이 돋보입니다. 한스 짐머의 음악은 여전히 영화의 몰입도를 극대화합니다. 반드시 아이맥스에서 관람해야 하는 영화.",
-    author: MOCK_AUTHORS.chulsoo,
-    date: "2024-03-22",
-    likes: 42,
-    comments: 12,
-    imageUrl: "https://images.unsplash.com/photo-1542204165-65bf26472b9b?auto=format&fit=crop&w=1600&q=80"
-  },
-  {
-    id: "2",
-    categoryId: "book",
-    category: "책",
-    title: "사피엔스 - 인류의 기원을 추적하다",
-    content: "유발 하라리의 통찰력이 돋보이는 명저. 역사, 과학, 철학을 넘나들며 인류가 어떻게 현재의 모습이 되었는지 설득력 있게 풀어냅니다. 생각할 거리를 많이 던져주는 책.",
-    author: MOCK_AUTHORS.younghee,
-    date: "2024-03-20",
-    likes: 38,
-    comments: 5,
-    imageUrl: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=1600&q=80"
-  },
-  {
-    id: "3",
-    categoryId: "restaurant",
-    category: "맛집",
-    title: "뉴욕 전통 스테이크 하우스 방문기",
-    content: "완벽한 시어링, 육즙이 가득한 티본 스테이크. 거기에 클래식한 매쉬드 포테이토와 아스파라거스가 곁들여져 환상적인 저녁 식사였습니다. 특별한 기념일에 강력 추천합니다.",
-    author: MOCK_AUTHORS.chulsoo,
-    date: "2024-03-18",
-    likes: 56,
-    comments: 8,
-    imageUrl: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1600&q=80"
-  },
-  {
-    id: "4",
-    categoryId: "game",
-    category: "게임",
-    title: "젤다의 전설: 왕국의 눈물 리뷰",
-    content: "전작의 훌륭한 시스템을 기반으로 상상력을 자극하는 '스크래빌드'가 추가되어 플레이 내내 지루할 틈이 없었습니다. 게임 역사에 남을 다시 없을 마스터피스.",
-    author: MOCK_AUTHORS.minsoo,
-    date: "2024-03-15",
-    likes: 120,
-    comments: 34,
-    imageUrl: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1600&q=80",
-    isEditorsPick: true
-  },
-  {
-    id: "11",
-    categoryId: "movie",
-    category: "영화",
-    title: "파묘 - 한국적 오컬트의 새로운 지평",
-    content: "최민식, 김고은의 신들린 연기와 장재현 감독의 디테일한 연출이 만나 최고의 몰입감을 선사합니다. 민속 신앙과 역사적 아픔을 잘 녹여냈습니다.",
-    author: MOCK_AUTHORS.jieun,
-    date: "2024-02-20",
-    likes: 156,
-    comments: 67,
-    imageUrl: "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1600&q=80",
-    isEditorsPick: true
-  }
-];
+export const MOCK_POSTS: any[] = [];
 
 export default async function Home({
   searchParams,
