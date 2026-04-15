@@ -6,22 +6,34 @@ import { createClient } from '@/lib/supabase/server'
 async function getProfileAndPost(postId: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'unauthenticated' as const, supabase, user: null, profile: null, post: null }
+  if (!user) {
+    console.error('DEBUG: No user found in session');
+    return { error: 'unauthenticated' as const, supabase, user: null, profile: null, post: null }
+  }
 
   const [{ data: profile }, { data: post }] = await Promise.all([
     supabase.from('profiles').select('role').eq('id', user.id).single(),
     supabase.from('posts').select('id, author_id').eq('id', postId).single(),
   ])
 
+  console.log('DEBUG [getProfileAndPost]:', {
+    inputPostId: postId,
+    currentUserId: user.id,
+    foundProfileRole: profile?.role,
+    foundPostAuthorId: post?.author_id,
+    postFound: !!post
+  });
+
   return { supabase, user, profile, post, error: null }
 }
 
 function canModify(role: string | null | undefined, userId: string, authorId: string) {
-  // admin은 무조건 통과
-  if (role === 'admin') return true;
+  // admin은 무조건 통과 (대소문자 무시)
+  const normalizedRole = role?.toLowerCase()?.trim();
+  if (normalizedRole === 'admin') return true;
   
-  // 본인 글인 경우 통과 (role이 null이어도 본인글이면 삭제 가능하도록)
-  if (userId === authorId) return true;
+  // 본인 글인 경우 통과
+  if (userId && authorId && userId === authorId) return true;
   
   return false;
 }
