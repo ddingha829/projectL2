@@ -207,7 +207,7 @@
 
   .contentArea {
     padding: 10px;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 15%, transparent 30%) !important;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 20%, transparent 40%) !important;
   }
 }
 
