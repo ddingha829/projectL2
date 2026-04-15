@@ -561,7 +561,7 @@ export default function HomeContent({
                       <Link key={ed.id} href={`/?author=${ed.id}`} className={styles.editorProfileCard}>
                         <div className={styles.edAvatarWrapper}>
                           <Image 
-                            src={ed.avatar_url && ed.avatar_url.length > 5 ? ed.avatar_url : "https://ujitunfexivstveydmgs.supabase.co/storage/v1/object/public/post-images/default-avatar.png"} 
+                            src={(ed.avatar_url && (ed.avatar_url.startsWith('http') || ed.avatar_url.startsWith('/'))) ? ed.avatar_url : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"} 
                             alt={ed.display_name} 
                             className={styles.edAvatarImg} 
                             width={100}
@@ -619,7 +619,7 @@ export default function HomeContent({
                   <div className={styles.authorAvatarArea}>
                     <div className={styles.authorAvatarLarge}>
                       <Image 
-                        src={(authorData.avatar && authorData.avatar.length > 5) ? authorData.avatar : "https://ujitunfexivstveydmgs.supabase.co/storage/v1/object/public/post-images/default-avatar.png"} 
+                        src={(authorData.avatar && (authorData.avatar.startsWith('http') || authorData.avatar.startsWith('/'))) ? authorData.avatar : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"} 
                         alt={authorData.name} 
                         width={120}
                         height={120}

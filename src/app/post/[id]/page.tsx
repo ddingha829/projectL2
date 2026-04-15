@@ -367,17 +367,17 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
               </Link>
             </div>
             <div className={styles.authorCardContent}>
-              <div className={styles.authorAvatarArea}>
-                <div className={styles.authorAvatarLarge}>
-                   <Image 
-                     src={(post.authorProfile.avatar_url && post.authorProfile.avatar_url.length > 5) ? post.authorProfile.avatar_url : "https://ujitunfexivstveydmgs.supabase.co/storage/v1/object/public/post-images/default-avatar.png"} 
-                     alt={post.authorProfile.display_name} 
-                     width={96}
-                     height={96}
-                     style={{ objectFit: 'cover' }}
-                   />
+                <div className={styles.authorAvatarArea}>
+                   <div className={styles.authorAvatarLarge}>
+                      <Image 
+                        src={(post.authorProfile.avatar_url && (post.authorProfile.avatar_url.startsWith('http') || post.authorProfile.avatar_url.startsWith('/'))) ? post.authorProfile.avatar_url : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"} 
+                        alt={post.authorProfile.display_name} 
+                        width={96}
+                        height={96}
+                        style={{ objectFit: 'cover' }}
+                      />
+                   </div>
                 </div>
-              </div>
               <div className={styles.authorDetailsArea}>
                 <Link href={`/?author=${post.authorProfile.id}`} className={styles.authorNameLink}>
                   {post.authorProfile.display_name}
