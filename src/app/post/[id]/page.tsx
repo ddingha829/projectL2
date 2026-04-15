@@ -306,6 +306,15 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
         
         {/* [신규] 티끌러의 한줄평 섹션 */}
         {post.review_subject && (
+          <div className={styles.postRightActions}>
+            <ShareBtn 
+              title={post.title} 
+              imageUrl={post.image_url} 
+              description={post.content?.replace(/<[^>]+>/g, '').substring(0, 50) + '...'}
+            />
+          </div>
+        )}
+        {post.review_subject && (
           <div className={styles.postReviewSection}>
             <fieldset className={styles.postReviewBox}>
               <legend className={styles.reviewLabel}>한줄 평</legend>

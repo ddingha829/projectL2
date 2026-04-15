@@ -5,6 +5,8 @@ import styles from './page.module.css'
 
 interface ShareBtnProps {
   title: string;
+  imageUrl?: string;
+  description?: string;
 }
 
 declare global {
@@ -13,7 +15,7 @@ declare global {
   }
 }
 
-export default function ShareBtn({ title }: ShareBtnProps) {
+export default function ShareBtn({ title, imageUrl, description }: ShareBtnProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [copied, setCopied] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
@@ -76,8 +78,8 @@ export default function ShareBtn({ title }: ShareBtnProps) {
         objectType: 'feed',
         content: {
           title: title,
-          description: '티끌 모아 반짝이는, 일상 매거진',
-          imageUrl: 'https://ticgle.kr/preview.png',
+          description: description || '티끌 모아 반짝이는, 일상 매거진',
+          imageUrl: imageUrl || 'https://ticgle.kr/preview.png',
           link: {
             mobileWebUrl: url,
             webUrl: url,
