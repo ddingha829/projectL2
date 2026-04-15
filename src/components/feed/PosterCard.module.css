@@ -207,7 +207,7 @@
 
   .contentArea {
     padding: 10px;
-    background: transparent !important; /* Removed color overlay as requested */
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 15%, transparent 30%) !important;
   }
 }
 

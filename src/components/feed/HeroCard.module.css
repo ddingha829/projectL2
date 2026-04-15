@@ -371,7 +371,7 @@
   }
 
   .overlay {
-    background: rgba(0, 0, 0, 0.45) !important; /* Simplified to single-tone for faster paint as requested */
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 30%, transparent 50%) !important;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
