@@ -234,6 +234,13 @@
   display: block;
 }
 
+@media (min-width: 769px) {
+  .previewImage {
+    max-height: 550px;
+    object-fit: contain;
+  }
+}
+
 .hiddenInput {
   display: none;
 }

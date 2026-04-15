@@ -321,7 +321,14 @@
   width: 100%;
   height: auto;
   display: block;
-  transition: max-height 0.3s ease;
+  transition: all 0.3s ease;
+}
+
+@media (min-width: 769px) {
+  .mainImage {
+    max-height: 550px;
+    object-fit: contain;
+  }
 }
 
 @media (max-width: 1024px) {
@@ -718,6 +725,13 @@
   height: auto !important;
   border-radius: 8px;
   margin: 1.5em 0;
+}
+
+@media (min-width: 769px) {
+  .content img {
+    max-height: 550px;
+    object-fit: contain;
+  }
 }
 
 .content h2 {

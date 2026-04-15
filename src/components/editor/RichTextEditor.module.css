@@ -92,6 +92,21 @@
 }
 
 .content { background: var(--bg-primary); min-height: 600px; color: var(--text-primary); }
+
+.content :global(img) {
+  max-width: 100%;
+  height: auto !important;
+}
+
+@media (min-width: 769px) {
+  .content :global(img) {
+    max-height: 550px;
+    object-fit: contain;
+    display: block;
+    margin: 1.5em 0;
+  }
+}
+
 .loading { height: 600px; display: flex; align-items: center; justify-content: center; color: var(--text-tertiary); background: var(--bg-secondary); border-radius: 12px; }
 
 /* Image Crop Modal Styles */
