@@ -228,7 +228,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       // 24시간(86400000ms) 지났거나 기록이 없으면 새 방문으로 처리
       if (!lastVisit || (now - parseInt(lastVisit)) > 86400000) {
         try {
-          const { error } = await supabase.from('site_visits').insert({});
+          const { error } = await supabase.rpc('record_visit');
           if (!error) {
              localStorage.setItem(VISIT_KEY, now.toString());
           }
