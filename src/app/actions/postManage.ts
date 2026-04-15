@@ -26,9 +26,16 @@ function canModify(role: string | null | undefined, userId: string, authorId: st
   return false;
 }
 
+/** ID 정제: 'db-' 접두어 제거 */
+function sanitizePostId(id: string): string {
+  if (!id) return id;
+  return id.replace(/^db-/, '');
+}
+
 /** 게시물 수정 */
 export async function updatePost(postId: string, formData: FormData): Promise<{ ok: boolean; redirectTo: string }> {
-  const { supabase, user, profile, post, error } = await getProfileAndPost(postId)
+  const actualId = sanitizePostId(postId);
+  const { supabase, user, profile, post, error } = await getProfileAndPost(actualId)
   if (error || !user || !profile || !post) return { ok: false, redirectTo: '/login' }
 
   if (!canModify(profile.role, user.id, post.author_id)) {
@@ -88,7 +95,8 @@ export async function updatePost(postId: string, formData: FormData): Promise<{ 
 
 /** 게시물 삭제 */
 export async function deletePost(postId: string): Promise<{ ok: boolean; redirectTo: string }> {
-  const { supabase, user, profile, post, error } = await getProfileAndPost(postId)
+  const actualId = sanitizePostId(postId);
+  const { supabase, user, profile, post, error } = await getProfileAndPost(actualId)
   if (error || !user || !profile || !post) {
     console.error('Delete auth/access error:', error);
     return { ok: false, redirectTo: '/login' }
