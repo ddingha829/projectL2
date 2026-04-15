@@ -255,7 +255,14 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
           <ShareBtn 
             title={post.title} 
             imageUrl={post.image_url} 
-            description={post.content?.replace(/<[^>]+>/g, '').substring(0, 60).trim().replace(/\s+/g, ' ') + '...'}
+            description={post.content
+              ?.replace(/<br\s*\/?>/gi, '\n')
+              ?.replace(/<\/p>/gi, '\n')
+              ?.replace(/<[^>]+>/g, '')
+              ?.replace(/&nbsp;/gi, ' ')
+              ?.trim()
+              .substring(0, 65) + '...'
+            }
           />
           
           <PostManageBtns 
