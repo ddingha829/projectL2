@@ -287,7 +287,9 @@ export default function HomeContent({
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const vType = (searchParams.get("viewType") || initialViewType || (isMobile ? "card" : "magazine")) as "card" | "magazine";
+  // URL 쿼리를 최우선으로, 그 다음 선호도, 그 다음 기본값
+  const queryVType = searchParams.get("viewType");
+  const vType = (queryVType || initialViewType || (isMobile ? "card" : "magazine")) as "card" | "magazine";
   const mobileGridCols = vType === 'magazine' ? 1 : parseInt(searchParams.get("mCols") || "2");
   const cardCols = parseInt(searchParams.get("dCols") || "4");
 

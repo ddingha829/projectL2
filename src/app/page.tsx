@@ -52,16 +52,16 @@ export default async function Home({
   // [개선] 쿼리 레벨에서 필터링, 개수 제한 및 불필요한 대용량 content 로딩 배제 (excerpt 활용)
   const [heroRes, feedRes, reviewRes, featureRes, editorsRes, userProfileRes] = await Promise.all([
     // Hero posts: 메인 섹션이므로 필요한 필드만 select (content 제외)
-    applyPrivacyFilter(supabase.from('posts').select('id, serial_id, title, category, image_url, is_editors_pick, is_hero, hero_at, is_feature, is_public, created_at, likes_count, author_id, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).eq('is_hero', true).order('hero_at', { ascending: false }).limit(3),
+    applyPrivacyFilter(supabase.from('posts').select('id, serial_id, title, category, content, image_url, is_editors_pick, is_hero, hero_at, is_feature, is_public, created_at, likes_count, author_id, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).eq('is_hero', true).order('hero_at', { ascending: false }).limit(3),
     
     // Feed posts: 40개 개수 제한 및 무거운 content 제외
-    applyPrivacyFilter(supabase.from('posts').select('id, serial_id, title, category, image_url, is_editors_pick, is_hero, hero_at, is_feature, is_public, created_at, likes_count, author_id, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).neq('category', 'notice').order('created_at', { ascending: false }).limit(40),
+    applyPrivacyFilter(supabase.from('posts').select('id, serial_id, title, category, content, image_url, is_editors_pick, is_hero, hero_at, is_feature, is_public, created_at, likes_count, author_id, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).neq('category', 'notice').order('created_at', { ascending: false }).limit(40),
     
     // Reviews
     applyPrivacyFilter(supabase.from('posts').select('id, serial_id, review_subject, review_rating, review_comment, created_at, author:profiles!author_id(display_name)')).not('review_subject', 'is', null).order('created_at', { ascending: false }).limit(10),
     
     // Feature posts
-    applyPrivacyFilter(supabase.from('posts').select('id, serial_id, title, category, image_url, is_editors_pick, is_hero, hero_at, is_feature, is_public, created_at, likes_count, author_id, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).or('is_feature.eq.true,category.eq.feature').order('created_at', { ascending: false }).limit(6),
+    applyPrivacyFilter(supabase.from('posts').select('id, serial_id, title, category, content, image_url, is_editors_pick, is_hero, hero_at, is_feature, is_public, created_at, likes_count, author_id, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).or('is_feature.eq.true,category.eq.feature').order('created_at', { ascending: false }).limit(6),
     
     // Editors
     supabase.from('profiles').select('id, display_name, avatar_url, bio, bullets, role').in('role', ['admin', 'editor']).order('display_name'),
@@ -88,7 +88,7 @@ export default async function Home({
       categoryId: p.category,
       category: CATEGORY_MAP[p.category] || p.category,
       title: p.title,
-      content: "", // 메인 목록에서는 더 이상 본문 텍스트가 필요 없음 (용량 절감 핵심)
+      content: p.content || "", // 매거진 미리보기를 위해 다시 포함
       author: {
         id: authorData.id || p.author_id || 'db-anon',
         name: authorData.name || '활발한 작가',

@@ -93,11 +93,22 @@ export default function TopNavbar({
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
 
   const ViewSettingsDropdown = ({ isPC = false }: { isPC?: boolean }) => {
-    const vType = searchParams.get("viewType") || "card";
+    const [vType, setVType] = useState<string>("card");
     const mCols = searchParams.get("mCols") || "3";
     const dCols = searchParams.get("dCols") || "4";
     const [isOpen, setIsOpen] = useState(false);
     const viewRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+      const queryType = searchParams.get("viewType");
+      if (queryType) {
+        setVType(queryType);
+      } else {
+        const savedType = localStorage.getItem('viewType');
+        if (savedType) setVType(savedType);
+        else setVType(isMobile ? "card" : "magazine");
+      }
+    }, [searchParams, isMobile]);
 
     useEffect(() => {
       function handleClickOutside(e: MouseEvent) {
