@@ -109,7 +109,7 @@ const getPost = cache(async (id: string) => {
       supabase
         .from('comments')
         .select('*, user:profiles(id, display_name, avatar_url)')
-        .eq('post_id', actualId) 
+        .eq('post_id', dbPost.id) 
         .order('created_at', { ascending: false }),
       supabase
         .from('posts')
@@ -203,7 +203,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
 
   // Increment Views (side effect, done only on page load)
   if (isDbPost) {
-    supabase.rpc('increment_post_views', { post_id: actualId }).then();
+    supabase.rpc('increment_post_views', { post_id: post.id }).then();
   }
   
   let currentUserRole = 'user'
@@ -213,7 +213,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
   if (user) {
     const rolePromise = supabase.from('profiles').select('role').eq('id', user.id).single();
     const likePromise = isDbPost 
-      ? supabase.from('likes').select('id').eq('post_id', actualId).eq('user_id', user.id).single()
+      ? supabase.from('likes').select('id').eq('post_id', post.id).eq('user_id', user.id).single()
       : Promise.resolve({ data: null });
 
     const [{ data: profile }, { data: likeRecord }] = await Promise.all([rolePromise, likePromise]);

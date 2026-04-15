@@ -102,32 +102,30 @@ export default function PostInteractions({
     setIsLikedLocally(newLikedState);
     setLikes(prev => newLikedState ? prev + 1 : Math.max(0, prev - 1));
 
-    if (postId.length > 10) {
-      if (newLikedState) {
-        // Add Like
-        if (user) {
-          await supabase.from('likes').insert({ user_id: user.id, post_id: postId });
-        } else {
-          // Guest logic
-          const guestLikes = JSON.parse(localStorage.getItem("guest_likes") || "[]");
-          if (!guestLikes.includes(postId)) {
-            guestLikes.push(postId);
-            localStorage.setItem("guest_likes", JSON.stringify(guestLikes));
-          }
-        }
-        await supabase.rpc('increment_post_likes', { p_id: postId });
+    if (newLikedState) {
+      // Add Like
+      if (user) {
+        await supabase.from('likes').insert({ user_id: user.id, post_id: postId });
       } else {
-        // Remove Like
-        if (user) {
-          await supabase.from('likes').delete().eq('user_id', user.id).eq('post_id', postId);
-        } else {
-          // Guest logic
-          let guestLikes = JSON.parse(localStorage.getItem("guest_likes") || "[]");
-          guestLikes = guestLikes.filter((id: string) => id !== postId);
+        // Guest logic
+        const guestLikes = JSON.parse(localStorage.getItem("guest_likes") || "[]");
+        if (!guestLikes.includes(postId)) {
+          guestLikes.push(postId);
           localStorage.setItem("guest_likes", JSON.stringify(guestLikes));
         }
-        await supabase.rpc('decrement_post_likes', { p_id: postId });
       }
+      await supabase.rpc('increment_post_likes', { p_id: postId });
+    } else {
+      // Remove Like
+      if (user) {
+        await supabase.from('likes').delete().eq('user_id', user.id).eq('post_id', postId);
+      } else {
+        // Guest logic
+        let guestLikes = JSON.parse(localStorage.getItem("guest_likes") || "[]");
+        guestLikes = guestLikes.filter((id: string) => id !== postId);
+        localStorage.setItem("guest_likes", JSON.stringify(guestLikes));
+      }
+      await supabase.rpc('decrement_post_likes', { p_id: postId });
     }
   };
   
@@ -141,26 +139,24 @@ export default function PostInteractions({
     }
     
     setIsSubmitting(true);
-    if (postId.length > 10) {
-      const { data: profile } = await supabase.from('profiles').select('display_name, avatar_url').eq('id', user.id).single();
-      
-      // [PoC] Add anchor info if present
-      let finalContent = newComment.trim();
-      if (selectedAnchor) {
-        finalContent = `[quote:${selectedAnchor.id}:${selectedAnchor.text}] ${finalContent}`;
-      }
+    const { data: profile } = await supabase.from('profiles').select('display_name, avatar_url').eq('id', user.id).single();
+    
+    // [PoC] Add anchor info if present
+    let finalContent = newComment.trim();
+    if (selectedAnchor) {
+      finalContent = `[quote:${selectedAnchor.id}:${selectedAnchor.text}] ${finalContent}`;
+    }
 
-      const newCommentData = {
-        post_id: postId,
-        user_id: user.id,
-        content: finalContent
-      };
-      
-      const { data, error } = await supabase.from('comments').insert(newCommentData).select().single();
-      
-      if (!error && data) {
-        setComments([{ ...data, user: profile }, ...comments]);
-      }
+    const newCommentData = {
+      post_id: postId,
+      user_id: user.id,
+      content: finalContent
+    };
+    
+    const { data, error } = await supabase.from('comments').insert(newCommentData).select().single();
+    
+    if (!error && data) {
+      setComments([{ ...data, user: profile }, ...comments]);
     }
     setNewComment("");
     setSelectedAnchor(null); // Clear anchor after posting
