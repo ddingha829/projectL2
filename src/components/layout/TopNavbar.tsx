@@ -263,7 +263,7 @@ export default function TopNavbar({
                 {editors.map(ed => (
                   <Link 
                     key={ed.id} 
-                    href={`/?author=${ed.id}`} 
+                    href={`/?author=${encodeURIComponent(ed.display_name || ed.id)}`} 
                     className={styles.dropdownItem}
                     onClick={() => setIsEditorsOpen(false)}
                   >

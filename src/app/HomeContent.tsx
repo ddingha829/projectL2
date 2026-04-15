@@ -96,27 +96,34 @@ export default function HomeContent({
   };
   
   // 1. Find from static AUTHORS constant
-  const staticAuthor = AUTHORS.find(a => a.id === authorFilter);
+  const staticAuthor = AUTHORS.find(a => String(a.id) === authorFilter || a.name === authorFilter);
   
   // 2. Find from the passed 'editors' prop (DB Profiles)
-  const dbAuthorProfile = editors.find(ed => String(ed.id) === authorFilter);
+  const dbAuthorProfile = (editors || []).find(ed => (ed && String(ed.id) === authorFilter) || (ed && ed.display_name === authorFilter));
   
-  // 3. Fallback: find from the posts themselves (if profile missing from editors prop)
+  // 3. Fallback: find from the posts themselves (ID or Name match)
   const foundInPosts = !staticAuthor && !dbAuthorProfile && authorFilter 
-    ? allPosts.find(p => String(p.author_id) === authorFilter || String(p.author?.id) === authorFilter) 
+    ? allPosts.find(p => (p.author && (String(p.author_id) === authorFilter || String(p.author.id) === authorFilter || p.author.name === authorFilter))) 
     : null;
     
+  // Unified mapping with default safety
   const liveAuthor = dbAuthorProfile ? {
-    id: authorFilter,
-    name: dbAuthorProfile.display_name || dbAuthorProfile.name || "에디터",
+    id: dbAuthorProfile.id,
+    name: dbAuthorProfile.display_name || dbAuthorProfile.name || authorFilter || "에디터",
     avatar: dbAuthorProfile.avatar_url || dbAuthorProfile.avatar || "/default-avatar.png",
     bio: dbAuthorProfile.bio || "티끌 매거진 에디터입니다.",
     role: dbAuthorProfile.role === 'admin' ? '운영자' : '티끌러'
   } : foundInPosts ? {
-    id: authorFilter,
-    name: foundInPosts.author?.name || foundInPosts.authorProfile?.display_name || "에디터",
+    id: foundInPosts.author?.id || authorFilter,
+    name: foundInPosts.author?.name || foundInPosts.authorProfile?.display_name || authorFilter || "에디터",
     avatar: foundInPosts.author?.avatar || foundInPosts.authorProfile?.avatar_url || "/default-avatar.png",
     bio: foundInPosts.author?.bio || foundInPosts.authorProfile?.bio || "티끌 매거진 에디터입니다.",
+    role: "Editor"
+  } : authorFilter ? {
+    id: authorFilter,
+    name: authorFilter, // Fallback to using the filter string as name if it's a slug
+    avatar: "/default-avatar.png",
+    bio: "티끌 매거진 에디터입니다.",
     role: "Editor"
   } : null;
     

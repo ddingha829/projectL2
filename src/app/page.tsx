@@ -140,7 +140,8 @@ export default async function Home({
     filteredPosts = filteredPosts.filter(p => p.categoryId === categoryFilter);
   }
   if (authorFilter && authorFilter !== 'all') {
-    filteredPosts = filteredPosts.filter(p => p.author.id === authorFilter);
+    const decodedAuthor = decodeURIComponent(authorFilter);
+    filteredPosts = filteredPosts.filter(p => String(p.author.id) === decodedAuthor || p.author.name === decodedAuthor);
   }
   if (searchFilter) {
     const lowerQuery = searchFilter.toLowerCase();
@@ -150,22 +151,28 @@ export default async function Home({
     );
   }
 
+  const isViewMore = resolvedParams?.view === 'all';
   const animationKey = `${categoryFilter || 'all'}-${authorFilter || 'all'}-${searchFilter || 'all'}`;
-  const isInitialVisit = !categoryFilter && !authorFilter && !searchFilter;
+  const isInitialVisit = !categoryFilter && !authorFilter && !searchFilter && !isViewMore;
 
-  // Title Logic
+  // Title Logic - Robust implementation
   const categoryName = categoryFilter ? CATEGORY_MAP[categoryFilter] || categoryFilter : "";
-  const authorName = authorFilter && authorFilter !== 'all' ? (allPosts.find(p => p.author.id === authorFilter)?.author.name || "") : "";
+  
+  // Find author name from the actual editors profile data (reliable even with 0 posts)
+  const targetEditor = authorFilter ? editorsData.find((ed: any) => String(ed.id) === authorFilter) : null;
+  const authorName = targetEditor ? targetEditor.display_name : "";
 
   let displayTitle = "Home";
-  if (searchFilter) {
+  if (isViewMore) {
+    displayTitle = "전체 티끌";
+  } else if (searchFilter) {
     displayTitle = `'${searchFilter}' 검색 결과`;
   } else if (categoryFilter && categoryFilter !== 'all' && authorFilter) {
-    displayTitle = `${authorName}님이 작성한 ${categoryName}`;
+    displayTitle = `${authorName || '에디터'}님이 작성한 ${categoryName}`;
   } else if (categoryFilter && categoryFilter !== 'all') {
     displayTitle = categoryName;
   } else if (authorFilter && authorFilter !== 'all') {
-    displayTitle = `${authorName} 티끌러가 작성한 글`;
+    displayTitle = `${authorName || '에디터'} 티끌러가 작성한 글`;
   }
 
   const mappedReviews = reviewDbPosts?.map((p: any) => ({
