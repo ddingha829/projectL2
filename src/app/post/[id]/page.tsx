@@ -288,7 +288,9 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
 
         {post.show_main_image !== false && post.image_url && (
           <div className={styles.mainImageWrapper}>
-            <img src={post.image_url} alt={post.title} className={styles.mainImage} />
+            <a href={post.image_url} target="_blank" rel="noopener noreferrer">
+              <img src={post.image_url} alt={post.title} className={styles.mainImage} style={{ cursor: 'zoom-in' }} title="클릭하여 원본 이미지 보기" />
+            </a>
           </div>
         )}
         

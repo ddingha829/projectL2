@@ -35,6 +35,16 @@ export default function ContentSegmenter({
     if (quoteMap.size > 0) {
       highlightNodes(contentRef.current, quoteMap);
     }
+
+    // 3. Image click handling
+    const images = contentRef.current.querySelectorAll('img');
+    images.forEach(img => {
+      img.style.cursor = 'zoom-in';
+      img.title = "클릭하여 원본 이미지 보기";
+      img.onclick = () => {
+        window.open(img.src, '_blank');
+      };
+    });
   }, [content, comments]);
 
   const highlightNodes = (root: HTMLElement, quoteMap: Map<string, string>) => {
