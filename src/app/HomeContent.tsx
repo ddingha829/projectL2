@@ -200,8 +200,8 @@ export default function HomeContent({
   const handleTouchEnd = () => {
     if (!touchStart || !touchEnd || !heroPosts) return;
     const distance = touchStart - touchEnd;
-    if (distance > 50) nextHero();
-    else if (distance < -50) prevHero();
+    if (distance > 30) nextHero();
+    else if (distance < -30) prevHero();
     setTouchStart(null); setTouchEnd(null);
   };
 

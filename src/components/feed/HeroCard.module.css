@@ -253,9 +253,9 @@
 .activeDot {
   width: 24px;
   height: 6px;
-  background: #fff;
+  background: var(--brand-primary); /* Use brand point color #ff4804 */
   border-radius: 3px;
-  transition: width 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .inactiveDot {
@@ -371,12 +371,10 @@
   }
 
   .overlay {
-    background: linear-gradient(
-      to top, 
-      rgba(0, 0, 0, 0.8) 0%, 
-      rgba(0, 0, 0, 0.2) 60%, 
-      transparent 100%
-    ) !important; /* Simplified gradient for faster painting */
+    background: rgba(0, 0, 0, 0.45) !important; /* Simplified to single-tone for faster paint as requested */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
   }
 
   .navButtons {
