@@ -6,13 +6,14 @@ import { deletePost } from '@/app/actions/postManage'
 import styles from './page.module.css'
 
 interface PostManageBtnsProps {
-  postId: string       // DB uuid (prefix 없는 것)
+  postId: string       // DB uuid
+  displayId: string    // URL에 표시 중인 ID (숫자 혹은 uuid)
   authorId: string
   currentUserId: string
   role: string
 }
 
-export default function PostManageBtns({ postId, authorId, currentUserId, role }: PostManageBtnsProps) {
+export default function PostManageBtns({ postId, displayId, authorId, currentUserId, role }: PostManageBtnsProps) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
@@ -27,11 +28,7 @@ export default function PostManageBtns({ postId, authorId, currentUserId, role }
     startTransition(async () => {
       try {
         await deletePost(postId)
-        // 서버 액션(deletePost) 내부에서 redirect('/')가 실행되므로 
-        // 클라이언트에서 별도의 router.push('/')는 생략합니다.
       } catch (err) {
-        // Next.js의 redirect는 에러를 던지므로, 실제 에러인지 리다이렉트인지 체크가 필요할 수 있으나 
-        // 보통은 서버 액션의 redirect가 우선권을 갖습니다.
         console.error("Delete access error:", err);
       }
     })
@@ -43,7 +40,7 @@ export default function PostManageBtns({ postId, authorId, currentUserId, role }
       {canEdit && (
         <button
           className={styles.editBtn}
-          onClick={() => router.push(`/post/db-${postId}/edit`)}
+          onClick={() => router.push(`/post/${displayId}/edit`)}
           disabled={isPending}
           title="게시물 수정"
         >

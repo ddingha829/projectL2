@@ -267,6 +267,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
           
           <PostManageBtns 
             postId={actualId} 
+            displayId={id}
             authorId={post.author?.id || post.author_id} 
             currentUserId={user?.id || ''} 
             role={currentUserRole || 'user'} 

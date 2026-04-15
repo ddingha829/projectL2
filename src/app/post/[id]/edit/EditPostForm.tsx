@@ -45,6 +45,7 @@ export default function EditPostForm({
   const [isUploading, setIsUploading] = useState(false)
   const [isPending, startTransition] = useTransition()
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const isSubmittingRef = useRef(false)
   const supabase = createClient()
   const [isSaving, setIsSaving] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -57,7 +58,7 @@ export default function EditPostForm({
   // 1. [신규] 페이지 이탈 방지 경고 및 로컬 백업
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (isSubmitting) return; // 제출 중에는 경고창을 띄우지 않음
+      if (isSubmittingRef.current || isSubmitting) return; // 제출 중에는 경고창을 띄우지 않음
       e.preventDefault();
       e.returnValue = '';
     };
@@ -125,6 +126,7 @@ export default function EditPostForm({
     formData.set('reviewSubject', reviewSubject)
     formData.set('reviewComment', reviewComment)
     formData.set('showMainImage', showMainImage ? 'on' : 'off')
+    isSubmittingRef.current = true;
     setIsSubmitting(true);
     startTransition(() => updatePost(postId, formData))
   }

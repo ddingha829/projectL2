@@ -59,6 +59,7 @@ export default function WritePostForm({ role }: { role: string }) {
   const [originalFile, setOriginalFile] = useState<File | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const isSubmittingRef = useRef(false);
   const supabase = createClient();
 
   useEffect(() => {
@@ -72,7 +73,7 @@ export default function WritePostForm({ role }: { role: string }) {
 
     // 탭 전환/새로고침 시 데이터 날림 방지
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (isSubmitting) return; // 제출 중에는 경고창을 띄우지 않음
+      if (isSubmittingRef.current || isSubmitting) return; // 제출 중에는 경고창을 띄우지 않음
       e.preventDefault();
       e.returnValue = '';
     };
@@ -244,6 +245,7 @@ export default function WritePostForm({ role }: { role: string }) {
         return;
       }
     }
+    isSubmittingRef.current = true;
     setIsSubmitting(true);
     const result = await createPost(formData);
     if (result?.error) {
