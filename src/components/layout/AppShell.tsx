@@ -218,24 +218,22 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     };
   }, [supabase, router]);
 
-  // Record Global Visit
+  // Record Global Visit (Deduplicated by 24h)
   useEffect(() => {
     const recordVisit = async () => {
-      // Use a consistent key for visit tracking
-      const VISIT_KEY = 'project_l2_visited';
-      const hasVisited = sessionStorage.getItem(VISIT_KEY);
+      const VISIT_KEY = 'ticgle_last_visit';
+      const now = Date.now();
+      const lastVisit = localStorage.getItem(VISIT_KEY);
       
-      if (!hasVisited) {
+      // 24시간(86400000ms) 지났거나 기록이 없으면 새 방문으로 처리
+      if (!lastVisit || (now - parseInt(lastVisit)) > 86400000) {
         try {
-          // Record the visit in Supabase
           const { error } = await supabase.from('site_visits').insert({});
-          if (error) {
-             console.warn("Visitor recording failed:", error.message);
-          } else {
-             sessionStorage.setItem(VISIT_KEY, 'true');
+          if (!error) {
+             localStorage.setItem(VISIT_KEY, now.toString());
           }
         } catch (err) {
-          console.error("Critical error recording visit:", err);
+          console.error("Visitor recording error:", err);
         }
       }
     };

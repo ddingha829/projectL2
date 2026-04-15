@@ -396,7 +396,7 @@ function StatsView({ posts, users, visitCount, todayVisitCount, totalViews, tren
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px' }}>
+      <div className={styles.statsExtraGrid} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px' }}>
         <div className={styles.glassCard}>
            <h3 className={styles.chartTitle}>카테고리별 조회수</h3>
            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
