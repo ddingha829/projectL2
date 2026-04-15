@@ -259,10 +259,8 @@ export default function HomeContent({
   }, [heroPosts?.length, isHeroPaused, isMobile, heroIndex]);
 
   const showFullGrid = useMemo(() => {
-    const fromParams = isFiltered || isViewMore;
-    if (typeof window === 'undefined') return fromParams;
-    const rawSearch = window.location.search;
-    return fromParams || rawSearch.includes('view=all') || rawSearch.includes('category=') || rawSearch.includes('author=') || rawSearch.includes('search=');
+    // If we have any of these, we MUST show the full grid
+    return isFiltered || isViewMore;
   }, [isFiltered, isViewMore]);
   
   const paginatedData = useMemo(() => filteredPosts, [filteredPosts]);
