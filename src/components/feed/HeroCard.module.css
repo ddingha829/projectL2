@@ -297,7 +297,7 @@
     justify-content: space-between !important;
     align-items: center !important;
     padding: 0 !important;
-    margin-top: 20px !important;
+    margin-top: 14px !important; /* Reduced 30% from 20px */
   }
 
   .authorSection {
@@ -308,7 +308,7 @@
   }
 
   .contentLink {
-    padding: 20px 16px !important;
+    padding: 20px 16px 10px 16px !important; /* Bottom padding reduced by 50% from 20px */
   }
 
   .title {
