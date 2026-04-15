@@ -5,7 +5,7 @@ import { headers, cookies } from "next/headers";
 import { getAdminStatus } from "@/app/actions/hero";
 
 export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 60; // 60초 캐싱으로 부하 감소 및 속도 향상
 
 export const MOCK_AUTHORS = {};
 
@@ -34,56 +34,47 @@ export default async function Home({
   };
 
   const supabase = await createClient();
+  
+  // 1. 유저 정보 및 권한 체크 (병렬 처리 대상에서 제외 가능하지만 가급적 빠르게)
   const { data: { user } } = await supabase.auth.getUser();
   const { isAdmin } = await getAdminStatus();
   
   // Helper for privacy filter
   const applyPrivacyFilter = (query: any) => {
-    if (isAdmin) return query; // Admins see everything
+    if (isAdmin) return query; 
     if (user) {
       return query.or(`is_public.eq.true,author_id.eq.${user.id}`);
     }
-    return query.eq('is_public', true); // Guests only see public
+    return query.eq('is_public', true);
   };
 
-  // 1. Fetch Hero posts (designated by admin)
-  let heroQuery = supabase
-    .from('posts')
-    .select('*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')
-    .eq('is_hero', true);
-  
-  heroQuery = applyPrivacyFilter(heroQuery);
-  
-  const { data: heroDbPosts } = await heroQuery
-    .order('hero_at', { ascending: false })
-    .limit(3);
+  // 모든 데이터를 병렬로 요청하여 대기 시간 단축
+  const [heroRes, feedRes, reviewRes, featureRes, editorsRes, userProfileRes] = await Promise.all([
+    // Hero posts
+    applyPrivacyFilter(supabase.from('posts').select('*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).eq('is_hero', true).order('hero_at', { ascending: false }).limit(3),
+    
+    // Feed posts
+    applyPrivacyFilter(supabase.from('posts').select('*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).neq('category', 'notice').order('created_at', { ascending: false }),
+    
+    // Reviews
+    applyPrivacyFilter(supabase.from('posts').select('id, review_subject, review_rating, review_comment, created_at, author:profiles!author_id(display_name)')).not('review_subject', 'is', null).order('created_at', { ascending: false }).limit(7),
+    
+    // Feature posts
+    applyPrivacyFilter(supabase.from('posts').select('*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).or('is_feature.eq.true,category.eq.feature').order('created_at', { ascending: false }).limit(3),
+    
+    // Editors
+    supabase.from('profiles').select('id, display_name, avatar_url, bio, bullets, role').in('role', ['admin', 'editor']).order('display_name'),
+    
+    // User Profile
+    user ? supabase.from('profiles').select('preferred_view_pc, preferred_view_mobile, preferred_view_type, preferred_m_cols, preferred_d_cols').eq('id', user.id).single() : Promise.resolve({ data: null })
+  ]);
 
-  // 2. Fetch all posts for the feed
-  let feedQuery = supabase
-    .from('posts')
-    .select('*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')
-    .neq('category', 'notice');
-
-  feedQuery = applyPrivacyFilter(feedQuery);
-
-  const { data: dbPosts, error: dbError } = await feedQuery
-    .order('created_at', { ascending: false });
-
-  // 3. Fetch Recent Reviews
-  let reviewQuery = supabase
-    .from('posts')
-    .select('id, review_subject, review_rating, review_comment, created_at, author:profiles!author_id(display_name)')
-    .not('review_subject', 'is', null);
-
-  reviewQuery = applyPrivacyFilter(reviewQuery);
-
-  const { data: reviewDbPosts } = await reviewQuery
-    .order('created_at', { ascending: false })
-    .limit(7);
-
-  if (dbError) {
-    console.error('Supabase fetch error:', dbError);
-  }
+  const heroDbPosts = heroRes.data || [];
+  const dbPosts = feedRes.data || [];
+  const reviewDbPosts = reviewRes.data || [];
+  const featureDbPosts = featureRes.data || [];
+  const editorsData = editorsRes.data || [];
+  const userProfile = userProfileRes.data;
 
   const mapToPost = (p: any) => {
     const strippedContent = p.content 
@@ -126,27 +117,7 @@ export default async function Home({
     };
   };
 
-  // 4. Fetch Special Feature posts (is_feature = true)
-  let featureQuery = supabase
-    .from('posts')
-    .select('*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')
-    .or('is_feature.eq.true,category.eq.feature');
-
-  featureQuery = applyPrivacyFilter(featureQuery);
-
-  const { data: featureDbPosts } = await featureQuery
-    .order('created_at', { ascending: false })
-    .limit(3);
-
-  const heroPosts = heroDbPosts?.map(mapToPost) || [];
-  
-  // 5. Fetch Editors (profiles with admin/editor roles)
-  const { data: editorsData } = await supabase
-    .from('profiles')
-    .select('id, display_name, avatar_url, bio, bullets, role')
-    .in('role', ['admin', 'editor'])
-    .order('display_name');
-
+  const heroPosts = heroDbPosts.map(mapToPost);
   const livePosts = dbPosts?.map(mapToPost) || [];
 
   // Sort: DB posts (2026) always come before MOCK_POSTS (2024)
@@ -157,8 +128,6 @@ export default async function Home({
   const normalMocks = MOCK_POSTS.map(m => ({ ...m, displayDate: m.date }));
   let allPosts = [...livePosts, ...normalMocks].sort(sortByDate);
 
-  // If we have hero posts from DB, they will be used by HomeContent. 
-  // If not, it falls back to slicing allPosts.
   const finalHeroPosts = heroPosts.length > 0 ? heroPosts : allPosts.slice(0, 3);
   const finalOtherPosts = heroPosts.length > 0 
     ? allPosts.filter(p => !heroPosts.find(h => h.id === p.id))
@@ -209,17 +178,6 @@ export default async function Home({
 
   const featurePosts = featureDbPosts?.map(mapToPost) || [];
 
-  // 5. Fetch User Profile for persistence
-  let userProfile = null;
-  if (user) {
-    const { data } = await supabase
-      .from('profiles')
-      .select('preferred_view_pc, preferred_view_mobile, preferred_view_type, preferred_m_cols, preferred_d_cols')
-      .eq('id', user.id)
-      .single();
-    userProfile = data;
-  }
-
   // 6. Device Detection (Server-side) to prevent flicker
   const headerList = await headers();
   const userAgent = headerList.get('user-agent') || "";
@@ -253,3 +211,4 @@ export default async function Home({
     </Suspense>
   );
 }
+
