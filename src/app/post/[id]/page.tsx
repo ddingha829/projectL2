@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { cache } from "react";
@@ -309,7 +310,17 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
         {post.show_main_image !== false && post.image_url && (
           <div className={styles.mainImageWrapper}>
             <a href={post.image_url} target="_blank" rel="noopener noreferrer">
-              <img src={post.image_url} alt={post.title} className={styles.mainImage} style={{ cursor: 'zoom-in' }} title="클릭하여 원본 이미지 보기" />
+              <Image 
+                src={post.image_url} 
+                alt={post.title} 
+                className={styles.mainImage} 
+                width={1200}
+                height={800}
+                priority
+                sizes="(max-width: 768px) 100vw, 1200px"
+                style={{ cursor: 'zoom-in', objectFit: 'cover' }} 
+                title="클릭하여 원본 이미지 보기" 
+              />
             </a>
           </div>
         )}

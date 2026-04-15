@@ -450,7 +450,7 @@ export default function HomeContent({
                 className={`${vType === 'magazine' ? styles.magMainGrid : styles.mainGrid} ${!showFullGrid ? styles.horizontalScrollGrid : ''} ${(isFiltered || isViewMore) && vType === 'card' ? styles.mixedGrid : ''}`}
                 style={{ '--mobile-cols': mobileGridCols } as React.CSSProperties}
               >
-                 {displayPosts.map(post => {
+                 {displayPosts.map((post, index) => {
                    const excerpt = stripHtml(post.content).slice(0, 160) + (stripHtml(post.content).length > 160 ? '...' : '');
                    return (
                      <PosterCard 
@@ -461,6 +461,7 @@ export default function HomeContent({
                        isMinimal={false} 
                        viewType={vType}
                        excerpt={excerpt}
+                       priority={index < (isMobile ? 2 : 4)}
                      />
                    );
                  })}
@@ -696,7 +697,7 @@ export default function HomeContent({
                     '--grid-gap': isMobile ? (mobileGridCols === 3 ? '4.8px' : mobileGridCols === 2 ? '6px' : '24px') : '24px'
                   } as React.CSSProperties}
                 >
-                  {displayPosts.map(post => (
+                  {displayPosts.map((post, index) => (
                     <PosterCard 
                       key={post.id} 
                       {...post} 
@@ -705,6 +706,7 @@ export default function HomeContent({
                       isDense={!isMobile && cardCols === 4}
                       isMinimal={(isMobile && mobileGridCols === 3)}
                       isPublic={post.isPublic}
+                      priority={index < (isMobile ? 2 : 4)}
                     />
                   ))}
                 </div>
@@ -712,9 +714,9 @@ export default function HomeContent({
                 <div className={styles.magazineLayout}>
                   {/* Hero Row: Top 2 posts large */}
                   <div className={styles.magHeroRow}>
-                    {displayPosts.slice(0, 2).map(post => (
+                    {displayPosts.slice(0, 2).map((post, index) => (
                       <div key={post.id} className={styles.magHeroItem}>
-                        <PosterCard {...post} aspectRatio="mag53" viewType="magazine" excerpt={stripHtml(post.content)} />
+                        <PosterCard {...post} aspectRatio="mag53" viewType="magazine" excerpt={stripHtml(post.content)} priority={index < 2} />
                       </div>
                     ))}
 

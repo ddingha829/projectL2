@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import styles from "./HeroCard.module.css";
 
 interface HeroCardProps {
@@ -32,7 +33,15 @@ export default function HeroCard({
 
   return (
     <article className={`${styles.hero} ${containerStyle}`}>
-      <img src={imageUrl} alt={title} className={styles.bgImage} />
+      <Image 
+        src={imageUrl} 
+        alt={title} 
+        className={styles.bgImage} 
+        fill
+        priority
+        sizes="100vw"
+        style={{ objectFit: 'cover' }}
+      />
       <div className={styles.overlay}>
         <Link href={`/post/${id}`} className={styles.contentLink}>
             <div className={styles.header}>
@@ -114,4 +123,3 @@ export default function HeroCard({
     </article>
   );
 }
-

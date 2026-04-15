@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import styles from "./PosterCard.module.css";
 
 interface PosterCardProps {
@@ -18,19 +19,28 @@ interface PosterCardProps {
   viewType?: 'card' | 'magazine';
   excerpt?: string;
   isPublic?: boolean;
+  priority?: boolean;
 }
 
 export default function PosterCard({ 
   id, category, title, author, imageUrl, isEditorsPick, displayDate, likes = 0, comments = 0,
   aspectRatio = 'default', isOneCol = false, isDense = false, isMinimal = false,
-  viewType = 'card', excerpt, isPublic = true
+  viewType = 'card', excerpt, isPublic = true, priority = false
 }: PosterCardProps) {
   const isMagazine = viewType === 'magazine';
 
   return (
     <article className={`${styles.card} ${isMagazine ? styles.magazineCard : ''} ${aspectRatio === 'card45' ? styles.ratioCard45 : ''} ${aspectRatio === 'mag53' ? styles.ratioMag53 : ''} ${isOneCol ? styles.oneColCard : ''} ${isDense ? styles.denseCard : ''} ${isMinimal ? styles.minimalCard : ''}`}>
       <div className={isMagazine ? styles.magImageWrapper : styles.imageWrapper}>
-        <img src={imageUrl} alt={title} className={styles.posterImage} />
+        <Image 
+          src={imageUrl} 
+          alt={title} 
+          className={styles.posterImage} 
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          priority={priority}
+          style={{ objectFit: 'cover' }}
+        />
         <div className={isMagazine ? styles.magCategoryLabel : styles.categoryBadge}>
           {category?.toUpperCase() === "NOTICE" || category === "공지사항" ? "공지사항" : category}
         </div>
