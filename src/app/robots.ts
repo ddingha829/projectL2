@@ -8,5 +8,6 @@ export default function robots(): MetadataRoute.Robots {
       disallow: ['/admin/', '/login/', '/signup/', '/write/'],
     },
     sitemap: 'https://ticgle.kr/sitemap.xml',
+    host: 'https://ticgle.kr',
   }
 }

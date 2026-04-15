@@ -44,6 +44,11 @@ export const metadata: Metadata = {
   description: "티끌 모아 반짝이는, 일상 매거진",
   keywords: ["리뷰", "매거진", "일상", "에세이", "티끌", "Ticgle"],
   authors: [{ name: "Ticgle Team" }],
+  verification: {
+    other: {
+      "naver-site-verification": "f0c679c5f194d03d31525b3c07c1dca4e79a85bc",
+    },
+  },
   icons: {
     icon: "/favicon.ico",
   },
