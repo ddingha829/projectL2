@@ -106,6 +106,14 @@
   align-items: center;
 }
 
+@media (max-width: 768px) {
+  .editorsPick {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(0, 0, 0, 0.4) !important;
+  }
+}
+
 .title {
   color: #ffffff;
   font-family: var(--font-noto-sans), sans-serif;
@@ -355,8 +363,21 @@
     font-weight: 800 !important;
     padding: 0 12px !important;
     border-radius: 4px;
+    box-shadow: none !important;
   }
 
+  .content {
+    animation: none !important; /* Disable power-hungry animation on mobile for faster LCP */
+  }
+
+  .overlay {
+    background: linear-gradient(
+      to top, 
+      rgba(0, 0, 0, 0.8) 0%, 
+      rgba(0, 0, 0, 0.2) 60%, 
+      transparent 100%
+    ) !important; /* Simplified gradient for faster painting */
+  }
 
   .navButtons {
     display: none;

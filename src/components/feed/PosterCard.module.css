@@ -178,7 +178,7 @@
   
   .card:hover {
     transform: none !important;
-    box-shadow: var(--shadow-sm) !important;
+    box-shadow: none !important; /* Completely remove shadows on mobile to maximize INP */
     border-color: var(--border-light) !important;
   }
 
@@ -186,30 +186,28 @@
     transform: none !important;
   }
 
-  .title {
-    font-size: 1.05rem; /* Increased (+10%) from 0.95rem */
-    margin-bottom: 10px; /* Positioned slightly higher (+10/20%) */
-    letter-spacing: -0.02em;
-  }
-
-  .oneColCard .title {
-    font-size: 1.32rem; /* Increased (+20%) from 1.1rem */
-    margin-bottom: 15px; /* Positioned higher */
-  }
-
-  .contentArea {
-    padding: 10px;
-  }
-
-  .metaInfo {
-    display: none !important;
-  }
-
   .categoryBadge, .authorBadge {
     height: 20px !important;
     font-size: 0.66rem !important;
     font-weight: 700 !important;
     padding: 0 10px !important;
+    box-shadow: none !important;
+  }
+
+  .title {
+    font-size: 1.05rem; /* Increased (+10%) from 0.95rem */
+    margin-bottom: 10px; /* Positioned slightly higher (+10/20%) */
+    letter-spacing: -0.02em;
+    text-shadow: none !important; /* Disable text shadows on mobile for faster render */
+  }
+
+  .metaIcon {
+    filter: none !important; /* Remove expensive drop-shadow on mobile icons */
+  }
+
+  .contentArea {
+    padding: 10px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.3) 50%, transparent 100%) !important;
   }
 }
 
