@@ -33,6 +33,12 @@ const nanumGothic = Nanum_Gothic({
   display: 'swap',
 });
 
+const PRECONNECT_DOMAINS = [
+  "https://lhscidkpsvymshkgvskp.supabase.co",
+  "https://fonts.googleapis.com",
+  "https://fonts.gstatic.com",
+];
+
 
 
 export const metadata: Metadata = {
@@ -87,6 +93,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className={`${notoSans.variable} ${outfit.variable} ${nanumMyeongjo.variable} ${nanumGothic.variable}`}>
+      <head>
+        {PRECONNECT_DOMAINS.map((domain) => (
+          <link key={domain} rel="preconnect" href={domain} crossOrigin="anonymous" />
+        ))}
+        {PRECONNECT_DOMAINS.map((domain) => (
+          <link key={domain} rel="dns-prefetch" href={domain} />
+        ))}
+      </head>
       <body>
         <Suspense fallback={null}>
           <AppShell>

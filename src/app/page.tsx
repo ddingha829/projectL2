@@ -49,18 +49,19 @@ export default async function Home({
   };
 
   // 모든 데이터를 병렬로 요청하여 대기 시간 단축
+  // [개선] 쿼리 레벨에서 필터링하여 최소한의 데이터만 가져오기
   const [heroRes, feedRes, reviewRes, featureRes, editorsRes, userProfileRes] = await Promise.all([
-    // Hero posts
-    applyPrivacyFilter(supabase.from('posts').select('*, serial_id, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).eq('is_hero', true).order('hero_at', { ascending: false }).limit(3),
+    // Hero posts: 3개로 제한하고 필요한 필드만 select
+    applyPrivacyFilter(supabase.from('posts').select('id, serial_id, title, category, image_url, content, is_editors_pick, is_hero, hero_at, is_feature, is_public, created_at, likes_count, author_id, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).eq('is_hero', true).order('hero_at', { ascending: false }).limit(3),
     
-    // Feed posts
-    applyPrivacyFilter(supabase.from('posts').select('*, serial_id, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).neq('category', 'notice').order('created_at', { ascending: false }),
+    // Feed posts: 전체 포스트 중 최신 40개만 우선 로드 (무거운 데이터 방지)
+    applyPrivacyFilter(supabase.from('posts').select('id, serial_id, title, category, image_url, content, is_editors_pick, is_hero, hero_at, is_feature, is_public, created_at, likes_count, author_id, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).neq('category', 'notice').order('created_at', { ascending: false }).limit(40),
     
-    // Reviews
+    // Reviews: 7개 제한
     applyPrivacyFilter(supabase.from('posts').select('id, serial_id, review_subject, review_rating, review_comment, created_at, author:profiles!author_id(display_name)')).not('review_subject', 'is', null).order('created_at', { ascending: false }).limit(7),
     
-    // Feature posts
-    applyPrivacyFilter(supabase.from('posts').select('*, serial_id, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).or('is_feature.eq.true,category.eq.feature').order('created_at', { ascending: false }).limit(3),
+    // Feature posts: 3개 제한
+    applyPrivacyFilter(supabase.from('posts').select('id, serial_id, title, category, image_url, content, is_editors_pick, is_hero, hero_at, is_feature, is_public, created_at, likes_count, author_id, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).or('is_feature.eq.true,category.eq.feature').order('created_at', { ascending: false }).limit(3),
     
     // Editors
     supabase.from('profiles').select('id, display_name, avatar_url, bio, bullets, role').in('role', ['admin', 'editor']).order('display_name'),
