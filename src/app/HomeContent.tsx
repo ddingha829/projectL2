@@ -362,7 +362,11 @@ export default function HomeContent({
     );
   }
   if (authorFilter && authorFilter !== 'all') {
-    filteredPosts = filteredPosts.filter(p => p.author?.id === authorFilter || p.author_id === authorFilter);
+    filteredPosts = filteredPosts.filter(p => 
+      String(p.author?.id) === authorFilter || 
+      String(p.author_id) === authorFilter ||
+      p.author?.name === authorFilter
+    );
   }
   if (searchFilter) {
     const lowerQuery = searchFilter.toLowerCase();

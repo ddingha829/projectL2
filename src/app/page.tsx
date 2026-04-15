@@ -141,7 +141,11 @@ export default async function Home({
   }
   if (authorFilter && authorFilter !== 'all') {
     const decodedAuthor = decodeURIComponent(authorFilter);
-    filteredPosts = filteredPosts.filter(p => String(p.author.id) === decodedAuthor || p.author.name === decodedAuthor);
+    filteredPosts = filteredPosts.filter(p => 
+      String(p.author?.id) === decodedAuthor || 
+      String(p.author_id) === decodedAuthor || 
+      p.author?.name === decodedAuthor
+    );
   }
   if (searchFilter) {
     const lowerQuery = searchFilter.toLowerCase();
