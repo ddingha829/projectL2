@@ -802,8 +802,8 @@ export default function HomeContent({
                                       src={post.imageUrl} 
                                       alt={post.title} 
                                       className={styles.magThumb} 
-                                      width={130}
-                                      height={90}
+                                      fill
+                                      sizes="(max-width: 768px) 110px, 130px"
                                       quality={70} 
                                       style={{ objectFit: 'cover' }} 
                                     />

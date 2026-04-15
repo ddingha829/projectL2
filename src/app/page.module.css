@@ -2091,16 +2091,53 @@
   }
 
   .magListItem {
-    gap: 12px !important;
-    padding: 4px 0 !important;
+    gap: 16px !important;
+    padding: 0 !important; /* Reset padding for full-bleed image on left */
+    background: var(--bg-primary);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    min-height: 110px;
+    align-items: stretch !important; /* Make children fill height */
   }
 
   .magThumbWrap {
-    width: 85px !important;
-    height: 60px !important;
+    width: 110px !important;
+    height: auto !important; /* Fill height from parent flex stretch */
+    min-height: 110px;
+    border-radius: 0 !important; /* Square edge for left side alignment */
+    flex-shrink: 0 !important;
+  }
+
+  .magThumb {
+    height: 100% !important;
+    width: 100% !important;
+    object-fit: cover !important;
+  }
+
+  .magListInfo {
+    padding: 12px 12px 12px 0 !important;
+    justify-content: center;
   }
 
   .magListTitle {
-    font-size: 0.95rem !important;
+    font-size: 0.92rem !important; /* Slightly reduced as requested */
+    line-height: 1.35;
+    margin-bottom: 4px;
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
+  }
+
+  .magListExcerpt {
+    font-size: 0.8rem !important; /* Slightly reduced as requested */
+    line-height: 1.4;
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
+  }
+
+  .magMetaRow {
+    margin-top: 6px;
   }
 }
