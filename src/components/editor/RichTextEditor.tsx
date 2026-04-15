@@ -23,25 +23,25 @@ const ReactQuill = dynamic(async () => {
                 RQ.Quill.register(Size, true);
             }
 
-            // 폰트 등록 (스타일 방식)
-            const FontStyle: any = RQ.Quill.import('attributors/style/font');
-            if (FontStyle) {
-                FontStyle.whitelist = [
+            // 폰트 등록 (클래스 방식) - CSS 변수와 매핑하기 위함
+            const Font: any = RQ.Quill.import('formats/font');
+            if (Font) {
+                Font.whitelist = [
                     'notosans', 'notosans-thin', 'notosans-light', 'notosans-medium', 'notosans-bold', 'notosans-black',
                     'nanummyeongjo', 'nanumgothic', 'inter', 'merriweather'
                 ];
-                RQ.Quill.register(FontStyle, true);
+                RQ.Quill.register(Font, true);
             }
 
-            // 줄간격(Line Height) 등록 (스타일 방식) - 영속성 극대화
+            // 줄간격(Line Height) 등록 (클래스 방식) - page.module.css와 매핑
             const Parchment = RQ.Quill.import('parchment');
-            const StyleAttributor = (Parchment as any).Attributor?.Style || (Parchment as any).StyleAttributor;
-            if (StyleAttributor) {
-                const LineHeightStyle = new StyleAttributor('lineheight', 'line-height', {
+            const ClassAttributor = (Parchment as any).Attributor?.Class || (Parchment as any).ClassAttributor;
+            if (ClassAttributor) {
+                const LineHeight = new ClassAttributor('lineheight', 'ql-line-height', {
                     scope: (Parchment as any).Scope?.BLOCK || 3,
-                    whitelist: ['1', '1.2', '1.4', '1.5', '1.6', '1.8', '2.0', '2.5', '3.0']
+                    whitelist: ['1-0', '1-2', '1-4', '1-5', '1-6', '1-8', '2-0', '2-5', '3-0']
                 });
-                RQ.Quill.register(LineHeightStyle, true);
+                RQ.Quill.register(LineHeight, true);
             }
         } catch (err) {
             console.error('Quill custom formats registration failed:', err);
@@ -283,7 +283,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                     'nanummyeongjo', 'nanumgothic', 'inter', 'merriweather'
                 ] }],
                 [{ 'size': [false, '0.75rem', '0.875rem', '1rem', '1.125rem', '1.25rem', '1.5rem', '2rem', '2.5rem'] }],
-                [{ 'lineheight': [false, '1', '1.2', '1.4', '1.5', '1.6', '1.8', '2', '2.5', '3'] }],
+                [{ 'lineheight': [false, '1-0', '1-2', '1-4', '1-5', '1-6', '1-8', '2-0', '2-5', '3-0'] }],
                 ['bold', 'italic', 'underline', 'strike'],
 
                 [{ 'color': [] }, { 'background': [] }],
@@ -387,18 +387,18 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                 }
                 :global(.ql-snow .ql-picker.ql-size .ql-picker-label:not([data-value])::before) { content: '1rem' !important; }
 
-                /* 줄간격 툴바 라벨 설정 */
+                /* 줄간격 툴바 라벨 설정 (data-value가 1-8 형태이므로 직접 매핑) */
                 :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label::before) { content: '1.8'; }
                 :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label:not([data-value])::before) { content: '1.8' !important; }
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label[data-value="1"]::before), :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1"]::before) { content: '1.0' !important; }
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label[data-value="1.2"]::before), :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1.2"]::before) { content: '1.2' !important; }
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label[data-value="1.4"]::before), :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1.4"]::before) { content: '1.4' !important; }
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label[data-value="1.5"]::before), :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1.5"]::before) { content: '1.5' !important; }
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label[data-value="1.6"]::before), :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1.6"]::before) { content: '1.6' !important; }
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label[data-value="1.8"]::before), :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1.8"]::before) { content: '1.8' !important; }
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label[data-value="2"]::before), :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="2"]::before) { content: '2.0' !important; }
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label[data-value="2.5"]::before), :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="2.5"]::before) { content: '2.5' !important; }
-                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label[data-value="3"]::before), :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="3"]::before) { content: '3.0' !important; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label[data-value="1-0"]::before), :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1-0"]::before) { content: '1.0' !important; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label[data-value="1-2"]::before), :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1-2"]::before) { content: '1.2' !important; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label[data-value="1-4"]::before), :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1-4"]::before) { content: '1.4' !important; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label[data-value="1-5"]::before), :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1-5"]::before) { content: '1.5' !important; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label[data-value="1-6"]::before), :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1-6"]::before) { content: '1.6' !important; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label[data-value="1-8"]::before), :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="1-8"]::before) { content: '1.8' !important; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label[data-value="2-0"]::before), :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="2-0"]::before) { content: '2.0' !important; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label[data-value="2-5"]::before), :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="2-5"]::before) { content: '2.5' !important; }
+                :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-label[data-value="3-0"]::before), :global(.ql-snow .ql-picker.ql-lineheight .ql-picker-item[data-value="3-0"]::before) { content: '3.0' !important; }
 
                 /* 헤더 툴바 라벨 설정 */
                 :global(.ql-snow .ql-picker.ql-header .ql-picker-label::before) { content: 'Heading'; }
