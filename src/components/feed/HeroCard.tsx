@@ -39,7 +39,8 @@ export default function HeroCard({
         className={styles.bgImage} 
         fill
         priority
-        sizes="100vw"
+        sizes="(max-width: 1024px) 100vw, 80vw"
+        quality={85}
         style={{ objectFit: 'cover' }}
       />
       <div className={styles.overlay}>

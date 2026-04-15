@@ -490,7 +490,8 @@ export default function HomeContent({
                           alt={feature.title} 
                           className={styles.featureImage} 
                           fill
-                          sizes="(max-width: 768px) 100vw, 50vw"
+                          sizes="(max-width: 768px) 100vw, 1200px"
+                          quality={80}
                           style={{ objectFit: 'cover' }}
                         />
                         <div className={styles.featureOverlay}>
@@ -779,7 +780,8 @@ export default function HomeContent({
                                     alt={post.title} 
                                     className={styles.magThumb} 
                                     fill
-                                    sizes="120px"
+                                    sizes="100px"
+                                    quality={65}
                                     style={{ objectFit: 'cover' }}
                                   />
                                 </div>
