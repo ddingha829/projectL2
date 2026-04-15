@@ -1,0 +1,46 @@
+.container {
+  min-height: 100vh;
+  padding: 80px 20px;
+  background-color: var(--bg-primary);
+  display: flex;
+  justify-content: center;
+}
+
+.content {
+  max-width: 800px;
+  width: 100%;
+  color: var(--text-primary);
+  line-height: 1.7;
+}
+
+.content h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: var(--brand-primary);
+}
+
+.lastUpdated {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 40px;
+}
+
+.content h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-top: 40px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.content ul {
+  padding-left: 20px;
+  margin-bottom: 16px;
+}
+
+.content p, .content li {
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
