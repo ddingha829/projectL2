@@ -23,6 +23,24 @@ const CATEGORY_MAP: Record<string, string> = {
   exhibition: "전시회"
 };
 
+const SCHEMA_TYPE_MAP: Record<string, string> = {
+  movie: "Movie",
+  book: "Book",
+  game: "VideoGame",
+  restaurant: "Restaurant",
+  exhibition: "Event",
+  travel: "LocalBusiness",
+  other: "Product",
+  // 한글 키 대응
+  "영화": "Movie",
+  "책": "Book",
+  "게임": "VideoGame",
+  "맛집": "Restaurant",
+  "전시회": "Event",
+  "여행": "LocalBusiness",
+  "기타": "Product"
+};
+
 // Cached post fetching for both Metadata and Page content
 const getPost = cache(async (id: string) => {
   const supabase = await createClient();
@@ -205,15 +223,17 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
   }
 
   // JSON-LD Structured Data
+  const schemaType = SCHEMA_TYPE_MAP[post.category_id || post.category] || "Product";
+  
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": post.review_subject ? "Review" : "BlogPosting",
     "headline": post.title,
-    "image": post.image_url,
+    "image": post.image_url ? [post.image_url] : [],
     "datePublished": post.created_at,
     "author": {
       "@type": "Person",
-      "name": post.author?.display_name,
+      "name": post.authorProfile?.display_name || post.author?.display_name,
     },
     "publisher": {
       "@type": "Organization",
@@ -226,13 +246,23 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
     "description": post.content.replace(/<[^>]+>/g, '').substring(0, 160).trim(),
     ...(post.review_subject ? {
       "itemReviewed": {
-        "@type": "Thing",
-        "name": post.review_subject
+        "@type": schemaType,
+        "name": post.review_subject,
+        "image": post.image_url || "https://ticgle.kr/logo.png",
+        ...(schemaType === "Restaurant" || schemaType === "LocalBusiness" ? {
+          "address": {
+             "@type": "PostalAddress",
+             "streetAddress": "N/A",
+             "addressLocality": "South Korea",
+             "addressCountry": "KR"
+          }
+        } : {})
       },
       "reviewRating": {
         "@type": "Rating",
-        "ratingValue": post.review_rating / 2, // Assuming scale is 10, JSON-LD standard is often 1-5
-        "bestRating": "5"
+        "ratingValue": post.review_rating / 2,
+        "bestRating": "5",
+        "worstRating": "1"
       }
     } : {})
   };
@@ -406,25 +436,6 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
           user={user} 
           prevId={post.prevId}
           nextId={post.nextId}
-          initialIsLiked={isLiked}
-        />
-
-        {/* JSON-LD Structured Data for SEO */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Article",
-              "headline": post.title,
-              "image": [post.image_url],
-              "datePublished": post.created_at,
-              "author": {
-                "@type": "Person",
-                "name": post.authorProfile?.display_name || post.author?.display_name
-              }
-            })
-          }}
         />
       </article>
     </div>
