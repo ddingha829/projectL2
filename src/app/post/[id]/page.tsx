@@ -252,7 +252,11 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
             <HeroToggleBtn postId={actualId} initialIsHero={post.is_hero || false} />
           )}
 
-          <ShareBtn title={post.title} />
+          <ShareBtn 
+            title={post.title} 
+            imageUrl={post.image_url} 
+            description={post.content?.replace(/<[^>]+>/g, '').substring(0, 60).trim().replace(/\s+/g, ' ') + '...'}
+          />
           
           <PostManageBtns 
             postId={actualId} 
@@ -305,15 +309,6 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
         <ContentSegmenter content={post.content} comments={commentsData} />
         
         {/* [신규] 티끌러의 한줄평 섹션 */}
-        {post.review_subject && (
-          <div className={styles.postRightActions}>
-            <ShareBtn 
-              title={post.title} 
-              imageUrl={post.image_url} 
-              description={post.content?.replace(/<[^>]+>/g, '').substring(0, 50) + '...'}
-            />
-          </div>
-        )}
         {post.review_subject && (
           <div className={styles.postReviewSection}>
             <fieldset className={styles.postReviewBox}>
