@@ -16,8 +16,10 @@ export default function ContentSegmenter({
   useEffect(() => {
     if (!contentRef.current) return;
 
+    const el = contentRef.current;
+
     // 1. Basic segments
-    const children = contentRef.current.children;
+    const children = el.children;
     for (let i = 0; i < children.length; i++) {
       const child = children[i] as HTMLElement;
       child.setAttribute('data-segment-id', `seg-${i}`);
@@ -33,17 +35,59 @@ export default function ContentSegmenter({
     });
 
     if (quoteMap.size > 0) {
-      highlightNodes(contentRef.current, quoteMap);
+      highlightNodes(el, quoteMap);
     }
 
     // 3. Image click handling
-    const images = contentRef.current.querySelectorAll('img');
+    const images = el.querySelectorAll('img');
     images.forEach(img => {
       img.style.cursor = 'zoom-in';
       img.title = "클릭하여 원본 이미지 보기";
       img.onclick = () => {
         window.open(img.src, '_blank');
       };
+    });
+
+    // 4. Review Card Stars Hydration (Fix for old posts)
+    const reviewCards = el.querySelectorAll('.ql-review-card');
+    reviewCards.forEach(card => {
+      const rating = Number(card.getAttribute('data-rating')) || 0;
+      const scoreBadge = card.querySelector('.score-badge');
+      const existingStars = card.querySelector('.score-stars-box');
+      
+      if (scoreBadge && !existingStars) {
+        // Create stars HTML
+        const starsHtml = [1, 2, 3, 4, 5].map(s => {
+          const diff = rating - (s - 1);
+          const fillPercent = Math.max(0, Math.min(100, diff * 100));
+          return `<div class="star-mini-wrapper" style="position:relative;display:inline-block;width:13px;height:13px;margin-right:0;"><svg viewBox="0 0 24 24" width="13" height="13" fill="#FFFFFF"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><div style="position:absolute;top:0;left:0;width:${fillPercent}%;overflow:hidden;"><svg viewBox="0 0 24 24" width="13" height="13" fill="#FF4804"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div></div>`;
+        }).join('');
+
+        const starsBox = document.createElement('div');
+        starsBox.className = 'score-stars-box';
+        starsBox.innerHTML = starsHtml;
+        
+        // Wrap score-badge and starsBox in a score-column if not exists
+        let scoreColumn = (card as HTMLElement).querySelector('.score-column') as HTMLElement;
+        if (!scoreColumn) {
+          scoreColumn = document.createElement('div');
+          scoreColumn.className = 'score-column';
+          scoreColumn.style.display = 'flex';
+          scoreColumn.style.flexDirection = 'column';
+          scoreColumn.style.alignItems = 'center';
+          scoreColumn.style.gap = '6px';
+          scoreColumn.style.marginLeft = 'auto';
+          scoreColumn.style.flexShrink = '0';
+          
+          if (scoreBadge.parentNode) {
+            scoreBadge.parentNode.replaceChild(scoreColumn, scoreBadge);
+            scoreColumn.appendChild(scoreBadge);
+            scoreColumn.appendChild(starsBox);
+          }
+        } else {
+          scoreColumn.appendChild(starsBox);
+        }
+      }
     });
   }, [content, comments]);
 
@@ -54,12 +98,12 @@ export default function ContentSegmenter({
     while (node = walker.nextNode()) nodes.push(node);
 
     nodes.forEach(textNode => {
-      let content = textNode.nodeValue || "";
+      let nodeContent = textNode.nodeValue || "";
       let parent = textNode.parentElement;
       if (!parent || parent.tagName === 'SCRIPT' || parent.classList.contains(styles.quoteHighlight)) return;
 
       for (const [quoteText, commentId] of quoteMap.entries()) {
-        const index = content.indexOf(quoteText);
+        const index = nodeContent.indexOf(quoteText);
         if (index >= 0) {
           const range = document.createRange();
           range.setStart(textNode, index);
@@ -88,8 +132,10 @@ export default function ContentSegmenter({
   const sanitizedContent = useMemo(() => DOMPurify.sanitize(content, {
     ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 's', 'a', 'img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 
       'ul', 'ol', 'li', 'blockquote', 'pre', 'code', 'span', 'div', 'figure', 'figcaption', 'hr',
-      'table', 'thead', 'tbody', 'tr', 'th', 'td', 'sub', 'sup', 'iframe', 'button'],
-    ALLOWED_ATTR: ['href', 'src', 'alt', 'class', 'style', 'target', 'rel', 'width', 'height', 'data-*', 'frameborder', 'allowfullscreen', 'onclick'],
+      'table', 'thead', 'tbody', 'tr', 'th', 'td', 'sub', 'sup', 'iframe', 'button',
+      'svg', 'path', 'circle', 'rect', 'defs', 'linearGradient', 'stop'],
+    ALLOWED_ATTR: ['href', 'src', 'alt', 'class', 'style', 'target', 'rel', 'width', 'height', 'data-*', 'frameborder', 'allowfullscreen', 'onclick',
+      'viewBox', 'fill', 'd', 'cx', 'cy', 'r', 'x', 'y', 'offset', 'stop-color', 'stop-opacity'],
     ALLOW_DATA_ATTR: true,
     ADD_ATTR: ['style', 'class']
   }), [content]);
@@ -102,4 +148,3 @@ export default function ContentSegmenter({
     />
   );
 }
-

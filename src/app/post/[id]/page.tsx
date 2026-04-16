@@ -391,7 +391,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
         {post.authorProfile && (
           <div className={styles.authorCardWrapper}>
             <div className={styles.authorCardHeader}>
-              <span>TICGLER</span>
+              <span>TICGLER PROFILE</span>
               <Link href={`/requests/${post.authorProfile.id}`} className={styles.headerRequestLink}>
                 티끌러님, 이것도 리뷰해주세요! 💬
               </Link>
@@ -402,9 +402,10 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
                       <Image 
                         src={(post.authorProfile.avatar_url && (post.authorProfile.avatar_url.startsWith('http') || post.authorProfile.avatar_url.startsWith('/'))) ? post.authorProfile.avatar_url : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"} 
                         alt={post.authorProfile.display_name} 
-                        width={96}
-                        height={96}
-                        style={{ objectFit: 'cover' }}
+                        width={220}
+                        height={220}
+                        className={styles.authorAvatarImg}
+                        style={{ objectFit: 'cover', width: '100%', height: '100%' }}
                       />
                    </div>
                 </div>
@@ -434,6 +435,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
           initialLikes={post.likes_count || 0} 
           initialComments={commentsData} 
           user={user} 
+          isAdmin={isAdmin}
           prevId={post.prevId}
           nextId={post.nextId}
         />

@@ -88,3 +88,17 @@ Systematic dimensions for a consistent grid.
   /* ... see globals.css for full list */
 }
 ```
+
+---
+
+## 7. Standard Card Design (Ticgle Card v2)
+The universal layout for high-importance information cards (Author Profile, Place Reviews, etc.).
+
+- **Structure**: 2-column Grid (Fixed 220px Left / Fluid Right)
+- **Header**: High-contrast background, White bold text
+  - *Author Profile*: Business Blue (`#0a467d`)
+  - *Place Reviews*: Point Orange (`--brand-accent-line`)
+- **Left Column**: Media Area (Avatar, Map, Image) filling full height/width
+- **Right Column**: Information Area (Bio, Score, Details) with `24px` padding
+- **Dimensions**: Max-width `700px`, fixed height `220px` (PC)
+- **Responsiveness**: Stacks vertically on mobile (Media 180px height top / Text bottom)

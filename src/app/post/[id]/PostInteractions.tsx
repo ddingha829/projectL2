@@ -7,7 +7,7 @@ import Link from "next/link";
 import styles from "./page.module.css";
 
 export default function PostInteractions({ 
-  postId, authorId, initialLikes, initialComments, user, prevId, nextId, initialIsLiked = false 
+  postId, authorId, initialLikes, initialComments, user, prevId, nextId, isAdmin = false, initialIsLiked = false 
 }: { 
   postId: string, 
   authorId: string, 
@@ -16,6 +16,7 @@ export default function PostInteractions({
   user: any,
   prevId?: string,
   nextId?: string,
+  isAdmin?: boolean,
   initialIsLiked?: boolean
 }) {
   const [likes, setLikes] = useState(initialLikes);
@@ -313,19 +314,23 @@ export default function PostInteractions({
                         <div className={styles.avatarPlaceholder}>👤</div>
                       )}
                     </div>
-                    <div className={styles.commentUserInfo}>
+                    <div className={styles.commentUserInfoRow}>
                       <span className={styles.commentNickname}>{c.user?.display_name || c.user?.name || '익명 작가'}</span>
                       {isAuthor && <span className={styles.writerBadge}>티끌러</span>}
                     </div>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginLeft: 'auto' }}>
+                  <div className={styles.commentMetaRight}>
                     <span className={styles.commentDate}>{dateStr}</span>
                     
                     {/* 수정/삭제 버튼 (본인 또는 운영자) */}
-                    {(user?.id === c.user_id || user?.app_metadata?.role === 'admin' || user?.user_metadata?.role === 'admin') && (
+                    {(user?.id === c.user_id || isAdmin) && (
                       <div className={styles.commentActions}>
-                        <button className={styles.actionIconBtn} onClick={() => startEditing(c.id, c.content)} title="수정">✏️</button>
-                        <button className={`${styles.actionIconBtn} ${styles.deleteBtn}`} onClick={() => handleDeleteComment(c.id)} title="삭제">🗑️</button>
+                        <button className={styles.actionIconBtn} onClick={() => startEditing(c.id, c.content)} title="수정">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                        </button>
+                        <button className={`${styles.actionIconBtn} ${styles.deleteBtn}`} onClick={() => handleDeleteComment(c.id)} title="삭제">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        </button>
                       </div>
                     )}
                   </div>

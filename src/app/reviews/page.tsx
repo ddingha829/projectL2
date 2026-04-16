@@ -156,10 +156,17 @@ function ReviewArchiveContent() {
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return;
 
+    // Fast Refresh나 Strict Mode 대응: 이미 초기화된 컨테이너인지 확인
+    const container = mapRef.current;
+    if ((container as any)._leaflet_id) return;
+
     const initMap = async () => {
       try {
         const L = (await import('leaflet')).default;
         
+        // 다시 한번 확인 (비동기 처리 중 중복 방지)
+        if (!mapRef.current || mapInstanceRef.current || (container as any)._leaflet_id) return;
+
         // Leaflet 아이콘 기본 설정
         delete (L.Icon.Default.prototype as any)._getIconUrl;
         L.Icon.Default.mergeOptions({
@@ -169,7 +176,7 @@ function ReviewArchiveContent() {
         });
 
         // 한반도 전역 최적 뷰 설정
-        const initialMap = L.map(mapRef.current!).setView([36.3, 127.8], 7);
+        const initialMap = L.map(container).setView([36.3, 127.8], 7);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution: '&copy; OpenStreetMap'
         }).addTo(initialMap);
