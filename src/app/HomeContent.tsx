@@ -424,31 +424,29 @@ export default function HomeContent({
             {/* Author Card (for Author Filter) */}
             {authorData && (
               <div className={styles.authorCardWrapper}>
-                <div className={styles.authorCardHeader}>
-                  <span>EDITOR</span>
-                  <Link href={`/requests/${authorData.id}`} className={styles.headerRequestLink}>
+                <div className={styles.authorCardHeaderStandard}>
+                  <span className={styles.standardCardLabel}>TICGLER PROFILE</span>
+                  <Link href={`/requests/${authorData.id}`} className={styles.headerRequestLinkStandard}>
                     티끌러님, 이것도 리뷰해주세요! 💬
                   </Link>
                 </div>
-                <div className={styles.authorCardContent}>
-                  <div className={styles.authorAvatarArea}>
-                    <div className={styles.authorAvatarLarge}>
-                      <Image 
-                        src={(authorData.avatar && (authorData.avatar.startsWith('http') || authorData.avatar.startsWith('/'))) ? authorData.avatar : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"} 
-                        alt={authorData.name} 
-                        width={120}
-                        height={120}
-                        style={{ objectFit: 'cover' }}
-                      />
-                    </div>
+                <div className={styles.authorCardMainStandard}>
+                  <div className={styles.authorCardMediaStandard}>
+                    <Image 
+                      src={(authorData.avatar && (authorData.avatar.startsWith('http') || authorData.avatar.startsWith('/'))) ? authorData.avatar : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"} 
+                      alt={authorData.name} 
+                      width={220}
+                      height={220}
+                      style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                    />
                   </div>
-                  <div className={styles.authorDetailsArea}>
-                    <div className={styles.authorNameLink}>{authorData.name}</div>
-                    <p className={styles.authorBio}>{authorData.description.bio || "생동감 넘치는 리뷰를 작성하는 티끌러입니다."}</p>
+                  <div className={styles.authorCardInfoStandard}>
+                    <div className={styles.authorNameStandard}>{authorData.name}</div>
+                    <p className={styles.authorBioStandard}>{authorData.description.bio || "생동감 넘치는 리뷰를 작성하는 티끌러입니다."}</p>
                     {authorData.description.bullets && authorData.description.bullets.length > 0 && (
-                      <div className={styles.authorBullets}>
+                      <div className={styles.authorBulletsStandard}>
                         {authorData.description.bullets.map((b: string, i: number) => (
-                          <span key={i} className={styles.authorBullet}># {b}</span>
+                          <span key={i} className={styles.authorBulletStandard}># {b}</span>
                         ))}
                       </div>
                     )}

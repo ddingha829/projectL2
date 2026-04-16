@@ -1009,160 +1009,130 @@
 }
 
 .authorCardWrapper {
-  background: var(--bg-primary);
-  border: 1px solid var(--border-light);
-  border-radius: 20px;
-  overflow: hidden;
-  margin: 16px 0 32px 0;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.06);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  width: 100%;
+  background: #fff !important;
+  border: 1px solid var(--border-medium) !important;
+  border-radius: 20px !important;
+  overflow: hidden !important;
+  margin: 30px auto 15px auto !important;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.06) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  width: 100% !important;
 }
 
-.authorCardHeader {
-  background: #0a467d !important; /* Force specific corporate blue */
-  color: #fff;
-  padding: 8px 24px;
-  font-size: 0.65rem;
-  font-weight: 900;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
+.authorCardHeaderStandard {
+  background: #0a467d !important;
+  color: #fff !important;
+  padding: 10px 24px !important;
   display: flex !important;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: space-between !important;
+  align-items: center !important;
+  min-height: 42px !important;
+  line-height: 1 !important;
 }
 
-.headerRequestLink {
-  color: rgba(255, 255, 255, 0.9);
-  text-decoration: none;
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  text-transform: none;
-  transition: all 0.2s;
-  padding: 4px 10px;
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 4px;
+.standardCardLabel {
+  font-size: 0.75rem !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.12em !important;
+  font-family: var(--font-outfit), sans-serif !important;
 }
 
-.headerRequestLink:hover {
-  background: rgba(255, 255, 255, 0.25);
-  color: #fff;
+.headerRequestLinkStandard {
+  color: rgba(255, 255, 255, 0.9) !important;
+  text-decoration: none !important;
+  font-size: 0.72rem !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.01em !important;
+  padding: 3px 10px !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-radius: 4px !important;
 }
 
-.authorCardContent {
-  display: flex;
-  padding: 32px;
-  gap: 32px;
-  align-items: center;
+.authorCardMainStandard {
+  display: grid !important;
+  grid-template-columns: 220px 1fr !important;
+  background: #fff !important;
+  height: 220px !important;
 }
 
-.authorAvatarArea {
-  flex-shrink: 0;
+.authorCardMediaStandard {
+  width: 220px !important;
+  height: 100% !important;
+  background: #f8fafc !important;
+  flex-shrink: 0 !important;
+  overflow: hidden !important;
 }
 
-.authorAvatarLarge {
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-  background: var(--bg-tertiary);
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 3rem;
-  border: 2px solid var(--bg-primary);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+.authorCardInfoStandard {
+  padding: 32px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  min-width: 0 !important;
 }
 
-.authorAvatarLarge img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.authorNameStandard {
+  font-size: 1.5rem !important;
+  font-weight: 900 !important;
+  color: var(--text-primary) !important;
+  margin-bottom: 8px !important;
+  letter-spacing: -0.02em !important;
 }
 
-.authorDetailsArea {
-  flex: 1;
+.authorBioStandard {
+  font-size: 0.98rem !important;
+  color: var(--text-secondary) !important;
+  line-height: 1.6 !important;
+  margin-bottom: 18px !important;
+  font-weight: 500 !important;
+  word-break: keep-all !important;
 }
 
-.authorNameLink {
-  display: inline-block;
-  font-size: 1.5rem;
-  font-weight: 900;
-  color: var(--text-primary);
-  margin-bottom: 6px;
-  text-decoration: none;
-  letter-spacing: -0.02em;
+.authorBulletsStandard {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
 }
 
-.authorBio {
-  font-size: 0.98rem;
-  color: var(--text-secondary);
-  line-height: 1.6;
-  margin-bottom: 18px;
-  font-weight: 500;
-}
-
-.authorBullets {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.authorBullet {
-  font-size: 0.72rem;
-  font-weight: 800;
-  color: var(--text-primary);
-  background: var(--bg-tertiary);
-  padding: 5px 12px;
-  border-radius: 50px;
-  border: 1px solid var(--border-light);
-}
-
-.requestSectionDetail {
-  padding: 0 32px 24px;
-  display: flex;
-  justify-content: flex-end;
+.authorBulletStandard {
+  font-size: 0.72rem !important;
+  font-weight: 800 !important;
+  color: #0a467d !important;
+  background: rgba(10, 70, 125, 0.05) !important;
+  padding: 5px 12px !important;
+  border-radius: 50px !important;
+  border: 1px solid rgba(10, 70, 125, 0.15) !important;
 }
 
 @media (min-width: 769px) {
   .authorCardWrapper {
-    width: 70% !important;
-    max-width: 1000px;
-    margin: 16px auto 32px auto !important;
+    max-width: 700px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
 }
 
 @media (max-width: 768px) {
-  .authorCardContent {
-    flex-direction: column;
-    align-items: center; /* Added for perfect centering */
-    text-align: center;
-    padding: 24px 20px;
-    gap: 16px;
+  .authorCardMainStandard {
+    grid-template-columns: 1fr !important;
+    height: auto !important;
   }
-  .authorAvatarLarge {
-    width: 240px;
-    height: 240px;
-    margin: 0 auto;
-    font-size: 8rem;
+  .authorCardMediaStandard {
+    width: 100% !important;
+    height: 180px !important;
   }
-  .authorDetailsArea {
-    width: 100%;
+  .authorCardInfoStandard {
+    padding: 24px 20px !important;
+    text-align: center !important;
   }
-  .authorNameLink {
-    font-size: 1.25rem;
+  .authorNameStandard {
+    font-size: 1.25rem !important;
   }
-  .authorBio {
-    font-size: 0.88rem;
-    margin-bottom: 12px;
+  .authorBioStandard {
+    font-size: 0.88rem !important;
   }
-  .authorBullets {
-    justify-content: center;
-  }
-  .requestSectionDetail {
-    justify-content: center;
-    padding: 0 20px 20px;
+  .authorBulletsStandard {
+    justify-content: center !important;
   }
 }
 
@@ -1559,6 +1529,11 @@
   width: 100%;
 }
 
+.editorsSection {
+  margin: 40px 0;
+  width: 100%;
+}
+
 .editorsGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1655,6 +1630,23 @@
   background: var(--bg-primary);
   border-color: var(--border-medium);
   color: var(--text-primary);
+}
+
+.editorsListStandard {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 24px !important;
+  margin-top: 20px !important;
+}
+
+.edRoleBadge {
+  font-size: 0.72rem !important;
+  font-weight: 800 !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  padding: 3px 10px !important;
+  border-radius: 4px !important;
+  letter-spacing: -0.01em !important;
 }
 
 .skeletonGrid {
