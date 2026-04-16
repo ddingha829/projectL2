@@ -213,7 +213,7 @@
   font-family: var(--font-noto-sans), sans-serif;
   font-weight: 300; /* 기본 노토산스 Light 설정 */
   letter-spacing: -0.015em;
-  word-break: normal;
+  word-break: keep-all; /* 어절 단위 줄바꿈 적용 */
   overflow-wrap: break-word;
 }
 

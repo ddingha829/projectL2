@@ -193,7 +193,7 @@
     padding: 0 10px !important;
     box-shadow: none !important;
   }
-
+  
   .title {
     font-size: 1.05rem; /* Increased (+10%) from 0.95rem */
     margin-bottom: 10px; /* Positioned slightly higher (+10/20%) */
@@ -278,7 +278,8 @@
     -webkit-line-clamp: 4; /* Allow up to 4 lines for very narrow 2-col hero view */
     line-clamp: 4;
     min-height: auto;
-    word-break: break-word;
+    word-break: keep-all; /* Fixed: break-word -> keep-all */
+    overflow-wrap: break-word;
   }
 }
 
@@ -392,6 +393,8 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   white-space: pre-wrap;
+  word-break: keep-all;
+  overflow-wrap: break-word;
   min-height: 3.2em; /* Original height logic */
 }
 
@@ -411,7 +414,8 @@
     -webkit-line-clamp: 4;
     line-clamp: 4;
     min-height: auto;
-    word-break: break-word;
+    word-break: keep-all; /* Fixed: break-word -> keep-all */
+    overflow-wrap: break-word;
   }
 }
 
