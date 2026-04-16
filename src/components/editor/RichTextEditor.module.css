@@ -1,9 +1,15 @@
 .editorContainer {
   border: 1px solid var(--border-medium);
   border-radius: 12px;
-  overflow: visible;
+  overflow: visible !important;
   background: var(--bg-primary);
   box-shadow: var(--shadow-sm);
+  position: relative;
+}
+
+/* 중간 단계의 모든 컨테이너가 sticky를 방해하지 않도록 함 */
+.editorContainer > div {
+  overflow: visible !important;
 }
 
 .toolbar {
@@ -39,25 +45,26 @@
 }
 
 .editorContainer :global(.ql-toolbar) {
-  position: -webkit-sticky;
-  position: sticky;
-  top: var(--header-height);
-  z-index: 100;
-  background: var(--bg-primary);
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  top: var(--header-height) !important;
+  z-index: 1000 !important; /* 충분히 높게 */
+  background: var(--bg-primary) !important;
   border-top: none !important;
   border-left: none !important;
   border-right: none !important;
   border-bottom: 1px solid var(--border-medium) !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+  transition: none; /* 스티키 시 떨림 방지 */
 }
 
 @media (max-width: 768px) {
   .editorContainer :global(.ql-toolbar) {
-    top: var(--header-height-mobile);
+    top: var(--header-height-mobile) !important;
     padding: 8px 4px !important;
-    backdrop-filter: blur(10px);
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--bg-primary) !important;
+    width: 100% !important;
+    display: block !important;
   }
 }
 

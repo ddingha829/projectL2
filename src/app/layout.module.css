@@ -60,10 +60,10 @@
   }
 
   .contentInner {
-    padding: 0 11px; /* Increased ~30% from 8px as requested */
+    padding: 0 11px;
     gap: 16px;
     width: 100%;
-    overflow-x: hidden;
+    overflow-x: clip; /* hidden 브레이크 방지 */
   }
   
   .mobileFAB {
