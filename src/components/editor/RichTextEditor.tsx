@@ -16,30 +16,58 @@ const ReactQuill = dynamic(async () => {
     
     if (Quill) {
         try {
-            // Line Height Attributor
             const Parchment = Quill.import('parchment');
-            const LineHeightStyle = new Parchment.Attributor.Style('lineheight', 'line-height', {
-                scope: Parchment.Scope.INLINE,
-                whitelist: ['1.0', '1.2', '1.4', '1.5', '1.6', '1.8', '2.0', '2.5', '3.0']
-            });
-            Quill.register(LineHeightStyle, true);
+            
+            // [Quill 2.0 수정] Parchment가 undefined일 가능성에 대비한 방어적 코드
+            if (Parchment) {
+                const StyleAttributor = Parchment.StyleAttributor || (Parchment.Attributor ? (Parchment.Attributor as any).Style : null);
+                
+                if (StyleAttributor) {
+                    const LineHeightStyle = new StyleAttributor('lineheight', 'line-height', {
+                        scope: Parchment.Scope ? Parchment.Scope.INLINE : 3, // Quill 2.x에서 Scope.INLINE은 보통 3
+                        whitelist: ['1.0', '1.2', '1.4', '1.5', '1.6', '1.8', '2.0', '2.5', '3.0']
+                    });
+                    Quill.register(LineHeightStyle, true);
+                }
+            } else {
+                // Parchment 자체가 없을 경우 SizeStyle에서 constructor를 추출 시도
+                const SizeStyle = Quill.import('attributors/style/size');
+                if (SizeStyle && SizeStyle.constructor) {
+                    const LineHeightStyle = new (SizeStyle.constructor as any)('lineheight', 'line-height', {
+                        scope: 3, // Inline scope
+                        whitelist: ['1.0', '1.2', '1.4', '1.5', '1.6', '1.8', '2.0', '2.5', '3.0']
+                    });
+                    Quill.register(LineHeightStyle, true);
+                }
+            }
 
             // Font Size Attributor
             const SizeStyle = Quill.import('attributors/style/size');
-            SizeStyle.whitelist = ['0.75rem', '0.875rem', '1rem', '1.125rem', '1.25rem', '1.5rem', '2rem', '2.5rem', '3rem'];
-            Quill.register(SizeStyle, true);
+            if (SizeStyle) {
+                SizeStyle.whitelist = ['0.75rem', '0.875rem', '1rem', '1.125rem', '1.25rem', '1.5rem', '2rem', '2.5rem', '3rem'];
+                Quill.register(SizeStyle, true);
+            }
 
             // Font Family Attributor
             const FontStyle = Quill.import('attributors/style/font');
-            FontStyle.whitelist = [
-                'notosans', 'notosans-thin', 'notosans-light', 'notosans-medium', 'notosans-bold', 'notosans-black',
-                'nanummyeongjo', 'nanumgothic', 'inter', 'merriweather'
-            ];
-            Quill.register(FontStyle, true);
+            if (FontStyle) {
+                FontStyle.whitelist = [
+                    'notosans', 'notosans-thin', 'notosans-light', 'notosans-medium', 'notosans-bold', 'notosans-black',
+                    'nanummyeongjo', 'nanumgothic', 'inter', 'merriweather'
+                ];
+                Quill.register(FontStyle, true);
+            }
 
             // Image Resize 등록
+            // [참고] 일부 Quill 모듈은 window.Quill이 설정되어 있어야 정상적으로 동작합니다.
+            if (typeof window !== 'undefined') {
+                (window as any).Quill = Quill;
+            }
+            
             const ImageResize = (await import('quill-image-resize-module-react')).default;
-            Quill.register('modules/imageResize', ImageResize);
+            if (ImageResize) {
+                Quill.register('modules/imageResize', ImageResize);
+            }
         } catch (e) {
             console.error("Quill registration failed", e);
         }
