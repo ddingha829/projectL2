@@ -439,3 +439,73 @@
     max-width: 180px;
   }
 }
+
+/* ============================================================
+   Quill Toolbar Picker Labels (Fixes 'Normal' labels)
+   ============================================================ */
+
+/* 1. Font Family Picker */
+:global(.ql-snow .ql-picker.ql-font .ql-picker-label::before),
+:global(.ql-snow .ql-picker.ql-font .ql-picker-item::before) { content: '본문 폰트'; }
+:global(.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="notosans"]::before),
+:global(.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="notosans"]::before) { content: '노토산스'; }
+:global(.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="notosans-thin"]::before),
+:global(.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="notosans-thin"]::before) { content: '노토 (Thin)'; }
+:global(.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="notosans-light"]::before),
+:global(.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="notosans-light"]::before) { content: '노토 (Light)'; }
+:global(.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="notosans-medium"]::before),
+:global(.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="notosans-medium"]::before) { content: '노토 (Medium)'; }
+:global(.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="notosans-bold"]::before),
+:global(.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="notosans-bold"]::before) { content: '노토 (Bold)'; }
+:global(.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="notosans-black"]::before),
+:global(.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="notosans-black"]::before) { content: '노토 (Black)'; }
+:global(.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="nanummyeongjo"]::before),
+:global(.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="nanummyeongjo"]::before) { content: '나눔명조'; }
+:global(.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="nanumgothic"]::before),
+:global(.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="nanumgothic"]::before) { content: '나눔고딕'; }
+:global(.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="inter"]::before),
+:global(.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="inter"]::before) { content: 'Inter'; }
+:global(.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="merriweather"]::before),
+:global(.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="merriweather"]::before) { content: 'Merriweather'; }
+
+/* 2. Font Size Picker */
+:global(.ql-snow .ql-picker.ql-size .ql-picker-label::before),
+:global(.ql-snow .ql-picker.ql-size .ql-picker-item::before) { content: '중간 (1rem)'; }
+:global(.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="0.75rem"]::before),
+:global(.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="0.75rem"]::before) { content: '매우 작게'; }
+:global(.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="0.875rem"]::before),
+:global(.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="0.875rem"]::before) { content: '작게'; }
+:global(.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="1.125rem"]::before),
+:global(.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="1.125rem"]::before) { content: '약간 크게'; }
+:global(.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="1.25rem"]::before),
+:global(.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="1.25rem"]::before) { content: '크게'; }
+:global(.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="1.5rem"]::before),
+:global(.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="1.5rem"]::before) { content: '매우 크게'; }
+:global(.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="2rem"]::before),
+:global(.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="2rem"]::before) { content: '제목 3'; }
+:global(.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="2.5rem"]::before),
+:global(.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="2.5rem"]::before) { content: '제목 2'; }
+:global(.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="3rem"]::before),
+:global(.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="3rem"]::before) { content: '제목 1'; }
+
+/* 3. Line Height Picker */
+:global(.ql-snow .ql-picker.ql-line-height .ql-picker-label::before),
+:global(.ql-snow .ql-picker.ql-line-height .ql-picker-item::before) { content: '줄 간격'; }
+:global(.ql-snow .ql-picker.ql-line-height .ql-picker-label[data-value="1-0"]::before),
+:global(.ql-snow .ql-picker.ql-line-height .ql-picker-item[data-value="1-0"]::before) { content: '1.0'; }
+:global(.ql-snow .ql-picker.ql-line-height .ql-picker-label[data-value="1-2"]::before),
+:global(.ql-snow .ql-picker.ql-line-height .ql-picker-item[data-value="1-2"]::before) { content: '1.2'; }
+:global(.ql-snow .ql-picker.ql-line-height .ql-picker-label[data-value="1-4"]::before),
+:global(.ql-snow .ql-picker.ql-line-height .ql-picker-item[data-value="1-4"]::before) { content: '1.4'; }
+:global(.ql-snow .ql-picker.ql-line-height .ql-picker-label[data-value="1-5"]::before),
+:global(.ql-snow .ql-picker.ql-line-height .ql-picker-item[data-value="1-5"]::before) { content: '1.5'; }
+:global(.ql-snow .ql-picker.ql-line-height .ql-picker-label[data-value="1-6"]::before),
+:global(.ql-snow .ql-picker.ql-line-height .ql-picker-item[data-value="1-6"]::before) { content: '1.6'; }
+:global(.ql-snow .ql-picker.ql-line-height .ql-picker-label[data-value="1-8"]::before),
+:global(.ql-snow .ql-picker.ql-line-height .ql-picker-item[data-value="1-8"]::before) { content: '1.8'; }
+:global(.ql-snow .ql-picker.ql-line-height .ql-picker-label[data-value="2-0"]::before),
+:global(.ql-snow .ql-picker.ql-line-height .ql-picker-item[data-value="2-0"]::before) { content: '2.0'; }
+:global(.ql-snow .ql-picker.ql-line-height .ql-picker-label[data-value="2-5"]::before),
+:global(.ql-snow .ql-picker.ql-line-height .ql-picker-item[data-value="2-5"]::before) { content: '2.5'; }
+:global(.ql-snow .ql-picker.ql-line-height .ql-picker-label[data-value="3-0"]::before),
+:global(.ql-snow .ql-picker.ql-line-height .ql-picker-item[data-value="3-0"]::before) { content: '3.0'; }

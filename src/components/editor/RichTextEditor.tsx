@@ -16,58 +16,49 @@ const ReactQuill = dynamic(async () => {
     
     if (Quill) {
         try {
+            // [Quill 2.0 정석 등록 방식]
             const Parchment = Quill.import('parchment');
             
-            // [Quill 2.0 수정] Parchment가 undefined일 가능성에 대비한 방어적 코드
-            if (Parchment) {
-                const StyleAttributor = Parchment.StyleAttributor || (Parchment.Attributor ? (Parchment.Attributor as any).Style : null);
-                
-                if (StyleAttributor) {
-                    const LineHeightStyle = new StyleAttributor('lineheight', 'line-height', {
-                        scope: Parchment.Scope ? Parchment.Scope.INLINE : 3, // Quill 2.x에서 Scope.INLINE은 보통 3
-                        whitelist: ['1.0', '1.2', '1.4', '1.5', '1.6', '1.8', '2.0', '2.5', '3.0']
-                    });
-                    Quill.register(LineHeightStyle, true);
-                }
-            } else {
-                // Parchment 자체가 없을 경우 SizeStyle에서 constructor를 추출 시도
-                const SizeStyle = Quill.import('attributors/style/size');
-                if (SizeStyle && SizeStyle.constructor) {
-                    const LineHeightStyle = new (SizeStyle.constructor as any)('lineheight', 'line-height', {
-                        scope: 3, // Inline scope
-                        whitelist: ['1.0', '1.2', '1.4', '1.5', '1.6', '1.8', '2.0', '2.5', '3.0']
-                    });
-                    Quill.register(LineHeightStyle, true);
-                }
+            // 1. Font Family (Class Attributor) - Noto Sans Light가 기본값(false)
+            const Font = Quill.import('formats/font');
+            if (Font) {
+                Font.whitelist = [
+                    'notosans', 'notosans-thin', 'notosans-medium', 'notosans-bold', 'notosans-black',
+                    'nanummyeongjo', 'nanumgothic', 'inter', 'merriweather'
+                ];
+                Quill.register(Font, true);
             }
 
-            // Font Size Attributor
-            const SizeStyle = Quill.import('attributors/style/size');
-            if (SizeStyle) {
-                SizeStyle.whitelist = ['0.75rem', '0.875rem', '1rem', '1.125rem', '1.25rem', '1.5rem', '2rem', '2.5rem', '3rem'];
+            // 2. Font Size (Style Attributor) - 14px가 기본값(false)
+            const StyleAttributor = Parchment.StyleAttributor || (Parchment.Attributor ? (Parchment.Attributor as any).Style : null);
+            if (StyleAttributor) {
+                const SizeStyle = new StyleAttributor('size', 'font-size', {
+                    scope: Parchment.Scope.INLINE,
+                    whitelist: ['10px', '11px', '12px', '13px', '16px', '18px', '20px', '24px', '32px', '48px']
+                });
                 Quill.register(SizeStyle, true);
             }
 
-            // Font Family Attributor
-            const FontStyle = Quill.import('attributors/style/font');
-            if (FontStyle) {
-                FontStyle.whitelist = [
-                    'notosans', 'notosans-thin', 'notosans-light', 'notosans-medium', 'notosans-bold', 'notosans-black',
-                    'nanummyeongjo', 'nanumgothic', 'inter', 'merriweather'
-                ];
-                Quill.register(FontStyle, true);
+            // 3. Line Height (Custom Class Attributor) - 1.6이 기본값(false)
+            const ClassAttributor = Parchment.ClassAttributor || (Parchment.Attributor ? (Parchment.Attributor as any).Class : null);
+            if (ClassAttributor) {
+                const LineHeightClass = new ClassAttributor('line-height', 'ql-line-height', {
+                    scope: Parchment.Scope.INLINE,
+                    whitelist: ['1-0', '1-2', '1-4', '1-5', '1-8', '2-0', '2-5', '3-0']
+                });
+                Quill.register(LineHeightClass, true);
             }
 
-            // Image Resize 등록
-            // [참고] 일부 Quill 모듈은 window.Quill이 설정되어 있어야 정상적으로 동작합니다.
+            // 4. Image Resize
             if (typeof window !== 'undefined') {
                 (window as any).Quill = Quill;
             }
-            
-            const ImageResize = (await import('quill-image-resize-module-react')).default;
-            if (ImageResize) {
-                Quill.register('modules/imageResize', ImageResize);
+            const ImageResizeModule = await import('quill-image-resize-module-react');
+            if (ImageResizeModule.default) {
+                Quill.register('modules/imageResize', ImageResizeModule.default);
             }
+            
+            console.log("Quill formats & modules registered successfully");
         } catch (e) {
             console.error("Quill registration failed", e);
         }
@@ -338,11 +329,11 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             container: [
                 [{ 'header': [1, 2, 3, false] }],
                 [{ 'font': [
-                    false, 'notosans', 'notosans-thin', 'notosans-light', 'notosans-medium', 'notosans-bold', 'notosans-black',
+                    false, 'notosans', 'notosans-thin', 'notosans-medium', 'notosans-bold', 'notosans-black',
                     'nanummyeongjo', 'nanumgothic', 'inter', 'merriweather'
                 ] }],
-                [{ 'size': [false, '0.75rem', '0.875rem', '1rem', '1.125rem', '1.25rem', '1.5rem', '2rem', '2.5rem'] }],
-                [{ 'lineheight': [false, '1.0', '1.2', '1.4', '1.5', '1.6', '1.8', '2.0', '2.5', '3.0'] }],
+                [{ 'size': ['10px', '11px', '12px', '13px', false, '16px', '18px', '20px', '24px', '32px', '48px'] }],
+                [{ 'line-height': ['1-0', '1-2', '1-4', '1-5', false, '1-8', '2-0', '2-5', '3-0'] }],
                 ['bold', 'italic', 'underline', 'strike'],
                 [{ 'color': [] }, { 'background': [] }],
                 [{ 'align': [] }],
@@ -355,7 +346,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
     }), []);
 
     const formats = [
-        'header', 'font', 'size', 'lineheight',
+        'header', 'font', 'size', 'line-height',
         'bold', 'italic', 'underline', 'strike',
         'color', 'background', 'align',
         'list', 'image', 'link'

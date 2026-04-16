@@ -252,3 +252,90 @@ li {
 .ql-line-height-2-0 { line-height: 2.0 !important; }
 .ql-line-height-2-5 { line-height: 2.5 !important; }
 .ql-line-height-3-0 { line-height: 3.0 !important; }
+
+/* ============================================================
+   Quill Toolbar Picker Labels (Fixes 'Normal' labels)
+   ============================================================ */
+
+/* 1. Font Family Picker */
+.ql-snow .ql-picker.ql-font .ql-picker-label::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item::before { content: '노토 (Light)'; }
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="notosans"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="notosans"]::before { content: '노토산스'; }
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="notosans-thin"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="notosans-thin"]::before { content: '노토 (Thin)'; }
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="notosans-medium"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="notosans-medium"]::before { content: '노토 (Medium)'; }
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="notosans-bold"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="notosans-bold"]::before { content: '노토 (Bold)'; }
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="notosans-black"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="notosans-black"]::before { content: '노토 (Black)'; }
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="nanummyeongjo"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="nanummyeongjo"]::before { content: '나눔명조'; }
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="nanumgothic"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="nanumgothic"]::before { content: '나눔고딕'; }
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="inter"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="inter"]::before { content: 'Inter'; }
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="merriweather"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="merriweather"]::before { content: 'Merriweather'; }
+
+/* 2. Font Size Picker */
+.ql-snow .ql-picker.ql-size { width: 75px !important; }
+.ql-snow .ql-picker.ql-size .ql-picker-label::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item::before { content: '14px'; }
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="10px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="10px"]::before { content: '10px'; }
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="11px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="11px"]::before { content: '11px'; }
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="12px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="12px"]::before { content: '12px'; }
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="13px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="13px"]::before { content: '13px'; }
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="16px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="16px"]::before { content: '16px'; }
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="18px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="18px"]::before { content: '18px'; }
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="20px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="20px"]::before { content: '20px'; }
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="24px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="24px"]::before { content: '24px'; }
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="32px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="32px"]::before { content: '32px'; }
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="48px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="48px"]::before { content: '48px'; }
+
+/* 3. Line Height Picker */
+.ql-snow .ql-picker.ql-line-height { 
+    width: 95px !important; 
+}
+.ql-snow .ql-picker.ql-line-height .ql-picker-label {
+    padding-left: 8px !important;
+    padding-right: 22px !important;
+}
+.ql-snow .ql-picker.ql-line-height .ql-picker-label::before,
+.ql-snow .ql-picker.ql-line-height .ql-picker-item::before { content: '1.6'; }
+.ql-snow .ql-picker.ql-line-height [data-value="1.6"]::before { content: '1.6'; } /* fallback */
+.ql-snow .ql-picker.ql-line-height .ql-picker-label[data-value="1-0"]::before,
+.ql-snow .ql-picker.ql-line-height .ql-picker-item[data-value="1-0"]::before { content: '1.0'; }
+.ql-snow .ql-picker.ql-line-height .ql-picker-label[data-value="1-2"]::before,
+.ql-snow .ql-picker.ql-line-height .ql-picker-item[data-value="1-2"]::before { content: '1.2'; }
+.ql-snow .ql-picker.ql-line-height .ql-picker-label[data-value="1-4"]::before,
+.ql-snow .ql-picker.ql-line-height .ql-picker-item[data-value="1-4"]::before { content: '1.4'; }
+.ql-snow .ql-picker.ql-line-height .ql-picker-label[data-value="1-5"]::before,
+.ql-snow .ql-picker.ql-line-height .ql-picker-item[data-value="1-5"]::before { content: '1.5'; }
+.ql-snow .ql-picker.ql-line-height .ql-picker-label[data-value="1-8"]::before,
+.ql-snow .ql-picker.ql-line-height .ql-picker-item[data-value="1-8"]::before { content: '1.8'; }
+.ql-snow .ql-picker.ql-line-height .ql-picker-label[data-value="2-0"]::before,
+.ql-snow .ql-picker.ql-line-height .ql-picker-item[data-value="2-0"]::before { content: '2.0'; }
+.ql-snow .ql-picker.ql-line-height .ql-picker-label[data-value="2-5"]::before,
+.ql-snow .ql-picker.ql-line-height .ql-picker-item[data-value="2-5"]::before { content: '2.5'; }
+.ql-snow .ql-picker.ql-line-height .ql-picker-label[data-value="3-0"]::before,
+.ql-snow .ql-picker.ql-line-height .ql-picker-item[data-value="3-0"]::before { content: '3.0'; }
+
+/* 에디터 기본 본문 스타일 강제 설정 */
+.ql-editor {
+    font-family: var(--font-noto-sans) !important;
+    font-weight: 300 !important; /* Light */
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+}
