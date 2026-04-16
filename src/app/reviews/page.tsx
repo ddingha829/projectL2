@@ -350,6 +350,28 @@ function ReviewArchiveContent() {
                       </div>
                     </div>
                   ))}
+
+                  {activeSubject.userReviews.length > 0 && (
+                    <>
+                      <div className={styles.reviewDivider}>유저 평점</div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
+                        {activeSubject.userReviews.map((ur: any) => (
+                          <div key={ur.id} className={`${styles.reviewItem} ${styles.userReviewItem}`}>
+                            <div className={styles.reviewHeader}>
+                              <div className={styles.reviewAuthorGroup}>
+                                <div className={styles.userAvatarSmall}>👤</div>
+                                <span className={styles.userReviewAuthor}>{ur.user?.display_name || "익명 독자"}</span>
+                              </div>
+                              <div className={styles.userReviewScore}>★ {ur.rating}</div>
+                            </div>
+                            <p className={styles.userReviewText}>{ur.comment}</p>
+                            <div className={styles.userReviewDay}>{new Date(ur.created_at).toLocaleDateString()}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
+
                   <div className={styles.userVoteBox}>
                     <h4 className={styles.userVoteTitle}>이 작품이 어떠셨나요?</h4>
                     <div className={styles.voteControls}>
