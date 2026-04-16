@@ -200,7 +200,7 @@
 }
 
 /* 에디터 내부(ql-editor)에서만 삭제 버튼 표시 */
-:global(.ql-editor) .review-card-inner:hover .review-card-delete {
+.ql-editor .review-card-inner:hover .review-card-delete {
   display: flex !important;
   opacity: 1;
 }

@@ -25,12 +25,16 @@ interface EditPostFormProps {
   isAdmin: boolean
   initialIsPublic: boolean
   initialShowMainImage: boolean
+  initialReviewSubject: string
+  initialReviewRating: number
+  initialReviewComment: string
 }
 
 export default function EditPostForm({
   postId, initialTitle, initialContent, initialCategory,
   initialImageUrl, initialIsEditorsPick,
-  isAdmin, initialIsPublic, initialShowMainImage
+  isAdmin, initialIsPublic, initialShowMainImage,
+  initialReviewSubject, initialReviewRating, initialReviewComment
 }: EditPostFormProps) {
   const [content, setContent] = useState(initialContent)
   const [isPublic, setIsPublic] = useState(initialIsPublic)
