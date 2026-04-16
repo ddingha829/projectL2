@@ -49,7 +49,12 @@ export default function PostInteractions({
       if (container.nodeType === 3) container = container.parentElement!;
       
       const segment = (container as HTMLElement).closest('[data-segment-id]');
-      if (segment) {
+      
+      // [신규] 인용 제외 영역 체크 (리뷰 카드 내부 등)
+      const isInsideReviewCard = (container as HTMLElement).closest('[class*="ql-review-card"]') || 
+                                 (container as HTMLElement).closest('[class*="authorCardWrapper"]');
+
+      if (segment && !isInsideReviewCard) {
         const fullText = selection.toString().trim();
         setActiveAnchor({
           id: segment.getAttribute('data-segment-id') || '',

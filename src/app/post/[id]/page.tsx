@@ -260,7 +260,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
       },
       "reviewRating": {
         "@type": "Rating",
-        "ratingValue": post.review_rating / 2,
+        "ratingValue": post.review_rating,
         "bestRating": "5",
         "worstRating": "1"
       }
@@ -269,6 +269,35 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
 
   return (
     <div className={styles.container}>
+      {/* [신규] 수동 리뷰 카드를 위한 대표 이미지 동적 주입 (좌측 사진 영역 전용) */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        /* 1. 클래스 기반 선택자 */
+        .ql-review-card[data-place-id="manual"] .review-card-map,
+        .ql-review-card[data-place-id="manual"] .review-card-manual-photo-area {
+          background-image: url('${post.image_url || 'https://ticgle.kr/logo.png'}') !important;
+          background-size: cover !important;
+          background-position: center !important;
+          background-repeat: no-repeat !important;
+          width: 220px !important;
+          min-width: 220px !important;
+          height: 220px !important;
+          display: block !important;
+          border-right: 1px solid #f1f5f9 !important;
+        }
+        /* 2. 속성 기반 무적 선택자 보완 */
+        div[data-place-id="manual"] .review-card-map {
+          background-image: url('${post.image_url || ''}') !important;
+          width: 220px !important;
+          min-width: 220px !important;
+        }
+        /* 3. 메인 배경 초기화 */
+        .ql-review-card[data-place-id="manual"] .review-card-main {
+          background-image: none !important;
+          background-color: white !important;
+          display: flex !important;
+        }
+      `}} />
+
       {/* Structured Data for Google */}
       <script
         type="application/ld+json"
@@ -357,35 +386,6 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
         
         <ContentSegmenter content={post.content} comments={commentsData} />
         
-        {/* [신규] 티끌러의 한줄평 섹션 */}
-        {post.review_subject && (
-          <div className={styles.postReviewSection}>
-            <fieldset className={styles.postReviewBox}>
-              <legend className={styles.reviewLabel}>한줄 평</legend>
-              <div className={styles.reviewHeader}>
-                <h3 className={styles.reviewSubject}>{post.review_subject}</h3>
-                <div className={styles.reviewRatingBox}>
-                  <div className={styles.reviewStars}>
-                    {[1, 2, 3, 4, 5].map(i => (
-                      <span key={i} style={{ color: (post.review_rating >= i * 2) ? '#ff4d4d' : '#ddd' }}>★</span>
-                    ))}
-                  </div>
-                  <span className={styles.reviewScore}>{post.review_rating}</span>
-                </div>
-              </div>
-              <p className={styles.reviewCommentText}>{post.review_comment}</p>
-              
-              <div className={styles.archiveLinkWrapper}>
-                <Link 
-                  href={`/reviews?search=${encodeURIComponent(post.review_subject)}`}
-                  className={styles.archiveJumpBtn}
-                >
-                  평점 아카이브
-                </Link>
-              </div>
-            </fieldset>
-          </div>
-        )}
 
         {/* Editor Profile Card */}
         {post.authorProfile && (

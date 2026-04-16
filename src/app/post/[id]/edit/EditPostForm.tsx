@@ -2,7 +2,7 @@
 
 import { useState, useRef, useTransition, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { updatePost, getUniqueReviewSubjects } from '@/app/actions/postManage'
+import { updatePost } from '@/app/actions/postManage'
 import { saveDraft } from '@/app/write/actions'
 import styles from '@/app/write/page.module.css'
 import dynamic from 'next/dynamic'
@@ -22,9 +22,6 @@ interface EditPostFormProps {
   initialCategory: string
   initialImageUrl: string
   initialIsEditorsPick: boolean
-  initialReviewSubject?: string
-  initialReviewRating?: number
-  initialReviewComment?: string
   isAdmin: boolean
   initialIsPublic: boolean
   initialShowMainImage: boolean
@@ -33,49 +30,42 @@ interface EditPostFormProps {
 export default function EditPostForm({
   postId, initialTitle, initialContent, initialCategory,
   initialImageUrl, initialIsEditorsPick,
-  initialReviewSubject = '', initialReviewRating = 0, initialReviewComment = '',
   isAdmin, initialIsPublic, initialShowMainImage
 }: EditPostFormProps) {
   const [content, setContent] = useState(initialContent)
   const [isPublic, setIsPublic] = useState(initialIsPublic)
   const [imageUrl, setImageUrl] = useState(initialImageUrl)
-  const [reviewSubject, setReviewSubject] = useState(initialReviewSubject)
-  const [reviewComment, setReviewComment] = useState(initialReviewComment)
   const [showMainImage, setShowMainImage] = useState(initialShowMainImage)
-  const [suggestions, setSuggestions] = useState<string[]>([])
   const [isUploading, setIsUploading] = useState(false)
   const [isPending, startTransition] = useTransition()
-  const router = useRouter()
-  const fileInputRef = useRef<HTMLInputElement>(null)
   const isSubmittingRef = useRef(false)
   const supabase = createClient()
   const [isSaving, setIsSaving] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   
-  // [신규] 대표 이미지 크롭 관련 상태
   const [showCropModal, setShowCropModal] = useState(false);
   const [cropImageSrc, setCropImageSrc] = useState("");
   const [originalFile, setOriginalFile] = useState<File | null>(null);
 
-  // 1. [신규] 페이지 이탈 방지 경고 및 로컬 백업
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (isSubmittingRef.current || isSubmitting) return; // 제출 중에는 경고창을 띄우지 않음
+      if (isSubmittingRef.current || isSubmitting) return;
       e.preventDefault();
       e.returnValue = '';
     };
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, []);
+  }, [isSubmitting]);
 
-  // 2. [신규] 로컬 스토리지 자동 백업 (정전/새로고침 대비)
   useEffect(() => {
     const backupData = {
       title: initialTitle, content, category: initialCategory, imageUrl, 
-      reviewSubject, reviewComment, showMainImage, lastUpdated: new Date().getTime()
+      showMainImage, lastUpdated: new Date().getTime()
     };
     localStorage.setItem(`edit_backup_${postId}`, JSON.stringify(backupData));
-  }, [content, reviewSubject, reviewComment, showMainImage, imageUrl]);
+  }, [content, showMainImage, imageUrl, initialTitle, initialCategory, postId]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -99,7 +89,6 @@ export default function EditPostForm({
       let contentType = isOriginal ? (originalFile?.type || 'image/jpeg') : 'image/jpeg';
 
       if (!isOriginal) {
-        // 크롭 완료된 데이터라면 압축 진행
         finalBlob = await compressImage(new File([uploadBlob], "main.jpg", { type: "image/jpeg" }));
       }
 
@@ -125,8 +114,6 @@ export default function EditPostForm({
     const formData = new FormData(e.currentTarget)
     formData.set('content', content)
     formData.set('imageUrl', imageUrl)
-    formData.set('reviewSubject', reviewSubject)
-    formData.set('reviewComment', reviewComment)
     formData.set('showMainImage', showMainImage ? 'on' : 'off')
     isSubmittingRef.current = true;
     setIsSubmitting(true);
@@ -134,10 +121,9 @@ export default function EditPostForm({
       try {
         const result = await updatePost(postId, formData)
         if (result.ok) {
-          // [복구] 수정 완료 후 Hard Redirect를 통해 캐시된 구버전 페이지가 나오는 것을 방지
           window.location.href = result.redirectTo
         } else {
-          alert('수정에 실패했습니다. 권한이 없거나 이미 삭제된 글일 수 있습니다.')
+          alert('수정에 실패했습니다.')
           setIsSubmitting(false)
         }
       } catch (err) {
@@ -158,13 +144,11 @@ export default function EditPostForm({
         content,
         isEditorsPick: initialIsEditorsPick,
         isPublic,
-        isFeature: initialCategory === 'feature', // 기획전 여부 유지
-        showMainImage,
-        reviewSubject,
-        reviewComment
+        isFeature: initialCategory === 'feature',
+        showMainImage
       });
       if (result.success) {
-        alert("수정 중인 내용이 내 보관함(임시저장)에 안전하게 저장되었습니다.");
+        alert("수정 중인 내용이 내 보관함에 저장되었습니다.");
       }
     } finally {
       setIsSaving(false);
@@ -231,79 +215,6 @@ export default function EditPostForm({
         </div>
       )}
 
-      <div className={styles.reviewEditorBox}>
-        <h3 className={styles.sectionTitle}>리뷰 아카이브 설정</h3>
-        
-        <div className={styles.inputGroup}>
-          <label htmlFor="reviewSubject">리뷰 대상 (작품 제목)</label>
-          <div className={styles.autocompleteWrapper}>
-            <input 
-              type="text" 
-              id="reviewSubject" 
-              name="reviewSubject" 
-              value={reviewSubject}
-              placeholder="예: 듄, 오펜하이머, 노인과 바다 등" 
-              className={styles.input}
-              autoComplete="off"
-              onChange={async (e) => {
-                const val = e.target.value
-                setReviewSubject(val)
-                const suggs = await getUniqueReviewSubjects(val)
-                setSuggestions(suggs)
-              }}
-            />
-            {suggestions.length > 0 && (
-              <ul className={styles.suggestionsList}>
-                {suggestions.map((s, i) => (
-                  <li key={i} onClick={() => {
-                    setReviewSubject(s)
-                    setSuggestions([])
-                  }}>
-                    {s}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </div>
-
-        <div className={styles.inputGroup}>
-          <label htmlFor="reviewRating">티끌러 평점 (10점 만점)</label>
-          <select 
-            id="reviewRating" 
-            name="reviewRating" 
-            defaultValue={initialReviewRating} 
-            className={styles.input}
-          >
-            <option value="0">평점 없음</option>
-            {[10,9,8,7,6,5,4,3,2,1].map(n => (
-              <option key={n} value={n}>{n}점</option>
-            ))}
-          </select>
-        </div>
-
-        <div className={styles.inputGroup}>
-          <label htmlFor="reviewComment">티끌러 한줄평 (최대 25자)</label>
-          <input 
-            type="text" 
-            id="reviewComment" 
-            name="reviewComment" 
-            value={reviewComment}
-            className={styles.input} 
-            placeholder="작품에 대한 짧은 평을 남겨주세요."
-            onChange={(e) => {
-              const val = e.target.value;
-              if (val.length > 25) {
-                alert("한줄평은 최대 25자까지 입력 가능합니다.");
-                return;
-              }
-              setReviewComment(val);
-            }}
-            maxLength={25}
-          />
-        </div>
-      </div>
-
       <div style={{ marginTop: '20px', padding: '15px', background: 'var(--bg-hover)', borderRadius: '12px', marginBottom: '20px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <input 
@@ -318,9 +229,6 @@ export default function EditPostForm({
           </label>
           <input type="hidden" name="isPublic" value={isPublic ? 'on' : 'off'} />
         </div>
-        <p style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)', marginLeft: '30px', marginTop: '4px' }}>
-          체크하면 관리자와 작성자 본인에게만 글이 보이며, 목록에서 숨겨집니다.
-        </p>
       </div>
 
       <div className={styles.buttonGroup} style={{ display: 'flex', gap: '12px' }}>

@@ -1500,3 +1500,207 @@
   from { opacity: 0; transform: translate(-50%, -80%) scale(0.9); }
   to { opacity: 1; transform: translate(-50%, -100%) scale(1); }
 }
+
+/* ============================================================ 
+   TICGLE PLACE REVIEW CARD (SHARED WITH EDITOR)
+   ============================================================ */
+
+.content :global(.review-card-inner) {
+  display: grid !important;
+  grid-template-columns: 220px 1fr !important;
+  background: #fff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 20px !important;
+  overflow: hidden !important;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.06) !important;
+  position: relative !important;
+  transition: all 0.3s ease !important;
+  border-top: 4px solid #ff4804 !important;
+  padding: 0 !important;
+  margin: 30px 0 !important;
+  gap: 0 !important;
+  clear: both !important;
+  line-height: normal !important;
+}
+
+.content :global(.review-card-header) {
+  grid-column: 1 / span 2 !important;
+  padding: 14px 24px !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  background: #fff !important;
+}
+
+.content :global(.brand-label) {
+  font-size: 0.75rem !important;
+  font-weight: 900 !important;
+  color: #ff4804 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  font-family: var(--font-noto-sans) !important;
+}
+
+.content :global(.review-card-main) {
+  grid-column: 1 / span 2 !important;
+  display: flex !important;
+  flex-direction: row !important;
+  height: 220px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  align-items: stretch !important;
+  overflow: hidden !important;
+  background: #fff !important;
+}
+
+.content :global(.review-card-map-link) {
+  display: block !important;
+  width: 220px !important;
+  min-width: 220px !important;
+  height: 100% !important;
+  text-decoration: none !important;
+  position: relative !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  margin-left: -1px !important;
+  overflow: hidden !important;
+  border-right: 1px solid #f1f5f9 !important;
+}
+
+.content :global(.review-card-map) {
+  width: 100% !important;
+  height: 100% !important;
+  background: #f8fafc !important;
+  position: relative !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.content :global(.review-card-map iframe) {
+  position: absolute !important;
+  width: 170% !important;
+  height: calc(100% + 140px) !important;
+  top: -70px !important;
+  left: -20px !important;
+  display: block !important;
+  border: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.content :global(.review-card-body) {
+  flex: 1 !important;
+  padding: 24px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  min-width: 0 !important;
+  background: #fff !important;
+}
+
+.content :global(.review-card-top) {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  gap: 16px !important;
+  margin-bottom: 12px !important;
+}
+
+.content :global(.place-info) {
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+.content :global(.place-name) {
+  font-size: 1.5rem !important;
+  font-weight: 800 !important;
+  color: #1a202c !important;
+  margin: 0 0 6px 0 !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.content :global(.place-address) {
+  font-size: 0.85rem !important;
+  color: #718096 !important;
+  margin: 0 !important;
+  line-height: 1.4 !important;
+}
+
+.content :global(.score-badge) {
+  background: #1a202c !important;
+  color: #fff !important;
+  padding: 8px 12px !important;
+  border-radius: 12px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  min-width: 60px !important;
+  flex-shrink: 0 !important;
+}
+
+.content :global(.score-value) {
+  font-size: 1.25rem !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+}
+
+.content :global(.score-label) {
+  font-size: 0.6rem !important;
+  font-weight: 700 !important;
+  opacity: 0.7 !important;
+  margin-top: 2px !important;
+  letter-spacing: 0.05em !important;
+}
+
+.content :global(.review-comment) {
+  margin-top: auto !important;
+}
+
+.content :global(.review-comment blockquote) {
+  border-left: 3px solid #ff4804 !important;
+  background: none !important;
+  padding: 0 0 0 16px !important;
+  margin: 0 !important;
+  font-size: 1.15rem !important;
+  font-weight: 600 !important;
+  font-style: italic !important;
+  color: #2d3748 !important;
+  line-height: 1.5 !important;
+}
+
+.content :global(.stars-row-mini) {
+  margin-top: 12px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.content :global(.review-card-delete) {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .content :global(.review-card-inner) {
+    grid-template-columns: 1fr !important;
+  }
+  .content :global(.review-card-main) {
+    flex-direction: column !important;
+    height: auto !important;
+  }
+  .content :global(.review-card-map-link) {
+    width: 100% !important;
+    height: 180px !important;
+    border-right: none !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+  }
+  .content :global(.place-name) {
+    font-size: 1.25rem !important;
+  }
+  .content :global(.review-comment blockquote) {
+    font-size: 1rem !important;
+  }
+}

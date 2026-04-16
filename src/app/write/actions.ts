@@ -31,9 +31,30 @@ export async function createPost(formData: FormData) {
     const isPublic = formData.get('isPublic') === 'on';
     const isFeature = formData.get('isFeature') === 'on';
     const showMainImage = formData.get('showMainImage') !== 'off';
-    const reviewSubject = (formData.get('reviewSubject') as string || '').trim();
-    const reviewRating = parseInt(formData.get('reviewRating') as string || '0');
-    const reviewComment = (formData.get('reviewComment') as string || '').trim();
+    let reviewSubject = (formData.get('reviewSubject') as string || '').trim();
+    let reviewRating = parseInt(formData.get('reviewRating') as string || '0');
+    let reviewComment = (formData.get('reviewComment') as string || '').trim();
+
+    // [Plan C] 다중 리뷰 전수 추출 및 저장 준비
+    const cardRegex = /<div[^>]*class="[^"]*ql-review-card[^"]*"[^>]*>/gi;
+    const matches = Array.from(content.matchAll(cardRegex));
+    
+    if (matches.length > 0) {
+      // 첫 번째 카드를 대표 리뷰로 설정 (하향 호환성 유지)
+      const firstTag = matches[0][0];
+      const getAttr = (tag: string, attr: string) => {
+        const res = tag.match(new RegExp(`${attr}=["']([^"']*)["']`, 'i'));
+        return res ? res[1] : null;
+      };
+
+      const extractedName = getAttr(firstTag, 'data-place-name');
+      const extractedRating = getAttr(firstTag, 'data-rating');
+      const extractedComment = getAttr(firstTag, 'data-comment');
+
+      if (extractedName) reviewSubject = extractedName.trim();
+      if (extractedRating) reviewRating = Math.round(parseFloat(extractedRating) * 2);
+      if (extractedComment) reviewComment = extractedComment.trim();
+    }
 
     if (!title || !content) {
       return { error: 'Title and content are required.' };
@@ -67,6 +88,42 @@ export async function createPost(formData: FormData) {
     if (error || !postData) {
       console.error('Insert post error:', error);
       return { error: error ? `Database error: ${error.message}` : 'Failed to create post' };
+    }
+
+    // [Plan C] 다중 리뷰 전수 추출 및 저장
+    if (matches.length > 0) {
+      const reviewEntries = matches.map(match => {
+        const tag = match[0];
+        const getAttr = (tagText: string, attr: string) => {
+          const res = tagText.match(new RegExp(`${attr}=["']([^"']*)["']`, 'i'));
+          return res ? res[1] : null;
+        };
+        
+        const subj = getAttr(tag, 'data-place-name');
+        const rate = getAttr(tag, 'data-rating');
+        const comm = getAttr(tag, 'data-comment');
+        const lat = getAttr(tag, 'data-lat');
+        const lng = getAttr(tag, 'data-lng');
+        const emb = getAttr(tag, 'data-embed-url');
+        const pId = getAttr(tag, 'data-place-id');
+        
+        if (!subj) return null;
+        return {
+          post_id: postData.id,
+          subject: subj.trim(),
+          rating: parseFloat(rate || '0'),
+          comment: comm?.trim() || '',
+          lat: lat ? parseFloat(lat) : null,
+          lng: lng ? parseFloat(lng) : null,
+          embed_url: emb || null,
+          place_id: pId || null
+        };
+      }).filter(Boolean);
+
+      if (reviewEntries.length > 0) {
+        const { error: insError } = await supabase.from('post_reviews').insert(reviewEntries);
+        if (insError) console.error('Archive sync insertion error:', insError);
+      }
     }
 
     await supabase.from('drafts').delete().eq('user_id', user.id);

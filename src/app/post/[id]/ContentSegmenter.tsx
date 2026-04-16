@@ -88,10 +88,9 @@ export default function ContentSegmenter({
   const sanitizedContent = useMemo(() => DOMPurify.sanitize(content, {
     ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 's', 'a', 'img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 
       'ul', 'ol', 'li', 'blockquote', 'pre', 'code', 'span', 'div', 'figure', 'figcaption', 'hr',
-      'table', 'thead', 'tbody', 'tr', 'th', 'td', 'sub', 'sup'],
-    ALLOWED_ATTR: ['href', 'src', 'alt', 'class', 'style', 'target', 'rel', 'width', 'height', 'data-*'],
+      'table', 'thead', 'tbody', 'tr', 'th', 'td', 'sub', 'sup', 'iframe', 'button'],
+    ALLOWED_ATTR: ['href', 'src', 'alt', 'class', 'style', 'target', 'rel', 'width', 'height', 'data-*', 'frameborder', 'allowfullscreen', 'onclick'],
     ALLOW_DATA_ATTR: true,
-    // [보완] 인라인 스타일이 삭제되지 않도록 명시하고 강력하게 허용
     ADD_ATTR: ['style', 'class']
   }), [content]);
 

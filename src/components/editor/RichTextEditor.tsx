@@ -5,28 +5,33 @@ import { useState, useMemo, useRef, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import styles from './RichTextEditor.module.css';
 import ImageCropModal from './ImageCropModal';
-import 'react-quill-new/dist/quill.snow.css'; // 최상단으로 이동
+import PlaceSearchModal from './PlaceSearchModal';
+import { AnimatePresence } from 'framer-motion';
+import 'react-quill-new/dist/quill.snow.css';
 
 // [중요] Quill 관련 커스텀 등록 (SSR 방지 및 안정적인 등록)
 const ReactQuill = dynamic(async () => {
-    const { default: RQ } = await import("react-quill-new");
-    
-    // [중요] RQ.Quill을 사용하여 해당 라이브러리 인스턴스에 직접 등록
-    const Quill = (RQ as any).Quill;
+    const { default: RQ, Quill } = await import("react-quill-new");
     
     if (Quill) {
         try {
             // [Quill 2.0 정석 등록 방식]
-            const Parchment = Quill.import('parchment');
+            const Parchment = (Quill as any).import('parchment');
             
+            // 아이콘 추가 (장소 버튼용)
+            const icons = (Quill as any).import('ui/icons');
+            if (icons) {
+                icons['place'] = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
+            }
+
             // 1. Font Family (Class Attributor) - Noto Sans Light가 기본값(false)
-            const Font = Quill.import('formats/font');
+            const Font = (Quill as any).import('formats/font');
             if (Font) {
                 Font.whitelist = [
                     'notosans', 'notosans-thin', 'notosans-medium', 'notosans-bold', 'notosans-black',
                     'nanummyeongjo', 'nanumgothic', 'inter', 'merriweather'
                 ];
-                Quill.register(Font, true);
+                (Quill as any).register(Font, true);
             }
 
             // 2. Font Size (Style Attributor) - 14px가 기본값(false)
@@ -36,7 +41,7 @@ const ReactQuill = dynamic(async () => {
                     scope: Parchment.Scope.INLINE,
                     whitelist: ['10px', '11px', '12px', '13px', '16px', '18px', '20px', '24px', '32px', '48px']
                 });
-                Quill.register(SizeStyle, true);
+                (Quill as any).register(SizeStyle, true);
             }
 
             // 3. Line Height (Custom Class Attributor) - 1.6이 기본값(false)
@@ -46,10 +51,83 @@ const ReactQuill = dynamic(async () => {
                     scope: Parchment.Scope.INLINE,
                     whitelist: ['1-0', '1-2', '1-4', '1-5', '1-8', '2-0', '2-5', '3-0']
                 });
-                Quill.register(LineHeightClass, true);
+                (Quill as any).register(LineHeightClass, true);
             }
 
-            // 4. Image Resize
+            // 4. Video/Iframe Blot (Google Maps 지원)
+            const Video = (Quill as any).import('formats/video');
+            class SafeVideo extends (Video as any) {
+                static create(value: string) {
+                    const node = super.create(value);
+                    if (value.includes('google.com/maps')) {
+                        node.setAttribute('frameborder', '0');
+                        node.setAttribute('style', 'border:0; width:100%; height:450px;');
+                        node.setAttribute('allowfullscreen', 'true');
+                    }
+                    return node;
+                }
+            }
+            (Quill as any).register(SafeVideo, true);
+
+            // 5. Review Card Blot (인라인 리뷰 카드)
+            const BlockEmbed = (Quill as any).import('blots/block/embed');
+            class ReviewCard extends BlockEmbed {
+                static blotName = 'review-card';
+                static tagName = 'div';
+                static className = 'ql-review-card';
+
+                static create(value: any) {
+                    const node = super.create();
+                    node.style.position = 'relative'; // 삭제 버튼의 기준점
+                    node.style.margin = '40px auto';
+                    node.style.display = 'block';
+                    node.style.maxWidth = '700px';
+                    node.style.width = '100%';
+                    node.style.lineHeight = 'normal';
+                    node.setAttribute('contenteditable', 'false');
+                    node.setAttribute('data-place-name', value.placeName || '');
+                    node.setAttribute('data-address', value.address || '');
+                    node.setAttribute('data-rating', value.rating || '0');
+                    node.setAttribute('data-comment', value.comment || '');
+                    node.setAttribute('data-embed-url', value.embedUrl || '');
+                    node.setAttribute('data-lat', value.lat?.toString() || '');
+                    node.setAttribute('data-lng', value.lng?.toString() || '');
+                    
+                    const rating = Number(value.rating) || 0;
+                    const starsHtml = [1, 2, 3, 4, 5].map(s => {
+                        const diff = rating - (s - 1);
+                        const fillPercent = Math.max(0, Math.min(100, diff * 100));
+                        return `<div class="star-mini-wrapper" style="position:relative;display:inline-block;width:14px;height:14px;margin-right:2px;"><svg viewBox="0 0 24 24" width="14" height="14" fill="#E2E8F0"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><div style="position:absolute;top:0;left:0;width:${fillPercent}%;overflow:hidden;"><svg viewBox="0 0 24 24" width="14" height="14" fill="#FF4804"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div></div>`;
+                    }).join('');
+
+                    const isManual = value.placeId === 'manual';
+                    if (isManual) {
+                        node.classList.add('review-card-manual-photo');
+                    }
+                    
+                    const mapOrImageHtml = isManual 
+                        ? `<div class="review-card-map review-card-manual-photo-area" style="width:220px !important; min-width:220px !important; height:100% !important; background-color:#f8fafc; position:relative;"></div>`
+                        : `<div class="review-card-map"><iframe src="${value.embedUrl}" frameborder="0"></iframe></div>`;
+                    node.innerHTML = `<div class="review-card-inner" style="margin: 0 auto;"><div class="review-card-header"><span class="brand-label">TICGLE PLACE</span></div><div class="review-card-main">${isManual ? mapOrImageHtml : `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(value.placeName)}&query_place_id=${value.placeId || ''}" target="_blank" rel="noopener noreferrer" class="review-card-map-link">${mapOrImageHtml}</a>`}<div class="review-card-body"><div class="review-card-top"><div class="place-info"><h3 class="place-name">${value.placeName}</h3><p class="place-address">${value.address || ''}</p></div><div class="score-badge"><span class="score-value">${rating.toFixed(1)}</span><span class="score-label">SCORE</span></div></div><div class="review-comment"><blockquote>"${value.comment}"</blockquote><div class="stars-row-mini">${starsHtml}</div></div></div></div><button class="review-card-delete" style="display:none;" onclick="this.closest('.ql-review-card').remove()">✕</button></div>`;
+                    return node;
+                }
+
+                static value(node: HTMLElement) {
+                    return {
+                        placeName: node.getAttribute('data-place-name'),
+                        address: node.getAttribute('data-address'),
+                        rating: node.getAttribute('data-rating'),
+                        comment: node.getAttribute('data-comment'),
+                        embedUrl: node.getAttribute('data-embed-url'),
+                        placeId: node.getAttribute('data-place-id'),
+                        lat: node.getAttribute('data-lat') ? parseFloat(node.getAttribute('data-lat')!) : undefined,
+                        lng: node.getAttribute('data-lng') ? parseFloat(node.getAttribute('data-lng')!) : undefined
+                    };
+                }
+            }
+            (Quill as any).register(ReviewCard, true);
+
+            // 6. Image Resize
             if (typeof window !== 'undefined') {
                 (window as any).Quill = Quill;
             }
@@ -83,6 +161,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
     
     // [이미지 관련 State]
     const [showCropModal, setShowCropModal] = useState(false);
+    const [showMapModal, setShowMapModal] = useState(false);
     const [cropImageSrc, setCropImageSrc] = useState("");
     const [originalFile, setOriginalFile] = useState<File | null>(null);
     const [selectedImage, setSelectedImage] = useState<HTMLImageElement | null>(null);
@@ -132,8 +211,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
         if (!file.type.startsWith('image/')) return;
         
         const quill = quillRef.current?.getEditor();
-        const range = quill?.getSelection();
-        const currentIndex = range ? range.index : quill.getLength();
+        if (!quill) return;
 
         try {
             const compressedFile = await compressImage(file);
@@ -150,10 +228,15 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                 .from('post-images')
                 .getPublicUrl(fileName);
 
-            if (quill) {
-                quill.insertEmbed(currentIndex, "image", publicUrl);
-                quill.setSelection(currentIndex + 1);
-            }
+            // [심폐소생술] 삽입 직전에 최신 커서 위치를 다시 한 번 확인
+            const range = quill.getSelection(true);
+            const insertIndex = range ? range.index : quill.getLength();
+
+            quill.insertEmbed(insertIndex, "image", publicUrl);
+            quill.setSelection(insertIndex + 1);
+            
+            // 모바일을 위해 잠깐의 휴식 (UI 갱신 시간 확보)
+            await new Promise(resolve => setTimeout(resolve, 100));
         } catch (err) {
             console.error('Direct upload failed:', err);
         }
@@ -217,9 +300,18 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
         input.click();
         input.onchange = async () => {
             const files = input.files;
-            if (!files) return;
+            if (!files || files.length === 0) return;
+            
+            const quill = quillRef.current?.getEditor();
+            if (!quill) return;
+
+            // 모바일에서 포커스 유실 대비: 현재 선택 영역 또는 끝 지점 확보
+            let range = quill.getSelection(true);
+            let currentIndex = range ? range.index : quill.getLength();
+
             for (let i = 0; i < files.length; i++) {
-                handleImageFile(files[i]);
+                // [순차 처리] await을 사용하여 한 장씩 확실하게 삽입
+                await handleImageFile(files[i]);
             }
         };
     };
@@ -324,6 +416,37 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
         setShowCropModal(true);
     };
 
+    const handleMapSelect = (placeData: { 
+        placeName: string, 
+        address: string, 
+        rating: number, 
+        comment: string, 
+        placeId?: string,
+        lat?: number,
+        lng?: number 
+    }) => {
+        const quill = quillRef.current?.getEditor();
+        if (quill) {
+            const range = quill.getSelection(true);
+            const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+            const embedUrl = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=place_id:${placeData.placeId || encodeURIComponent(placeData.placeName)}&zoom=15&language=ko`;
+            
+            // 전용 리뷰 카드 블록 삽입
+            quill.insertEmbed(range.index, 'review-card', {
+                placeName: placeData.placeName,
+                address: placeData.address,
+                rating: placeData.rating,
+                comment: placeData.comment,
+                embedUrl: embedUrl,
+                placeId: placeData.placeId,
+                lat: placeData.lat,
+                lng: placeData.lng
+            });
+            quill.setSelection(range.index + 1 as any);
+        }
+        setShowMapModal(false);
+    };
+
     const modules = useMemo(() => ({
         toolbar: {
             container: [
@@ -338,9 +461,12 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                 [{ 'color': [] }, { 'background': [] }],
                 [{ 'align': [] }],
                 [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                ['image', 'link', 'clean']
+                ['image', 'link', 'video', 'place', 'clean']
             ],
-            handlers: { image: imageHandler }
+            handlers: { 
+                image: imageHandler,
+                place: () => setShowMapModal(true)
+            }
         },
         imageResize: { modules: ['Resize', 'DisplaySize', 'Toolbar'] }
     }), []);
@@ -349,7 +475,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
         'header', 'font', 'size', 'line-height',
         'bold', 'italic', 'underline', 'strike',
         'color', 'background', 'align',
-        'list', 'image', 'link'
+        'list', 'image', 'link', 'video', 'review-card'
     ];
 
     if (!isClient) return <div className={styles.loading}>티끌러를 불러오는 중입니다...</div>;
@@ -412,6 +538,15 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                     onCancel={() => setShowCropModal(false)}
                 />
             )}
+
+            <AnimatePresence>
+                {showMapModal && (
+                    <PlaceSearchModal 
+                        onSelect={handleMapSelect}
+                        onCancel={() => setShowMapModal(false)}
+                    />
+                )}
+            </AnimatePresence>
         </div>
     );
 }

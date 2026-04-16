@@ -57,8 +57,16 @@ export default async function Home({
     // Feed posts: 40개 개수 제한 및 무거운 content 제외
     applyPrivacyFilter(supabase.from('posts').select('id, serial_id, title, category, content, image_url, is_editors_pick, is_hero, hero_at, is_feature, is_public, created_at, likes_count, author_id, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).neq('category', 'notice').order('created_at', { ascending: false }).limit(40),
     
-    // Reviews
-    applyPrivacyFilter(supabase.from('posts').select('id, serial_id, review_subject, review_rating, review_comment, created_at, author:profiles!author_id(display_name)')).not('review_subject', 'is', null).order('created_at', { ascending: false }).limit(10),
+    // Reviews - [Plan C] post_reviews 테이블에서 개별 리뷰 전수 추출
+    supabase.from('post_reviews').select(`
+      id, 
+      subject, 
+      rating, 
+      comment, 
+      created_at, 
+      post_id,
+      post:posts(id, author:profiles!author_id(display_name))
+    `).order('created_at', { ascending: false }).limit(10),
     
     // Feature posts
     applyPrivacyFilter(supabase.from('posts').select('id, serial_id, title, category, content, image_url, is_editors_pick, is_hero, hero_at, is_feature, is_public, created_at, likes_count, author_id, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).or('is_feature.eq.true,category.eq.feature').order('created_at', { ascending: false }).limit(6),
@@ -175,12 +183,13 @@ export default async function Home({
   }
 
   const mappedReviews = reviewDbPosts?.map((p: any) => ({
-    id: p.serial_id ? String(p.serial_id) : p.id,
-    subject: p.review_subject,
-    rating: p.review_rating,
-    comment: p.review_comment,
+    id: p.id,
+    postId: p.post_id,
+    subject: p.subject,
+    rating: p.rating,
+    comment: p.comment,
     date: p.created_at,
-    authorName: p.author?.display_name || '익명'
+    authorName: p.post?.author?.display_name || '익명 티끌러'
   })) || [];
 
   const featurePosts = featureDbPosts?.map(mapToPost) || [];

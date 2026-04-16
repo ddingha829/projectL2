@@ -22,18 +22,18 @@ export function ReviewsSection({ recentReviews, isMobile, scrollReviews, reviewR
                 <div className={styles.miniRevInnerRow}>
                   <div className={styles.miniRevStars}>
                     {[1, 2, 3, 4, 5].map(i => (
-                      <span key={i} style={{ color: (rev.rating >= i * 2) ? '#ff4804' : '#ddd' }}>★</span>
+                      <span key={i} style={{ color: (rev.rating >= i) ? '#ff4804' : '#ddd' }}>★</span>
                     ))}
                   </div>
                   <span className={styles.miniRevScore}>{rev.rating}</span>
-                  <span className={styles.miniRevCommunityScore}>유저 {(rev.rating * 0.7 + 1.5).toFixed(1)}</span>
+                  <span className={styles.miniRevCommunityScore}>유저 {(rev.rating * 0.8 + 0.5).toFixed(1)}</span>
                 </div>
               </div>
               <p className={styles.miniRevText}>{rev.comment}</p>
               <div className={styles.miniRevFooter}>
                 <span className={styles.miniRevAuthor}>{rev.authorName}</span>
-                {(rev.id && !String(rev.id).startsWith('m')) && (
-                  <Link href={`/post/db-${rev.id}`} className={styles.miniRevLink} onClick={(e) => e.stopPropagation()}>리뷰 보기 →</Link>
+                {rev.postId && (
+                  <Link href={`/post/db-${rev.postId}`} className={styles.miniRevLink} onClick={(e) => e.stopPropagation()}>리뷰 보기 →</Link>
                 )}
               </div>
             </div>

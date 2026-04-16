@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { createPost, saveDraft, getDraft, getUniqueReviewSubjects, deleteDraft } from "./actions";
+import { createPost, saveDraft, getDraft, deleteDraft } from "./actions";
 import styles from "./page.module.css";
 import { useFormStatus } from "react-dom";
 import dynamic from "next/dynamic";
@@ -9,7 +9,6 @@ import { createClient } from "@/lib/supabase/client";
 import { useSearchParams } from "next/navigation";
 import { compressImage } from "@/lib/utils/image";
 
-// [중요] 수리된 티끌러 컴포넌트를 다시 불러옴
 const RichTextEditor = dynamic(() => import("@/components/editor/RichTextEditor"), { 
   ssr: false, 
   loading: () => <div style={{ height: '600px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-hover)', borderRadius: '12px' }}>글쓰기 티끌러 로딩중...</div> 
@@ -40,13 +39,6 @@ export default function WritePostForm({ role }: { role: string }) {
   const [isFeature, setIsFeature] = useState(false);
   const [showMainImage, setShowMainImage] = useState(true);
   
-  // [신규] 한줄평 상태
-  const [showReview, setShowReview] = useState(false);
-  const [reviewSubject, setReviewSubject] = useState("");
-  const [reviewRating, setReviewRating] = useState(0);
-  const [reviewComment, setReviewComment] = useState("");
-  const [suggestions, setSuggestions] = useState<string[]>([]);
-  
   const [isUploading, setIsUploading] = useState(false);
   const [isDraftSaving, setIsDraftSaving] = useState(false);
   const [draftSaved, setDraftSaved] = useState(false);
@@ -54,12 +46,10 @@ export default function WritePostForm({ role }: { role: string }) {
   const [isClient, setIsClient] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  // [신규] 대표 이미지 크롭 관련 상태
   const [showCropModal, setShowCropModal] = useState(false);
   const [cropImageSrc, setCropImageSrc] = useState("");
   const [originalFile, setOriginalFile] = useState<File | null>(null);
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const isSubmittingRef = useRef(false);
   const supabase = createClient();
 
@@ -72,17 +62,14 @@ export default function WritePostForm({ role }: { role: string }) {
       alert(`저장 중 오류가 발생했습니다: ${error}`);
     }
 
-    // 탭 전환/새로고침 시 데이터 날림 방지
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (isSubmittingRef.current || isSubmitting) return; // 제출 중에는 경고창을 띄우지 않음
+      if (isSubmittingRef.current || isSubmitting) return;
       e.preventDefault();
       e.returnValue = '';
     };
     window.addEventListener('beforeunload', handleBeforeUnload);
 
-    // [초기 로드] 임시저장 데이터 및 로컬 백업 불러오기
     const initData = async () => {
-      // 1. DB 임시저장 확인
       const draft = await getDraft();
       if (draft) {
         if (confirm("작성 중이던 임시저장 글이 있습니다. 불러오시겠습니까?")) {
@@ -94,18 +81,10 @@ export default function WritePostForm({ role }: { role: string }) {
           setIsPublic(draft.is_public !== false);
           setIsFeature(draft.is_feature || false);
           setShowMainImage(draft.show_main_image !== false);
-          
-          if (draft.review_subject) {
-            setReviewSubject(draft.review_subject);
-            setReviewRating(draft.review_rating || 0);
-            setReviewComment(draft.review_comment || "");
-            setShowReview(true);
-          }
-          return; // DB 불러왔으면 로컬은 패스
+          return;
         }
       }
 
-      // 2. DB 없으면 로컬 백업 확인
       const backup = localStorage.getItem('write_backup');
       if (backup) {
         const data = JSON.parse(backup);
@@ -114,22 +93,16 @@ export default function WritePostForm({ role }: { role: string }) {
           setCategory(data.category || "movie");
           setContent(data.content || "");
           setMainImageUrl(data.mainImageUrl || "");
-          setReviewSubject(data.reviewSubject || "");
-          setReviewComment(data.reviewComment || "");
-          if (data.reviewSubject) setShowReview(true);
         }
       }
     };
     initData();
 
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [searchParams, error]); 
+  }, [searchParams, error, isSubmitting]); 
 
-  // 실시간 로컬 스토리지 백업 및 대표 이미지 자동 추출
   useEffect(() => {
-    if (!title && !content) return;
-    
-    // 본문에서 대표 이미지 추출 (data-main-image="true" 우선, 없으면 첫 번째 이미지)
+    if (!content) return;
     const parser = new DOMParser();
     const doc = parser.parseFromString(content, 'text/html');
     const manualMain = doc.querySelector('img[data-main-image="true"]');
@@ -138,17 +111,30 @@ export default function WritePostForm({ role }: { role: string }) {
       ? (manualMain as HTMLImageElement).src 
       : (firstImg ? (firstImg as HTMLImageElement).src : "");
     
-    // 상태가 변경되었을 때만 업데이트
     if (extractedUrl !== mainImageUrl) {
       setMainImageUrl(extractedUrl);
     }
+  }, [content, mainImageUrl]);
 
-    const backupData = {
-      title, content, category, mainImageUrl: extractedUrl, 
-      reviewSubject, reviewComment, showMainImage, lastUpdated: new Date().getTime()
-    };
-    localStorage.setItem('write_backup', JSON.stringify(backupData));
-  }, [title, content, category, reviewSubject, reviewComment, showMainImage]);
+  const lastStateRef = useRef({ title, content, category, mainImageUrl, showMainImage });
+  useEffect(() => {
+    lastStateRef.current = { title, content, category, mainImageUrl, showMainImage };
+  }, [title, content, category, mainImageUrl, showMainImage]);
+
+  useEffect(() => {
+    const autoSaveTimer = setInterval(() => {
+      const { title, content, ...rest } = lastStateRef.current;
+      if (!title && !content) return;
+      
+      const backupData = {
+        title, content, ...rest,
+        lastUpdated: new Date().getTime()
+      };
+      localStorage.setItem('write_backup', JSON.stringify(backupData));
+    }, 300000); // 5분
+    
+    return () => clearInterval(autoSaveTimer);
+  }, []);
 
   const handleSaveDraft = async () => {
     setIsDraftSaving(true);
@@ -160,10 +146,7 @@ export default function WritePostForm({ role }: { role: string }) {
       isEditorsPick,
       isPublic,
       isFeature,
-      showMainImage,
-      reviewSubject,
-      reviewRating,
-      reviewComment
+      showMainImage
     });
     
     if (result.success) {
@@ -180,22 +163,14 @@ export default function WritePostForm({ role }: { role: string }) {
     
     setIsDraftDeleting(true);
     try {
-      // 1. DB 삭제
       const result = await deleteDraft();
-      
-      // 2. 로컬 삭제
       localStorage.removeItem('write_backup');
       
       if (result.success) {
         alert("임시저장 기록이 모두 삭제되었습니다.");
-        // 3. 폼 초기화 (선택 사항이지만 유저 경험을 위해 권장)
         setTitle("");
         setContent("");
         setMainImageUrl("");
-        setReviewSubject("");
-        setReviewComment("");
-        setReviewRating(0);
-        setShowReview(false);
       } else {
         alert(`DB 삭제 중 오류 발생: ${result.error}`);
       }
@@ -207,19 +182,6 @@ export default function WritePostForm({ role }: { role: string }) {
     }
   };
 
-  const handleMainImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setOriginalFile(file);
-    const reader = new FileReader();
-    reader.onload = () => {
-      setCropImageSrc(reader.result as string);
-      setShowCropModal(true);
-    };
-    reader.readAsDataURL(file);
-  };
-
   const uploadMainImage = async (uploadBlob: Blob | File, isOriginal = false) => {
     setIsUploading(true);
     setShowCropModal(false);
@@ -229,7 +191,6 @@ export default function WritePostForm({ role }: { role: string }) {
       let contentType = isOriginal ? (originalFile?.type || 'image/jpeg') : 'image/jpeg';
 
       if (!isOriginal) {
-        // 크롭 완료된 데이터라면 압축 진행 (GIF는 알아서 패스됨)
         finalBlob = await compressImage(new File([uploadBlob], "main.jpg", { type: "image/jpeg" }));
       }
 
@@ -256,7 +217,6 @@ export default function WritePostForm({ role }: { role: string }) {
   };
 
   const handleFormSubmit = async (formData: FormData) => {
-    // 약 1MB 이상의 텍스트(Base64 이미지 포함 가능성)가 포함된 경우 경고
     if (content.length > 800000) {
       if (!confirm("글의 용량이 너무 큼니다. 본문에 이미지를 직접 붙여넣기(Paste) 하셨나요? \n\n이대로 진행하면 업로드에 실패할 수 있습니다. 이미지를 삭제하고 '이미지 업로드' 버튼을 통해 다시 올려주시는 것을 권장합니다. \n\n그래도 진행할까요?")) {
         return;
@@ -269,7 +229,6 @@ export default function WritePostForm({ role }: { role: string }) {
       alert(result.error);
       setIsSubmitting(false);
     } else {
-      // Clear backup on success (redirect handles navigation)
       localStorage.removeItem('write_backup');
     }
   };
@@ -314,7 +273,6 @@ export default function WritePostForm({ role }: { role: string }) {
         />
       </div>
 
-      {/* 대표 이미지 */}
       {mainImageUrl && (
         <div className={styles.inputGroup}>
           <label className={styles.label}>대표 이미지</label>
@@ -325,7 +283,6 @@ export default function WritePostForm({ role }: { role: string }) {
         </div>
       )}
 
-      {/* 수리된 티끌러 컴포넌트 복구 */}
       <div className={`${styles.inputGroup} ${styles.editorGroup}`}>
         <label>내용</label>
         <RichTextEditor 
@@ -336,91 +293,8 @@ export default function WritePostForm({ role }: { role: string }) {
         <textarea name="content" value={content} style={{ display: 'none' }} readOnly />
       </div>
 
-
-      {showReview && (
-        <div className={styles.reviewEditorBox}>
-          <div className={styles.inputGroup}>
-            <label>평가 항목 (예: 영화 제목, 제품명)</label>
-            <div className={styles.autocompleteWrapper}>
-              <input 
-                type="text" 
-                name="reviewSubject"
-                className={styles.input}
-                placeholder="평가할 대상을 입력하세요"
-                value={reviewSubject}
-                onChange={async (e) => {
-                  setReviewSubject(e.target.value);
-                  const suggs = await getUniqueReviewSubjects(e.target.value);
-                  setSuggestions(suggs);
-                }}
-                autoComplete="off"
-              />
-              {suggestions.length > 0 && (
-                <ul className={styles.suggestionsList}>
-                  {suggestions.map((s, i) => (
-                    <li key={i} onClick={() => {
-                      setReviewSubject(s);
-                      setSuggestions([]);
-                    }}>
-                      {s}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </div>
-
-          <div className={styles.inputGroup}>
-            <label>별점 ({reviewRating} / 10)</label>
-            <div className={styles.starRatingRow}>
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => (
-                <span 
-                  key={star} 
-                  className={`${styles.star} ${reviewRating >= star ? styles.starActive : ''}`}
-                  onClick={() => setReviewRating(star)}
-                >
-                  ★
-                </span>
-              ))}
-              <input type="hidden" name="reviewRating" value={reviewRating} />
-            </div>
-          </div>
-
-          <div className={styles.inputGroup}>
-            <label>한줄평 (최대 25자)</label>
-            <input 
-              type="text" 
-              name="reviewComment"
-              className={styles.input}
-              placeholder="한줄평을 입력하세요"
-              value={reviewComment}
-              onChange={(e) => {
-                const val = e.target.value;
-                if (val.length > 25) {
-                  alert("한줄평은 최대 25자까지 입력 가능합니다.");
-                  return;
-                }
-                setReviewComment(val);
-              }}
-              maxLength={25}
-            />
-          </div>
-        </div>
-      )}
-
-      {/* 옵션 설정 영역 (체크박스 고밀도화) */}
       <div className={styles.optionsSection}>
         <div className={styles.optionsGrid}>
-          <div className={styles.checkboxGroup}>
-            <input 
-              type="checkbox" 
-              id="showReviewCheck" 
-              checked={showReview}
-              onChange={(e) => setShowReview(e.target.checked)}
-            />
-            <label htmlFor="showReviewCheck" className={styles.checkboxLabel}>📝 한줄 평 추가하기</label>
-          </div>
-
           {role === 'admin' && (
             <div className={styles.checkboxGroup}>
               <input 
@@ -479,7 +353,6 @@ export default function WritePostForm({ role }: { role: string }) {
         <SubmitButton isUploading={isUploading} isDraftSaving={isDraftSaving} />
       </div>
 
-      {/* 임시저장 토스트 알림 */}
       <div className={`${styles.draftToast} ${draftSaved ? styles.draftToastVisible : ''}`}>
         ✅ 임시저장이 완료되었습니다
       </div>
@@ -495,4 +368,3 @@ export default function WritePostForm({ role }: { role: string }) {
     </form>
   );
 }
-

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans_KR, Outfit, Nanum_Myeongjo, Nanum_Gothic } from "next/font/google";
 import "./globals.css";
+import "@/styles/editor-blots.css"; // 에디터 커스텀 카드 전용 글로벌 스타일
 import gridStyles from "./layout.module.css";
 import AppShell from "@/components/layout/AppShell";
 import { Suspense } from "react";

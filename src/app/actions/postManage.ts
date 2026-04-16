@@ -52,9 +52,30 @@ export async function updatePost(postId: string, formData: FormData): Promise<{ 
   const isFeature = formData.get('isFeature') === 'on'
   const showMainImage = formData.get('showMainImage') !== 'off'
   
-  const reviewSubject = formData.get('reviewSubject') as string
-  const reviewRating = parseInt(formData.get('reviewRating') as string) || null
-  const reviewComment = formData.get('reviewComment') as string
+  let reviewSubject = formData.get('reviewSubject') as string
+  let reviewRating = parseInt(formData.get('reviewRating') as string) || null
+  let reviewComment = formData.get('reviewComment') as string
+
+  // [Plan C] 다중 리뷰 전수 추출 및 저장 준비
+  const cardRegex = /<div[^>]*class="[^"]*ql-review-card[^"]*"[^>]*>/gi;
+  const matches = Array.from(content.matchAll(cardRegex));
+  
+  if (matches.length > 0) {
+    // 첫 번째 카드를 대표 리뷰로 설정 (하향 호환성 유지)
+    const firstTag = matches[0][0];
+    const getAttr = (tag: string, attr: string) => {
+      const res = tag.match(new RegExp(`${attr}=["']([^"']*)["']`, 'i'));
+      return res ? res[1] : null;
+    };
+
+    const extractedName = getAttr(firstTag, 'data-place-name');
+    const extractedRating = getAttr(firstTag, 'data-rating');
+    const extractedComment = getAttr(firstTag, 'data-comment');
+
+    if (extractedName) reviewSubject = extractedName.trim();
+    if (extractedRating) reviewRating = parseFloat(extractedRating || '0');
+    if (extractedComment) reviewComment = extractedComment.trim();
+  }
 
   const updateData: Record<string, any> = { 
     title, content, category, 
@@ -72,26 +93,70 @@ export async function updatePost(postId: string, formData: FormData): Promise<{ 
     updateData.is_feature = isFeature || category === 'feature'
   }
 
-  const { data: updatedData, error: updateError } = await supabase
-    .from('posts')
-    .update(updateData)
-    .eq('id', postId)
-    .select('id, serial_id')
-    .single()
+  try {
+    const { data: updatedData, error: updateError } = await supabase
+      .from('posts')
+      .update(updateData)
+      .eq('id', actualId)
+      .select('id, serial_id')
+      .single()
 
-  if (updateError || !updatedData) {
-    console.error('Update post error (Policy or DB):', updateError)
-    return { ok: false, redirectTo: `/post/db-${postId}?error=update_failed_policy` }
+    if (updateError || !updatedData) {
+      console.error('Update post error (Policy or DB):', JSON.stringify(updateError))
+      return { ok: false, redirectTo: `/post/db-${postId}?error=update_failed_db` }
+    }
+
+    // [Plan C] 다중 리뷰 동기화 (기존 데이터 삭제 후 재삽입)
+    const { error: delError } = await supabase.from('post_reviews').delete().eq('post_id', actualId);
+    if (delError) console.error('Delete reviews error:', delError);
+    
+    if (matches.length > 0) {
+      const reviewEntries = matches.map(match => {
+        const tag = match[0];
+        const getAttr = (tagText: string, attr: string) => {
+          const res = tagText.match(new RegExp(`${attr}=["']([^"']*)["']`, 'i'));
+          return res ? res[1] : null;
+        };
+        
+        const subj = getAttr(tag, 'data-place-name');
+        const rate = getAttr(tag, 'data-rating');
+        const comm = getAttr(tag, 'data-comment');
+        const lat = getAttr(tag, 'data-lat');
+        const lng = getAttr(tag, 'data-lng');
+        const emb = getAttr(tag, 'data-embed-url');
+        const pId = getAttr(tag, 'data-place-id');
+        
+        if (!subj) return null;
+        return {
+          post_id: actualId,
+          subject: subj.trim(),
+          rating: parseFloat(rate || '0'),
+          comment: comm?.trim() || '',
+          lat: lat ? parseFloat(lat) : null,
+          lng: lng ? parseFloat(lng) : null,
+          embed_url: emb || null,
+          place_id: pId || null
+        };
+      }).filter(Boolean);
+
+      if (reviewEntries.length > 0) {
+        const { error: insError } = await supabase.from('post_reviews').insert(reviewEntries);
+        if (insError) console.error('Insert reviews error:', insError);
+      }
+    }
+
+    // 수정한 글의 숫자 ID(serial_id)가 있으면 그 주소로, 없으면 UUID 주소로 이동
+    const targetId = updatedData.serial_id ? String(updatedData.serial_id) : `db-${updatedData.id}`
+    
+    // [강력한 갱신] 수정된 글 페이지와 홈, 레이아웃 전체를 새로고침 유도
+    revalidatePath(`/post/${targetId}`)
+    revalidatePath('/', 'layout')
+    
+    return { ok: true, redirectTo: `/post/${targetId}` }
+  } catch (sysErr) {
+    console.error('System error during updatePost:', sysErr);
+    return { ok: false, redirectTo: `/post/db-${postId}?error=system_error` }
   }
-
-  // 수정한 글의 숫자 ID(serial_id)가 있으면 그 주소로, 없으면 UUID 주소로 이동
-  const targetId = updatedData.serial_id ? String(updatedData.serial_id) : `db-${updatedData.id}`
-  
-  // [강력한 갱신] 수정된 글 페이지와 홈, 레이아웃 전체를 새로고침 유도
-  revalidatePath(`/post/${targetId}`)
-  revalidatePath('/', 'layout')
-  
-  return { ok: true, redirectTo: `/post/${targetId}` }
 }
 
 /** 게시물 삭제 */
