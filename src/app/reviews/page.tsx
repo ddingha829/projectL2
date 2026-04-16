@@ -152,13 +152,15 @@ function ReviewArchiveContent() {
     ? subjects.filter(s => s.subject !== activeSubject.subject) 
     : filtered;
 
-  // Leaflet initialization
+  // 1. Leaflet Map INITIALIZATION (Run Once)
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return;
 
     const initMap = async () => {
       try {
         const L = (await import('leaflet')).default;
+        
+        // Leaflet 아이콘 기본 설정
         delete (L.Icon.Default.prototype as any)._getIconUrl;
         L.Icon.Default.mergeOptions({
           iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
@@ -166,62 +168,22 @@ function ReviewArchiveContent() {
           shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
         });
 
-        if (mapInstanceRef.current) return;
-        // 한반도 전역이 한눈에 들어오는 최적의 초기 좌표와 줌 레벨 설정
+        // 한반도 전역 최적 뷰 설정
         const initialMap = L.map(mapRef.current!).setView([36.3, 127.8], 7);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution: '&copy; OpenStreetMap'
         }).addTo(initialMap);
+
+        // 마커들을 관리할 전용 레이어 그룹 생성
+        const markerGroup = L.layerGroup().addTo(initialMap);
+        (initialMap as any)._markerGroup = markerGroup;
+
         mapInstanceRef.current = initialMap;
 
-        const bounds = L.latLngBounds([]);
-        let hasMarkers = false;
-
-        subjects.forEach(s => {
-          s.reviews.forEach((r: any) => {
-            if (r.lat && r.lng) {
-              const marker = L.circleMarker([r.lat, r.lng], {
-                radius: 10, fillColor: "#ff4804", color: "#fff", weight: 2, opacity: 1, fillOpacity: 0.9
-              }).addTo(initialMap);
-
-              marker.bindPopup(`
-                <div style="padding:10px; color:#1a202c; font-family:sans-serif; min-width:180px;">
-                  <h4 style="margin:0; font-weight:800; font-size:16px;">${s.subject}</h4>
-                  <p style="margin:5px 0; font-size:14px;">평가: ★ ${s.avgRating}</p>
-                  <button id="view-review-${s.subject.replace(/\s+/g, '-')}"
-                          style="width:100%; padding:8px; background:#ff4804; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">
-                    리뷰 리스트 보기
-                  </button>
-                </div>
-              `);
-
-              marker.on('popupopen', () => {
-                const btn = document.getElementById(`view-review-${s.subject.replace(/\s+/g, '-')}`);
-                if (btn) btn.onclick = () => window.dispatchEvent(new CustomEvent('map-select-subject', { detail: s.subject }));
-              });
-
-              bounds.extend([r.lat, r.lng]);
-              hasMarkers = true;
-            }
-          });
-        });
-
-        if (hasMarkers) {
-          // 마커가 있을 때만 해당 마커들에 맞춤 (없을 땐 한반도 기본 뷰 유지)
-          // initialMap.fitBounds(bounds, { padding: [50, 50] }); 
-        }
-
-        // 지도 잘림 현상 해결 (사이즈 강제 재계산)
-        const timer = setTimeout(() => {
-          if (mapInstanceRef.current) {
-            mapInstanceRef.current.invalidateSize();
-          }
-        }, 500);
-        
-        // Clean up timer on unmount
-        (initialMap as any)._resizeTimer = timer;
+        // 레이아웃 보정 (사이즈 재계산)
+        setTimeout(() => initialMap.invalidateSize(), 500);
       } catch (error) {
-        console.error("Leaflet fail:", error);
+        console.error("Leaflet Init Error:", error);
       }
     };
 
@@ -229,12 +191,66 @@ function ReviewArchiveContent() {
 
     return () => {
       if (mapInstanceRef.current) {
-        const timer = (mapInstanceRef.current as any)._resizeTimer;
-        if (timer) clearTimeout(timer);
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
       }
     };
+  }, []); // 의존성 없음: 지도 초기화는 한 번만
+
+  // 2. Leaflet MARKERS UPDATE (Run when subjects change)
+  useEffect(() => {
+    const updateMarkers = async () => {
+      if (!mapInstanceRef.current || subjects.length === 0) return;
+      
+      const L = (await import('leaflet')).default;
+      const initialMap = mapInstanceRef.current;
+      const markerGroup = (initialMap as any)._markerGroup;
+
+      if (!markerGroup) return;
+
+      // 기존 핀들을 모두 닦아내고 새로 꽂습니다.
+      markerGroup.clearLayers();
+      const bounds = L.latLngBounds([]);
+      let hasAnyMarker = false;
+
+      subjects.forEach(s => {
+        s.reviews.forEach((r: any) => {
+          if (r.lat && r.lng) {
+            const marker = L.circleMarker([r.lat, r.lng], {
+              radius: 10, fillColor: "#ff4804", color: "#fff", weight: 2, opacity: 1, fillOpacity: 0.9
+            }).addTo(markerGroup);
+
+            marker.bindPopup(`
+              <div style="padding:10px; color:#1a202c; font-family:sans-serif; min-width:180px;">
+                <h4 style="margin:0; font-weight:800; font-size:16px;">${s.subject}</h4>
+                <p style="margin:5px 0; font-size:14px;">전문가 평점: ★ ${s.editorAvg}</p>
+                <button id="view-review-${s.subject.replace(/\s+/g, '-')}"
+                        style="width:100%; padding:8px; background:#ff4804; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">
+                  리뷰 리스트 보기
+                </button>
+              </div>
+            `);
+
+            marker.on('popupopen', () => {
+              const btn = document.getElementById(`view-review-${s.subject.replace(/\s+/g, '-')}`);
+              if (btn) {
+                btn.onclick = () => {
+                  window.dispatchEvent(new CustomEvent('map-select-subject', { detail: s.subject }));
+                };
+              }
+            });
+
+            bounds.extend([r.lat, r.lng]);
+            hasAnyMarker = true;
+          }
+        });
+      });
+
+      // 필요한 경우 마커 전체가 보이도록 줌 조절 (현재는 한반도 전도 고정)
+      // if (hasAnyMarker) initialMap.fitBounds(bounds, { padding: [50, 50], maxZoom: 12 });
+    };
+
+    updateMarkers();
   }, [subjects]);
 
   useEffect(() => {
