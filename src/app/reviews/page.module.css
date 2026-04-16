@@ -7,9 +7,9 @@
 
 @media (max-width: 768px) {
   .container {
-    padding: 20px 2px; /* Reduced by 50% from 4px as requested */
+    padding: 20px 2px;
     width: 100%;
-    overflow: hidden;
+    overflow: visible; /* hidden 제거 */
   }
 }
 
@@ -37,6 +37,8 @@
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
+  position: relative;
+  z-index: 10; /* 지도가 덮지 못하게 보강 */
 }
 
 .searchInput {

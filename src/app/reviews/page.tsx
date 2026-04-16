@@ -149,7 +149,7 @@ function ReviewArchiveContent() {
     : (filtered.length === 1 ? filtered[0] : null);
 
   const gridItems = activeSubject 
-    ? subjects.filter(s => s.subject !== activeSubject.subject) 
+    ? filtered.filter(s => s.subject !== activeSubject.subject) 
     : filtered;
 
   // 1. Leaflet Map INITIALIZATION (Run Once)
@@ -276,9 +276,12 @@ function ReviewArchiveContent() {
             </div>
           )}
         </div>
-        <div className={styles.searchBox}>
+        <form 
+          className={styles.searchBox} 
+          onSubmit={(e) => e.preventDefault()}
+        >
           <input 
-            type="text" 
+            type="search" /* type "search" instead of "text" for better mobile keyboard */
             placeholder="작품 제목으로 검색..." 
             className={styles.searchInput}
             value={search}
@@ -287,7 +290,7 @@ function ReviewArchiveContent() {
               if (expandedId) setExpandedId(null);
             }}
           />
-        </div>
+        </form>
       </header>
 
       {isLoading ? (
