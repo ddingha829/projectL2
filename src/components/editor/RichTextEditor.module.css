@@ -39,14 +39,50 @@
 }
 
 .editorContainer :global(.ql-toolbar) {
+  position: -webkit-sticky;
   position: sticky;
-  top: 60px; /* TopNavbar 높이에 맞춤 */
+  top: var(--header-height);
   z-index: 100;
-  background: white;
+  background: var(--bg-primary);
   border-top: none !important;
   border-left: none !important;
   border-right: none !important;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  border-bottom: 1px solid var(--border-medium) !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .editorContainer :global(.ql-toolbar) {
+    top: var(--header-height-mobile);
+    padding: 8px 4px !important;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.95);
+  }
+}
+
+:global(.dark) .editorContainer :global(.ql-toolbar) {
+  background: var(--bg-primary);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+@media (prefers-color-scheme: dark) {
+  .editorContainer :global(.ql-toolbar) {
+    background: var(--bg-primary);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+}
+
+@media (max-width: 768px) {
+  :global(.dark) .editorContainer :global(.ql-toolbar) {
+    background: rgba(18, 18, 18, 0.9);
+  }
+}
+
+@media (prefers-color-scheme: dark) and (max-width: 768px) {
+  .editorContainer :global(.ql-toolbar) {
+    background: rgba(18, 18, 18, 0.9);
+  }
 }
 
 .editorContainer :global(.ql-container) {
