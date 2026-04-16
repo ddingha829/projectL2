@@ -68,6 +68,7 @@ export default function ImageCropModal({ image, onCropComplete, onUseOriginal, o
   const createImage = (url: string): Promise<HTMLImageElement> =>
     new Promise((resolve, reject) => {
       const img = new Image();
+      img.crossOrigin = "anonymous"; // [중요] 외부 URL 이미지를 캔버스에서 다루기 위해 필수
       img.addEventListener("load", () => resolve(img));
       img.addEventListener("error", (error) => reject(error));
       img.src = url;
@@ -166,8 +167,13 @@ export default function ImageCropModal({ image, onCropComplete, onUseOriginal, o
   };
 
   return (
-    <div className={styles.modalOverlay}>
-      <div className={styles.modalContent}>
+    <div 
+      className={styles.modalOverlay} 
+      style={{ zIndex: 999999 }} 
+      onClick={(e) => e.stopPropagation()}
+      onMouseDown={(e) => e.stopPropagation()}
+    >
+      <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         {/* Preset Buttons */}
         <div className={styles.aspectControls}>
           {(["free", "1:1", "4:3", "5:4", "16:9"] as AspectPreset[]).map((preset) => (
@@ -209,6 +215,7 @@ export default function ImageCropModal({ image, onCropComplete, onUseOriginal, o
                   src={image}
                   alt="crop"
                   onLoad={onFreeImageLoad}
+                  crossOrigin="anonymous"
                   style={{ maxHeight: "100%", maxWidth: "100%", display: "block" }}
                 />
               </ReactCrop>

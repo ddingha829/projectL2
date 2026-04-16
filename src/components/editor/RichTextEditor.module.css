@@ -38,6 +38,16 @@
   margin: 0 2px;
 }
 
+/* [중요] 에디터 최소 높이 설정 */
+.editorContainer :global(.ql-container.ql-snow) {
+  min-height: 600px !important;
+}
+
+.editorContainer :global(.ql-editor) {
+  min-height: 600px !important;
+  padding-bottom: 100px; /* 하단 여백 추가 */
+}
+
 .toolbar button {
   padding: 7px 10px;
   background: transparent;
@@ -48,6 +58,15 @@
   font-size: 0.95rem;
   color: var(--text-secondary);
   white-space: nowrap;
+}
+
+.captionText {
+  font-size: 0.85rem;
+  color: #888;
+  text-align: center;
+  line-height: 1.4; /* 0.7은 너무 붙으므로 1.4정도로 하고 마진을 조절 */
+  margin: 10px auto 20px;
+  display: block;
 }
 
 .toolbar button:hover {
@@ -282,6 +301,20 @@
     border-right: none;
   }
   
+  .editorContainer :global(.ql-container.ql-snow) {
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    min-height: 600px !important; /* 여기를 600px로 강제 */
+    font-size: 1.05rem;
+  }
+
+  .editorContainer :global(.ql-editor) {
+    min-height: 600px !important; /* 내부 에디팅 영역도 강제 */
+    font-family: inherit;
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+  
   :global(.ql-toolbar.ql-snow) {
     padding: 6px 4px !important;
   }
@@ -336,5 +369,73 @@
     font-size: 0.8rem;
     border-radius: 8px;
     white-space: nowrap;
+  }
+}
+/* Image Floating Toolbar */
+.imageFloatingToolbar {
+  position: fixed; /* viewport 기준 고정 */
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  z-index: 10000; /* 최상단 */
+  backdrop-filter: blur(10px);
+  pointer-events: auto;
+  transition: opacity 0.2s ease;
+}
+
+.imageFloatingToolbar button {
+  padding: 6px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #444;
+  transition: all 0.2s;
+}
+
+.imageFloatingToolbar button:hover {
+  background: var(--bg-tertiary);
+  color: var(--brand-primary);
+}
+
+.imageFloatingToolbar .dangerBtn:hover {
+  color: #ea4335;
+  background: #fff0f0;
+}
+
+/* Image Captions */
+:global(.ql-editor p.caption-text) {
+  margin-top: -15px !important;
+  margin-bottom: 30px !important;
+  text-align: center;
+  font-size: 0.82rem !important;
+  color: #999 !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.01em;
+  line-height: 0.7 !important; /* 요청하신 0.7 줄간격 */
+}
+
+/* Auto Main Image Preview */
+.autoMainImagePreview {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  aspect-ratio: 4 / 5;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border-medium);
+}
+@media (max-width: 768px) {
+  .autoMainImagePreview {
+    max-width: 180px;
   }
 }

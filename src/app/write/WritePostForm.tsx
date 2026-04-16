@@ -125,15 +125,30 @@ export default function WritePostForm({ role }: { role: string }) {
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [searchParams, error]); 
 
-  // 실시간 로컬 스토리지 백업
+  // 실시간 로컬 스토리지 백업 및 대표 이미지 자동 추출
   useEffect(() => {
-    if (!title && !content) return; 
+    if (!title && !content) return;
+    
+    // 본문에서 대표 이미지 추출 (data-main-image="true" 우선, 없으면 첫 번째 이미지)
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(content, 'text/html');
+    const manualMain = doc.querySelector('img[data-main-image="true"]');
+    const firstImg = doc.querySelector('img');
+    const extractedUrl = manualMain 
+      ? (manualMain as HTMLImageElement).src 
+      : (firstImg ? (firstImg as HTMLImageElement).src : "");
+    
+    // 상태가 변경되었을 때만 업데이트
+    if (extractedUrl !== mainImageUrl) {
+      setMainImageUrl(extractedUrl);
+    }
+
     const backupData = {
-      title, content, category, mainImageUrl, 
+      title, content, category, mainImageUrl: extractedUrl, 
       reviewSubject, reviewComment, showMainImage, lastUpdated: new Date().getTime()
     };
     localStorage.setItem('write_backup', JSON.stringify(backupData));
-  }, [title, content, category, mainImageUrl, reviewSubject, reviewComment, showMainImage]);
+  }, [title, content, category, reviewSubject, reviewComment, showMainImage]);
 
   const handleSaveDraft = async () => {
     setIsDraftSaving(true);
@@ -299,32 +314,16 @@ export default function WritePostForm({ role }: { role: string }) {
         />
       </div>
 
-      <div className={styles.inputGroup}>
-        <label>대표 이미지 (메인 포스터)</label>
-        <div className={styles.uploadBox} onClick={() => fileInputRef.current?.click()}>
-          {mainImageUrl ? (
-            <img src={mainImageUrl} alt="Preview" className={styles.previewImage} />
-          ) : (
-            <div className={styles.uploadPlaceholder}>
-              <span style={{ fontSize: '1rem', fontWeight: 600 }}>클릭하여 이미지 업로드</span>
-              <p>권장 비율 4:5 (인스타 스타일)</p>
-            </div>
-          )}
-          <input type="file" ref={fileInputRef} onChange={handleMainImageUpload} className={styles.hiddenInput} accept="image/*" />
+      {/* 대표 이미지 */}
+      {mainImageUrl && (
+        <div className={styles.inputGroup}>
+          <label className={styles.label}>대표 이미지</label>
+          <div className={styles.autoMainImagePreview}>
+            <img src={mainImageUrl} alt="Main Preview" className={styles.previewImage} />
+          </div>
+          <input type="hidden" name="imageUrl" value={mainImageUrl} />
         </div>
-        <input type="hidden" name="imageUrl" value={mainImageUrl} />
-        
-        <div className={styles.checkboxGroup} style={{ marginTop: '10px' }}>
-          <input 
-            type="checkbox" 
-            id="showMainImage" 
-            name="showMainImage" 
-            checked={showMainImage}
-            onChange={(e) => setShowMainImage(e.target.checked)}
-          />
-          <label htmlFor="showMainImage" className={styles.checkboxLabel} style={{ fontSize: '0.85rem' }}>본문에 대표 이미지 포함하기 (배너 이미지를 본문 상단에도 노출합니다)</label>
-        </div>
-      </div>
+      )}
 
       {/* 수리된 티끌러 컴포넌트 복구 */}
       <div className={`${styles.inputGroup} ${styles.editorGroup}`}>
@@ -337,16 +336,6 @@ export default function WritePostForm({ role }: { role: string }) {
         <textarea name="content" value={content} style={{ display: 'none' }} readOnly />
       </div>
 
-      {/* [신규] 한줄 평 추가 섹션 */}
-      <div className={styles.checkboxGroup}>
-        <input 
-          type="checkbox" 
-          id="showReview" 
-          checked={showReview}
-          onChange={(e) => setShowReview(e.target.checked)}
-        />
-        <label htmlFor="showReview" className={styles.checkboxLabel}>📝 한줄 평 추가하기</label>
-      </div>
 
       {showReview && (
         <div className={styles.reviewEditorBox}>
@@ -419,49 +408,53 @@ export default function WritePostForm({ role }: { role: string }) {
         </div>
       )}
 
-      {role === 'admin' && (
-        <div className={styles.checkboxGroup}>
-          <input 
-            type="checkbox" 
-            id="isEditorsPick" 
-            name="isEditorsPick" 
-            checked={isEditorsPick}
-            onChange={(e) => setIsEditorsPick(e.target.checked)}
-          />
-          <label htmlFor="isEditorsPick" className={styles.checkboxLabel}>🏆 이 게시물을 티끌러 추천으로 지정합니다.</label>
-        </div>
-      )}
+      {/* 옵션 설정 영역 (체크박스 고밀도화) */}
+      <div className={styles.optionsSection}>
+        <div className={styles.optionsGrid}>
+          <div className={styles.checkboxGroup}>
+            <input 
+              type="checkbox" 
+              id="showReviewCheck" 
+              checked={showReview}
+              onChange={(e) => setShowReview(e.target.checked)}
+            />
+            <label htmlFor="showReviewCheck" className={styles.checkboxLabel}>📝 한줄 평 추가하기</label>
+          </div>
 
-      {role === 'admin' && (
-        <div className={styles.checkboxGroup} style={{ borderTop: '1px solid var(--border)', paddingTop: '10px' }}>
-          <input 
-            type="checkbox" 
-            id="isFeature" 
-            name="isFeature" 
-            checked={isFeature}
-            onChange={(e) => setIsFeature(e.target.checked)}
-          />
-          <label htmlFor="isFeature" className={styles.checkboxLabel}>✨ 이 게시물을 **기획전(Feature)** 섹션에 등록합니다.</label>
-        </div>
-      )}
+          {role === 'admin' && (
+            <div className={styles.checkboxGroup}>
+              <input 
+                type="checkbox" 
+                id="isEditorsPick" 
+                checked={isEditorsPick}
+                onChange={(e) => setIsEditorsPick(e.target.checked)}
+              />
+              <label htmlFor="isEditorsPick" className={styles.checkboxLabel}>🏆 티끌러 추천</label>
+            </div>
+          )}
 
-      <div className={styles.checkboxGroup} style={{ marginTop: '20px', padding: '15px', background: 'var(--bg-hover)', borderRadius: '12px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <input 
-            type="checkbox" 
-            id="isPrivateCheck" 
-            checked={!isPublic}
-            onChange={(e) => setIsPublic(!e.target.checked)}
-            style={{ width: '20px', height: '20px', cursor: 'pointer' }}
-          />
-          <label htmlFor="isPrivateCheck" style={{ fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', color: '#555' }}>
-            🔒 이 게시물을 비공개로 설정합니다
-          </label>
-          <input type="hidden" name="isPublic" value={isPublic ? 'on' : 'off'} />
+          {role === 'admin' && (
+            <div className={styles.checkboxGroup}>
+              <input 
+                type="checkbox" 
+                id="isFeature" 
+                checked={isFeature}
+                onChange={(e) => setIsFeature(e.target.checked)}
+              />
+              <label htmlFor="isFeature" className={styles.checkboxLabel}>✨ 기획전 등록</label>
+            </div>
+          )}
+
+          <div className={styles.checkboxGroup}>
+            <input 
+              type="checkbox" 
+              id="isPrivateCheck" 
+              checked={!isPublic}
+              onChange={(e) => setIsPublic(!e.target.checked)}
+            />
+            <label htmlFor="isPrivateCheck" className={styles.checkboxLabel}>🔒 비공개 설정</label>
+          </div>
         </div>
-        <p style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)', marginLeft: '30px', marginTop: '4px' }}>
-          체크하면 관리자와 작성자 본인에게만 글이 보이며, 목록에서 숨겨집니다.
-        </p>
       </div>
 
       <div className={styles.actionsFooter}>
