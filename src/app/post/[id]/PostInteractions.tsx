@@ -160,11 +160,14 @@ export default function PostInteractions({
     
     const { data, error } = await supabase.from('comments').insert(newCommentData).select().single();
     
-    if (!error && data) {
+    if (error) {
+      alert("댓글 등록에 실패했습니다: " + error.message);
+    } else if (data) {
       setComments([{ ...data, user: profile }, ...comments]);
+      setNewComment("");
+      setSelectedAnchor(null); // Clear anchor after successful posting
     }
-    setNewComment("");
-    setSelectedAnchor(null); // Clear anchor after posting
+    
     setIsSubmitting(false);
     router.refresh();
   };

@@ -309,7 +309,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
         
         <div className={styles.topNavRight}>
           {isAdmin && isDbPost && (
-            <HeroToggleBtn postId={actualId} initialIsHero={post.is_hero || false} />
+            <HeroToggleBtn postId={post.id} initialIsHero={post.is_hero || false} />
           )}
 
           <ShareBtn 
@@ -429,7 +429,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
 
         {/* Interaction Bar with Prev/Next Navigation */}
         <PostInteractions 
-          postId={actualId} 
+          postId={post.id} 
           authorId={post.author?.id || post.author_id}
           initialLikes={post.likes_count || 0} 
           initialComments={commentsData} 
