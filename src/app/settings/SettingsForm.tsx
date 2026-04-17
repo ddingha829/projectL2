@@ -19,6 +19,36 @@ export default function SettingsForm({ user, profile }: { user: any, profile: an
   const [selectedColor, setSelectedColor] = useState(profile?.color || colors[0]);
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || "");
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [isLinkingGoogle, setIsLinkingGoogle] = useState(false);
+
+  // Check if Google is already linked
+  const isGoogleLinked = user?.identities?.some((id: any) => id.provider === 'google');
+
+  const handleLinkGoogle = async () => {
+    try {
+      setIsLinkingGoogle(true);
+      setErrorMsg("");
+      
+      const { createClient } = await import("@/lib/supabase/client");
+      const supabase = createClient();
+      
+      const { data, error } = await supabase.auth.linkIdentity({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback?next=/settings`,
+        }
+      });
+
+      if (error) throw error;
+      if (data?.url) {
+        window.location.href = data.url;
+      }
+    } catch (err: any) {
+      console.error("Link identity error:", err);
+      setErrorMsg(err.message || "구글 계정 연동 중 오류가 발생했습니다.");
+      setIsLinkingGoogle(false);
+    }
+  };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -204,6 +234,41 @@ export default function SettingsForm({ user, profile }: { user: any, profile: an
             {isSubmittingProfile ? "저장 중..." : "프로필 저장하기"}
           </button>
         </form>
+      </section>
+      
+      <section className={styles.formSection}>
+        <div className={styles.sectionHeader}>
+          <span className={styles.sectionIcon}>🔗</span>
+          <h2 className={styles.sectionTitle}>계정 연동</h2>
+        </div>
+        
+        <div className={styles.linkStatusBox}>
+          <div className={styles.linkItem}>
+            <div className={styles.linkInfo}>
+              <span className={styles.providerName}>Google</span>
+              <span className={isGoogleLinked ? styles.statusLinked : styles.statusUnlinked}>
+                {isGoogleLinked ? "연동됨" : "연동되지 않음"}
+              </span>
+            </div>
+            {!isGoogleLinked && (
+              <button 
+                type="button" 
+                className={styles.linkBtn} 
+                onClick={handleLinkGoogle}
+                disabled={isLinkingGoogle}
+              >
+                {isLinkingGoogle ? "준비 중..." : "구글 계정 연동하기"}
+              </button>
+            )}
+            {isGoogleLinked && (
+              <div className={styles.linkedBadge}>✓ 연결 완료</div>
+            )}
+          </div>
+          <p className={styles.linkDescription}>
+            구글 계정을 연동하면 다음 로그인부터 구글 버튼으로 간편하게 접속할 수 있습니다. 
+            기존 이메일 계정과 동일한 아이디로 취급됩니다.
+          </p>
+        </div>
       </section>
 
       <section className={styles.formSection}>

@@ -8,6 +8,8 @@ import styles from "./LeftSidebar.module.css";
 import { AUTHORS } from "@/lib/constants/authors";
 import HeroCard from "@/components/feed/HeroCard";
 import { createClient } from "@/lib/supabase/client";
+import { useTransition } from "react";
+import { logout } from "@/app/login/actions";
 
 const CATEGORIES = [
   { id: "all", name: "전체 글 보기" },
@@ -35,6 +37,19 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
   const [liveAuthors, setLiveAuthors] = useState<any[]>([]);
   const [notices, setNotices] = useState<any[]>([]);
   const [supabase] = useState(() => createClient());
+  const [isPending, startTransition] = useTransition();
+
+  const handleLogout = async () => {
+    if (confirm("로그아웃 하시겠습니까?")) {
+      startTransition(async () => {
+        try {
+          await logout();
+        } catch (err) {
+          console.error("Logout error:", err);
+        }
+      });
+    }
+  };
 
   useEffect(() => {
     Promise.resolve().then(() => setMounted(true));
@@ -177,6 +192,13 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
               <div className={styles.mobileUserLinks}>
                 <Link href="/notice" className={styles.mobileLink} onClick={onClose}>알림 설정</Link>
                 <Link href="/settings" className={styles.mobileLink} onClick={onClose}>설정 및 프로필 수정</Link>
+                <button 
+                  className={styles.mobileLogoutBtn} 
+                  onClick={handleLogout}
+                  disabled={isPending}
+                >
+                  {isPending ? "로그아웃 중..." : "로그아웃"}
+                </button>
               </div>
             </div>
           ) : (

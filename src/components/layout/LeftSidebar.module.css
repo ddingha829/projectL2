@@ -545,6 +545,18 @@
     padding: 4px 0;
   }
 
+  .mobileLogoutBtn {
+    background: none;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #ff4804;
+    padding: 4px 0;
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
   .actionRow {
     display: flex;
     align-items: center;
