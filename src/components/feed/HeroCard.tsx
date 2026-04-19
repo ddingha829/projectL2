@@ -64,10 +64,10 @@ export default function HeroCard({
 
             <div className={styles.content}>
               {heightRatio === 'compact' ? (
-                <h2 className={styles.title} style={title.length > 50 ? { fontSize: '0.75em' } : title.length > 35 ? { fontSize: '0.85em' } : {}}>{title}</h2>
+                <h2 className={styles.title}>{title}</h2>
               ) : (
                 <>
-                  <h2 className={styles.title} style={title.length > 50 ? { fontSize: '0.75em' } : title.length > 35 ? { fontSize: '0.85em' } : {}}>{title}</h2>
+                  <h2 className={styles.title}>{title}</h2>
                   
                   <div className={styles.footer}>
                     <div className={styles.authorSection}>
