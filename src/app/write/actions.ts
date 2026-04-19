@@ -36,9 +36,11 @@ export async function createPost(formData: FormData) {
     let reviewRating = parseInt(formData.get('reviewRating') as string || '0');
     let reviewComment = (formData.get('reviewComment') as string || '').trim();
 
-    // 속성 추출 헬퍼 (공통)
     const getAttr = (tagText: string, attr: string) => {
-      const res = tagText.match(new RegExp(`${attr}=\\s*["']?([^"'\\s>]+(?:[^"'\\s>]*[^"'\\s>])?)["']?`, 'i'));
+      // 따옴표로 감싸진 속성값을 공백 포함하여 추출하는 패턴
+      const res = tagText.match(new RegExp(`${attr}\\s*=\\s*["']([^"']*)["']`, 'i')) || 
+                  tagText.match(new RegExp(`${attr}\\s*=\\s*([^\\s>]+)`, 'i'));
+      
       if (res && res[1]) {
         return res[1]
           .replace(/&quot;/g, '"')

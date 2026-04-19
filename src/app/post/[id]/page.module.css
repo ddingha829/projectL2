@@ -296,17 +296,16 @@
 .content :global(.ql-align-center) img,
 .content img:global(.ql-align-center),
 .content img:global(.text-center) {
-  margin-left: auto !important;
-  margin-right: auto !important;
-  display: block;
+  display: inline-block; /* 중앙 정렬 상태에서도 나란히 배치가 가능하도록 */
+  margin: 1.5em 4px !important;
 }
 
 .content :global(.text-right) img,
 .content :global(.ql-align-right) img,
 .content img:global(.ql-align-right),
 .content img:global(.text-right) {
-  margin-left: auto !important;
-  display: block;
+  display: inline-block;
+  margin-left: auto !important; /* 우측 정렬을 위해 왼쪽 여백 확보 */
 }
 
 .mainImageWrapper {

@@ -236,6 +236,8 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             const insertIndex = range ? range.index : quill.getLength();
 
             quill.insertEmbed(insertIndex, "image", publicUrl);
+            // [기본값] 사진 삽입 시 해당 라인을 가운데 정렬로 설정 (나중에 나란히 배치도 가능)
+            quill.formatLine(insertIndex, 1, 'align', 'center');
             quill.setSelection(insertIndex + 1);
             
             // 모바일을 위해 잠깐의 휴식 (UI 갱신 시간 확보)
