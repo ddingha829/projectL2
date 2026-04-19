@@ -88,6 +88,7 @@ const ReactQuill = dynamic(async () => {
                     node.setAttribute('draggable', 'true'); // 드래그 가능하게 설정
                     node.style.cursor = 'grab';
                     node.setAttribute('data-place-name', value.placeName || '');
+                    node.setAttribute('data-place-id', value.placeId || '');
                     node.setAttribute('data-address', value.address || '');
                     node.setAttribute('data-rating', value.rating || '0');
                     node.setAttribute('data-comment', value.comment || '');
@@ -105,8 +106,8 @@ const ReactQuill = dynamic(async () => {
                     const isManual = value.placeId === 'manual';
                     let googleMapsUrl = '';
                     if (value.placeId && !isManual) {
-                        // Place ID가 있는 경우 해당 업체 단독 뷰 주소 생성 (가장 정확함)
-                        googleMapsUrl = `https://www.google.com/maps/place/?q=place_id:${value.placeId}`;
+                        // 장소명과 ID를 조합하여 상세 카드 뷰 유도 (가장 권장되는 방식)
+                        googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(value.placeName || '')}&query_place_id=${value.placeId}`;
                     } else if (value.lat && value.lng) {
                         googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${value.lat},${value.lng}`;
                     } else {
@@ -175,11 +176,11 @@ const ReactQuill = dynamic(async () => {
                 static value(node: HTMLElement) {
                     return {
                         placeName: node.getAttribute('data-place-name'),
+                        placeId: node.getAttribute('data-place-id'),
                         address: node.getAttribute('data-address'),
                         rating: node.getAttribute('data-rating'),
                         comment: node.getAttribute('data-comment'),
                         embedUrl: node.getAttribute('data-embed-url'),
-                        placeId: node.getAttribute('data-place-id'),
                         lat: node.getAttribute('data-lat') ? parseFloat(node.getAttribute('data-lat')!) : undefined,
                         lng: node.getAttribute('data-lng') ? parseFloat(node.getAttribute('data-lng')!) : undefined
                     };
