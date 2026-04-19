@@ -149,7 +149,15 @@ const PlaceSearchModal: React.FC<PlaceSearchModalProps> = ({ onSelect, onCancel 
         );
     };
 
-    const apiKeyMissing = !process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const key = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+            console.log("Ticgle Maps Debug - API Key Present:", !!key);
+        }
+    }, []);
+
+    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+    const apiKeyMissing = !apiKey || apiKey === 'undefined' || apiKey === '';
 
     return (
         <motion.div 
