@@ -65,7 +65,7 @@ export default async function Home({
       comment, 
       created_at, 
       post_id,
-      post:posts(id, author:profiles!author_id(display_name))
+      post:posts(id, review_comment, author:profiles!author_id(display_name))
     `).order('created_at', { ascending: false }).limit(10),
     
     // Feature posts
@@ -182,15 +182,20 @@ export default async function Home({
     displayTitle = `${authorName || '에디터'} 티끌러가 작성한 글`;
   }
 
-  const mappedReviews = reviewDbPosts?.map((p: any) => ({
-    id: p.id,
-    postId: p.post_id,
-    subject: p.subject,
-    rating: p.rating,
-    comment: p.comment,
-    date: p.created_at,
-    authorName: p.post?.author?.display_name || '익명 티끌러'
-  })) || [];
+  const mappedReviews = reviewDbPosts?.map((p: any) => {
+    // 해당 장소에 대한 유저 평점 데이터가 있다면 계산 (백엔드에서 처리되지 않은 경우를 대비한 매핑)
+    // 실제로는 별도의 쿼리가 필요할 수 있으나, 현재 구조에서 최대한 안정적으로 매핑
+    return {
+      id: p.id,
+      postId: p.post_id,
+      subject: p.subject,
+      rating: p.rating,
+      userRating: p.user_avg_rating || 0, // DB에서 넘어오는 값이 있다면 사용
+      comment: p.comment || p.post?.review_comment || "", // post_reviews에 없으면 posts 테이블에서 가져옴
+      date: p.created_at,
+      authorName: p.post?.author?.display_name || '익명 티끌러'
+    };
+  }) || [];
 
   const featurePosts = featureDbPosts?.map(mapToPost) || [];
 

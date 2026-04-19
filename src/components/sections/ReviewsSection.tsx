@@ -26,10 +26,12 @@ export function ReviewsSection({ recentReviews, isMobile, scrollReviews, reviewR
                     ))}
                   </div>
                   <span className={styles.miniRevScore}>{rev.rating}</span>
-                  <span className={styles.miniRevCommunityScore}>유저 {(rev.rating * 0.8 + 0.5).toFixed(1)}</span>
+                  <span className={styles.miniRevCommunityScore}>
+                    유저 {rev.userRating && rev.userRating > 0 ? rev.userRating : "없음"}
+                  </span>
                 </div>
               </div>
-              <p className={styles.miniRevText}>{rev.comment}</p>
+              <p className={styles.miniRevText}>{rev.comment || "작성된 한줄평이 없습니다."}</p>
               <div className={styles.miniRevFooter}>
                 <span className={styles.miniRevAuthor}>{rev.authorName}</span>
                 {rev.postId && (
