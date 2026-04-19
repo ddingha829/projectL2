@@ -789,8 +789,6 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-}
-
 /* [신규] 소수점 별점 스타일 */
 .starWrapper {
   position: relative;
