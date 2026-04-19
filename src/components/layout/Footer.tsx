@@ -8,7 +8,7 @@ export default function Footer({ onCopyrightClick }: { onCopyrightClick?: () => 
     <footer className={styles.footer}>
       <div className={styles.container}>
         <div className={styles.leftGroup}>
-           <Link href="/about" className={styles.footerLink}>사이트 소개</Link>
+           <Link href="/post/100003" className={styles.footerLink}>사이트 소개</Link>
            <span className={styles.divider}>|</span>
            <Link href="/privacy" className={styles.footerLink}>개인정보처리방침</Link>
            <span className={styles.divider}>|</span>
