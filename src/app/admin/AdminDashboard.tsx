@@ -289,13 +289,19 @@ function StatsView({ posts, users, visitCount, todayVisitCount, totalViews, tren
   }, {});
 
   const totalViewsAggregation = Object.values(categoryStats).reduce((a: any, b: any) => a + b, 0) as number;
-  const sortedCategories = Object.entries(categoryStats)
+  const mappedStats = Object.entries(categoryStats).reduce((acc: any, [name, val]) => {
+    const krName = name === 'restaurant' ? '맛집' : name === 'travel' ? '여행' : name === 'movie' ? '영화' : name === 'game' ? '게임' : name === 'book' ? '책' : name === 'exhibition' ? '전시' : '기타';
+    acc[krName] = (acc[krName] || 0) + (val as number);
+    return acc;
+  }, {});
+
+  const sortedCategories = Object.entries(mappedStats)
     .map(([name, val]) => ({ 
-      name: name === 'restaurant' ? '맛집' : name === 'travel' ? '여행' : name === 'movie' ? '영화' : name === 'game' ? '게임' : name === 'book' ? '책' : name === 'exhibition' ? '전시' : '기타', 
+      name, 
       val: totalViewsAggregation > 0 ? Math.round(((val as number) / totalViewsAggregation) * 100) : 0 
     }))
     .sort((a, b) => b.val - a.val)
-    .slice(0, 4);
+    .slice(0, 5); // 상위 5개까지 표시
 
   // Mock chart data based on visit count for visual flair
   const chartData = [40, 70, 45, 90, 65, 85, 55];
@@ -400,8 +406,8 @@ function StatsView({ posts, users, visitCount, todayVisitCount, totalViews, tren
         <div className={styles.glassCard}>
            <h3 className={styles.chartTitle}>카테고리별 조회수</h3>
            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {sortedCategories.map(item => (
-                <div key={item.name} style={{ width: '100%' }}>
+              {sortedCategories.map((item, idx) => (
+                <div key={`${item.name}-${idx}`} style={{ width: '100%' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '0.85rem' }}>
                     <span style={{ fontWeight: 700 }}>{item.name}</span>
                     <span style={{ color: 'var(--text-tertiary)' }}>{item.val}%</span>
