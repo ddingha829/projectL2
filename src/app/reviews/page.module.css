@@ -788,5 +788,26 @@
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
- 
- 
+
+}
+
+/* [신규] 소수점 별점 스타일 */
+.starWrapper {
+  position: relative;
+  display: inline-block;
+  line-height: 1;
+  font-size: 1rem;
+}
+
+.starBase {
+  color: #ddd;
+}
+
+.starFill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #ff4804;
+  overflow: hidden;
+  white-space: nowrap;
+}
