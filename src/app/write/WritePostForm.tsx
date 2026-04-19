@@ -300,6 +300,7 @@ export default function WritePostForm({ role }: { role: string }) {
               <input 
                 type="checkbox" 
                 id="isEditorsPick" 
+                name="isEditorsPick"
                 checked={isEditorsPick}
                 onChange={(e) => setIsEditorsPick(e.target.checked)}
               />
@@ -312,6 +313,7 @@ export default function WritePostForm({ role }: { role: string }) {
               <input 
                 type="checkbox" 
                 id="isFeature" 
+                name="isFeature"
                 checked={isFeature}
                 onChange={(e) => setIsFeature(e.target.checked)}
               />
@@ -323,6 +325,7 @@ export default function WritePostForm({ role }: { role: string }) {
             <input 
               type="checkbox" 
               id="isPrivateCheck" 
+              name="isPrivate"
               checked={!isPublic}
               onChange={(e) => setIsPublic(!e.target.checked)}
             />

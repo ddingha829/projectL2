@@ -16,6 +16,7 @@ function ReviewArchiveContent() {
   const [userComment, setUserComment] = useState("");
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
+  const [isMapReady, setIsMapReady] = useState(false);
   
   const searchParams = useSearchParams();
   const urlSearch = searchParams.get("search");
@@ -186,6 +187,7 @@ function ReviewArchiveContent() {
         (initialMap as any)._markerGroup = markerGroup;
 
         mapInstanceRef.current = initialMap;
+        setIsMapReady(true);
 
         // 레이아웃 보정 (사이즈 재계산)
         setTimeout(() => initialMap.invalidateSize(), 500);
@@ -258,7 +260,7 @@ function ReviewArchiveContent() {
     };
 
     updateMarkers();
-  }, [subjects]);
+  }, [subjects, isMapReady]);
 
   useEffect(() => {
     const handleMapSelect = (e: any) => {

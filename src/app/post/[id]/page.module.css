@@ -754,8 +754,9 @@
     width: auto !important;
     height: auto !important;
     object-fit: contain;
-    display: block;
-    margin: 1.5em auto;
+    display: inline-block; /* 나란히 배치가 가능하도록 변경 */
+    vertical-align: top;
+    margin: 1.5em 8px 1.5em 0; /* 우측에 적절한 간격 부여 */
   }
 }
 

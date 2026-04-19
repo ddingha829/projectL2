@@ -28,7 +28,8 @@ export async function createPost(formData: FormData) {
     const imageUrl = (formData.get('imageUrl') as string || '').trim();
     const content = (formData.get('content') as string || '').trim();
     const isEditorsPick = formData.get('isEditorsPick') === 'on';
-    const isPublic = formData.get('isPublic') === 'on';
+    const isPrivate = formData.get('isPrivate') === 'on';
+    const isPublic = !isPrivate; // 비공개 체크가 안 되어 있으면 공개(true)
     const isFeature = formData.get('isFeature') === 'on';
     const showMainImage = formData.get('showMainImage') !== 'off';
     let reviewSubject = (formData.get('reviewSubject') as string || '').trim();

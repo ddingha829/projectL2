@@ -85,6 +85,8 @@ const ReactQuill = dynamic(async () => {
                     node.style.width = '100%';
                     node.style.lineHeight = 'normal';
                     node.setAttribute('contenteditable', 'false');
+                    node.setAttribute('draggable', 'true'); // 드래그 가능하게 설정
+                    node.style.cursor = 'grab';
                     node.setAttribute('data-place-name', value.placeName || '');
                     node.setAttribute('data-address', value.address || '');
                     node.setAttribute('data-rating', value.rating || '0');
@@ -165,6 +167,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
     const [cropImageSrc, setCropImageSrc] = useState("");
     const [originalFile, setOriginalFile] = useState<File | null>(null);
     const [selectedImage, setSelectedImage] = useState<HTMLImageElement | null>(null);
+    const [selectedCard, setSelectedCard] = useState<HTMLElement | null>(null);
     const [toolbarPos, setToolbarPos] = useState({ top: 0, left: 0 });
 
     const compressImage = async (file: File): Promise<Blob> => {
@@ -259,25 +262,56 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                     const target = e.target as HTMLElement;
                     if (target.closest(`.${styles.imageFloatingToolbar}`)) return;
 
+                    const card = target.closest('.ql-review-card') as HTMLElement;
+
                     if (target.tagName === 'IMG') {
                         const img = target as HTMLImageElement;
                         qlEditor.querySelectorAll('img').forEach(i => i.removeAttribute('data-cropping-target'));
                         img.setAttribute('data-cropping-target', 'true');
                         setSelectedImage(img);
+                        setSelectedCard(null);
                         
                         const rect = img.getBoundingClientRect();
                         setToolbarPos({
                             top: rect.top - 50,
                             left: rect.left + (rect.width / 2) - 100
                         });
+                    } else if (card) {
+                        // 리뷰 카드 선택 효과 및 에디터 셀렉션 동기화
+                        const quill = quillRef.current?.getEditor();
+                        if (quill) {
+                            const blot = (quill.constructor as any).find(card);
+                            if (blot) {
+                                const index = blot.offset(quill.scroll);
+                                // [핵심] 해당 카드 위치를 에디터 선택 영역으로 지정 (Ctrl+X 작동용)
+                                quill.setSelection(index, 1);
+                            }
+                        }
+
+                        qlEditor.querySelectorAll('.ql-review-card').forEach(c => (c as HTMLElement).style.outline = 'none');
+                        card.style.outline = '3px solid #ff4804';
+                        card.style.borderRadius = '20px';
+                        setSelectedCard(card);
+                        setSelectedImage(null);
+
+                        const rect = card.getBoundingClientRect();
+                        setToolbarPos({
+                            top: rect.top - 50,
+                            left: rect.left + (rect.width / 2) - 100
+                        });
                     } else {
                         setSelectedImage(null);
+                        setSelectedCard(null);
                         qlEditor.querySelectorAll('img').forEach(i => i.removeAttribute('data-cropping-target'));
+                        qlEditor.querySelectorAll('.ql-review-card').forEach(c => (c as HTMLElement).style.outline = 'none');
                     }
                 };
 
                 qlEditor.addEventListener('click', handleEditorClick as EventListener);
-                qlEditor.onscroll = () => setSelectedImage(null);
+                qlEditor.onscroll = () => {
+                    setSelectedImage(null);
+                    setSelectedCard(null);
+                };
             }
         };
 
@@ -427,24 +461,33 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
     }) => {
         const quill = quillRef.current?.getEditor();
         if (quill) {
-            const range = quill.getSelection(true);
             const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
             const embedUrl = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=place_id:${placeData.placeId || encodeURIComponent(placeData.placeName)}&zoom=15&language=ko`;
             
-            // 전용 리뷰 카드 블록 삽입
-            quill.insertEmbed(range.index, 'review-card', {
-                placeName: placeData.placeName,
-                address: placeData.address,
-                rating: placeData.rating,
-                comment: placeData.comment,
-                embedUrl: embedUrl,
-                placeId: placeData.placeId,
-                lat: placeData.lat,
-                lng: placeData.lng
-            });
-            quill.setSelection(range.index + 1 as any);
+            if (selectedCard) {
+                // [수정 모드] 기존 위치를 찾아서 교체
+                const blot = (quill.constructor as any).find(selectedCard);
+                if (blot) {
+                    const index = blot.offset(quill.scroll);
+                    quill.deleteText(index, 1);
+                    quill.insertEmbed(index, 'review-card', {
+                        ...placeData,
+                        embedUrl: embedUrl
+                    });
+                    quill.setSelection(index + 1 as any);
+                }
+            } else {
+                // [신규 모드] 현재 커서 위치에 삽입
+                const range = quill.getSelection(true);
+                quill.insertEmbed(range.index, 'review-card', {
+                    ...placeData,
+                    embedUrl: embedUrl
+                });
+                quill.setSelection(range.index + 1 as any);
+            }
         }
         setShowMapModal(false);
+        setSelectedCard(null);
     };
 
     const modules = useMemo(() => ({
@@ -482,7 +525,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
 
     return (
         <div className={styles.editorContainer}>
-            {selectedImage && !showCropModal && (
+            {(selectedImage || selectedCard) && !showCropModal && (
                 <div 
                     className={styles.imageFloatingToolbar}
                     style={{ 
@@ -492,31 +535,45 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                     onMouseDown={(e) => e.stopPropagation()} 
                     onClick={(e) => e.stopPropagation()}
                 >
-                    <button type="button" onClick={handleSetAsMain}>📌 대표설정</button>
-                    <button type="button" onClick={handleReCrop}>✂️ 크롭</button>
-                    <button type="button" onClick={handleAddCaption}>💬 캡션</button>
+                    {selectedImage ? (
+                        <>
+                            <button type="button" onClick={handleSetAsMain}>📌 대표설정</button>
+                            <button type="button" onClick={handleReCrop}>✂️ 크롭</button>
+                            <button type="button" onClick={handleAddCaption}>💬 캡션</button>
+                        </>
+                    ) : (
+                        <>
+                            <button type="button" onClick={() => setShowMapModal(true)}>✏️ 수정</button>
+                        </>
+                    )}
+                    
                     <button 
                         type="button"
                         className={styles.dangerBtn}
                         onClick={() => {
-                            if (confirm("사진을 삭제하시겠습니까?")) {
+                            if (confirm(selectedImage ? "사진을 삭제하시겠습니까?" : "리뷰 카드를 삭제하시겠습니까?")) {
                                 const quill = quillRef.current?.getEditor();
-                                const parentP = selectedImage.closest('p');
-                                if (parentP) {
-                                    const nextEl = parentP.nextElementSibling;
-                                    if (nextEl && nextEl.classList.contains(styles.captionText)) {
-                                        nextEl.remove();
+                                if (selectedImage) {
+                                    const parentP = selectedImage.closest('p');
+                                    if (parentP) {
+                                        const nextEl = parentP.nextElementSibling;
+                                        if (nextEl && nextEl.classList.contains(styles.captionText)) {
+                                            nextEl.remove();
+                                        }
                                     }
+                                    selectedImage.remove();
+                                } else if (selectedCard) {
+                                    selectedCard.remove();
                                 }
-                                selectedImage.remove();
                                 onChange(quill.root.innerHTML);
                                 setSelectedImage(null);
+                                setSelectedCard(null);
                             }
                         }}
                     >
                         🗑️ 삭제
                     </button>
-                    <button type="button" onClick={() => setSelectedImage(null)}>✕</button>
+                    <button type="button" onClick={() => { setSelectedImage(null); setSelectedCard(null); }}>✕</button>
                 </div>
             )}
 
@@ -542,8 +599,22 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             <AnimatePresence>
                 {showMapModal && (
                     <PlaceSearchModal 
+                        initialData={selectedCard ? {
+                            placeName: selectedCard.getAttribute('data-place-name') || '',
+                            address: selectedCard.getAttribute('data-address') || '',
+                            rating: parseFloat(selectedCard.getAttribute('data-rating') || '0'),
+                            comment: selectedCard.getAttribute('data-comment') || '',
+                            placeId: selectedCard.getAttribute('data-place-id') || undefined,
+                            lat: selectedCard.getAttribute('data-lat') ? parseFloat(selectedCard.getAttribute('data-lat')!) : undefined,
+                            lng: selectedCard.getAttribute('data-lng') ? parseFloat(selectedCard.getAttribute('data-lng')!) : undefined
+                        } : undefined}
                         onSelect={handleMapSelect}
-                        onCancel={() => setShowMapModal(false)}
+                        onCancel={() => {
+                            setShowMapModal(false);
+                            setSelectedCard(null);
+                            const q = quillRef.current?.getEditor();
+                            if (q) q.root.querySelectorAll('.ql-review-card').forEach((c:any) => c.style.outline = 'none');
+                        }}
                     />
                 )}
             </AnimatePresence>

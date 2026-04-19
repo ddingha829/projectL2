@@ -5,6 +5,15 @@ import { Loader } from '@googlemaps/js-api-loader';
 import styles from './RichTextEditor.module.css';
 
 interface PlaceSearchModalProps {
+    initialData?: {
+        placeName: string,
+        address: string,
+        rating: number,
+        comment: string,
+        placeId?: string,
+        lat?: number,
+        lng?: number
+    },
     onSelect: (data: { 
         placeName: string, 
         address: string, 
@@ -17,16 +26,22 @@ interface PlaceSearchModalProps {
     onCancel: () => void;
 }
 
-const PlaceSearchModal: React.FC<PlaceSearchModalProps> = ({ onSelect, onCancel }) => {
-    const [searchQuery, setSearchQuery] = useState('');
+const PlaceSearchModal: React.FC<PlaceSearchModalProps> = ({ onSelect, onCancel, initialData }) => {
+    const [searchQuery, setSearchQuery] = useState(initialData?.placeName || '');
     const [results, setResults] = useState<any[]>([]);
-    const [selectedPlace, setSelectedPlace] = useState<any>(null);
+    const [selectedPlace, setSelectedPlace] = useState<any>(initialData ? {
+        name: initialData.placeName,
+        address: initialData.address,
+        placeId: initialData.placeId,
+        lat: initialData.lat,
+        lng: initialData.lng
+    } : null);
     const [isLoading, setIsLoading] = useState(false);
-    const [rating, setRating] = useState(4.0);
-    const [comment, setComment] = useState('');
-    const [isManual, setIsManual] = useState(false);
-    const [manualName, setManualName] = useState('');
-    const [manualAddress, setManualAddress] = useState('');
+    const [rating, setRating] = useState(initialData?.rating || 4.0);
+    const [comment, setComment] = useState(initialData?.comment || '');
+    const [isManual, setIsManual] = useState(initialData?.placeId === 'manual');
+    const [manualName, setManualName] = useState(initialData?.placeId === 'manual' ? initialData.placeName : '');
+    const [manualAddress, setManualAddress] = useState(initialData?.placeId === 'manual' ? initialData.address : '');
     
     // Services Refs
     const autocompleteService = useRef<google.maps.places.AutocompleteService | null>(null);
@@ -175,7 +190,7 @@ const PlaceSearchModal: React.FC<PlaceSearchModalProps> = ({ onSelect, onCancel 
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className={styles.modalHeader}>
-                    <h3>📍 리뷰 카드 만들기</h3>
+                    <h3>📍 {initialData ? '리뷰 카드 수정하기' : '리뷰 카드 만들기'}</h3>
                     <div className={styles.toggleContainer}>
                         <button 
                             type="button"
@@ -325,12 +340,17 @@ const PlaceSearchModal: React.FC<PlaceSearchModalProps> = ({ onSelect, onCancel 
 
                                 <div className={styles.inputGroup}>
                                     <label>기억에 남는 한줄평 (최대 50자)</label>
-                                    <textarea 
-                                        placeholder="이 대상에 대한 느낌을 짧게 적어주세요" 
-                                        maxLength={50} value={comment}
-                                        onChange={(e) => setComment(e.target.value)}
-                                        rows={4} className={styles.commentTextArea}
-                                    />
+                                    <div className={styles.textAreaWrapper}>
+                                        <textarea 
+                                            placeholder="이 대상에 대한 느낌을 짧게 적어주세요" 
+                                            maxLength={50} value={comment}
+                                            onChange={(e) => setComment(e.target.value)}
+                                            rows={4} className={styles.commentTextArea}
+                                        />
+                                        <span className={`${styles.charCount} ${comment.length >= 50 ? styles.charLimit : ''}`}>
+                                            {comment.length} / 50
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -345,7 +365,7 @@ const PlaceSearchModal: React.FC<PlaceSearchModalProps> = ({ onSelect, onCancel 
                         className={styles.confirmBtn} 
                         disabled={isManual ? !manualName.trim() : !selectedPlace}
                     >
-                        리뷰 카드 완성
+                        {initialData ? '수정 완료' : '리뷰 카드 완성'}
                     </button>
                 </div>
             </motion.div>
