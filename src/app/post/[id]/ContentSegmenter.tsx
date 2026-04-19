@@ -97,26 +97,45 @@ export default function ContentSegmenter({
         const placeId = card.getAttribute('data-place-id') || '';
         
         const isManual = placeId === 'manual';
+        
+        // 최적화된 구글 지도 URL 생성 함수
+        const getGoogleMapsUrl = () => {
+          let url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(placeName || '')}`;
+          if (placeId && placeId !== 'manual') {
+            url += `&query_place_id=${placeId}`;
+          } else if (lat && lng && isManual) {
+            // 직접 입력(좌표 위주)인 경우에만 좌표 활용
+            url = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+          }
+          return url;
+        };
 
-        // 이미 <a> 태그인 경우(신규 게시물)는 브라우저 기본 동작에 맡기고 스타일만 확인
-        // <div> 인 경우(기존 게시물)는 직접 클릭 이벤트 주입
-        if (cardBody.tagName !== 'A' && !isManual) {
+        // 이미 <a> 태그인 경우(신규 게시물 또는 이전 커밋 게시물)
+        if (cardBody.tagName === 'A' && !isManual) {
+          cardBody.style.cursor = 'pointer';
+          if (!cardBody.title) cardBody.title = '구글 지도에서 크게 보기';
+          
+          // 핵심: 기존에 저장된 href가 좌표일 수 있으므로 최신 업체명 기반 URL로 갱신
+          const currentUrl = getGoogleMapsUrl();
+          (cardBody as HTMLAnchorElement).href = currentUrl;
+
+          cardBody.onmouseenter = () => {
+            cardBody.style.backgroundColor = 'var(--bg-secondary)';
+            cardBody.style.transition = 'background-color 0.2s ease';
+          };
+          cardBody.onmouseleave = () => {
+            cardBody.style.backgroundColor = '#fff';
+          };
+        } 
+        // <div> 인 경우(완전 이전 게시물)
+        else if (cardBody.tagName !== 'A' && !isManual) {
           cardBody.style.cursor = 'pointer';
           cardBody.title = '구글 지도에서 크게 보기';
           
           cardBody.onclick = () => {
-            // 장소명과 Place ID를 우선 사용 (업체 직접 연결)
-            let url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(placeName || '')}`;
-            if (placeId && placeId !== 'manual') {
-              url += `&query_place_id=${placeId}`;
-            } else if (lat && lng) {
-              // Place ID가 없는 매뉴얼 등록의 경우 좌표 활용
-              url = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
-            }
-            window.open(url, '_blank');
+            window.open(getGoogleMapsUrl(), '_blank');
           };
 
-          // 호버 시 시각적 효과 (검색된 장소만)
           cardBody.onmouseenter = () => {
             cardBody.style.backgroundColor = 'var(--bg-secondary)';
             cardBody.style.transition = 'background-color 0.2s ease';
@@ -124,27 +143,15 @@ export default function ContentSegmenter({
           cardBody.onmouseleave = () => {
             cardBody.style.backgroundColor = '#fff';
           };
-        } else if (cardBody.tagName === 'A' && !isManual) {
-          // <a> 태그라도 커서와 툴팁은 확실히 보장
-          cardBody.style.cursor = 'pointer';
-          if (!cardBody.title) cardBody.title = '구글 지도에서 크게 보기';
-
-          // 호버 시 시각적 효과
-          cardBody.onmouseenter = () => {
-            cardBody.style.backgroundColor = 'var(--bg-secondary)';
-            cardBody.style.transition = 'background-color 0.2s ease';
-          };
-          cardBody.onmouseleave = () => {
-            cardBody.style.backgroundColor = '#fff';
-          };
-        } else {
+        } 
+        else {
           // 직접 입력(Manual)인 경우 커서와 스타일 초기화
           cardBody.style.cursor = 'default';
           cardBody.removeAttribute('title');
           cardBody.onmouseenter = null;
           cardBody.onmouseleave = null;
           if (cardBody.tagName === 'A') {
-              // 혹시 수동인데 A태그면 링크 무효화
+              (cardBody as HTMLAnchorElement).removeAttribute('href');
               (cardBody as any).onclick = (e: MouseEvent) => e.preventDefault();
           }
         }
