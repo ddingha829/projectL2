@@ -660,15 +660,28 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             <AnimatePresence>
                 {showMapModal && (
                     <PlaceSearchModal 
-                        initialData={selectedCard ? {
-                            placeName: selectedCard.getAttribute('data-place-name') || '',
-                            address: selectedCard.getAttribute('data-address') || '',
-                            rating: parseFloat(selectedCard.getAttribute('data-rating') || '0'),
-                            comment: selectedCard.getAttribute('data-comment') || '',
-                            placeId: selectedCard.getAttribute('data-place-id') || undefined,
-                            lat: selectedCard.getAttribute('data-lat') ? parseFloat(selectedCard.getAttribute('data-lat')!) : undefined,
-                            lng: selectedCard.getAttribute('data-lng') ? parseFloat(selectedCard.getAttribute('data-lng')!) : undefined
-                        } : undefined}
+                        initialData={selectedCard ? (() => {
+                            const embedUrl = selectedCard.getAttribute('data-embed-url') || '';
+                            let placeId = selectedCard.getAttribute('data-place-id') || '';
+                            
+                            // [심폐소생술] placeId가 없는 구형 카드의 경우 임베드 주소에서 추출
+                            if (!placeId || placeId === 'manual') {
+                                const match = embedUrl.match(/place_id:([^&]+)/);
+                                if (match && match[1]) {
+                                    placeId = decodeURIComponent(match[1]);
+                                }
+                            }
+
+                            return {
+                                placeName: selectedCard.getAttribute('data-place-name') || '',
+                                address: selectedCard.getAttribute('data-address') || '',
+                                rating: parseFloat(selectedCard.getAttribute('data-rating') || '0'),
+                                comment: selectedCard.getAttribute('data-comment') || '',
+                                placeId: placeId || undefined,
+                                lat: selectedCard.getAttribute('data-lat') ? parseFloat(selectedCard.getAttribute('data-lat')!) : undefined,
+                                lng: selectedCard.getAttribute('data-lng') ? parseFloat(selectedCard.getAttribute('data-lng')!) : undefined
+                            };
+                        })() : undefined}
                         onSelect={handleMapSelect}
                         onCancel={() => {
                             setShowMapModal(false);

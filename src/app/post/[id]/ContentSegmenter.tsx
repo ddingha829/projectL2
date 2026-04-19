@@ -94,18 +94,27 @@ export default function ContentSegmenter({
         const lat = card.getAttribute('data-lat');
         const lng = card.getAttribute('data-lng');
         const placeName = card.getAttribute('data-place-name');
-        const placeId = card.getAttribute('data-place-id') || '';
+        const embedUrl = card.getAttribute('data-embed-url') || '';
+        let placeId = card.getAttribute('data-place-id') || '';
         
-        const isManual = placeId === 'manual';
+        // [심폐소생술] placeId가 없는 구형 게시물의 경우 embedUrl에서 직접 추출
+        if (!placeId || placeId === 'manual') {
+          const match = embedUrl.match(/place_id:([^&]+)/);
+          if (match && match[1]) {
+            placeId = decodeURIComponent(match[1]);
+          }
+        }
+
+        const isManual = placeId === 'manual' || (!placeId && !embedUrl.includes('google.com/maps'));
         
         // 최적화된 구글 지도 URL 생성 함수 (업체 상세 정보 단독 뷰 강제)
         const getGoogleMapsUrl = () => {
           if (placeId && placeId !== 'manual') {
-            // /search/ 대신 /place/ 공식을 사용하여 검색 결과 목록을 건너뛰고 해당 업체 상세 정보를 단독으로 띄움
-            return `https://www.google.com/maps/place/?q=place_id:${placeId}`;
+            // 공식 전용 링크: 장소명(query)과 Place ID를 결합하여 정확히 해당 업체 카드만 띄움
+            return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(placeName || '')}&query_place_id=${placeId}`;
           }
           
-          // Place ID가 없는 경우 장소명 검색 또는 좌표 활용
+          // 그 외 (직접 입력 등)
           let url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(placeName || '')}`;
           if (lat && lng && isManual) {
             url = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
