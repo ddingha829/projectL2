@@ -98,13 +98,16 @@ export default function ContentSegmenter({
         
         const isManual = placeId === 'manual';
         
-        // 최적화된 구글 지도 URL 생성 함수
+        // 최적화된 구글 지도 URL 생성 함수 (업체 단독 뷰 우선)
         const getGoogleMapsUrl = () => {
-          let url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(placeName || '')}`;
           if (placeId && placeId !== 'manual') {
-            url += `&query_place_id=${placeId}`;
-          } else if (lat && lng && isManual) {
-            // 직접 입력(좌표 위주)인 경우에만 좌표 활용
+            // Place ID가 있는 경우 해당 업체 단독 뷰 주소 생성 (가장 정확함)
+            return `https://www.google.com/maps/place/?q=place_id:${placeId}`;
+          }
+          
+          // Place ID가 없는 경우 장소명 검색 또는 좌표 활용
+          let url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(placeName || '')}`;
+          if (lat && lng && isManual) {
             url = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
           }
           return url;

@@ -103,11 +103,14 @@ const ReactQuill = dynamic(async () => {
                     }).join('');
 
                     const isManual = value.placeId === 'manual';
-                    let googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(value.placeName || '')}`;
+                    let googleMapsUrl = '';
                     if (value.placeId && !isManual) {
-                        googleMapsUrl += `&query_place_id=${value.placeId}`;
+                        // Place ID가 있는 경우 해당 업체 단독 뷰 주소 생성 (가장 정확함)
+                        googleMapsUrl = `https://www.google.com/maps/place/?q=place_id:${value.placeId}`;
                     } else if (value.lat && value.lng) {
                         googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${value.lat},${value.lng}`;
+                    } else {
+                        googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(value.placeName || '')}`;
                     }
                     
                     if (isManual) {
