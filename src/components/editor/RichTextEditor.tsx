@@ -125,23 +125,44 @@ const ReactQuill = dynamic(async () => {
                             </div>
                             <div class="review-card-main">
                                 ${isManual ? mapOrImageHtml : `<a href="${googleMapsUrl}" target="_blank" rel="noopener noreferrer" class="review-card-map-link">${mapOrImageHtml}</a>`}
-                                <a href="${googleMapsUrl}" target="_blank" rel="noopener noreferrer" class="review-card-body" style="text-decoration:none; color:inherit; display:flex !important; cursor:pointer;" title="구글 지도에서 크게 보기">
-                                    <div class="review-card-top" style="width:100%;">
-                                        <div class="place-info">
-                                            <h3 class="place-name">${value.placeName}</h3>
-                                            <p class="place-address">${value.address || ''}</p>
-                                        </div>
-                                        <div class="score-column" style="display:flex; flex-direction:column; align-items:center; gap:6px; margin-left:auto; flex-shrink:0;">
-                                            <div class="score-badge">
-                                                <span class="score-value">${rating.toFixed(1)}</span>
+                                
+                                ${isManual ? `
+                                    <div class="review-card-body" style="display:flex !important;">
+                                        <div class="review-card-top" style="width:100%;">
+                                            <div class="place-info">
+                                                <h3 class="place-name">${value.placeName}</h3>
+                                                <p class="place-address">${value.address || ''}</p>
                                             </div>
-                                            <div class="score-stars-box">${starsHtml}</div>
+                                            <div class="score-column" style="display:flex; flex-direction:column; align-items:center; gap:6px; margin-left:auto; flex-shrink:0;">
+                                                <div class="score-badge">
+                                                    <span class="score-value">${rating.toFixed(1)}</span>
+                                                </div>
+                                                <div class="score-stars-box">${starsHtml}</div>
+                                            </div>
+                                        </div>
+                                        <div class="review-comment">
+                                            <blockquote style="margin:0;">"${value.comment}"</blockquote>
                                         </div>
                                     </div>
-                                    <div class="review-comment">
-                                        <blockquote style="margin:0;">"${value.comment}"</blockquote>
-                                    </div>
-                                </a>
+                                ` : `
+                                    <a href="${googleMapsUrl}" target="_blank" rel="noopener noreferrer" class="review-card-body" style="text-decoration:none; color:inherit; display:flex !important; cursor:pointer;" title="구글 지도에서 크게 보기">
+                                        <div class="review-card-top" style="width:100%;">
+                                            <div class="place-info">
+                                                <h3 class="place-name">${value.placeName}</h3>
+                                                <p class="place-address">${value.address || ''}</p>
+                                            </div>
+                                            <div class="score-column" style="display:flex; flex-direction:column; align-items:center; gap:6px; margin-left:auto; flex-shrink:0;">
+                                                <div class="score-badge">
+                                                    <span class="score-value">${rating.toFixed(1)}</span>
+                                                </div>
+                                                <div class="score-stars-box">${starsHtml}</div>
+                                            </div>
+                                        </div>
+                                        <div class="review-comment">
+                                            <blockquote style="margin:0;">"${value.comment}"</blockquote>
+                                        </div>
+                                    </a>
+                                `}
                             </div>
                             <button class="review-card-delete" style="display:none;" onclick="this.closest('.ql-review-card').remove()">✕</button>
                         </div>`;

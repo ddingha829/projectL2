@@ -94,22 +94,20 @@ export default function ContentSegmenter({
         const lat = card.getAttribute('data-lat');
         const lng = card.getAttribute('data-lng');
         const placeName = card.getAttribute('data-place-name');
+        const placeId = card.getAttribute('data-place-id') || '';
         
+        const isManual = placeId === 'manual';
+
         // 이미 <a> 태그인 경우(신규 게시물)는 브라우저 기본 동작에 맡기고 스타일만 확인
         // <div> 인 경우(기존 게시물)는 직접 클릭 이벤트 주입
-        if (cardBody.tagName !== 'A') {
-          const lat = card.getAttribute('data-lat');
-          const lng = card.getAttribute('data-lng');
-          const placeName = card.getAttribute('data-place-name');
-          const placeId = card.getAttribute('data-place-id') || '';
-
+        if (cardBody.tagName !== 'A' && !isManual) {
           cardBody.style.cursor = 'pointer';
           cardBody.title = '구글 지도에서 크게 보기';
           
           cardBody.onclick = () => {
             // 장소명과 Place ID를 우선 사용 (업체 직접 연결)
             let url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(placeName || '')}`;
-            if (placeId) {
+            if (placeId && placeId !== 'manual') {
               url += `&query_place_id=${placeId}`;
             } else if (lat && lng) {
               // Place ID가 없는 매뉴얼 등록의 경우 좌표 활용
@@ -117,20 +115,39 @@ export default function ContentSegmenter({
             }
             window.open(url, '_blank');
           };
-        } else {
+
+          // 호버 시 시각적 효과 (검색된 장소만)
+          cardBody.onmouseenter = () => {
+            cardBody.style.backgroundColor = 'var(--bg-secondary)';
+            cardBody.style.transition = 'background-color 0.2s ease';
+          };
+          cardBody.onmouseleave = () => {
+            cardBody.style.backgroundColor = '#fff';
+          };
+        } else if (cardBody.tagName === 'A' && !isManual) {
           // <a> 태그라도 커서와 툴팁은 확실히 보장
           cardBody.style.cursor = 'pointer';
           if (!cardBody.title) cardBody.title = '구글 지도에서 크게 보기';
-        }
 
-        // 호버 시 시각적 효과 (공통)
-        cardBody.onmouseenter = () => {
-          cardBody.style.backgroundColor = 'var(--bg-secondary)';
-          cardBody.style.transition = 'background-color 0.2s ease';
-        };
-        cardBody.onmouseleave = () => {
-          cardBody.style.backgroundColor = '#fff';
-        };
+          // 호버 시 시각적 효과
+          cardBody.onmouseenter = () => {
+            cardBody.style.backgroundColor = 'var(--bg-secondary)';
+            cardBody.style.transition = 'background-color 0.2s ease';
+          };
+          cardBody.onmouseleave = () => {
+            cardBody.style.backgroundColor = '#fff';
+          };
+        } else {
+          // 직접 입력(Manual)인 경우 커서와 스타일 초기화
+          cardBody.style.cursor = 'default';
+          cardBody.removeAttribute('title');
+          cardBody.onmouseenter = null;
+          cardBody.onmouseleave = null;
+          if (cardBody.tagName === 'A') {
+              // 혹시 수동인데 A태그면 링크 무효화
+              (cardBody as any).onclick = (e: MouseEvent) => e.preventDefault();
+          }
+        }
       }
     });
   }, [content, comments]);
