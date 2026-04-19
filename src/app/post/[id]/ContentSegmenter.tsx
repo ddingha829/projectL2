@@ -98,12 +98,21 @@ export default function ContentSegmenter({
         // 이미 <a> 태그인 경우(신규 게시물)는 브라우저 기본 동작에 맡기고 스타일만 확인
         // <div> 인 경우(기존 게시물)는 직접 클릭 이벤트 주입
         if (cardBody.tagName !== 'A') {
+          const lat = card.getAttribute('data-lat');
+          const lng = card.getAttribute('data-lng');
+          const placeName = card.getAttribute('data-place-name');
+          const placeId = card.getAttribute('data-place-id') || '';
+
           cardBody.style.cursor = 'pointer';
           cardBody.title = '구글 지도에서 크게 보기';
           
           cardBody.onclick = () => {
+            // 장소명과 Place ID를 우선 사용 (업체 직접 연결)
             let url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(placeName || '')}`;
-            if (lat && lng) {
+            if (placeId) {
+              url += `&query_place_id=${placeId}`;
+            } else if (lat && lng) {
+              // Place ID가 없는 매뉴얼 등록의 경우 좌표 활용
               url = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
             }
             window.open(url, '_blank');

@@ -103,7 +103,12 @@ const ReactQuill = dynamic(async () => {
                     }).join('');
 
                     const isManual = value.placeId === 'manual';
-                    const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(value.placeName || '')}&query_place_id=${value.placeId || ''}`;
+                    let googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(value.placeName || '')}`;
+                    if (value.placeId && !isManual) {
+                        googleMapsUrl += `&query_place_id=${value.placeId}`;
+                    } else if (value.lat && value.lng) {
+                        googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${value.lat},${value.lng}`;
+                    }
                     
                     if (isManual) {
                         node.classList.add('review-card-manual-photo');
