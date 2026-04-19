@@ -348,9 +348,15 @@ function ReviewArchiveContent() {
                         </div>
                         <div className={styles.ratingBox}>
                           <div className={styles.stars}>
-                            {[1,2,3,4,5].map(i => (
-                              <span key={i} style={{ color: (rev.review_rating >= i) ? '#ff4d4d' : '#ddd' }}>★</span>
-                            ))}
+                            {[1, 2, 3, 4, 5].map(i => {
+                              const fill = Math.min(Math.max(rev.review_rating - (i - 1), 0), 1) * 100;
+                              return (
+                                <span key={i} className={styles.starWrapper}>
+                                  <span className={styles.starBase}>★</span>
+                                  <span className={styles.starFill} style={{ width: `${fill}%` }}>★</span>
+                                </span>
+                              );
+                            })}
                           </div>
                           <span className={styles.score}>{rev.review_rating}</span>
                         </div>

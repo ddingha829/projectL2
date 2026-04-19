@@ -21,9 +21,15 @@ export function ReviewsSection({ recentReviews, isMobile, scrollReviews, reviewR
               <div className={styles.miniRevRating}>
                 <div className={styles.miniRevInnerRow}>
                   <div className={styles.miniRevStars}>
-                    {[1, 2, 3, 4, 5].map(i => (
-                      <span key={i} style={{ color: (rev.rating >= i) ? '#ff4804' : '#ddd' }}>★</span>
-                    ))}
+                    {[1, 2, 3, 4, 5].map(i => {
+                      const fill = Math.min(Math.max(rev.rating - (i - 1), 0), 1) * 100;
+                      return (
+                        <span key={i} className={styles.starWrapper}>
+                          <span className={styles.starBase}>★</span>
+                          <span className={styles.starFill} style={{ width: `${fill}%` }}>★</span>
+                        </span>
+                      );
+                    })}
                   </div>
                   <span className={styles.miniRevScore}>{rev.rating}</span>
                   <span className={styles.miniRevCommunityScore}>
