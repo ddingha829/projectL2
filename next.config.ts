@@ -1,4 +1,4 @@
-// Force refresh
+// Force refresh - 2026-04-19
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
