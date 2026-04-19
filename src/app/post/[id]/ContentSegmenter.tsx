@@ -48,15 +48,15 @@ export default function ContentSegmenter({
       };
     });
 
-    // 4. Review Card Stars Hydration (Fix for old posts)
+    // 4. Review Card Stars Hydration & Link Handling
     const reviewCards = el.querySelectorAll('.ql-review-card');
     reviewCards.forEach(card => {
       const rating = Number(card.getAttribute('data-rating')) || 0;
       const scoreBadge = card.querySelector('.score-badge');
       const existingStars = card.querySelector('.score-stars-box');
       
+      // A. 별점 보충 (Old Posts)
       if (scoreBadge && !existingStars) {
-        // Create stars HTML
         const starsHtml = [1, 2, 3, 4, 5].map(s => {
           const diff = rating - (s - 1);
           const fillPercent = Math.max(0, Math.min(100, diff * 100));
@@ -67,8 +67,7 @@ export default function ContentSegmenter({
         starsBox.className = 'score-stars-box';
         starsBox.innerHTML = starsHtml;
         
-        // Wrap score-badge and starsBox in a score-column if not exists
-        let scoreColumn = (card as HTMLElement).querySelector('.score-column') as HTMLElement;
+        let scoreColumn = card.querySelector('.score-column') as HTMLElement;
         if (!scoreColumn) {
           scoreColumn = document.createElement('div');
           scoreColumn.className = 'score-column';
@@ -87,6 +86,42 @@ export default function ContentSegmenter({
         } else {
           scoreColumn.appendChild(starsBox);
         }
+      }
+
+      // B. 오른쪽 내용 영역(.review-card-body) 클릭 시 구글 지도로 이동
+      const cardBody = card.querySelector('.review-card-body') as HTMLElement;
+      if (cardBody) {
+        const lat = card.getAttribute('data-lat');
+        const lng = card.getAttribute('data-lng');
+        const placeName = card.getAttribute('data-place-name');
+        
+        // 이미 <a> 태그인 경우(신규 게시물)는 브라우저 기본 동작에 맡기고 스타일만 확인
+        // <div> 인 경우(기존 게시물)는 직접 클릭 이벤트 주입
+        if (cardBody.tagName !== 'A') {
+          cardBody.style.cursor = 'pointer';
+          cardBody.title = '구글 지도에서 크게 보기';
+          
+          cardBody.onclick = () => {
+            let url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(placeName || '')}`;
+            if (lat && lng) {
+              url = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+            }
+            window.open(url, '_blank');
+          };
+        } else {
+          // <a> 태그라도 커서와 툴팁은 확실히 보장
+          cardBody.style.cursor = 'pointer';
+          if (!cardBody.title) cardBody.title = '구글 지도에서 크게 보기';
+        }
+
+        // 호버 시 시각적 효과 (공통)
+        cardBody.onmouseenter = () => {
+          cardBody.style.backgroundColor = 'var(--bg-secondary)';
+          cardBody.style.transition = 'background-color 0.2s ease';
+        };
+        cardBody.onmouseleave = () => {
+          cardBody.style.backgroundColor = '#fff';
+        };
       }
     });
   }, [content, comments]);

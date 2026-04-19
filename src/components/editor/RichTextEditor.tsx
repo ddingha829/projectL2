@@ -103,6 +103,8 @@ const ReactQuill = dynamic(async () => {
                     }).join('');
 
                     const isManual = value.placeId === 'manual';
+                    const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(value.placeName || '')}&query_place_id=${value.placeId || ''}`;
+                    
                     if (isManual) {
                         node.classList.add('review-card-manual-photo');
                     }
@@ -110,7 +112,34 @@ const ReactQuill = dynamic(async () => {
                     const mapOrImageHtml = isManual 
                         ? `<div class="review-card-map review-card-manual-photo-area" style="width:220px !important; min-width:220px !important; height:100% !important; background-color:#f8fafc; position:relative;"></div>`
                         : `<div class="review-card-map"><iframe src="${value.embedUrl}" frameborder="0"></iframe></div>`;
-                    node.innerHTML = `<div class="review-card-inner" style="margin: 0 auto;"><div class="review-card-header"><span class="brand-label">TICGLE PLACE</span></div><div class="review-card-main">${isManual ? mapOrImageHtml : `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(value.placeName)}&query_place_id=${value.placeId || ''}" target="_blank" rel="noopener noreferrer" class="review-card-map-link">${mapOrImageHtml}</a>`}<div class="review-card-body"><div class="review-card-top"><div class="place-info"><h3 class="place-name">${value.placeName}</h3><p class="place-address">${value.address || ''}</p></div><div class="score-column" style="display:flex; flex-direction:column; align-items:center; gap:6px; margin-left:auto; flex-shrink:0;"><div class="score-badge"><span class="score-value">${rating.toFixed(1)}</span></div><div class="score-stars-box">${starsHtml}</div></div></div><div class="review-comment"><blockquote>"${value.comment}"</blockquote></div></div></div><button class="review-card-delete" style="display:none;" onclick="this.closest('.ql-review-card').remove()">✕</button></div>`;
+                    
+                    node.innerHTML = `
+                        <div class="review-card-inner" style="margin: 0 auto;">
+                            <div class="review-card-header">
+                                <span class="brand-label">TICGLE PLACE</span>
+                            </div>
+                            <div class="review-card-main">
+                                ${isManual ? mapOrImageHtml : `<a href="${googleMapsUrl}" target="_blank" rel="noopener noreferrer" class="review-card-map-link">${mapOrImageHtml}</a>`}
+                                <a href="${googleMapsUrl}" target="_blank" rel="noopener noreferrer" class="review-card-body" style="text-decoration:none; color:inherit; display:flex !important; cursor:pointer;" title="구글 지도에서 크게 보기">
+                                    <div class="review-card-top" style="width:100%;">
+                                        <div class="place-info">
+                                            <h3 class="place-name">${value.placeName}</h3>
+                                            <p class="place-address">${value.address || ''}</p>
+                                        </div>
+                                        <div class="score-column" style="display:flex; flex-direction:column; align-items:center; gap:6px; margin-left:auto; flex-shrink:0;">
+                                            <div class="score-badge">
+                                                <span class="score-value">${rating.toFixed(1)}</span>
+                                            </div>
+                                            <div class="score-stars-box">${starsHtml}</div>
+                                        </div>
+                                    </div>
+                                    <div class="review-comment">
+                                        <blockquote style="margin:0;">"${value.comment}"</blockquote>
+                                    </div>
+                                </a>
+                            </div>
+                            <button class="review-card-delete" style="display:none;" onclick="this.closest('.ql-review-card').remove()">✕</button>
+                        </div>`;
                     return node;
                 }
 
