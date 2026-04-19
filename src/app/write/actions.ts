@@ -37,11 +37,15 @@ export async function createPost(formData: FormData) {
     let reviewComment = (formData.get('reviewComment') as string || '').trim();
 
     const getAttr = (tagText: string, attr: string) => {
-      // 따옴표로 감싸진 속성값을 공백 포함하여 추출하는 패턴
-      const res = tagText.match(new RegExp(`${attr}\\s*=\\s*["']([^"']*)["']`, 'i')) || 
-                  tagText.match(new RegExp(`${attr}\\s*=\\s*([^\\s>]+)`, 'i'));
+      // 1. 큰따옴표로 감싸진 경우
+      let res = tagText.match(new RegExp(`${attr}\\s*=\\s*"([^"]*)"`, 'i'));
+      // 2. 작은따옴표로 감싸진 경우
+      if (!res) res = tagText.match(new RegExp(`${attr}\\s*=\\s*'([^']*)'`, 'i'));
+      // 3. 따옴표가 없는 경우 (공백 전까지)
+      if (!res) res = tagText.match(new RegExp(`${attr}\\s*=\\s*([^\\s>]+)`, 'i'));
       
       if (res && res[1]) {
+        // HTML 엔티티 복원 (가장 빈번한 순서대로)
         return res[1]
           .replace(/&quot;/g, '"')
           .replace(/&#39;/g, "'")
