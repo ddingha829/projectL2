@@ -106,8 +106,8 @@ const ReactQuill = dynamic(async () => {
                     const isManual = value.placeId === 'manual';
                     let googleMapsUrl = '';
                     if (value.placeId && !isManual) {
-                        // 장소명과 ID를 조합하여 상세 카드 뷰 유도 (가장 권장되는 방식)
-                        googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(value.placeName || '')}&query_place_id=${value.placeId}`;
+                        // 검색 결과 목록을 띄우지 않고 해당 업체의 상세 정보 단독 뷰를 강제함
+                        googleMapsUrl = `https://www.google.com/maps/place/?q=place_id:${value.placeId}`;
                     } else if (value.lat && value.lng) {
                         googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${value.lat},${value.lng}`;
                     } else {

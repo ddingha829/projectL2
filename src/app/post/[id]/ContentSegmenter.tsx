@@ -98,11 +98,11 @@ export default function ContentSegmenter({
         
         const isManual = placeId === 'manual';
         
-        // 최적화된 구글 지도 URL 생성 함수 (업체 상세 카드 뷰 유도)
+        // 최적화된 구글 지도 URL 생성 함수 (업체 상세 정보 단독 뷰 강제)
         const getGoogleMapsUrl = () => {
           if (placeId && placeId !== 'manual') {
-            // 장소명과 ID를 조합하여 검색 결과 리스트가 아닌 상세 카드가 바로 보이게 함
-            return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(placeName || '')}&query_place_id=${placeId}`;
+            // /search/ 대신 /place/ 공식을 사용하여 검색 결과 목록을 건너뛰고 해당 업체 상세 정보를 단독으로 띄움
+            return `https://www.google.com/maps/place/?q=place_id:${placeId}`;
           }
           
           // Place ID가 없는 경우 장소명 검색 또는 좌표 활용
