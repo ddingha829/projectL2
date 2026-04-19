@@ -29,25 +29,33 @@ export async function createPost(formData: FormData) {
     const content = (formData.get('content') as string || '').trim();
     const isEditorsPick = formData.get('isEditorsPick') === 'on';
     const isPrivate = formData.get('isPrivate') === 'on';
-    const isPublic = !isPrivate; // 비공개 체크가 안 되어 있으면 공개(true)
+    const isPublic = !isPrivate; 
     const isFeature = formData.get('isFeature') === 'on';
     const showMainImage = formData.get('showMainImage') !== 'off';
     let reviewSubject = (formData.get('reviewSubject') as string || '').trim();
     let reviewRating = parseInt(formData.get('reviewRating') as string || '0');
     let reviewComment = (formData.get('reviewComment') as string || '').trim();
 
+    // 속성 추출 헬퍼 (공통)
+    const getAttr = (tagText: string, attr: string) => {
+      const res = tagText.match(new RegExp(`${attr}=\\s*["']?([^"'\\s>]+(?:[^"'\\s>]*[^"'\\s>])?)["']?`, 'i'));
+      if (res && res[1]) {
+        return res[1]
+          .replace(/&quot;/g, '"')
+          .replace(/&#39;/g, "'")
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>')
+          .replace(/&amp;/g, '&');
+      }
+      return null;
+    };
+
     // [Plan C] 다중 리뷰 전수 추출 및 저장 준비
     const cardRegex = /<div[^>]*class="[^"]*ql-review-card[^"]*"[^>]*>/gi;
     const matches = Array.from(content.matchAll(cardRegex));
     
     if (matches.length > 0) {
-      // 첫 번째 카드를 대표 리뷰로 설정 (하향 호환성 유지)
       const firstTag = matches[0][0];
-      const getAttr = (tag: string, attr: string) => {
-        const res = tag.match(new RegExp(`${attr}=["']([^"']*)["']`, 'i'));
-        return res ? res[1] : null;
-      };
-
       const extractedName = getAttr(firstTag, 'data-place-name');
       const extractedRating = getAttr(firstTag, 'data-rating');
       const extractedComment = getAttr(firstTag, 'data-comment');
@@ -95,11 +103,6 @@ export async function createPost(formData: FormData) {
     if (matches.length > 0) {
       const reviewEntries = matches.map(match => {
         const tag = match[0];
-        const getAttr = (tagText: string, attr: string) => {
-          const res = tagText.match(new RegExp(`${attr}=["']([^"']*)["']`, 'i'));
-          return res ? res[1] : null;
-        };
-        
         const subj = getAttr(tag, 'data-place-name');
         const rate = getAttr(tag, 'data-rating');
         const comm = getAttr(tag, 'data-comment');
@@ -119,7 +122,7 @@ export async function createPost(formData: FormData) {
           embed_url: emb || null,
           place_id: pId || null
         };
-      }).filter(Boolean);
+      }).filter((entry): entry is any => entry !== null);
 
       if (reviewEntries.length > 0) {
         const { error: insError } = await supabase.from('post_reviews').insert(reviewEntries);
