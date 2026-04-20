@@ -60,52 +60,71 @@ export default function EditPostForm({
       e.returnValue = '';
     };
     window.addEventListener('beforeunload', handleBeforeUnload);
-    
-    // [추가] 브라우저 비정상 종료 시 저장되었던 백업 복구 로직
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [isSubmitting, postId]);
+
+  // [추가] 브라우저 비정상 종료 시 저장되었던 백업 복구 로직
+  useEffect(() => {
     const checkBackup = () => {
       const backup = localStorage.getItem(`edit_backup_${postId}`);
-      if (backup) {
-        try {
-          const data = JSON.parse(backup);
-          
-          // 현재 로직상 DB 데이터(initialContent)와 로컬 데이터 간의 차이가 있는지 확인
-          const isSameAsDB = data.content === initialContent && 
-                            data.imageUrl === initialImageUrl && 
-                            data.showMainImage === initialShowMainImage;
+      if (!backup) return;
 
-          if (isSameAsDB) {
-            localStorage.removeItem(`edit_backup_${postId}`);
-            return;
-          }
+      try {
+        const data = JSON.parse(backup);
+        
+        // 1. 현재 DB 데이터와 백업 내용이 거의 동일하면 조용히 삭제하고 종료
+        const normalize = (html: string) => html.replace(/\s+/g, '').replace(/<p><br><\/p>/g, '');
+        const isSameAsDB = normalize(data.content || '') === normalize(initialContent || '') && 
+                          data.imageUrl === initialImageUrl;
 
-          const isStale = new Date().getTime() - data.lastUpdated > 3600000; // 1시간 이상 됨
-          
-          if (!isStale && confirm(`비정상적으로 종료된 수정 중인 글이 있습니다.\n이 내용을 불러오시겠습니까?`)) {
+        if (isSameAsDB) {
+          localStorage.removeItem(`edit_backup_${postId}`);
+          return;
+        }
+
+        // 2. 내용에 차이가 있는 경우에만 복구 여부 확인
+        const isStale = new Date().getTime() - data.lastUpdated > 86400000; // 24시간
+        
+        if (!isStale) {
+          if (confirm(`비정상적으로 종료된 수정 중인 내용이 있습니다.\n마지막으로 작성하던 내용을 불러오시겠습니까?`)) {
             if (data.content) setContent(data.content);
             if (data.imageUrl) setImageUrl(data.imageUrl);
             if (data.showMainImage !== undefined) setShowMainImage(data.showMainImage);
           }
-          
-          // 어떤 선택을 하든(불러오기 혹은 취소), 혹은 오래된 데이터라면 
-          // 기존 백업을 삭제하여 페이지 새로고침 시 반복해서 창이 뜨지 않게 함
-          localStorage.removeItem(`edit_backup_${postId}`);
-        } catch (e) {
-          console.error("Backup restore error:", e);
         }
+        
+        localStorage.removeItem(`edit_backup_${postId}`);
+      } catch (e) {
+        console.error("Backup restore error:", e);
       }
     };
+    
     checkBackup();
+  }, [postId, initialContent, initialImageUrl, initialShowMainImage]);
 
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [isSubmitting, postId]);
-
+  // [수정] 사용자가 실제로 내용을 변경했을 때만 백업을 저장하도록 개선
   useEffect(() => {
+    const isInitialContent = content === initialContent && 
+                             imageUrl === initialImageUrl && 
+                             showMainImage === initialShowMainImage;
+    
+    if (isInitialContent || isSubmitting) return;
+
     const backupData = {
-      title: initialTitle, content, category: initialCategory, imageUrl, 
-      showMainImage, lastUpdated: new Date().getTime()
+      title: initialTitle, 
+      content, 
+      category: initialCategory, 
+      imageUrl, 
+      showMainImage, 
+      lastUpdated: new Date().getTime()
     };
-    localStorage.setItem(`edit_backup_${postId}`, JSON.stringify(backupData));
-  }, [content, showMainImage, imageUrl, initialTitle, initialCategory, postId]);
+    
+    const timeoutId = setTimeout(() => {
+      localStorage.setItem(`edit_backup_${postId}`, JSON.stringify(backupData));
+    }, 1000);
+
+    return () => clearTimeout(timeoutId);
+  }, [content, showMainImage, imageUrl, initialTitle, initialCategory, postId, initialContent, initialImageUrl, initialShowMainImage, isSubmitting]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
