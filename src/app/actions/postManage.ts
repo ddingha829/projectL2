@@ -34,7 +34,7 @@ function sanitizePostId(id: string): string {
 }
 
 /** 게시물 수정 */
-export async function updatePost(postId: string, formData: FormData): Promise<{ ok: boolean; redirectTo: string }> {
+export async function updatePost(postId: string, formData: FormData): Promise<{ ok: boolean; redirectTo: string; targetId?: string }> {
   const actualId = sanitizePostId(postId);
   const { supabase, user, profile, post, error } = await getProfileAndPost(actualId)
   if (error || !user || !profile || !post) return { ok: false, redirectTo: '/login' }
@@ -162,7 +162,7 @@ export async function updatePost(postId: string, formData: FormData): Promise<{ 
     revalidatePath(`/post/${targetId}`)
     revalidatePath('/', 'layout')
     
-    return { ok: true, redirectTo: `/post/${targetId}` }
+    return { ok: true, redirectTo: `/post/${targetId}`, targetId }
   } catch (sysErr) {
     console.error('System error during updatePost:', sysErr);
     return { ok: false, redirectTo: `/post/db-${postId}?error=system_error` }

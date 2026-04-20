@@ -60,8 +60,32 @@ export default function EditPostForm({
       e.returnValue = '';
     };
     window.addEventListener('beforeunload', handleBeforeUnload);
+    
+    // [추가] 브라우저 비정상 종료 시 저장되었던 백업 복구 로직
+    const checkBackup = () => {
+      const backup = localStorage.getItem(`edit_backup_${postId}`);
+      if (backup) {
+        try {
+          const data = JSON.parse(backup);
+          // 현재 로직상 DB 데이터(initialContent)와 로컬 데이터 간의 시차(2분 이상 등)가 있으면 물어봄
+          const isStale = new Date().getTime() - data.lastUpdated > 3600000; // 1시간 이상 됨
+          
+          if (!isStale && confirm(`비정상적으로 종료된 수정 중인 글이 있습니다.\n이 내용을 불러오시겠습니까?`)) {
+            if (data.content) setContent(data.content);
+            if (data.imageUrl) setImageUrl(data.imageUrl);
+            if (data.showMainImage !== undefined) setShowMainImage(data.showMainImage);
+          } else if (isStale) {
+            localStorage.removeItem(`edit_backup_${postId}`);
+          }
+        } catch (e) {
+          console.error("Backup restore error:", e);
+        }
+      }
+    };
+    checkBackup();
+
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [isSubmitting]);
+  }, [isSubmitting, postId]);
 
   useEffect(() => {
     const backupData = {
@@ -125,6 +149,7 @@ export default function EditPostForm({
       try {
         const result = await updatePost(postId, formData)
         if (result.ok) {
+          localStorage.removeItem(`edit_backup_${postId}`);
           window.location.href = result.redirectTo
         } else {
           alert('수정에 실패했습니다.')

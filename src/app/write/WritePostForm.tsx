@@ -93,6 +93,11 @@ export default function WritePostForm({ role }: { role: string }) {
           setCategory(data.category || "movie");
           setContent(data.content || "");
           setMainImageUrl(data.mainImageUrl || "");
+        } else {
+          // 불러오지 않겠다고 하면 삭제 여부를 물어봐서 반복 팝업 방지
+          if (confirm("더 이상 이 임시저장 내용을 보관하지 않고 삭제할까요?")) {
+            localStorage.removeItem('write_backup');
+          }
         }
       }
     };
@@ -228,8 +233,9 @@ export default function WritePostForm({ role }: { role: string }) {
     if (result?.error) {
       alert(result.error);
       setIsSubmitting(false);
-    } else {
+    } else if (result?.success) {
       localStorage.removeItem('write_backup');
+      window.location.href = `/post/${result.targetId}`;
     }
   };
 

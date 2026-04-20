@@ -140,7 +140,7 @@ export async function createPost(formData: FormData) {
     revalidatePath('/', 'layout');
     
     const targetId = postData.serial_id ? String(postData.serial_id) : `db-${postData.id}`;
-    redirect(`/post/${targetId}`);
+    return { success: true, targetId }; // redirect 대신 성공 결과 반환
 
   } catch (err: any) {
     if (err.digest?.startsWith('NEXT_REDIRECT')) throw err;
