@@ -67,16 +67,28 @@ export default function EditPostForm({
       if (backup) {
         try {
           const data = JSON.parse(backup);
-          // 현재 로직상 DB 데이터(initialContent)와 로컬 데이터 간의 시차(2분 이상 등)가 있으면 물어봄
+          
+          // 현재 로직상 DB 데이터(initialContent)와 로컬 데이터 간의 차이가 있는지 확인
+          const isSameAsDB = data.content === initialContent && 
+                            data.imageUrl === initialImageUrl && 
+                            data.showMainImage === initialShowMainImage;
+
+          if (isSameAsDB) {
+            localStorage.removeItem(`edit_backup_${postId}`);
+            return;
+          }
+
           const isStale = new Date().getTime() - data.lastUpdated > 3600000; // 1시간 이상 됨
           
           if (!isStale && confirm(`비정상적으로 종료된 수정 중인 글이 있습니다.\n이 내용을 불러오시겠습니까?`)) {
             if (data.content) setContent(data.content);
             if (data.imageUrl) setImageUrl(data.imageUrl);
             if (data.showMainImage !== undefined) setShowMainImage(data.showMainImage);
-          } else if (isStale) {
-            localStorage.removeItem(`edit_backup_${postId}`);
           }
+          
+          // 어떤 선택을 하든(불러오기 혹은 취소), 혹은 오래된 데이터라면 
+          // 기존 백업을 삭제하여 페이지 새로고침 시 반복해서 창이 뜨지 않게 함
+          localStorage.removeItem(`edit_backup_${postId}`);
         } catch (e) {
           console.error("Backup restore error:", e);
         }
