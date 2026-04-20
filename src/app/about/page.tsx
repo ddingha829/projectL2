@@ -1,5 +1,13 @@
 import styles from './about.module.css';
 import Link from 'next/link';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: '소개',
+  alternates: {
+    canonical: 'https://ticgle.kr/about',
+  },
+};
 
 export default function AboutPage() {
   return (

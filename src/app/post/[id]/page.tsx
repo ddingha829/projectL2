@@ -170,6 +170,11 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       description: description,
       images: [post.image_url || '/preview.png'],
     },
+    alternates: {
+      canonical: post.serial_id 
+        ? `https://ticgle.kr/post/${post.serial_id}` 
+        : `https://ticgle.kr/post/db-${post.id}`,
+    },
   };
 }
 

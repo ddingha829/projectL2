@@ -11,13 +11,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 1. Fetch all DB posts
   const { data: dbPosts } = await supabase
     .from('posts')
-    .select('id, created_at')
+    .select('id, serial_id, created_at')
     .eq('is_public', true)
     .order('created_at', { ascending: false })
 
   // 2. Map DB posts to sitemap entries
   const postEntries = (dbPosts || []).map((post) => ({
-    url: `${baseUrl}/post/db-${post.id}`,
+    url: `${baseUrl}/post/${post.serial_id ? post.serial_id : `db-${post.id}`}`,
     lastModified: new Date(post.created_at),
     changeFrequency: 'weekly' as const,
     priority: 0.7,

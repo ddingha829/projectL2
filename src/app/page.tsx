@@ -11,6 +11,12 @@ export const MOCK_AUTHORS = {};
 
 export const MOCK_POSTS: any[] = [];
 
+export const metadata = {
+  alternates: {
+    canonical: 'https://ticgle.kr',
+  },
+};
+
 export default async function Home({
   searchParams,
 }: {

@@ -8,6 +8,9 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
   title: "공지사항",
   description: "티끌 매거진의 새로운 소식과 안내사항을 확인하세요.",
+  alternates: {
+    canonical: 'https://ticgle.kr/notice',
+  },
 };
 
 export default async function NoticeListPage() {

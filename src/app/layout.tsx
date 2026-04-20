@@ -59,9 +59,6 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.ico",
   },
-  alternates: {
-    canonical: "/",
-  },
   openGraph: {
     title: "티끌 ticgle",
     description: "티끌 모아 반짝이는, 일상 매거진",
