@@ -462,7 +462,7 @@ export default function HomeContent({
               <h1 className={styles.resultsTitle}>
                 { isViewMore ? "전체 티끌" : displayTitle}
               </h1>
-              {vType === 'card' && (
+              {(vType as any) === 'card' && (
                 <div className={`${styles.headerColControls} ${styles.mobileOnly}`}>
                   <div className={styles.headerColSelector}>
                     {(isMobile ? ['1', '2', '3'] : ['2', '3', '4']).map(n => (
@@ -510,7 +510,7 @@ export default function HomeContent({
                 </div>
               </nav>
 
-              {vType === 'card' && (
+              {(vType as any) === 'card' && (
                 <div className={`${styles.headerColControls} ${styles.desktopOnly}`}>
                   <div className={styles.headerColSelector}>
                     {(isMobile ? ['1', '2', '3'] : ['2', '3', '4']).map(n => (
@@ -529,7 +529,7 @@ export default function HomeContent({
 
             {/* The Main Grid Results Area */}
             <div key={isMobile ? 'mobile-grid' : `grid-${vType}-${cardCols}`} className={styles.gridListFade}>
-              {vType === 'card' ? (
+              {(vType as any) === 'card' ? (
                 <div 
                   className={styles.gridList}
                   style={{ 
