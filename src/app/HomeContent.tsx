@@ -289,7 +289,10 @@ export default function HomeContent({
 
   // URL 쿼리를 최우선으로, 그 다음 선호도, 그 다음 기본값
   const queryVType = searchParams.get("viewType");
-  const vType = (queryVType || initialViewType || (isMobile ? "card" : "magazine")) as "card" | "magazine";
+  // [임시] 매거진 모드 고정 및 전환 기능 비활성화
+  // const vType = (queryVType || initialViewType || (isMobile ? "card" : "magazine")) as "card" | "magazine";
+  const vType = "magazine"; 
+
   const mobileGridCols = vType === 'magazine' ? 1 : parseInt(searchParams.get("mCols") || "2");
   const cardCols = parseInt(searchParams.get("dCols") || "4");
 
@@ -401,10 +404,9 @@ export default function HomeContent({
                   })}
               </div>
 
-              {/* Feature Section (Dynamically Loaded) */}
-              <FeatureSection featurePosts={featurePosts} isMobile={isMobile} />
+              {/* [임시 숨김] 티끌 모은 태산 섹션 */}
+              {/* <FeatureSection featurePosts={featurePosts} isMobile={isMobile} /> */}
 
-              {/* Reviews Section (Dynamically Loaded) */}
               <ReviewsSection 
                 recentReviews={recentReviews} 
                 isMobile={isMobile} 

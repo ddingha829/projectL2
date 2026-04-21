@@ -211,9 +211,11 @@ export default function TopNavbar({
             <img src="/logo.png?v=1301" alt="티끌 Ticgle" className={styles.logoImage} />
           </Link>
 
+          {/* [임시 숨김] 모바일 뷰 전환 버튼
           <div className={styles.mobileViewToggleWrap}>
             <ViewSettingsDropdown />
           </div>
+          */}
         </div>
 
         <nav className={styles.mainNav}>
@@ -381,9 +383,11 @@ export default function TopNavbar({
           </div>
 
           {/* PC Only View Settings */}
+          {/* [임시 숨김] PC 뷰 전환 버튼
           <div className={styles.pcViewToggleWrap}>
             <ViewSettingsDropdown isPC={true} />
           </div>
+          */}
         </div>
       </div>
     </header>

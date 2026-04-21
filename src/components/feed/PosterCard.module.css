@@ -344,7 +344,7 @@
 .magContentArea {
   display: flex;
   flex-direction: column;
-  padding: 16px !important; /* Padding for the content inside bordered card */
+  padding: 5px 16px 12px 16px !important; /* Top reduced to 30%(5px) as requested, total padding compressed */
   background: transparent !important;
   color: var(--text-primary) !important;
 }
@@ -353,7 +353,7 @@
   font-size: 0.78rem;
   color: var(--text-muted);
   font-weight: 600;
-  margin-bottom: 6px;
+  margin-bottom: 4px; /* Reduced from 6px */
 }
 
 .magTitle {
@@ -362,7 +362,7 @@
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1.4;
-  margin-bottom: 8px;
+  margin-bottom: 6px; /* Reduced from 8px */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
@@ -386,7 +386,7 @@
   font-size: 0.88rem;
   color: var(--text-secondary);
   line-height: 1.6;
-  margin-bottom: 12px;
+  margin-bottom: 8px; /* Reduced from 12px */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;

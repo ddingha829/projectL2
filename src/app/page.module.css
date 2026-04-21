@@ -401,7 +401,7 @@
 
 .heroTrack {
   display: flex;
-  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1); /* Faster, snappier feel without heavy inertia */
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1); /* Adjusted to 0.9s per user request */
   will-change: transform;
 }
 
