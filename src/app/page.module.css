@@ -2189,7 +2189,7 @@
     line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    color: #000 !important;
+    color: var(--text-secondary) !important; /* 다크모드 대응 */
     white-space: normal !important; /* 말줄임표 개선 */
   }
   .newMainSmallList .magListInfo .magListAuthor {
@@ -2251,7 +2251,7 @@
 
 .newMainLargeExcerpt {
   font-size: 1.07rem; /* 2% 증가 (1.05->1.07) */
-  color: #000; /* Black strictly */
+  color: var(--text-secondary); /* 다크모드 대응 */
   min-height: 3.14em; /* 2줄 확보 */
   display: -webkit-box;
   -webkit-line-clamp: 2; /* PC A카드 내용 2줄로 롤백 */
