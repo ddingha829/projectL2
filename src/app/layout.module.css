@@ -9,7 +9,7 @@
   flex: 1;
   display: flex;
   justify-content: center;
-  padding: 40px 0 20px 0; /* Reduced bottom padding by 50% as requested */
+  padding: 12px 0 20px 0; /* Reduced top padding aggressively (40->12px) */
 
   width: 100%;
 }
@@ -19,7 +19,7 @@
 .contentInner {
   width: 100%;
   max-width: 1200px;
-  padding: 0 40px;
+  padding: 0 20px; /* Increased by 5px from 15px */
   display: flex;
   flex-direction: column;
   gap: 20px; /* Reduced gap between blocks for tighter fit */
@@ -56,14 +56,18 @@
   }
   .contentWrapper {
     background: var(--bg-primary);
-    padding: 12px 0 8px 0; /* Reduced 50% from 24px as requested */
+    padding: 2px 0 8px 0; /* 상단바와의 간격을 위해 대폭 축소 (12->2px) */
   }
 
   .contentInner {
-    padding: 0 11px;
+    padding: 0 22px; /* 2x for normal screens */
     gap: 16px;
     width: 100%;
     overflow-x: clip; /* hidden 브레이크 방지 */
+  }
+  
+  .contentInner.postViewInner {
+    padding: 0 11px !important; /* Keep original for post view */
   }
   
   .mobileFAB {

@@ -24,7 +24,7 @@
 
 .resultsTitle {
   font-family: var(--font-noto-sans), sans-serif;
-  font-size: 1.8rem;
+  font-size: 2.22rem; /* Unified with .sectionTitle */
   font-weight: 800;
   color: var(--text-primary);
   letter-spacing: -0.02em;
@@ -92,14 +92,8 @@
   }
 }
 
-.resultsHeader {
-  display: flex;
-  align-items: flex-end; /* Align with title's point line area */
-  justify-content: space-between;
-  width: 100%;
-  padding: 0;
-  margin-bottom: 24px;
-}
+
+/* .resultsHeader 중복 제거됨: 단일 정의만 사용 (L15) */
 
 .headerColControls {
   display: flex;
@@ -162,11 +156,7 @@
   justify-content: flex-end;
 }
 
-.sectionTitle {
-  flex: 0 0 auto;
-  text-align: center;
-  padding: 0 20px;
-}
+/* .sectionTitle 디자인 치수: L348 canonical 정의 참조 */
 
 .topControlsRow {
   display: grid;
@@ -1165,7 +1155,7 @@
 .magBody {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 40px;
+  gap: 20px; /* Reduced by 50% from 40px */
 }
 
 .magBodyGrid {
@@ -1196,11 +1186,20 @@
   gap: 16px;
 }
 
+@media (max-width: 768px) {
+  .magList {
+    gap: 8px !important; /* 30% 추가 축소 */
+  }
+}
+
+/* =========================================================
+   B 카드 (가로형 리스트) - 전체 페이지 공통
+   ========================================================= */
 .magListItem {
   display: flex !important;
   flex-direction: row !important;
-  align-items: stretch !important; /* Image fills vertical space */
-  gap: 0 !important; /* Padding handled inside ListInfo */
+  align-items: stretch !important;
+  gap: 0 !important;
   width: 100%;
   padding: 0 !important;
   border-radius: 12px;
@@ -1209,18 +1208,19 @@
   text-decoration: none;
   transition: all 0.25s ease;
   overflow: hidden;
-  margin-bottom: 8px; /* Added spacing between items */
+  margin-bottom: 8px; /* 메인 페이지 B카드 간격과 통일 */
+  height: 148px; /* PC B카드 표준 높이 (메인 페이지 3개 분할 기준) */
 }
 
 .magListItem:hover {
   border-color: var(--accent-line);
-  box-shadow: 0 8px 24px rgba(255, 72, 4, 0.08);
+  box-shadow: 0 8px 24px rgba(255, 72, 4, 0.08); /* orange glow */
   transform: translateY(-2px);
 }
 
 .magThumbWrap {
-  width: 135px !important; /* Optimized width for grid */
-  height: auto !important;
+  height: 100%;
+  aspect-ratio: 3 / 2; /* 3:2 비율 유지 */
   flex-shrink: 0 !important;
   border-radius: 0 !important;
   overflow: hidden;
@@ -1239,132 +1239,111 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-}
-
-.magListTitle {
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  line-clamp: 1;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.magListExcerpt {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  line-height: 1.5;
-}
-
-.magMetaRow {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 4px;
-}
-
-.magListAuthor {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--brand-primary);
-}
-
-.magListDate {
-  font-size: 0.75rem;
-  color: var(--text-tertiary);
-}
-
-@media (max-width: 768px) {
-  .magList {
-    gap: 16px;
-  }
-  
-  .magListItem {
-    padding: 16px !important; /* Adjusted for horizontal fit */
-    gap: 16px !important;
-    flex-direction: row !important; /* Image left, Content right */
-    align-items: center !important;
-  }
-
-  .magThumbWrap {
-    width: 130px !important; /* Fixed width for horizontal list */
-    height: 90px !important;
-    aspect-ratio: auto !important;
-    border-radius: 8px !important;
-    border: 1.4px solid var(--border-medium) !important;
-    flex-shrink: 0 !important;
-  }
-
-  .magThumb {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-  }
-
-  .magListInfo {
-    padding: 0 !important; /* Reset vertical padding */
-    gap: 4px !important;
-    flex: 1;
-    min-width: 0; /* Prevent text overflow breaking layout */
-  }
-
-  .magListTitle {
-    font-size: 0.98rem !important; /* Slightly smaller for horizontal fit */
-    -webkit-line-clamp: 2 !important;
-    line-clamp: 2 !important;
-    margin-bottom: 2px !important;
-  }
-}
-
-/* Removed old duplicate definition to keep it clean */
-
-.magListInfo {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
   justify-content: center;
-  gap: 4px;
-  padding: 12px 16px; /* Moved padding here for full-bleed image */
+  gap: 4.8px; /* Standardized gap */
+  padding: 12px 16px;
 }
 
 .magListTitle {
   font-family: var(--font-noto-sans), sans-serif;
-  font-size: 1.08rem;
+  font-size: 1.19rem;
   font-weight: 800;
   color: var(--text-primary);
   line-height: 1.35;
+  min-height: 2.7em;
   display: -webkit-box;
-  -webkit-line-clamp: 1; /* Title strictly 1 line */
-  line-clamp: 1;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   margin-bottom: 2px;
 }
 
 .magListExcerpt {
-  font-size: 0.88rem;
+  font-size: 0.94rem;
   color: var(--text-secondary);
-  line-height: 1.6;
+  line-height: 1.5;
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* Excerpt strictly 2 lines */
+  -webkit-line-clamp: 2; 
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  white-space: pre-wrap; /* 줄바꿈 반영 */
+  word-break: keep-all;
+}
+
+/* --- B카드 모바일 (가로형 리스트 기본값) --- */
+@media (max-width: 768px) {
+  .magListItem {
+    padding: 0 !important; 
+    gap: 16px !important; 
+    flex-direction: row !important; /* 기본은 가로형 */
+    align-items: stretch !important; 
+    min-height: 128px !important; /* 제목 2줄 + 내용 2줄 공간 확보를 위해 약간 상향 */
+    height: auto !important;
+    aspect-ratio: auto !important;
+    margin-bottom: 12px !important;
+  }
+
+  .magThumbWrap {
+    flex: 0 0 40% !important; /* 40% 점유 */
+    max-width: 40% !important;
+    height: auto !important; 
+    aspect-ratio: auto !important; 
+    flex-shrink: 0 !important;
+    border-radius: 0 !important; 
+  }
+
+  .magListInfo {
+    padding: 12px 12px 12px 0 !important; 
+    gap: 4px !important;
+    justify-content: center !important;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .magListExcerpt {
+    font-size: 0.86rem !important;
+    line-height: 1.4 !important;
+    min-height: auto !important;
+    -webkit-line-clamp: 2 !important; 
+    white-space: normal !important; 
+  }
+}
+
+
+.magListExcerpt {
+  font-size: 0.94rem !important; /* Base size */
+  color: #000 !important; /* Force black strictly */
+  line-height: 1.57 !important;
+  min-height: 3.14em; /* 2줄로 복구 */
+  display: -webkit-box;
+  -webkit-line-clamp: 2; 
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: normal !important; /* 말줄임표 개선: 줄바꿈 무시하고 빈틈 채움 (기존 pre-wrap) */
   word-break: keep-all; 
   overflow-wrap: break-word;
+  margin: 0;
+  letter-spacing: -0.05em !important; /* 자간 5% 감소 */
 }
+
+/* 말줄임표(...) 조기 발생 방지를 위한 블록 요소 완전 인라인화 (요건에 따라 클래스별 개별 제어 가능하게 유지) */
+.magListExcerpt *, 
+.newMainLargeExcerpt *, 
+.newMainSmallList .magListExcerpt * {
+  display: inline !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.magListExcerpt br, 
+.newMainLargeExcerpt br, 
+.newMainSmallList .magListExcerpt br {
+  display: none !important;
+}
+
 
 
 @media (max-width: 768px) {
@@ -1389,39 +1368,14 @@
   line-height: 1;
 }
 
-.magListExcerpt {
-  font-size: 0.82rem;
-  color: var(--text-secondary);
-  line-height: 1.5;
-  margin: 6px 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  word-break: break-all;
-}
-
-.magListExcerpt {
-  display: block;
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  line-height: 1.6;
-  margin: 8px 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  word-break: keep-all;
-}
 
 .magMetaRow {
   display: flex !important;
   align-items: center;
   gap: 12px;
-  margin-top: 4px;
+  margin-top: auto !important; /* PUSH to bottom */
+  justify-content: flex-end !important; /* PUSH to right */
+  width: 100%;
 }
 
 .magListDate {
@@ -1524,11 +1478,6 @@
 }
 
 /* [신규] 티끌러(에디터) 섹션 스타일 */
-.editorsSection {
-  margin: 40px 0;
-  width: 100%;
-}
-
 .editorsSection {
   margin: 40px 0;
   width: 100%;
@@ -1697,13 +1646,14 @@
 @media (max-width: 768px) {
   .editorsGrid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: 8px; /* 축소하여 우측 잘림 방지 */
   }
   .editorProfileCard {
     min-height: auto;
-    padding: 20px 12px;
+    padding: 20px 6px; /* 8->6px로 추가 축소하여 잘림 방지 */
     border-radius: 16px;
     border: 1.2px solid var(--border-medium) !important;
+    box-sizing: border-box;
   }
   .edAvatarWrapper {
     width: 54px;
@@ -2161,4 +2111,218 @@
   color: #ff4804;
   overflow: hidden;
   white-space: nowrap;
+}
+
+/* --- New Layout Classes for Task --- */
+.newMainLayout {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px; /* Reduced by 50% from 40px */
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .newMainLayout {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .newMainSmallList {
+    width: 100%;
+  }
+
+  /* PC A카드는 모바일에서 숨김 (모바일은 아래 B→A 오버라이드로 통일) */
+  .newMainLargeCard {
+    display: none !important;
+  }
+
+  /* 모바일 메인: B카드를 A카드 스타일(세로형)로 강력하게 오버라이드 */
+  .newMainSmallList .magListItem {
+    display: flex !important;
+    flex-direction: column !important; /* 수직형 강제 */
+    min-height: auto !important;
+    height: auto !important; /* PC의 148px 고정 높이 해제 필수 */
+    aspect-ratio: 4 / 4.6 !important; /* 카드 전체 비율 4:4.6 */
+    padding: 0 !important;
+    width: 100% !important;
+    flex: none !important;
+    gap: 0 !important;
+    overflow: hidden;
+  }
+
+  .newMainSmallList .magThumbWrap {
+    width: 100% !important;
+    max-width: 100% !important;
+    aspect-ratio: 3 / 2 !important; /* 이미지 비율 3:2 */
+    height: auto !important;
+    flex: none !important;
+    border-radius: 0 !important;
+  }
+
+  .newMainSmallList .magListInfo {
+    padding: 11px 16px 12px 16px !important; /* 상단 여백 10% 이상 상향 (8->11px) */
+    gap: 4px !important;
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+  }
+
+  .newMainSmallList .magListTitle {
+    font-size: 1.58rem !important; /* 제목 폰트 추가 5% 축소 (1.67 -> 1.58) */
+    margin-bottom: 4px !important;
+    line-height: 1.3 !important;
+    min-height: auto !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+  .newMainSmallList .magListExcerpt {
+    font-size: 1.02rem !important; /* 텍스트 1.02rem 고정 */
+    line-height: 1.57 !important;
+    min-height: 3.14em !important; /* 2줄 확보 */
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* 2줄 노출 */
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    color: #000 !important;
+    white-space: normal !important; /* 말줄임표 개선 */
+  }
+  .newMainSmallList .magListInfo .magListAuthor {
+    font-size: 0.76rem !important;
+  }
+  .newMainSmallList .magListInfo .magListDate {
+    font-size: 0.69rem !important;
+  }
+}
+
+.newMainLargeCard {
+  border-radius: 12px;
+  border: 1.4px solid var(--border-medium);
+  background: var(--bg-primary);
+  text-decoration: none;
+  transition: all 0.25s ease;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  aspect-ratio: 1 / 1; /* PC에서는 1:1 유지 (A카드 높이 맞춤용) */
+}
+.newMainLargeCard:hover {
+  border-color: var(--accent-line);
+  box-shadow: 0 8px 24px rgba(255, 72, 4, 0.08); /* orange glow */
+  transform: translateY(-2px);
+}
+
+.newMainLargeThumbWrap {
+  width: 100%;
+  aspect-ratio: 3 / 1.9; /* 이미지 3:1.9 (PC) */
+  flex: none;
+  position: relative;
+  background: var(--bg-tertiary);
+  overflow: hidden;
+}
+
+.newMainLargeImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover !important;
+}
+
+.newMainLargeInfo {
+  padding: 19px 16px 12px 16px; /* 추가 10% 축소 (21->18.9, used 19) */
+  display: flex;
+  flex-direction: column;
+  gap: 7.6px; /* 5% 축소 (8->7.6) */
+  flex: none; /* Stops spreading so image can fill the void */
+}
+
+.newMainLargeTitle {
+  font-family: var(--font-noto-sans), sans-serif;
+  font-size: 1.76rem; /* 5% 축소 (1.85->1.76) */
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 7.6px; /* 5% 축소 (8->7.6) */
+  line-height: 1.3;
+}
+
+.newMainLargeExcerpt {
+  font-size: 1.07rem; /* 2% 증가 (1.05->1.07) */
+  color: #000; /* Black strictly */
+  min-height: 3.14em; /* 2줄 확보 */
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* PC A카드 내용 2줄로 롤백 */
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: normal; /* 말줄임표 개선 (기존 pre-wrap) */
+  word-break: keep-all; 
+  overflow-wrap: break-word;
+  margin: 0;
+  letter-spacing: -0.05em; /* 자간 5% 감소 */
+}
+
+.newMainLargeInfo .magListAuthor {
+  font-size: 0.76rem; /* 5% 증가 */
+}
+
+.newMainLargeInfo .magListDate {
+  font-size: 0.69rem; /* 5% 증가 */
+}
+
+.newMainSmallList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%; /* A카드 높이에 맞춤 */
+}
+
+/* 메인 페이지 B카드 (A카드 높이에 맞춰 유동적 분배) */
+.newMainSmallList .magListItem {
+  flex: 1;
+  aspect-ratio: auto; /* Root의 3.17/1을 무시하고 메인 레이아웃에 유연하게 맞춤 */
+}
+
+/* Category Section Top Bar */
+.magSecHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 16px;
+  border-bottom: 2px solid var(--accent-primary);
+  padding-bottom: 12px;
+}
+
+.magSecTitleWrapper {
+  display: flex;
+  align-items: flex-end;
+}
+.magSecTitleNew {
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 2.22rem; /* Unified with .sectionTitle */
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.03em;
+}
+
+.magSecMoreBtn {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-medium);
+  cursor: pointer;
+  padding: 6px 14px;
+  border-radius: 40px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+}
+.magSecMoreBtn:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--text-primary);
 }

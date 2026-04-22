@@ -302,106 +302,65 @@ export default function HomeContent({
         {/* Branch 1: Home Page View (Mixed Sections) */}
         {!showFullGrid ? (
           <div className={styles.homeContainer}>
-            {/* Hero Section */}
-            <div 
-              className={styles.heroWrapper}
-              onMouseEnter={() => setIsHeroPaused(true)}
-              onMouseLeave={() => setIsHeroPaused(false)}
-              onTouchStart={handleTouchStart}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={handleTouchEnd}
-            >
-              <div className={styles.desktopOnly}>
-                <div className={styles.heroFrame}></div>
-                <div 
-                  className={styles.heroTrack} 
-                  style={{ transform: `translateX(-${heroIndex * 100}%)` }}
-                >
-                  {heroPosts.map((post, index) => (
-                    <div key={post.id} className={styles.heroSlideItem}>
-                      <HeroCard {...post} heightRatio="2/3" showNav={false} isPriority={index === 0} />
-                    </div>
-                  ))}
-                </div>
-                {heroPosts.length > 1 && (
-                  <div className={styles.heroNavFloating}>
-                    <button className={styles.slideNavBtn} onClick={prevHero}>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="15 18 9 12 15 6"></polyline>
-                      </svg>
-                    </button>
-                    <div className={styles.heroDotsView}>
-                      {heroPosts.map((_, idx) => (
-                        <span 
-                          key={idx} 
-                          className={idx === heroIndex ? styles.activeHeroDot : styles.inactiveHeroDot}
-                        ></span>
-                      ))}
-                    </div>
-                    <button className={styles.slideNavBtn} onClick={nextHero}>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="9 18 15 12 9 6"></polyline>
-                      </svg>
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              <div className={styles.mobileOnly}>
-                {heroPosts.length > 1 && (
-                  <div className={styles.mobileHeroDots}>
-                    {heroPosts.map((_, idx) => (
-                      <span 
-                        key={idx} 
-                        className={idx === heroIndex ? styles.activeHeroDot : styles.inactiveHeroDot}
-                      ></span>
-                    ))}
-                  </div>
-                )}
-                <div 
-                  className={styles.heroTrack} 
-                  style={{ transform: `translateX(-${heroIndex * 100}%)` }}
-                >
-                  {heroPosts.map((post, index) => (
-                    <div key={post.id} className={styles.heroSlideItem}>
-                      <HeroCard {...post} heightRatio="2/3" isPriority={index === 0} />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* New Posts Section (Horizontal Scroll/Mixed Grid) */}
-            <div className={styles.gridSection}>
-              <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '0' }}>
-                <h2 className={styles.sectionTitle}>새로운 티끌</h2>
-                <div className={styles.headerSpacer}></div>
-                {filteredPosts.length > 0 && (
-                  <button className={`${styles.viewAllLink} ${styles.desktopOnly}`} onClick={() => router.push('/?view=all')}>
-                    MORE <span className={styles.linkIcon}>{'>'}</span>
+            {/* New Main Top Section (Replaces Hero and New Posts) */}
+            <div className={styles.gridSection} style={{ marginTop: isMobile ? '0' : '0' }}>
+              <div className={styles.magSecHeader} style={{ borderBottom: 'none', marginBottom: '16px' }}>
+                <h2 className={styles.resultsTitle} style={{ margin: 0, paddingBottom: '12px', paddingLeft: '8px' }}>새로운 티끌</h2>
+                {allPosts.length > 0 && (
+                  <button className={styles.magSecMoreBtn} onClick={() => router.push('/?view=all')}>
+                    more {'>'}
                   </button>
                 )}
-              </header>
+              </div>
 
-              <div 
-                className={`${vType === 'magazine' ? styles.magMainGrid : styles.mainGrid} ${styles.horizontalScrollGrid}`}
-                style={{ '--mobile-cols': mobileGridCols } as React.CSSProperties}
-              >
-                  {displayPosts.map((post, index) => {
-                    const excerpt = stripHtml(post.content).slice(0, 160) + (stripHtml(post.content).length > 160 ? '...' : '');
-                    return (
-                      <PosterCard 
-                        key={post.id} 
-                        {...post} 
-                        aspectRatio={isMobile ? 'default' : 'card45'} 
-                        isOneCol={isMobile && mobileGridCols === 1}
-                        isMinimal={false} 
-                        viewType={vType}
-                        excerpt={excerpt}
-                        priority={index < (isMobile ? 2 : 4)}
+              <div className={styles.newMainLayout}>
+                {allPosts.length > 0 && (
+                  <Link href={`/post/${allPosts[0].id}`} className={`${styles.newMainLargeCard} ${styles.desktopOnly}`}>
+                    <div className={styles.newMainLargeThumbWrap}>
+                      <Image 
+                        src={allPosts[0].imageUrl} 
+                        alt={allPosts[0].title} 
+                        fill
+                        className={styles.newMainLargeImg}
+                        sizes="(max-width: 768px) 100vw, 60vw"
+                        priority
                       />
-                    );
-                  })}
+                    </div>
+                    <div className={styles.newMainLargeInfo}>
+                      <h3 className={styles.newMainLargeTitle}>{allPosts[0].title}</h3>
+                      <p className={styles.newMainLargeExcerpt}>{stripHtml(allPosts[0].content).slice(0, 160)}...</p>
+                      <div className={styles.magMetaRow}>
+                        <span className={styles.magListAuthor}>{allPosts[0].author?.name || allPosts[0].authorProfile?.display_name}</span>
+                        <span className={styles.magListDate}>{allPosts[0].displayDate}</span>
+                      </div>
+                    </div>
+                  </Link>
+                )}
+                
+                {/* PC: posts 1~3 as B cards / Mobile: posts 0~3 all as A cards (세로형) */}
+                <div className={styles.newMainSmallList}>
+                  {(isMobile ? allPosts.slice(0, 4) : allPosts.slice(1, 4)).map(post => (
+                    <Link href={`/post/${post.id}`} key={post.id} className={styles.magListItem}>
+                      <div className={styles.magThumbWrap}>
+                        <Image 
+                          src={post.imageUrl} 
+                          alt={post.title} 
+                          fill
+                          className={styles.magThumb}
+                          sizes="(max-width: 768px) 180px, 200px"
+                        />
+                      </div>
+                      <div className={styles.magListInfo}>
+                        <h4 className={styles.magListTitle}>{post.title}</h4>
+                        <p className={styles.magListExcerpt}>{stripHtml(post.content).slice(0, 100)}...</p>
+                        <div className={styles.magMetaRow}>
+                          <span className={styles.magListAuthor}>{post.author?.name || post.authorProfile?.display_name}</span>
+                          <span className={styles.magListDate}>{post.displayDate}</span>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
               </div>
 
               {/* [임시 숨김] 티끌 모은 태산 섹션 */}
@@ -553,37 +512,32 @@ export default function HomeContent({
                 </div>
               ) : (
                 <div className={styles.magazineLayout}>
-                  {/* Hero Row: Top 2 Posts */}
-                  <div className={styles.magHeroRow}>
-                    {displayPosts.slice(0, 2).map((post, index) => (
-                      <div key={post.id} className={styles.magHeroItem}>
-                        <PosterCard 
-                          {...post} 
-                          aspectRatio="mag53" 
-                          viewType="magazine" 
-                          excerpt={stripHtml(post.content)} 
-                          priority={index < 2} 
-                        />
-                      </div>
-                    ))}
-                  </div>
-
                   {/* Body: Grouped by Category */}
                   <div className={styles.magBody}>
                     {['restaurant', 'travel', 'movie', 'game', 'book', 'exhibition', 'other'].map(catId => {
                       const label = CATEGORY_LABEL_MAP[catId];
-                      // Use displayPosts to respect infinite scroll
-                      const heroIds = displayPosts.slice(0, 2).map(p => String(p.id));
-                      const catPosts = displayPosts.filter(p => (
+                      const catPosts = paginatedData.filter(p => (
                         String(p.category_id) === catId || String(p.categoryId) === catId || String(p.category) === catId || (label && p.category === label)
-                      ) && !heroIds.includes(String(p.id)));
+                      )).slice(0, 4);
                       
                       if (catPosts.length === 0) return null;
                       const catName = label || catPosts[0].category;
                       
                       return (
                         <div key={catId} className={styles.magSection}>
-                          <h3 className={styles.magSecTitle}>{catName}</h3>
+                          <div className={styles.magSecHeader}>
+                            <h3 className={styles.magSecTitleNew}>{catName}</h3>
+                            <button 
+                              className={styles.magSecMoreBtn}
+                              onClick={() => {
+                                const params = new URLSearchParams(searchParams.toString());
+                                params.set('category', catId);
+                                router.push(`/?${params.toString()}`);
+                              }}
+                            >
+                              more {'>'}
+                            </button>
+                          </div>
                           <div className={styles.magList}>
                             {catPosts.map((post: any) => {
                               const excerpt = stripHtml(post.content).slice(0, 100);

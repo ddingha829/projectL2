@@ -115,6 +115,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
 
+  // Check if we are on a post detail page to maintain specific margins
+  const isPostDetail = pathname?.startsWith('/post/') && !pathname.endsWith('/edit') && pathname !== '/post/new';
+
   // Unified Auth State
   const [user, setUser] = useState<any>(null);
   const [role, setRole] = useState<string>("user");
@@ -263,7 +266,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           <div className={gridStyles.mobileOverlay} onClick={() => setIsMobileOpen(false)}></div>
         )}
         <main className={gridStyles.contentWrapper} style={{ position: 'relative' }}>
-          <div className={gridStyles.contentInner} style={{ width: '100%' }}>
+          <div className={`${gridStyles.contentInner} ${isPostDetail ? gridStyles.postViewInner : ''}`} style={{ width: '100%' }}>
             {children}
           </div>
         </main>

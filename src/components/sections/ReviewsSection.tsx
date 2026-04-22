@@ -7,7 +7,7 @@ export function ReviewsSection({ recentReviews, isMobile, scrollReviews, reviewR
   return (
     <div className={styles.recentReviewsSection}>
       <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '15px' }}>
-        <h2 className={styles.sectionTitle}>한줄 평</h2>
+        <h2 className={styles.sectionTitle} style={{ paddingLeft: '8px' }}>한줄 평</h2>
         <div className={styles.headerSpacer}></div>
       </header>
       <div className={styles.recentReviewsWrapper}>

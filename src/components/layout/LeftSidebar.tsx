@@ -270,7 +270,7 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
           </details>
 
           <Link href="/reviews" className={styles.sidebarLink} onClick={onClose}>
-            평점 아카이브
+            티끌 아카이브
           </Link>
         </div>
 
