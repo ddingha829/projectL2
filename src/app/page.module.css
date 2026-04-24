@@ -139,8 +139,8 @@
 
 .headerColActive {
   background: var(--brand-primary);
-  color: #ffffff !important;
-  /* Ensure clear white text in all modes */
+  color: #ffffff;
+
   box-shadow: 0 2px 8px rgba(255, 72, 4, 0.4);
 }
 
@@ -2875,6 +2875,7 @@
   .editorProfileCard,
   .magListItem,
   .magListInfo,
+  .newMainLargeCard,
   .authorCardWrapper {
     background: var(--bg-secondary) !important;
 
