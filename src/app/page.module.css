@@ -1920,7 +1920,7 @@
   .miniReviewCard {
     flex: 0 0 58% !important; 
     aspect-ratio: 1 / 1;
-    padding: 16px 16px 8px 16px;
+    padding: 16px 16px 4px 16px;
     gap: 2px !important; /* Extremely tight gap (Reduced by 70%+) */
     border: 1.2px solid var(--border-medium) !important;
   }
@@ -1955,13 +1955,18 @@
     margin-top: -3px !important; 
   }
   .miniRevText {
-    font-size: 0.8rem !important; /* Reduced 5% */
+    font-size: 0.76rem !important; /* Reduced further to 0.76rem */
+    -webkit-line-clamp: 4 !important; /* Increase to 4 lines to avoid ... */
+    line-clamp: 4 !important;
   }
   .miniRevStars {
     font-size: 1.24rem !important; /* Reduced 10% from 1.38rem */
   }
   .miniRevScore {
     font-size: 1.3rem !important; /* Reduced 10% from 1.45rem */
+  }
+  .miniRevFooter {
+    padding-top: 4px !important; /* Reduced from 10px to stick footer to border */
   }
   .scrollBtn {
     display: none;
