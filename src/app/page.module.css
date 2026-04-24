@@ -2195,8 +2195,10 @@
 .newMainLayout {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20px; /* Reduced by 50% from 40px */
+  grid-template-rows: 1fr;
+  gap: 20px; 
   width: 100%;
+  align-items: stretch; /* Force both columns to have same height */
 }
 
 @media (max-width: 768px) {
@@ -2282,13 +2284,14 @@
 .newMainLargeCard {
   border-radius: 12px;
   border: 1.5px solid var(--border-medium);
-  background: #ffffff; /* Explicitly white */
+  background: #ffffff;
   text-decoration: none;
   transition: all 0.25s ease;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  aspect-ratio: 1 / 1; /* PC에서는 1:1 유지 (A카드 높이 맞춤용) */
+  aspect-ratio: 1 / 1;
+  height: 100%; /* Ensure it fills the grid cell if row expands */
 }
 .newMainLargeCard:hover {
   border-color: var(--accent-line);
@@ -2353,16 +2356,20 @@
 }
 
 .newMainSmallList {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
   gap: 16px;
-  height: 100%; /* A카드 높이에 맞춤 */
+  height: 100%; 
 }
 
 /* 메인 페이지 B카드 (A카드 높이에 맞춰 유동적 분배) */
 .newMainSmallList .magListItem {
-  flex: 1;
-  aspect-ratio: auto; /* Root의 3.17/1을 무시하고 메인 레이아웃에 유연하게 맞춤 */
+  height: 100% !important; /* 부모 그리드 셀의 100%를 무조건 채움 */
+  aspect-ratio: auto;
+}
+
+.newMainSmallList .magThumbWrap {
+  height: 100% !important; /* 이미지 영역도 카드의 유동적 높이에 맞춤 */
 }
 
 /* Category Section Top Bar */
