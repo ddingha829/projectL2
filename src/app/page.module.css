@@ -1821,11 +1821,11 @@
 }
 
 .miniRevSubject {
-  font-size: 1.15rem;
-  font-weight: 900;
-  color: var(--brand-primary);
-  margin: 0;
-  line-height: 1.1; /* Tighter line height to reduce invisible space */
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin: 0 !important;
+  color: var(--text-primary);
+  line-height: 1.2;
   letter-spacing: -0.04rem;
   white-space: nowrap;
   overflow: hidden;
@@ -1939,15 +1939,15 @@
     margin-right: 0;
     padding-left: 16px; /* Start aligned with header */
     padding-right: 16px;
-    gap: 10px; /* Increased by ~20% for more breathing room */
+    gap: 4px; /* Reduced internal gap for reviews */
     padding-bottom: 15px !important; /* Significantly reduced from 40px to shrink gap below */
   }
   .miniReviewCard {
-    flex: 0 0 64% !important; /* Increased twice to reach ~64% as requested */
+    flex: 0 0 58% !important; 
     aspect-ratio: 1 / 1;
     padding: 16px 16px 8px 16px;
-    gap: 6px; /* Reduced from 8px to save vertical space */
-    border: 1.2px solid var(--border-medium) !important; /* Slightly stronger border for better mobile readability */
+    gap: 2px !important; /* Extremely tight gap (Reduced by 70%+) */
+    border: 1.2px solid var(--border-medium) !important;
   }
   .miniRevAuthor {
     font-size: 0.64rem !important; /* Reduced 20% from 0.8rem */
@@ -2126,6 +2126,14 @@
     gap: 24px !important;
   }
 
+  .newMainLargeTitle {
+    font-size: 1.31rem !important; /* Increased by 15% (1.14 -> 1.31) */
+    margin-bottom: 4px !important;
+    line-height: 1.3 !important;
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
+  }
+
   .magSecTitle {
     font-size: 1.25rem !important;
     margin-bottom: 16px !important;
@@ -2170,10 +2178,10 @@
 
   .magListTitle,
   .newMainSmallList .magListTitle {
-    font-size: 1.2rem !important; /* Slightly larger to match the bold look in Image 2 */
+    font-size: 1.02rem !important; /* Further reduced to ensure 5% visibility (1.08 -> 1.02) */
     font-weight: 800 !important;
     line-height: 1.3;
-    margin-bottom: 4px;
+    margin-bottom: 3px !important;
     -webkit-line-clamp: 2 !important;
     line-clamp: 2 !important;
     color: var(--text-primary) !important;
@@ -2532,13 +2540,19 @@
   }
 
   .newMainLargeTitle {
-    font-size: 1.14rem !important;
+    font-size: 1.31rem !important; /* Unified: Increased by 15% */
     margin-bottom: 4px !important;
+    line-height: 1.3 !important;
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .newMainLargeExcerpt {
-    -webkit-line-clamp: 3 !important;
-    line-clamp: 3 !important;
+    -webkit-line-clamp: 2 !important; /* Unified: Max 2 lines */
+    line-clamp: 2 !important;
     font-size: 0.88rem !important;
     line-height: 1.4 !important;
   }
@@ -2559,7 +2573,7 @@
     overflow-x: auto !important;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
-    gap: 12px !important;
+    gap: 24px !important; /* Increased 100% (12px -> 24px) */
     padding: 0 8px 20px 8px !important; /* Base 16 + 8 = 24 */
     margin: 0 !important; 
     scrollbar-width: none;
@@ -2571,7 +2585,7 @@
 
   /* Inner items for swiping carousels */
   .horizontalScrollMobile > * {
-    flex: 0 0 238px !important; /* Reduced 5% from 250px per user request */
+    flex: 0 0 219px !important; /* Reduced 8% from 238px (238px * 0.92 = ~219px) */
     scroll-snap-align: start;
     height: auto !important;
   }
@@ -2583,7 +2597,7 @@
     flex-wrap: nowrap !important;
     padding: 0 8px 20px 8px !important; /* Match horizontalScrollMobile */
     margin: 0 !important;
-    gap: 12px !important;
+    gap: 24px !important; /* Increased 100% (12px -> 24px) */
   }
 }
 
