@@ -7,8 +7,8 @@ import Image from "next/image";
 export function EditorsSection({ editors, isMobile, allPosts = [] }: { editors: any[], isMobile: boolean, allPosts?: any[] }) {
   return (
     <div className={styles.editorsSection}>
-      <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '25px' }}>
-        <h2 className={styles.sectionTitle}><span style={{ color: '#ff4804' }}>티끌</span>러</h2>
+      <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '25px', marginBottom: isMobile ? '1px' : '7px' }}>
+        <h2 className={styles.sectionTitle} style={{ paddingLeft: '8px' }}><span style={{ color: '#ff4804' }}>티끌</span>러</h2>
         <div className={styles.headerSpacer}></div>
       </header>
       <div className={`${styles.editorsGrid} ${isMobile ? styles.horizontalScrollMobile : ''}`}>

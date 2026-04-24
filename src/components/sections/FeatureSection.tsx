@@ -7,8 +7,8 @@ import Image from "next/image";
 export function FeatureSection({ featurePosts, isMobile }: { featurePosts: any[], isMobile: boolean }) {
   return (
     <div className={styles.featureSection}>
-      <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '25px' }}>
-        <h2 className={styles.sectionTitle}>티끌 모은 태산</h2>
+      <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '25px', marginBottom: isMobile ? '1px' : '7px' }}>
+        <h2 className={styles.sectionTitle} style={{ paddingLeft: '8px' }}><span style={{ color: '#ff4804' }}>티끌</span> 모은 태산</h2>
         <div className={styles.headerSpacer}></div>
         <Link href="/?category=feature" className={styles.viewAllLink}>
           MORE <span className={styles.linkIcon}>{'>'}</span>

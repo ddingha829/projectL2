@@ -6,7 +6,7 @@ import Link from "next/link";
 export function ReviewsSection({ recentReviews, isMobile, scrollReviews, reviewRef, router, MOCK_REVIEWS }: any) {
   return (
     <div className={styles.recentReviewsSection}>
-      <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '15px' }}>
+      <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '15px', marginBottom: isMobile ? '1px' : '7px' }}>
         <h2 className={styles.sectionTitle} style={{ paddingLeft: '8px' }}>한줄 <span style={{ color: '#ff4804' }}>평</span></h2>
         <div className={styles.headerSpacer}></div>
       </header>

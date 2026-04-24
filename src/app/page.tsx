@@ -188,7 +188,7 @@ export default async function Home({
   } else if (categoryFilter && categoryFilter !== 'all') {
     displayTitle = categoryName;
   } else if (authorFilter && authorFilter !== 'all') {
-    displayTitle = `${authorName || '에디터'} 티끌러가 작성한 글`;
+    displayTitle = `${authorName || '에디터'} 작성 글`;
   }
 
   const mappedReviews = reviewDbPosts?.map((p: any) => {

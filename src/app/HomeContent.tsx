@@ -391,8 +391,8 @@ export default function HomeContent({
               </div>
 
               {/* 2. New Posts Section: Title + C-cards (Posts 4~8) */}
-              <div className={styles.magSecHeader} style={{ borderBottom: 'none', marginBottom: '16px' }}>
-                <h2 className={styles.resultsTitle} style={{ margin: 0, paddingBottom: '12px', paddingLeft: '8px' }}>
+              <div className={styles.magSecHeader} style={{ borderBottom: 'none', marginBottom: isMobile ? '1px' : '7px' }}>
+                <h2 className={styles.resultsTitle} style={{ margin: 0, paddingLeft: '8px' }}>
                   새로운 <span style={{ color: '#ff4804' }}>티끌</span>
                 </h2>
                 {allPosts.length > 0 && (
