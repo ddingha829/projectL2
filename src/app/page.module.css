@@ -58,7 +58,7 @@
     padding: 4px 2px 0 !important; 
   }
   .resultsTitle {
-    font-size: 1.53rem; 
+    font-size: 1.25rem !important; 
     text-align: left;
     padding: 0 0 12px 0; 
     font-weight: 900; 
@@ -2550,11 +2550,20 @@
     overflow: hidden;
   }
 
+  .magSecTitleNew {
+    font-size: 1.25rem !important;
+    margin-bottom: 12px !important;
+    border: none !important;
+  }
+
   .newMainLargeExcerpt {
-    -webkit-line-clamp: 2 !important; /* Unified: Max 2 lines */
+    -webkit-line-clamp: 2 !important; /* Force 2 lines */
     line-clamp: 2 !important;
     font-size: 0.88rem !important;
     line-height: 1.4 !important;
+    min-height: auto !important; /* Remove PC min-height constraints */
+    height: 2.8em !important; /* Exactly 2 lines (1.4 * 2) */
+    overflow: hidden !important;
   }
 
   /* Reset B-cards to horizontal list standard */
@@ -2573,7 +2582,7 @@
     overflow-x: auto !important;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
-    gap: 24px !important; /* Increased 100% (12px -> 24px) */
+    gap: 12px !important; /* Restored to 12px */
     padding: 0 8px 20px 8px !important; /* Base 16 + 8 = 24 */
     margin: 0 !important; 
     scrollbar-width: none;
@@ -2585,7 +2594,7 @@
 
   /* Inner items for swiping carousels */
   .horizontalScrollMobile > * {
-    flex: 0 0 219px !important; /* Reduced 8% from 238px (238px * 0.92 = ~219px) */
+    flex: 0 0 58% !important; /* Matched to Review card width (10% reduction variant) */
     scroll-snap-align: start;
     height: auto !important;
   }
@@ -2597,7 +2606,7 @@
     flex-wrap: nowrap !important;
     padding: 0 8px 20px 8px !important; /* Match horizontalScrollMobile */
     margin: 0 !important;
-    gap: 24px !important; /* Increased 100% (12px -> 24px) */
+    gap: 12px !important; /* Restored to 12px */
   }
 }
 
