@@ -16,8 +16,18 @@ export function ReviewsSection({ recentReviews, isMobile, scrollReviews, reviewR
         </button>
         <div className={styles.reviewHorizontalGrid} ref={reviewRef}>
           {(recentReviews && recentReviews.length > 0 ? recentReviews : MOCK_REVIEWS).slice(0, 7).map((rev: any) => (
-            <div key={rev.id} className={styles.miniReviewCard} onClick={() => router.push(`/reviews?search=${encodeURIComponent(rev.subject)}`)}>
+            <div 
+              key={rev.id} 
+              className={styles.miniReviewCard} 
+              onClick={() => rev.postId && router.push(`/post/db-${rev.postId}`)}
+              style={{ cursor: rev.postId ? 'pointer' : 'default' }}
+            >
               <h4 className={styles.miniRevSubject}>{rev.subject}</h4>
+              {(rev.address || rev.category) && (
+                <div className={styles.miniRevLocation}>
+                  {rev.category || rev.address}
+                </div>
+              )}
               <div className={styles.miniRevRating}>
                 <div className={styles.miniRevInnerRow}>
                   <div className={styles.miniRevStars}>
@@ -32,16 +42,16 @@ export function ReviewsSection({ recentReviews, isMobile, scrollReviews, reviewR
                     })}
                   </div>
                   <span className={styles.miniRevScore}>{rev.rating}</span>
-                  <span className={styles.miniRevCommunityScore}>
-                    유저 {rev.userRating && rev.userRating > 0 ? rev.userRating : "없음"}
-                  </span>
                 </div>
               </div>
               <p className={styles.miniRevText}>{rev.comment || "작성된 한줄평이 없습니다."}</p>
+              <div className={styles.miniRevDateRow}>
+                <span className={styles.miniRevDate}>{new Date(rev.date).toLocaleDateString()}</span>
+              </div>
               <div className={styles.miniRevFooter}>
                 <span className={styles.miniRevAuthor}>{rev.authorName}</span>
                 {rev.postId && (
-                  <Link href={`/post/db-${rev.postId}`} className={styles.miniRevLink} onClick={(e) => e.stopPropagation()}>리뷰 보기 →</Link>
+                  <Link href={`/reviews?search=${encodeURIComponent(rev.subject)}`} className={styles.miniRevLink} onClick={(e) => e.stopPropagation()}>티끌플레이스</Link>
                 )}
               </div>
             </div>

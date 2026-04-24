@@ -206,9 +206,9 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
     }
   }
 
-  // Increment Views (side effect, done only on page load)
+  // Increment Views (side effect)
   if (isDbPost) {
-    supabase.rpc('increment_post_views', { post_id: post.id }).then();
+    // Moved to client-side in PostInteractions.tsx for deduplication
   }
   
   let currentUserRole = 'user'
@@ -349,6 +349,8 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
             <Link href={`/?author=${post.author?.id}`} className={styles.authorBadgeDetail}>
               {post.author?.display_name || post.author?.name || '익명 작가'}
             </Link>
+            <span className={styles.dot}>•</span>
+            <span className={styles.viewCountDetail}>조회수 {post.views?.toLocaleString()}</span>
             {post.is_public === false && (
               <span style={{ 
                 background: '#ea4335', 

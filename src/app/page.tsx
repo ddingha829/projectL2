@@ -58,10 +58,10 @@ export default async function Home({
   // [개선] 쿼리 레벨에서 필터링, 개수 제한 및 불필요한 대용량 content 로딩 배제 (excerpt 활용)
   const [heroRes, feedRes, reviewRes, featureRes, editorsRes, userProfileRes] = await Promise.all([
     // Hero posts: 메인 섹션이므로 필요한 필드만 select (content 제외)
-    applyPrivacyFilter(supabase.from('posts').select('id, serial_id, title, category, content, image_url, is_editors_pick, is_hero, hero_at, is_feature, is_public, created_at, likes_count, author_id, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).eq('is_hero', true).order('hero_at', { ascending: false }).limit(3),
+    applyPrivacyFilter(supabase.from('posts').select('id, serial_id, title, category, content, image_url, is_editors_pick, is_hero, hero_at, is_feature, is_public, created_at, likes_count, views, author_id, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).eq('is_hero', true).order('hero_at', { ascending: false }).limit(3),
     
     // Feed posts: 40개 개수 제한 및 무거운 content 제외
-    applyPrivacyFilter(supabase.from('posts').select('id, serial_id, title, category, content, image_url, is_editors_pick, is_hero, hero_at, is_feature, is_public, created_at, likes_count, author_id, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).neq('category', 'notice').order('created_at', { ascending: false }).limit(40),
+    applyPrivacyFilter(supabase.from('posts').select('id, serial_id, title, category, content, image_url, is_editors_pick, is_hero, hero_at, is_feature, is_public, created_at, likes_count, views, author_id, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).neq('category', 'notice').order('created_at', { ascending: false }).limit(40),
     
     // Reviews - [Plan C] post_reviews 테이블에서 개별 리뷰 전수 추출
     supabase.from('post_reviews').select(`
@@ -71,11 +71,13 @@ export default async function Home({
       comment, 
       created_at, 
       post_id,
-      post:posts(id, review_comment, author:profiles!author_id(display_name))
+      address,
+      category,
+      post:posts(id, review_comment, created_at, author:profiles!author_id(display_name))
     `).order('created_at', { ascending: false }).limit(10),
     
     // Feature posts
-    applyPrivacyFilter(supabase.from('posts').select('id, serial_id, title, category, content, image_url, is_editors_pick, is_hero, hero_at, is_feature, is_public, created_at, likes_count, author_id, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).or('is_feature.eq.true,category.eq.feature').order('created_at', { ascending: false }).limit(6),
+    applyPrivacyFilter(supabase.from('posts').select('id, serial_id, title, category, content, image_url, is_editors_pick, is_hero, hero_at, is_feature, is_public, created_at, likes_count, views, author_id, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).or('is_feature.eq.true,category.eq.feature').order('created_at', { ascending: false }).limit(6),
     
     // Editors
     supabase.from('profiles').select('id, display_name, avatar_url, bio, bullets, role').in('role', ['admin', 'editor']).order('display_name'),
@@ -116,6 +118,7 @@ export default async function Home({
       date: p.created_at, 
       displayDate: new Date(p.created_at).toLocaleDateString('ko-KR'),
       likes: p.likes_count || 0,
+      views: p.views || 0,
       comments: p.comments?.[0]?.count || 0,
       imageUrl: p.image_url || 'https://images.unsplash.com/photo-1542204165-65bf26472b9b?auto=format&fit=crop&w=1600&q=80',
       isEditorsPick: p.is_editors_pick || false,
@@ -196,10 +199,12 @@ export default async function Home({
       postId: p.post_id,
       subject: p.subject,
       rating: p.rating,
-      userRating: p.user_avg_rating || 0, // DB에서 넘어오는 값이 있다면 사용
-      comment: p.comment || p.post?.review_comment || "", // post_reviews에 없으면 posts 테이블에서 가져옴
-      date: p.created_at,
-      authorName: p.post?.author?.display_name || '익명 티끌러'
+      userRating: p.user_avg_rating || 0,
+      comment: p.comment || p.post?.review_comment || "",
+      date: p.post?.created_at || p.created_at, // 원문 게시물 날짜 우선
+      authorName: p.post?.author?.display_name || '익명 티끌러',
+      address: p.address,
+      category: p.category
     };
   }) || [];
 

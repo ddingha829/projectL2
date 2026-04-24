@@ -1,6 +1,6 @@
 :root {
   /* Colors - Light Theme (Premium Editorial) */
-  --bg-primary: #ffffff;
+  --bg-primary: #f0f1f3; /* Darkened another 5% for better card contrast */
   --bg-secondary: #f8f9fa;
   --bg-tertiary: #f1f3f5;
   

@@ -157,6 +157,8 @@ export async function updatePost(postId: string, formData: FormData): Promise<{ 
           const lng = getAttr(tag, 'data-lng');
           const emb = getAttr(tag, 'data-embed-url');
           const pId = getAttr(tag, 'data-place-id');
+          const addr = getAttr(tag, 'data-address');
+          const cat = getAttr(tag, 'data-category');
           
           if (!subj) return null;
           return {
@@ -167,7 +169,9 @@ export async function updatePost(postId: string, formData: FormData): Promise<{ 
             lat: lat ? (parseFloat(lat) || null) : null,
             lng: lng ? (parseFloat(lng) || null) : null,
             embed_url: emb || null,
-            place_id: pId || null
+            place_id: pId || null,
+            address: addr || null,
+            category: cat || null
           };
         }).filter((entry): entry is any => entry !== null);
 

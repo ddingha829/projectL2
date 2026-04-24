@@ -40,6 +40,27 @@ export default function PostInteractions({
   const supabase = createClient();
   const router = useRouter();
 
+  // [신규] 조회수 중복 방지 (클라이언트 측 localStorage 활용)
+  useEffect(() => {
+    const incrementView = async () => {
+      if (!postId) return;
+      
+      const storageKey = `viewed_post_${postId}`;
+      const lastViewed = localStorage.getItem(storageKey);
+      const now = Date.now();
+      
+      // 24시간 이내에 조회한 적이 없으면 조회수 증가 (86400000ms = 24시간)
+      if (!lastViewed || (now - parseInt(lastViewed) > 86400000)) {
+        await supabase.rpc('increment_post_views', { post_id: postId });
+        localStorage.setItem(storageKey, now.toString());
+        // Note: router.refresh()는 조회수가 즉시 반영되길 원하면 호출하지만, 
+        // 조회수 하나 때문에 전체 페이지를 다시 그리는 것은 부하가 클 수 있어 생략하거나 지연 처리 가능
+      }
+    };
+
+    incrementView();
+  }, [postId, supabase]);
+
   useEffect(() => {
     // [PoC] Selection handle logic
     const handleSelection = () => {

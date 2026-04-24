@@ -191,6 +191,12 @@
   font-weight: 500;
 }
 
+.viewCountDetail {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
 
 .title {
   font-size: 2.2rem;

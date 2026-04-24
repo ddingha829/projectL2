@@ -93,8 +93,10 @@ const ReactQuill = dynamic(async () => {
                     node.setAttribute('data-rating', value.rating || '0');
                     node.setAttribute('data-comment', value.comment || '');
                     node.setAttribute('data-embed-url', value.embedUrl || '');
+                    node.setAttribute('data-category', value.category || ''); 
                     node.setAttribute('data-lat', value.lat?.toString() || '');
                     node.setAttribute('data-lng', value.lng?.toString() || '');
+                    node.id = 'ticgle-place';
                     
                     const rating = Number(value.rating) || 0;
                     const starsHtml = [1, 2, 3, 4, 5].map(s => {
@@ -135,7 +137,7 @@ const ReactQuill = dynamic(async () => {
                                         <div class="review-card-top" style="width:100%;">
                                             <div class="place-info">
                                                 <h3 class="place-name">${value.placeName}</h3>
-                                                <p class="place-address">${value.address || ''}</p>
+                                                <p class="place-address">${value.category || value.address || ''}</p>
                                             </div>
                                             <div class="score-column" style="display:flex; flex-direction:column; align-items:center; gap:6px; margin-left:auto; flex-shrink:0;">
                                                 <div class="score-badge">
@@ -181,6 +183,7 @@ const ReactQuill = dynamic(async () => {
                         rating: node.getAttribute('data-rating'),
                         comment: node.getAttribute('data-comment'),
                         embedUrl: node.getAttribute('data-embed-url'),
+                        category: node.getAttribute('data-category'),
                         lat: node.getAttribute('data-lat') ? parseFloat(node.getAttribute('data-lat')!) : undefined,
                         lng: node.getAttribute('data-lng') ? parseFloat(node.getAttribute('data-lng')!) : undefined
                     };
@@ -518,7 +521,8 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
         comment: string, 
         placeId?: string,
         lat?: number,
-        lng?: number 
+        lng?: number,
+        category?: string
     }) => {
         const quill = quillRef.current?.getEditor();
         if (quill) {
@@ -678,6 +682,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                                 rating: parseFloat(selectedCard.getAttribute('data-rating') || '0'),
                                 comment: selectedCard.getAttribute('data-comment') || '',
                                 placeId: placeId || undefined,
+                                category: selectedCard.getAttribute('data-category') || '',
                                 lat: selectedCard.getAttribute('data-lat') ? parseFloat(selectedCard.getAttribute('data-lat')!) : undefined,
                                 lng: selectedCard.getAttribute('data-lng') ? parseFloat(selectedCard.getAttribute('data-lng')!) : undefined
                             };

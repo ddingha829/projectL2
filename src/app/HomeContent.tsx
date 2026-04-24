@@ -36,7 +36,18 @@ const MOCK_REVIEWS = [
 
 const stripHtml = (html: string) => {
   if (!html) return "";
-  return html
+  
+  // [개선] '티끌플레이스' 커스텀 카드가 미리보기에 포함되지 않도록 더욱 강력하게 제거
+  // 1. 블록 임베드 전체 구조 제거 (중첩 div 고려)
+  let cleanHtml = html.replace(/<div[^>]+class="[^"]*ql-review-card[^"]*"[^>]*>[\s\S]*?<\/div>\s*<\/div>\s*<\/div>/gi, '');
+  
+  // 2. 남아있을 수 있는 텍스트 아티팩트 직접 제거
+  cleanHtml = cleanHtml
+    .replace(/TICGLE PLACE/g, '')
+    .replace(/구글 지도에서 크게 보기/g, '')
+    .replace(/별점 [0-9.]+/g, '');
+  
+  return cleanHtml
     .replace(/<br\s*\/?>/gi, '\n')
     .replace(/<\/p>/gi, '\n')
     .replace(/<[^>]*>?/gm, '')
@@ -330,7 +341,18 @@ export default function HomeContent({
                       <h3 className={styles.newMainLargeTitle}>{allPosts[0].title}</h3>
                       <p className={styles.newMainLargeExcerpt}>{stripHtml(allPosts[0].content).slice(0, 160)}...</p>
                       <div className={styles.magMetaRow}>
+                        <span className={styles.magCardCategory}>{CATEGORY_LABEL_MAP[allPosts[0].category || allPosts[0].category_id || allPosts[0].categoryId] || allPosts[0].category}</span>
+                        <span className={styles.categoryDot}>·</span>
                         <span className={styles.magListAuthor}>{allPosts[0].author?.name || allPosts[0].authorProfile?.display_name}</span>
+                        <span className={styles.categoryDot}>·</span>
+                        <span className={styles.magListViews}>
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '3px' }}>
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                          </svg>
+                          {allPosts[0].views?.toLocaleString()}
+                        </span>
+                        <span className={styles.categoryDot}>·</span>
                         <span className={styles.magListDate}>{allPosts[0].displayDate}</span>
                       </div>
                     </div>
@@ -354,7 +376,18 @@ export default function HomeContent({
                         <h4 className={styles.magListTitle}>{post.title}</h4>
                         <p className={styles.magListExcerpt}>{stripHtml(post.content).slice(0, 100)}...</p>
                         <div className={styles.magMetaRow}>
+                          <span className={styles.magCardCategory}>{CATEGORY_LABEL_MAP[post.category || post.category_id || post.categoryId] || post.category}</span>
+                          <span className={styles.categoryDot}>·</span>
                           <span className={styles.magListAuthor}>{post.author?.name || post.authorProfile?.display_name}</span>
+                          <span className={styles.categoryDot}>·</span>
+                          <span className={styles.magListViews}>
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '3px' }}>
+                              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                              <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            {post.views?.toLocaleString()}
+                          </span>
+                          <span className={styles.categoryDot}>·</span>
                           <span className={styles.magListDate}>{post.displayDate}</span>
                         </div>
                       </div>
@@ -376,7 +409,7 @@ export default function HomeContent({
               />
 
               {/* Editors Section (Dynamically Loaded) */}
-              <EditorsSection editors={editors} isMobile={isMobile} />
+              <EditorsSection editors={editors} isMobile={isMobile} allPosts={allPosts} />
             </div>
           </div>
         ) : (
@@ -558,7 +591,18 @@ export default function HomeContent({
                                     <h4 className={styles.magListTitle}>{post.title}</h4>
                                     <p className={styles.magListExcerpt}>{excerpt}...</p>
                                     <div className={styles.magMetaRow}>
+                                      <span className={styles.magCardCategory}>{CATEGORY_LABEL_MAP[post.category || post.category_id || post.categoryId] || post.category}</span>
+                                      <span className={styles.categoryDot}>·</span>
                                       <span className={styles.magListAuthor}>{post.author?.name || post.authorProfile?.display_name}</span>
+                                      <span className={styles.categoryDot}>·</span>
+                                      <span className={styles.magListViews}>
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '3px' }}>
+                                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                          <circle cx="12" cy="12" r="3"></circle>
+                                        </svg>
+                                        {post.views?.toLocaleString()}
+                                      </span>
+                                      <span className={styles.categoryDot}>·</span>
                                       <span className={styles.magListDate}>{post.displayDate}</span>
                                     </div>
                                   </div>

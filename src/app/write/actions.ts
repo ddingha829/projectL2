@@ -116,6 +116,8 @@ export async function createPost(formData: FormData) {
         const lng = getAttr(tag, 'data-lng');
         const emb = getAttr(tag, 'data-embed-url');
         const pId = getAttr(tag, 'data-place-id');
+        const addr = getAttr(tag, 'data-address');
+        const cat = getAttr(tag, 'data-category');
         
         if (!subj) return null;
         return {
@@ -126,7 +128,9 @@ export async function createPost(formData: FormData) {
           lat: lat ? parseFloat(lat) : null,
           lng: lng ? parseFloat(lng) : null,
           embed_url: emb || null,
-          place_id: pId || null
+          place_id: pId || null,
+          address: addr || null,
+          category: cat || null
         };
       }).filter((entry): entry is any => entry !== null);
 

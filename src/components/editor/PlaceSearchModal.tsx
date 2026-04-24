@@ -21,7 +21,8 @@ interface PlaceSearchModalProps {
         comment: string, 
         placeId?: string,
         lat?: number,
-        lng?: number
+        lng?: number,
+        category?: string
     }) => void;
     onCancel: () => void;
 }
@@ -42,6 +43,7 @@ const PlaceSearchModal: React.FC<PlaceSearchModalProps> = ({ onSelect, onCancel,
     const [isManual, setIsManual] = useState(initialData?.placeId === 'manual');
     const [manualName, setManualName] = useState(initialData?.placeId === 'manual' ? initialData.placeName : '');
     const [manualAddress, setManualAddress] = useState(initialData?.placeId === 'manual' ? initialData.address : '');
+    const [manualCategory, setManualCategory] = useState(initialData?.placeId === 'manual' ? (initialData as any).category || '' : '');
     
     // Services Refs
     const autocompleteService = useRef<google.maps.places.AutocompleteService | null>(null);
@@ -118,10 +120,11 @@ const PlaceSearchModal: React.FC<PlaceSearchModalProps> = ({ onSelect, onCancel,
             }
             onSelect({
                 placeName: manualName,
-                address: manualAddress || '수동 입력 장소',
+                address: manualAddress || '일반 장소',
                 rating,
                 comment: comment.trim() || `${manualName} 리뷰입니다!`,
-                placeId: 'manual'
+                placeId: 'manual',
+                category: manualCategory.trim()
             });
         } else if (selectedPlace) {
             onSelect({
@@ -226,6 +229,16 @@ const PlaceSearchModal: React.FC<PlaceSearchModalProps> = ({ onSelect, onCancel,
                                                 onChange={(e) => setManualName(e.target.value)}
                                                 className={styles.input}
                                                 autoFocus
+                                            />
+                                        </div>
+                                        <div className={styles.inputGroup}>
+                                            <label>카테고리 (예: 사케, 영화, 소설 등)</label>
+                                            <input 
+                                                type="text" 
+                                                placeholder="리뷰 성격을 나타내는 단어를 입력해주세요"
+                                                value={manualCategory}
+                                                onChange={(e) => setManualCategory(e.target.value)}
+                                                className={styles.input}
                                             />
                                         </div>
                                         <div className={styles.inputGroup}>
