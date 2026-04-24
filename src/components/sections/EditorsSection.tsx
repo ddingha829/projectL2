@@ -11,7 +11,7 @@ export function EditorsSection({ editors, isMobile, allPosts = [] }: { editors: 
         <h2 className={styles.sectionTitle}>티끌러</h2>
         <div className={styles.headerSpacer}></div>
       </header>
-      <div className={styles.editorsGrid}>
+      <div className={`${styles.editorsGrid} ${isMobile ? styles.horizontalScrollMobile : ''}`}>
         {editors
           .map(ed => {
             const authorPosts = allPosts.filter(

@@ -667,3 +667,38 @@ li {
     font-size: 1.25rem !important;
   }
 }
+@media (prefers-color-scheme: dark) {
+  .review-card-inner, .review-card-header, .review-card-main, .review-card-body {
+    background-color: #1a1a1a !important;
+    border-color: #333 !important;
+  }
+  
+  .place-name {
+    color: #fff !important;
+  }
+  
+  .place-address {
+    color: #ccc !important;
+  }
+  
+  .review-comment blockquote {
+    color: #eee !important;
+    border-left-color: #ff4804 !important;
+  }
+  
+  .score-badge {
+    background-color: #333 !important;
+  }
+  
+  .score-value {
+    color: #fff !important;
+  }
+  
+  .brand-label {
+    color: #ff8c4f !important;
+  }
+
+  .review-card-header {
+    background-color: #222 !important;
+  }
+}

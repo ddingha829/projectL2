@@ -315,18 +315,10 @@ export default function HomeContent({
           <div className={styles.homeContainer}>
             {/* New Main Top Section (Replaces Hero and New Posts) */}
             <div className={styles.gridSection} style={{ marginTop: isMobile ? '0' : '0' }}>
-              <div className={styles.magSecHeader} style={{ borderBottom: 'none', marginBottom: '16px' }}>
-                <h2 className={styles.resultsTitle} style={{ margin: 0, paddingBottom: '12px', paddingLeft: '8px' }}>새로운 티끌</h2>
-                {allPosts.length > 0 && (
-                  <button className={styles.magSecMoreBtn} onClick={() => router.push('/?view=all')}>
-                    more {'>'}
-                  </button>
-                )}
-              </div>
 
               <div className={styles.newMainLayout}>
                 {allPosts.length > 0 && (
-                  <Link href={`/post/${allPosts[0].id}`} className={`${styles.newMainLargeCard} ${styles.desktopOnly}`}>
+                  <Link href={`/post/${allPosts[0].id}`} className={styles.newMainLargeCard}>
                     <div className={styles.newMainLargeThumbWrap}>
                       <Image 
                         src={allPosts[0].imageUrl} 
@@ -342,26 +334,25 @@ export default function HomeContent({
                       <p className={styles.newMainLargeExcerpt}>{stripHtml(allPosts[0].content).slice(0, 160)}...</p>
                       <div className={styles.magMetaRow}>
                         <span className={styles.magCardCategory}>{CATEGORY_LABEL_MAP[allPosts[0].category || allPosts[0].category_id || allPosts[0].categoryId] || allPosts[0].category}</span>
-                        <span className={styles.categoryDot}>·</span>
-                        <span className={styles.magListAuthor}>{allPosts[0].author?.name || allPosts[0].authorProfile?.display_name}</span>
-                        <span className={styles.categoryDot}>·</span>
-                        <span className={styles.magListViews}>
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '3px' }}>
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                          </svg>
-                          {allPosts[0].views?.toLocaleString()}
-                        </span>
-                        <span className={styles.categoryDot}>·</span>
-                        <span className={styles.magListDate}>{allPosts[0].displayDate}</span>
+                        <div className={styles.magMetaRight}>
+                          <span className={styles.magListAuthor}>{allPosts[0].author?.name || allPosts[0].authorProfile?.display_name}</span>
+                          <span className={styles.magListViews}>
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '3px' }}>
+                              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                              <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            {allPosts[0].views?.toLocaleString()}
+                          </span>
+                          <span className={styles.magListDate}>{allPosts[0].displayDate}</span>
+                        </div>
                       </div>
                     </div>
                   </Link>
                 )}
                 
-                {/* PC: posts 1~3 as B cards / Mobile: posts 0~3 all as A cards (세로형) */}
+                {/* PC/Mobile: posts 1~3 as B cards */}
                 <div className={styles.newMainSmallList}>
-                  {(isMobile ? allPosts.slice(0, 4) : allPosts.slice(1, 4)).map(post => (
+                  {allPosts.slice(1, 4).map(post => (
                     <Link href={`/post/${post.id}`} key={post.id} className={styles.magListItem}>
                       <div className={styles.magThumbWrap}>
                         <Image 
@@ -377,18 +368,17 @@ export default function HomeContent({
                         <p className={styles.magListExcerpt}>{stripHtml(post.content).slice(0, 100)}...</p>
                         <div className={styles.magMetaRow}>
                           <span className={styles.magCardCategory}>{CATEGORY_LABEL_MAP[post.category || post.category_id || post.categoryId] || post.category}</span>
-                          <span className={styles.categoryDot}>·</span>
-                          <span className={styles.magListAuthor}>{post.author?.name || post.authorProfile?.display_name}</span>
-                          <span className={styles.categoryDot}>·</span>
-                          <span className={styles.magListViews}>
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '3px' }}>
-                              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                              <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
-                            {post.views?.toLocaleString()}
-                          </span>
-                          <span className={styles.categoryDot}>·</span>
-                          <span className={styles.magListDate}>{post.displayDate}</span>
+                          <div className={styles.magMetaRight}>
+                            <span className={styles.magListAuthor}>{post.author?.name || post.authorProfile?.display_name}</span>
+                            <span className={styles.magListViews}>
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '3px' }}>
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                              </svg>
+                              {post.views?.toLocaleString()}
+                            </span>
+                            <span className={styles.magListDate}>{post.displayDate}</span>
+                          </div>
                         </div>
                       </div>
                     </Link>
@@ -396,8 +386,52 @@ export default function HomeContent({
                 </div>
               </div>
 
-              {/* [임시 숨김] 티끌 모은 태산 섹션 */}
-              {/* <FeatureSection featurePosts={featurePosts} isMobile={isMobile} /> */}
+              {/* 2. New Posts Section: Title + C-cards (Posts 4~8) */}
+              <div className={styles.magSecHeader} style={{ borderBottom: 'none', marginBottom: '16px' }}>
+                <h2 className={styles.resultsTitle} style={{ margin: 0, paddingBottom: '12px', paddingLeft: '8px' }}>새로운 티끌</h2>
+                {allPosts.length > 0 && (
+                  <button className={styles.magSecMoreBtn} onClick={() => router.push('/?view=all')}>
+                    more {'>'}
+                  </button>
+                )}
+              </div>
+
+              <div className={`${styles.editorsGrid} ${isMobile ? styles.horizontalScrollMobile : ''}`} style={{ marginBottom: '40px' }}>
+                {allPosts.slice(4, 9).map((post: any) => (
+                  <Link href={`/post/${post.id}`} key={post.id} className={styles.postCardC}>
+                    <div className={styles.cPhotoWrap}>
+                      <Image 
+                        src={post.imageUrl} 
+                        alt={post.title} 
+                        className={styles.cPhoto}
+                        width={220}
+                        height={220}
+                      />
+                    </div>
+                    <div className={styles.cCardBody}>
+                      <h3 className={styles.cTitle}>{post.title}</h3>
+                      <p className={styles.cExcerpt}>{stripHtml(post.content).slice(0, 80)}...</p>
+                    </div>
+                    <div className={styles.cCardFooter}>
+                      <span className={styles.magCardCategory}>
+                        {CATEGORY_LABEL_MAP[post.category || post.category_id || post.categoryId] || post.category}
+                      </span>
+                      <div className={styles.magMetaRight}>
+                        <span className={styles.magListAuthor}>
+                          {post.author?.name || post.authorProfile?.display_name || "익명"}
+                        </span>
+                        <span className={styles.magListViews}>
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '3px' }}>
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                          </svg>
+                          {post.views?.toLocaleString() || 0}
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
 
               <ReviewsSection 
                 recentReviews={recentReviews} 
@@ -592,18 +626,17 @@ export default function HomeContent({
                                     <p className={styles.magListExcerpt}>{excerpt}...</p>
                                     <div className={styles.magMetaRow}>
                                       <span className={styles.magCardCategory}>{CATEGORY_LABEL_MAP[post.category || post.category_id || post.categoryId] || post.category}</span>
-                                      <span className={styles.categoryDot}>·</span>
-                                      <span className={styles.magListAuthor}>{post.author?.name || post.authorProfile?.display_name}</span>
-                                      <span className={styles.categoryDot}>·</span>
-                                      <span className={styles.magListViews}>
-                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '3px' }}>
-                                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                          <circle cx="12" cy="12" r="3"></circle>
-                                        </svg>
-                                        {post.views?.toLocaleString()}
-                                      </span>
-                                      <span className={styles.categoryDot}>·</span>
-                                      <span className={styles.magListDate}>{post.displayDate}</span>
+                                      <div className={styles.magMetaRight}>
+                                        <span className={styles.magListAuthor}>{post.author?.name || post.authorProfile?.display_name}</span>
+                                        <span className={styles.magListViews}>
+                                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '3px' }}>
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                            <circle cx="12" cy="12" r="3"></circle>
+                                          </svg>
+                                          {post.views?.toLocaleString()}
+                                        </span>
+                                        <span className={styles.magListDate}>{post.displayDate}</span>
+                                      </div>
                                     </div>
                                   </div>
                                 </Link>

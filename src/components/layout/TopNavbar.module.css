@@ -1,9 +1,9 @@
 .header {
   height: var(--header-height);
   width: 100%;
-  background-color: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background-color: #ffffff !important; /* Pure white as requested */
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   border-bottom: 1px solid var(--border-light);
   display: flex;
   justify-content: center;
@@ -421,7 +421,7 @@
   .header {
     height: var(--header-height-mobile);
     box-shadow: none; /* Removed shadow to speed up paint */
-    background-color: var(--bg-primary); /* Use solid color instead of glass on mobile */
+    background-color: #ffffff !important; /* Pure white on mobile too */
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
     border-bottom: 1px solid var(--border-medium);
