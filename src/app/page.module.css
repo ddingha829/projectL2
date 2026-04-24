@@ -1350,7 +1350,7 @@
 
 @media (max-width: 768px) {
   .gridSection {
-    margin-top: 32px !important;
+    margin-top: 4px !important;
   }
 }
 
@@ -2552,8 +2552,12 @@
 
   .magSecTitleNew {
     font-size: 1.25rem !important;
-    margin-bottom: 12px !important;
+    margin-bottom: 4px !important;
     border: none !important;
+  }
+
+  .magSecHeader {
+    padding-bottom: 4px !important; /* Reduced 70% from 12px */
   }
 
   .newMainLargeExcerpt {

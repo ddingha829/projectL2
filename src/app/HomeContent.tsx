@@ -314,9 +314,9 @@ export default function HomeContent({
         {!showFullGrid ? (
           <div className={styles.homeContainer}>
             {/* New Main Top Section (Replaces Hero and New Posts) */}
-            <div className={styles.gridSection} style={{ marginTop: isMobile ? '13px' : '7px' }}>
+            <div className={styles.gridSection} style={{ marginTop: isMobile ? '4px' : '7px' }}>
 
-              <div className={styles.magSecHeader} style={{ marginBottom: isMobile ? '2px' : '7px' }}>
+              <div className={styles.magSecHeader} style={{ marginBottom: isMobile ? '1px' : '7px' }}>
                 <h2 className={styles.magSecTitleNew} style={{ margin: 0, paddingLeft: '8px' }}>4월 5주차 <span style={{ color: '#ff4804' }}>HOTicgle</span></h2>
               </div>
 
