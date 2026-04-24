@@ -36,14 +36,7 @@
 }
 
 .resultsTitle::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 60px;
-  height: 5px; /* Consistent thickness */
-  background-color: var(--accent-line);
-  border-radius: 10px;
+  display: none; /* Removed bottom point line as requested */
 }
 
 @media (max-width: 768px) {
@@ -68,14 +61,7 @@
     margin: 0;
   }
   .resultsTitle::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 50px; 
-    height: 5px; /* Consistent thickness */
-    background-color: var(--accent-line);
-    border-radius: 10px;
+    display: none; /* Removed mobile bottom line */
   }
   
   .headerColControls {
@@ -350,14 +336,7 @@
 }
 
 .sectionTitle::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0; 
-  width: 60px;
-  height: 5px;
-  background-color: var(--accent-line);
-  border-radius: 10px;
+  display: none !important;
 }
 
 .divider {
@@ -855,14 +834,7 @@
     display: inline-block;
   }
   .sectionTitle::after {
-    content: '';
-    position: absolute;
-    bottom: -4px; 
-    left: 0;
-    width: 40px;
-    height: 5px; /* Consistent thickness */
-    background-color: var(--accent-line);
-    border-radius: 10px;
+    display: none !important;
   }
   
   .heroWrapper, .heroFrame {
@@ -2369,10 +2341,11 @@
 .magSecHeader {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 16px;
-  border-bottom: 2px solid var(--accent-primary);
-  padding-bottom: 12px;
+  align-items: center; /* Aligned for same-row feel with title */
+  margin-bottom: 24px;
+  border-bottom: none; /* Removed per user request */
+  padding-bottom: 0px;
+  margin-top: 45px; /* Increased 50% for PC spacing as requested */
 }
 
 .magSecTitleWrapper {
@@ -2404,6 +2377,13 @@
 .magSecMoreBtn:hover {
   background: var(--bg-tertiary);
   border-color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+  .magSecMoreBtn {
+    font-size: 0.7rem !important; /* Reduced 30% from 0.85rem */
+    padding: 4px 10px !important;
+  }
 }
 
 /* ============================================================
@@ -2558,6 +2538,7 @@
 
   .magSecHeader {
     padding-bottom: 4px !important; /* Reduced 70% from 12px */
+    margin-top: 4px !important; /* Kept small on mobile */
   }
 
   .newMainLargeExcerpt {

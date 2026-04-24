@@ -8,7 +8,7 @@ export function EditorsSection({ editors, isMobile, allPosts = [] }: { editors: 
   return (
     <div className={styles.editorsSection}>
       <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '25px' }}>
-        <h2 className={styles.sectionTitle}>티끌러</h2>
+        <h2 className={styles.sectionTitle}><span style={{ color: '#ff4804' }}>티끌</span>러</h2>
         <div className={styles.headerSpacer}></div>
       </header>
       <div className={`${styles.editorsGrid} ${isMobile ? styles.horizontalScrollMobile : ''}`}>
