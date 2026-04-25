@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import styles from "./LeftSidebar.module.css";
 import { AUTHORS } from "@/lib/constants/authors";
-import HeroCard from "@/components/feed/HeroCard";
 import { createClient } from "@/lib/supabase/client";
 import { useTransition } from "react";
 import { logout } from "@/app/login/actions";
