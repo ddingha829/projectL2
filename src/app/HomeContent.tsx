@@ -340,7 +340,11 @@ export default function HomeContent({
                       </span>
                     </>
                   ) : (
-                    <>4월 5주차 <span style={{ color: '#ff4804' }}>HOTicgle</span></>
+                    <>
+                      <span>2026년 1회차</span>
+                      <span style={{ color: '#ff4804' }}>티끌 매거진</span>
+                      <span style={{ color: 'var(--text-tertiary)', fontSize: '0.6em', fontWeight: 400 }}>(발행 준비 중)</span>
+                    </>
                   )}
                 </h2>
               </div>
