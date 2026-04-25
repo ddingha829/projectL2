@@ -1998,7 +1998,7 @@
 }
 
 .miniRevText {
-  font-size: 0.92rem;
+  font-size: 0.87rem;
   color: var(--text-secondary);
   line-height: 1.5;
   margin: 0;
@@ -2122,7 +2122,7 @@
   }
 
   .miniRevText {
-    font-size: 0.76rem !important;
+    font-size: 0.72rem !important;
     /* Reduced further to 0.76rem */
     -webkit-line-clamp: 4 !important;
     /* Increase to 4 lines to avoid ... */
