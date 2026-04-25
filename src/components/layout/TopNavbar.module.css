@@ -421,9 +421,9 @@
   .header {
     height: var(--header-height-mobile);
     box-shadow: none; /* Removed shadow to speed up paint */
-    background-color: #ffffff !important; /* Pure white on mobile too */
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
+    background-color: var(--bg-primary) !important;
+    backdrop-filter: blur(12px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(12px) saturate(180%) !important;
     border-bottom: 1px solid var(--border-medium);
   }
 

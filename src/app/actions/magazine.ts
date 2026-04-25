@@ -93,10 +93,10 @@ export async function getLatestMagazineIssue() {
     .from('magazine_issues')
     .select(`
       *,
-      post_a:posts!post_a_id(*, author:profiles!author_id(display_name, avatar_url)),
-      post_b1:posts!post_b1_id(*, author:profiles!author_id(display_name, avatar_url)),
-      post_b2:posts!post_b2_id(*, author:profiles!author_id(display_name, avatar_url)),
-      post_b3:posts!post_b3_id(*, author:profiles!author_id(display_name, avatar_url))
+      post_a:posts!post_a_id(*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets)),
+      post_b1:posts!post_b1_id(*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets)),
+      post_b2:posts!post_b2_id(*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets)),
+      post_b3:posts!post_b3_id(*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets))
     `)
     .order('published_at', { ascending: false })
     .limit(1)
