@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import styles from "./page.module.css";
 import Image from "next/image";
-import HeroCard from "@/components/feed/HeroCard";
 import PosterCard from "@/components/feed/PosterCard";
 import { AUTHORS } from "@/lib/constants/authors";
 import Link from "next/link";
@@ -86,6 +85,10 @@ interface HomeContentProps {
   isMobileServer?: boolean;
   initialViewType?: "card" | "magazine";
   editors?: any[];
+  magazineIssue?: {
+    number: string;
+    publishedAt: string;
+  } | null;
 }
 
 export default function HomeContent({ 
@@ -100,7 +103,8 @@ export default function HomeContent({
   userProfile,
   isMobileServer = false,
   initialViewType,
-  editors = []
+  editors = [],
+  magazineIssue
 }: HomeContentProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -279,7 +283,7 @@ export default function HomeContent({
   }, [isFiltered, isViewMore]);
   
   const paginatedData = useMemo(() => filteredPosts, [filteredPosts]);
-  const displayPosts = useMemo(() => showFullGrid ? paginatedData.slice(0, visibleCount) : otherPosts.slice(0, 4), [showFullGrid, paginatedData, visibleCount, otherPosts]);
+  const displayPosts = useMemo(() => showFullGrid ? paginatedData.slice(0, visibleCount) : otherPosts, [showFullGrid, paginatedData, visibleCount, otherPosts]);
 
   useEffect(() => {
     if (!showFullGrid) return;
@@ -317,16 +321,37 @@ export default function HomeContent({
             <div className={styles.gridSection} style={{ marginTop: isMobile ? '4px' : '7px' }}>
 
               <div className={styles.magSecHeader} style={{ marginBottom: isMobile ? '1px' : '7px', marginTop: isMobile ? '' : '0' }}>
-                <h2 className={styles.magSecTitleNew} style={{ margin: 0, paddingLeft: '8px' }}>4월 5주차 <span style={{ color: '#ff4804' }}>HOTicgle</span></h2>
+                <h2 className={styles.magSecTitleNew} style={{ margin: 0, paddingLeft: '8px', display: 'flex', alignItems: 'baseline', flexWrap: 'wrap', gap: '8px' }}>
+                  {magazineIssue ? (
+                    <>
+                      <span>{(() => {
+                        const parts = magazineIssue.number.split('-');
+                        return parts.length === 2 ? `${parts[0]}년 ${parts[1]}회차` : magazineIssue.number;
+                      })()}</span>
+                      <span style={{ color: '#ff4804' }}>티끌 매거진</span>
+                      <span style={{ color: 'var(--text-tertiary)', fontSize: '0.6em', fontWeight: 400 }}>
+                        ({(() => { 
+                          const d = new Date(magazineIssue.publishedAt); 
+                          const yy = String(d.getFullYear()).slice(2); 
+                          const mm = String(d.getMonth() + 1).padStart(2, '0'); 
+                          const dd = String(d.getDate()).padStart(2, '0'); 
+                          return `${yy}.${mm}.${dd}`; 
+                        })()} 발행)
+                      </span>
+                    </>
+                  ) : (
+                    <>4월 5주차 <span style={{ color: '#ff4804' }}>HOTicgle</span></>
+                  )}
+                </h2>
               </div>
 
               <div className={styles.newMainLayout}>
-                {allPosts.length > 0 && (
-                  <Link href={`/post/${allPosts[0].id}`} className={styles.newMainLargeCard}>
+                {heroPosts.length > 0 && (
+                  <Link href={`/post/${heroPosts[0].id}`} className={styles.newMainLargeCard}>
                     <div className={styles.newMainLargeThumbWrap}>
                       <Image 
-                        src={allPosts[0].imageUrl} 
-                        alt={allPosts[0].title} 
+                        src={heroPosts[0].imageUrl} 
+                        alt={heroPosts[0].title} 
                         fill
                         className={styles.newMainLargeImg}
                         sizes="(max-width: 768px) 100vw, 60vw"
@@ -334,20 +359,20 @@ export default function HomeContent({
                       />
                     </div>
                     <div className={styles.newMainLargeInfo}>
-                      <h3 className={styles.newMainLargeTitle}>{allPosts[0].title}</h3>
-                      <p className={styles.newMainLargeExcerpt}>{stripHtml(allPosts[0].content).slice(0, 160)}...</p>
+                      <h3 className={styles.newMainLargeTitle}>{heroPosts[0].title}</h3>
+                      <p className={styles.newMainLargeExcerpt}>{stripHtml(heroPosts[0].content).slice(0, 160)}...</p>
                       <div className={styles.magMetaRow}>
-                        <span className={styles.magCardCategory}>{CATEGORY_LABEL_MAP[allPosts[0].category || allPosts[0].category_id || allPosts[0].categoryId] || allPosts[0].category}</span>
+                        <span className={styles.magCardCategory}>{CATEGORY_LABEL_MAP[heroPosts[0].category || heroPosts[0].category_id || heroPosts[0].categoryId] || heroPosts[0].category}</span>
                         <div className={styles.magMetaRight}>
-                          <span className={styles.magListAuthor}>{allPosts[0].author?.name || allPosts[0].authorProfile?.display_name}</span>
+                          <span className={styles.magListAuthor}>{heroPosts[0].author?.name || heroPosts[0].authorProfile?.display_name}</span>
                           <span className={styles.magListViews}>
                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '3px' }}>
                               <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                               <circle cx="12" cy="12" r="3"></circle>
                             </svg>
-                            {allPosts[0].views?.toLocaleString()}
+                            {heroPosts[0].views?.toLocaleString()}
                           </span>
-                          <span className={styles.magListDate}>{allPosts[0].displayDate}</span>
+                          <span className={styles.magListDate}>{heroPosts[0].displayDate}</span>
                         </div>
                       </div>
                     </div>
@@ -356,7 +381,7 @@ export default function HomeContent({
                 
                 {/* PC/Mobile: posts 1~3 as B cards */}
                 <div className={styles.newMainSmallList}>
-                  {allPosts.slice(1, 4).map(post => (
+                  {heroPosts.slice(1, 4).map(post => (
                     <Link href={`/post/${post.id}`} key={post.id} className={styles.magListItem}>
                       <div className={styles.magThumbWrap}>
                         <Image 
@@ -403,7 +428,7 @@ export default function HomeContent({
               </div>
 
               <div className={`${styles.editorsGrid} ${isMobile ? styles.horizontalScrollMobile : ''}`} style={{ marginBottom: '40px' }}>
-                {allPosts.slice(4, 9).map((post: any) => (
+                {otherPosts.slice(0, 5).map((post: any) => (
                   <Link href={`/post/${post.id}`} key={post.id} className={styles.postCardC}>
                     <div className={styles.cPhotoWrap}>
                       <Image 

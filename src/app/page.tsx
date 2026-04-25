@@ -3,6 +3,7 @@ import HomeContent from "./HomeContent";
 import { Suspense } from "react";
 import { headers, cookies } from "next/headers";
 import { getAdminStatus } from "@/app/actions/hero";
+import { getLatestMagazineIssue } from "@/app/actions/magazine";
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 60; // 60초 캐싱으로 부하 감소 및 속도 향상
@@ -56,7 +57,7 @@ export default async function Home({
 
   // 모든 데이터를 병렬로 요청하여 대기 시간 단축
   // [개선] 쿼리 레벨에서 필터링, 개수 제한 및 불필요한 대용량 content 로딩 배제 (excerpt 활용)
-  const [heroRes, feedRes, reviewRes, featureRes, editorsRes, userProfileRes] = await Promise.all([
+  const [heroRes, feedRes, reviewRes, featureRes, editorsRes, userProfileRes, magazineRes] = await Promise.all([
     // Hero posts: 메인 섹션이므로 필요한 필드만 select (content 제외)
     applyPrivacyFilter(supabase.from('posts').select('id, serial_id, title, category, content, image_url, is_editors_pick, is_hero, hero_at, is_feature, is_public, created_at, likes_count, views, author_id, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).eq('is_hero', true).order('hero_at', { ascending: false }).limit(3),
     
@@ -83,7 +84,10 @@ export default async function Home({
     supabase.from('profiles').select('id, display_name, avatar_url, bio, bullets, role').in('role', ['admin', 'editor']).order('display_name'),
     
     // User Profile
-    user ? supabase.from('profiles').select('preferred_view_pc, preferred_view_mobile, preferred_view_type, preferred_m_cols, preferred_d_cols').eq('id', user.id).single() : Promise.resolve({ data: null })
+    user ? supabase.from('profiles').select('preferred_view_pc, preferred_view_mobile, preferred_view_type, preferred_m_cols, preferred_d_cols').eq('id', user.id).single() : Promise.resolve({ data: null }),
+
+    // Latest Magazine Issue
+    getLatestMagazineIssue()
   ]);
 
   const heroDbPosts = heroRes.data || [];
@@ -92,6 +96,7 @@ export default async function Home({
   const featureDbPosts = featureRes.data || [];
   const editorsData = editorsRes.data || [];
   const userProfile = userProfileRes.data;
+  const magazineData = (magazineRes as any).data;
 
   const mapToPost = (p: any) => {
     // [개선] DB에서 content를 가져오지 않으므로 excerpt를 비워두거나 제목 등을 활용 (상세 페이지에서만 content 로드)
@@ -140,26 +145,43 @@ export default async function Home({
   const normalMocks = MOCK_POSTS.map(m => ({ ...m, displayDate: m.date }));
   let allPosts = [...livePosts, ...normalMocks].sort(sortByDate);
 
-  const finalHeroPosts = heroPosts.length > 0 ? heroPosts : allPosts.slice(0, 3);
-  const finalOtherPosts = heroPosts.length > 0 
-    ? allPosts.filter(p => !heroPosts.find((h: any) => h.id === p.id))
-    : allPosts.slice(3);
+  // Magazine Posts Extraction
+  let finalHeroPosts = [];
+  let magazineIssue = null;
+
+  if (magazineData) {
+    magazineIssue = {
+      number: magazineData.issue_number,
+      publishedAt: magazineData.published_at
+    };
+    finalHeroPosts = [
+      mapToPost(magazineData.post_a),
+      mapToPost(magazineData.post_b1),
+      mapToPost(magazineData.post_b2),
+      mapToPost(magazineData.post_b3)
+    ];
+  } else {
+    finalHeroPosts = heroPosts.length > 0 ? heroPosts : allPosts.slice(0, 3);
+  }
+
+  const magazineIds = new Set(finalHeroPosts.map((p: any) => p.dbId));
+  const finalOtherPosts = allPosts.filter((p: any) => !magazineIds.has(p.dbId));
 
   // Unified Filtering
   let filteredPosts = allPosts;
   if (categoryFilter && categoryFilter !== 'all') {
-    filteredPosts = filteredPosts.filter(p => p.categoryId === categoryFilter);
+    filteredPosts = filteredPosts.filter((p: any) => p.categoryId === categoryFilter);
   }
   if (authorFilter && authorFilter !== 'all') {
-    filteredPosts = filteredPosts.filter(p => 
+    filteredPosts = filteredPosts.filter((p: any) => 
       String(p.author?.id) === authorFilter || 
       String(p.author_id) === authorFilter || 
       p.author?.name === authorFilter
     );
   }
   if (searchFilter) {
-    const lowerQuery = searchFilter.toLowerCase();
-    filteredPosts = filteredPosts.filter(p => 
+    const lowerQuery = (searchFilter as string).toLowerCase();
+    filteredPosts = filteredPosts.filter((p: any) => 
       p.title.toLowerCase().includes(lowerQuery) || 
       p.content.toLowerCase().includes(lowerQuery)
     );
@@ -239,6 +261,7 @@ export default async function Home({
         isMobileServer={isMobileServer}
         initialViewType={initialViewType as any}
         editors={editorsData || []}
+        magazineIssue={magazineIssue}
       />
     </Suspense>
   );

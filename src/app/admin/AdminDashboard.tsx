@@ -6,6 +6,7 @@ import { deletePostAdmin, updateUserRole } from './actions'
 import { toggleHeroPost } from '@/app/actions/hero'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import MagazineManager from './MagazineManager'
 
 interface AdminDashboardProps {
   initialPosts: any[]
@@ -24,7 +25,7 @@ export default function AdminDashboard({
   totalViews = 0,
   trendData = [] 
 }: AdminDashboardProps) {
-  const [activeTab, setActiveTab] = useState<'stats' | 'posts' | 'users' | 'categories'>('stats')
+  const [activeTab, setActiveTab] = useState<'stats' | 'posts' | 'users' | 'categories' | 'magazine'>('stats')
   const [searchQuery, setSearchQuery] = useState('')
   const [timeRange, setTimeRange] = useState<'daily' | 'weekly' | 'monthly'>('weekly')
   const router = useRouter()
@@ -48,15 +49,6 @@ export default function AdminDashboard({
       } else {
         alert('삭제 실패: ' + res.error)
       }
-    }
-  }
-
-  const handleToggleHero = async (postId: string) => {
-    const res = await toggleHeroPost(postId)
-    if (res.success) {
-      router.refresh()
-    } else {
-      alert(res.error)
     }
   }
 
@@ -104,6 +96,13 @@ export default function AdminDashboard({
         >
           📂 카테고리 기획
         </button>
+        <button 
+          className={`${styles.tabBtn} ${activeTab === 'magazine' ? styles.activeTab : ''}`}
+          onClick={() => { setActiveTab('magazine'); setSearchQuery(''); }}
+          style={{ background: activeTab === 'magazine' ? 'rgba(255, 72, 4, 0.1)' : '' }}
+        >
+          📙 티끌 매거진 발행
+        </button>
       </div>
 
       {activeTab === 'stats' && (
@@ -141,7 +140,6 @@ export default function AdminDashboard({
                   <th>작가</th>
                   <th>제목</th>
                   <th>카테고리</th>
-                  <th>히어로</th>
                   <th>날짜</th>
                   <th>관리</th>
                 </tr>
@@ -168,16 +166,6 @@ export default function AdminDashboard({
                         {post.category}
                       </span>
                     </td>
-                    <td data-label="히어로">
-                      <button 
-                        className={styles.actionBtn} 
-                        onClick={() => handleToggleHero(post.id)}
-                        title={post.is_hero ? "히어로 카드 제외" : "히어로 카드 지정"}
-                        style={{ color: post.is_hero ? '#204bb8' : 'var(--text-tertiary)' }}
-                      >
-                        {post.is_hero ? "🌟" : "☆"}
-                      </button>
-                    </td>
                     <td data-label="날짜">{new Date(post.created_at).toLocaleDateString()}</td>
                     <td data-label="관리">
                       <div style={{ display: 'flex', gap: '10px' }}>
@@ -187,7 +175,7 @@ export default function AdminDashboard({
                     </td>
                   </tr>
                 )) : (
-                  <tr><td colSpan={6} className={styles.emptyState}>조건에 맞는 게시물이 없습니다.</td></tr>
+                  <tr><td colSpan={5} className={styles.emptyState}>조건에 맞는 게시물이 없습니다.</td></tr>
                 )}
               </tbody>
             </table>
@@ -264,6 +252,12 @@ export default function AdminDashboard({
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {activeTab === 'magazine' && (
+        <div className={styles.glassCard}>
+          <MagazineManager posts={initialPosts} />
         </div>
       )}
     </div>
