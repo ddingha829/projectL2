@@ -54,6 +54,18 @@
   line-height: 1.5;
 }
 
+.warningAlert {
+  background-color: rgba(255, 149, 0, 0.1);
+  color: #ff9500;
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+  text-align: center;
+  border: 1px solid rgba(255, 149, 0, 0.3);
+  line-height: 1.6;
+}
+
 /* 소셜 로그인 */
 .socialSection {
   margin-bottom: 8px;

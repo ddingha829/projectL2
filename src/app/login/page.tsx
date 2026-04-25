@@ -1,6 +1,6 @@
 "use client"
 
-import { useTransition } from 'react'
+import { useTransition, useState, useEffect } from 'react'
 import { login, resetPassword, signInWithGoogle } from './actions'
 import styles from './page.module.css'
 import Link from 'next/link'
@@ -14,6 +14,14 @@ export default function LoginPage() {
   const message = searchParams.get('message')
   const isSignupSuccess = message === 'signup_success'
   const isResetSent = message === 'reset_sent'
+
+  // [신규] 인앱 브라우저 체크 (구글 로그인 차단 대응)
+  const [isInAppBrowser, setIsInAppBrowser] = useState(false);
+  useEffect(() => {
+    const ua = navigator.userAgent.toLowerCase();
+    const isInApp = /kakaotalk|instagram|fban|fbav|line|naver|whale/.test(ua);
+    setIsInAppBrowser(isInApp);
+  }, []);
 
   const handleAction = (action: Function) => async (formData: FormData) => {
     startTransition(async () => {
@@ -53,6 +61,15 @@ export default function LoginPage() {
           <div className={styles.successAlert}>
             📧 비밀번호 재설정 링크를 이메일로 발송했습니다.<br />
             메일함을 확인해 주세요.
+          </div>
+        )}
+
+        {/* 인앱 브라우저 경고 */}
+        {isInAppBrowser && (
+          <div className={styles.warningAlert}>
+            ⚠️ <strong>인앱 브라우저 안내</strong><br />
+            카카오톡/인스타그램 등에서는 구글 로그인이 차단될 수 있습니다. <br />
+            <strong>오른쪽 상단 점 3개(⋮)</strong>를 눌러 <strong>'브라우저에서 열기'</strong> 또는 <strong>'기본 브라우저로 열기'</strong>를 선택해 주세요.
           </div>
         )}
 
