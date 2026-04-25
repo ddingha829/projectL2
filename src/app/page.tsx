@@ -75,7 +75,7 @@ export default async function Home({
       address,
       category,
       post:posts(id, review_comment, created_at, author:profiles!author_id(display_name))
-    `).order('created_at', { ascending: false }).limit(10),
+    `).order('created_at', { foreignTable: 'posts', ascending: false }).limit(10),
     
     // Feature posts
     applyPrivacyFilter(supabase.from('posts').select('id, serial_id, title, category, content, image_url, is_editors_pick, is_hero, hero_at, is_feature, is_public, created_at, likes_count, views, author_id, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).or('is_feature.eq.true,category.eq.feature').order('created_at', { ascending: false }).limit(6),

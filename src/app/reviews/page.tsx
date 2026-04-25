@@ -41,7 +41,7 @@ function ReviewArchiveContent() {
           lat, lng, embed_url,
           post:posts(id, title, author:profiles!author_id(display_name, avatar_url))
         `)
-        .order('created_at', { ascending: false });
+        .order('created_at', { foreignTable: 'posts', ascending: false });
 
       if (mainError) {
         console.warn('Coordinates missing, using fallback query:', mainError);
@@ -51,7 +51,7 @@ function ReviewArchiveContent() {
             id, subject, rating, comment, created_at, post_id,
             post:posts(id, title, author:profiles!author_id(display_name, avatar_url))
           `)
-          .order('created_at', { ascending: false });
+          .order('created_at', { foreignTable: 'posts', ascending: false });
         editorData = fallbackData || [];
       } else {
         editorData = mainData || [];
@@ -232,7 +232,7 @@ function ReviewArchiveContent() {
             marker.bindPopup(`
               <div style="padding:10px; color:#1a202c; font-family:sans-serif; min-width:180px;">
                 <h4 style="margin:0; font-weight:800; font-size:16px;">${s.subject}</h4>
-                <p style="margin:5px 0; font-size:14px;">전문가 평점: ★ ${s.editorAvg}</p>
+                <p style="margin:5px 0; font-size:14px;">티끌러 평점: ★ ${s.editorAvg}</p>
                 <button id="view-review-${s.subject.replace(/\s+/g, '-')}"
                         style="width:100%; padding:8px; background:#ff4804; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">
                   리뷰 리스트 보기
@@ -275,7 +275,7 @@ function ReviewArchiveContent() {
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <h1 className={styles.title}>티끌 플레이스</h1>
+        <h1 className={styles.title}><span style={{ color: '#ff4804' }}>티끌</span> 플레이스</h1>
         <p className={styles.subtitle}>티끌러와 독자가 함께 완성하는 지도입니다.</p>
         <div className={styles.mapContainer}>
           <div ref={mapRef} className={styles.mapCanvas} />
@@ -321,7 +321,7 @@ function ReviewArchiveContent() {
                     </div>
                   </div>
                   <div className={styles.infographicBox}>
-                    <div className={styles.infoTitle}>매체 전문가 vs 독자 만족도</div>
+                    <div className={styles.infoTitle}>티끌러 vs 유저 평점</div>
                     <div className={styles.comparisonGrid}>
                       <div className={styles.compItem}>
                         <div className={styles.compLabel}>티끌러 평점</div>
