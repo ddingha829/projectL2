@@ -257,7 +257,7 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
               {ALL_AUTHORS.map(editor => (
                 <Link 
                   key={editor.id} 
-                  href={`/?author=${editor.id}`} 
+                  href={`/?author=${encodeURIComponent(editor.name || editor.id)}`} 
                   className={styles.disclosureLink}
                   onClick={onClose}
                 >
@@ -268,6 +268,9 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
             </div>
           </details>
 
+          <Link href="/gallery" className={styles.sidebarLink} onClick={onClose}>
+            갤러리
+          </Link>
           <Link href="/reviews" className={styles.sidebarLink} onClick={onClose}>
             티끌 아카이브
           </Link>

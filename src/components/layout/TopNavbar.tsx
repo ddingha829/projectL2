@@ -286,6 +286,7 @@ export default function TopNavbar({
             )}
           </div>
 
+          <Link href="/gallery" className={styles.navLink}>갤러리</Link>
           <Link href="/reviews" className={styles.navLink}>티끌 플레이스</Link>
         </nav>
 
