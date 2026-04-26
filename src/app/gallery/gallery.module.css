@@ -44,7 +44,7 @@
 
 @media (max-width: 768px) {
   .container {
-    padding: 40px 14px;
+    padding: 24px 0;
   }
   .galleryGrid {
     column-count: 2;
