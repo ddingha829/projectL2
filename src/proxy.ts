@@ -57,12 +57,13 @@ export async function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * 아래 경로를 제외한 모든 요청에 대해 미들웨어 실행:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public 폴더 안의 정적 파일들
+     * 아래 경로를 제외한 모든 요청에 대해 프록시 실행 (Edge Request 절약):
+     * - api (API 라우트)
+     * - _next/static (정적 스크립트 등)
+     * - _next/image (이미지 최적화)
+     * - favicon.ico, sitemap.xml, robots.txt 등
+     * - 확장자가 있는 모든 파일 (이미지, 폰트, 웹파일 등)
      */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\..*).*)',
   ],
 }
