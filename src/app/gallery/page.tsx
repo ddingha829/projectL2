@@ -7,6 +7,8 @@ import Link from 'next/link'
 
 export default function GalleryPage() {
   const [images, setImages] = useState<any[]>([])
+  const [filteredImages, setFilteredImages] = useState<any[]>([])
+  const [searchQuery, setSearchQuery] = useState('')
   const [page, setPage] = useState(0)
   const [loading, setLoading] = useState(false)
   const [hasMore, setHasMore] = useState(true)
@@ -26,6 +28,21 @@ export default function GalleryPage() {
     }
     setLoading(false)
   }, [page, loading, hasMore])
+
+  // 실시간 필터링
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setFilteredImages(images)
+    } else {
+      const lowerQuery = searchQuery.toLowerCase()
+      const filtered = images.filter(img => 
+        img.title.toLowerCase().includes(lowerQuery) ||
+        img.authorName.toLowerCase().includes(lowerQuery) ||
+        (img.labels && img.labels.toLowerCase().includes(lowerQuery))
+      )
+      setFilteredImages(filtered)
+    }
+  }, [searchQuery, images])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -49,10 +66,23 @@ export default function GalleryPage() {
       <header className={styles.header}>
         <h1 className={styles.title}><span>티끌</span> 갤러리</h1>
         <p className={styles.subtitle}>티끌러들이 남긴 생생한 순간들을 한눈에 만나보세요.</p>
+        
+        <div className={styles.searchWrapper}>
+          <div className={styles.searchBar}>
+            <span className={styles.searchIcon}>🔍</span>
+            <input 
+              type="text" 
+              placeholder="제목, 작가 또는 키워드 검색 (예: 풍경, 여행...)" 
+              className={styles.searchInput}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+        </div>
       </header>
 
       <div className={styles.galleryGrid}>
-        {images.map((img, idx) => (
+        {filteredImages.map((img, idx) => (
           <Link 
             key={`${img.id}-${idx}`} 
             href={`/post/${img.serialId || `db-${img.id}`}`}
