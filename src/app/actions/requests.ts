@@ -32,7 +32,6 @@ export async function submitReviewRequest(writerId: string, content: string) {
 export async function replyToRequest(requestId: string, reply: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-
   if (!user) return { success: false, error: 'Not authenticated' }
 
   const { data: profile } = await supabase
@@ -44,7 +43,6 @@ export async function replyToRequest(requestId: string, reply: string) {
   const isAdmin = profile?.role === 'admin';
   const isEditor = profile?.role === 'editor';
 
-  // Check if user is an authorized editor or admin
   if (!isAdmin && !isEditor) {
     return { success: false, error: '답글 작성 권한이 없습니다.' };
   }
@@ -59,7 +57,7 @@ export async function replyToRequest(requestId: string, reply: string) {
     .eq('id', requestId)
 
   if (error) {
-    return { success: false, error: '답답글 등록 중 오류가 발생했습니다: ' + error.message }
+    return { success: false, error: '답글 등록 중 오류가 발생했습니다: ' + error.message }
   }
 
   revalidatePath('/', 'layout')
@@ -80,7 +78,7 @@ export async function getReviewRequests(writerId: string) {
     return []
   }
 
-  return data
+  return data || [];
 }
 
 export async function updateRequestStatus(requestId: string, status: string) {
