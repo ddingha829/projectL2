@@ -53,8 +53,8 @@ async function getLabelsForImages(images: { url: string, title: string, category
   if (!apiKey || missingImages.length === 0) return labelMap;
 
   const genAI = new GoogleGenerativeAI(apiKey);
-  // [모델 최적화] 안정성을 위해 gemini-1.5-flash-latest 사용 권장
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  // [모델 최적화] 일부 환경에서 모델을 찾지 못하는 문제 해결을 위해 -latest 명칭 사용
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
   const aiTasks = missingImages.map(async (img) => {
     try {
