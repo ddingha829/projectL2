@@ -34,12 +34,17 @@ export default function GalleryPage() {
     if (!searchQuery.trim()) {
       setFilteredImages(images)
     } else {
-      const lowerQuery = searchQuery.trim().toLowerCase()
-      const filtered = images.filter(img => 
-        (img.title?.toLowerCase().includes(lowerQuery)) ||
-        (img.authorName?.toLowerCase().includes(lowerQuery)) ||
-        (img.labels?.toLowerCase().includes(lowerQuery))
-      )
+      // 한글 자소 분리 현상 방지를 위해 NFC 정규화 적용
+      const lowerQuery = searchQuery.trim().toLowerCase().normalize('NFC')
+      const filtered = images.filter(img => {
+        const title = (img.title || '').toLowerCase().normalize('NFC')
+        const author = (img.authorName || '').toLowerCase().normalize('NFC')
+        const labels = (img.labels || '').toLowerCase().normalize('NFC')
+        
+        return title.includes(lowerQuery) || 
+               author.includes(lowerQuery) || 
+               labels.includes(lowerQuery)
+      })
       setFilteredImages(filtered)
     }
   }, [searchQuery, images])

@@ -54,12 +54,12 @@ export async function getGalleryImages(page: number = 0, limit: number = 40) {
         id: `${post.id}-${index}`,
         postId: post.id,
         serialId: post.serial_id,
-        title: post.title,
+        title: (post.title || '').normalize('NFC'),
         imageUrl: url,
         createdAt: post.created_at,
-        authorName: (post.author as any)?.display_name || '익명 작가',
+        authorName: ((post.author as any)?.display_name || '익명 작가').normalize('NFC'),
         // 라벨이 없으면 기본 정보라도 검색에 걸리도록 구성
-        labels: `${labelMap.get(url) || ''}, ${(post.author as any)?.display_name || ''}, ${post.title}`
+        labels: `${(labelMap.get(url) || '').normalize('NFC')}, ${((post.author as any)?.display_name || '').normalize('NFC')}, ${(post.title || '').normalize('NFC')}`
       });
     });
   }
