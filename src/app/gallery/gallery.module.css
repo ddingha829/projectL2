@@ -12,51 +12,68 @@
 
 .searchWrapper {
   position: sticky;
-  top: 60px; /* Navbar height for desktop */
+  top: 60px;
   z-index: 100;
-  padding: 12px 16px; /* Optimized padding */
-  margin-top: 10px;
-  background: rgba(255, 255, 255, 0.85); /* Slightly opaque for better visibility */
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  margin-left: -14px; /* Counter container padding to make it full width */
+  padding: 20px 16px;
+  margin-top: 0;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  margin-left: -14px;
   margin-right: -14px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .searchBar {
-  max-width: 600px;
+  max-width: 700px;
   margin: 0 auto;
   position: relative;
   display: flex;
   align-items: center;
-  background: #f8f9fa;
-  border: 2px solid #eee;
-  border-radius: 40px;
-  padding: 0 20px;
-  transition: all 0.3s ease;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px; /* Less rounded for more magazine look */
+  padding: 4px 24px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
 }
 
 .searchBar:focus-within {
   border-color: var(--accent-orange);
   background: #fff;
-  box-shadow: 0 4px 15px rgba(255, 72, 4, 0.1);
+  box-shadow: 0 15px 40px rgba(255, 72, 4, 0.08);
+  transform: translateY(-2px);
 }
 
 .searchIcon {
-  font-size: 1.2rem;
-  margin-right: 12px;
-  opacity: 0.5;
+  font-size: 1.1rem;
+  margin-right: 16px;
+  opacity: 0.3;
+  transition: opacity 0.3s;
+}
+
+.searchBar:focus-within .searchIcon {
+  opacity: 1;
+  color: var(--accent-orange);
 }
 
 .searchInput {
   flex: 1;
   border: none;
   background: transparent;
-  padding: 14px 0;
-  font-size: 1rem;
-  color: var(--text-primary);
+  padding: 16px 0;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #1a1a1a;
   outline: none;
+  letter-spacing: -0.01em;
+}
+
+.searchInput::placeholder {
+  color: #999;
+  font-weight: 400;
 }
 
 .searchInput::placeholder {
