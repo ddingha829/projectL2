@@ -152,7 +152,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     openGraph: {
       title: post.title,
       description: description,
-      url: `https://ticgle.kr/post/${id}`,
+      url: `https://ticgle.kr/post/${post.serial_id || id}`,
       type: 'article',
       publishedTime: post.created_at,
       authors: [post.author?.display_name],
@@ -349,7 +349,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
             <span className={styles.category}>{post.category}</span>
             <span className={styles.dot}>•</span>
             <span className={styles.date}>{new Date(post.created_at).toLocaleDateString('ko-KR')}</span>
-            <Link href={`/?author=${post.author?.id}`} className={styles.authorBadgeDetail}>
+            <Link href={`/?author=${post.author?.display_name || post.author?.name}`} className={styles.authorBadgeDetail}>
               {post.author?.display_name || post.author?.name || '익명 작가'}
             </Link>
             <span className={styles.dot}>•</span>
@@ -402,7 +402,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
           <div className={styles.authorCardWrapper}>
             <div className={styles.authorCardHeader}>
               <span>TICGLER PROFILE</span>
-              <Link href={`/requests/${post.authorProfile.id}`} className={styles.headerRequestLink}>
+              <Link href={`/requests/${post.authorProfile.display_name || post.authorProfile.id}`} className={styles.headerRequestLink}>
                 티끌러님, 이것도 리뷰해주세요! 💬
               </Link>
             </div>
@@ -420,7 +420,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
                    </div>
                 </div>
               <div className={styles.authorDetailsArea}>
-                <Link href={`/?author=${post.authorProfile.id}`} className={styles.authorNameLink}>
+                <Link href={`/?author=${post.authorProfile.display_name}`} className={styles.authorNameLink}>
                   {post.authorProfile.display_name}
                 </Link>
                 <div style={{ marginTop: '4px', marginBottom: '8px' }}>

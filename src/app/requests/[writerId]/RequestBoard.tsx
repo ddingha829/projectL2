@@ -152,6 +152,7 @@ export default function RequestBoard({ writerId, writerName, color }: RequestBoa
                     <div className={styles.userInfo}>
                       <span className={styles.avatar}>👤</span>
                       <span className={styles.userName}>{req.user?.display_name || '익명의 독자'}</span>
+                      <span className={styles.requestId}>r{String(req.serial_id || 0).padStart(5, '0')}</span>
                     </div>
                     <span className={styles.date}>{new Date(req.created_at).toLocaleDateString()}</span>
                   </div>

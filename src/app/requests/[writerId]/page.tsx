@@ -17,11 +17,21 @@ export default async function RequestPage({
   // 2. If not found in static, check Database Profiles
   if (!author) {
     const supabase = await createClient();
-    const { data: profile } = await supabase
+    
+    // UUID 형식인지 확인
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(writerId);
+    
+    const query = supabase
       .from('profiles')
-      .select('id, display_name, color, bio, bullets')
-      .eq('id', writerId)
-      .single();
+      .select('id, display_name, color, bio, bullets');
+      
+    if (isUuid) {
+      query.eq('id', writerId);
+    } else {
+      query.eq('display_name', decodeURIComponent(writerId));
+    }
+
+    const { data: profile } = await query.single();
 
     if (profile) {
       author = {

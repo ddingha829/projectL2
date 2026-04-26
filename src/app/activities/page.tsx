@@ -116,7 +116,7 @@ export default async function ActivitiesPage({
                 {notifs.map((n: any) => (
                   <Link 
                     key={n.id} 
-                    href={`/post/db-${n.post_id}${n.type.includes('comment') ? `#comment-${n.comment_id}` : ''}`}
+                    href={`/post/${n.post?.serial_id || `db-${n.post_id}`}${n.type.includes('comment') ? `#comment-${n.comment_id}` : ''}`}
                     className={`${styles.item} ${!n.is_read ? styles.unreadItem : ''}`}
                   >
                     <div className={styles.dotArea}>

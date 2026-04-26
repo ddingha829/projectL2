@@ -67,10 +67,24 @@ export async function replyToRequest(requestId: string, reply: string) {
 export async function getReviewRequests(writerId: string) {
   const supabase = await createClient()
   
+  // writerId가 UUID가 아니면(닉네임이면) 닉네임으로 프로필을 먼저 찾습니다.
+  let actualWriterId = writerId;
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(writerId);
+  
+  if (!isUuid) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('display_name', writerId)
+      .single();
+    
+    if (profile) actualWriterId = profile.id;
+  }
+
   const { data, error } = await supabase
     .from('review_requests')
-    .select('*, user:profiles!user_id(display_name, avatar_url)')
-    .eq('writer_id', writerId)
+    .select('*, serial_id, user:profiles!user_id(display_name, avatar_url)')
+    .eq('writer_id', actualWriterId)
     .order('created_at', { ascending: false })
 
   if (error) {

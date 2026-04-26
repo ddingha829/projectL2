@@ -13,7 +13,7 @@ export async function getNotifications() {
     .select(`
       *,
       sender:profiles!sender_id(id, display_name, avatar_url),
-      post:posts(id, title, image_url),
+      post:posts(id, serial_id, title, image_url),
       comment:comments(id, content)
     `)
     .eq('receiver_id', user.id)

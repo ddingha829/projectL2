@@ -206,9 +206,19 @@
 }
 
 .userName {
-  font-weight: 800;
-  font-size: 1.05rem;
+  font-weight: 700;
   color: var(--text-primary);
+}
+
+.requestId {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--accent-orange);
+  background: rgba(255, 72, 4, 0.08);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-family: var(--font-mono, monospace);
+  margin-left: 4px;
 }
 
 .date {

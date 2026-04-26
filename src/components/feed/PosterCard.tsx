@@ -22,7 +22,7 @@ interface PosterCardProps {
   priority?: boolean;
 }
 
-export default function PosterCard({ 
+export default function PosterCard({
   id, category, title, author, imageUrl, isEditorsPick, displayDate, likes = 0, comments = 0,
   aspectRatio = 'default', isOneCol = false, isDense = false, isMinimal = false,
   viewType = 'card', excerpt, isPublic = true, priority = false
@@ -32,10 +32,10 @@ export default function PosterCard({
   return (
     <article className={`${styles.card} ${isMagazine ? styles.magazineCard : ''} ${aspectRatio === 'card45' ? styles.ratioCard45 : ''} ${aspectRatio === 'mag53' ? styles.ratioMag53 : ''} ${isOneCol ? styles.oneColCard : ''} ${isDense ? styles.denseCard : ''} ${isMinimal ? styles.minimalCard : ''}`}>
       <div className={isMagazine ? styles.magImageWrapper : styles.imageWrapper}>
-        <Image 
-          src={imageUrl} 
-          alt={title} 
-          className={styles.posterImage} 
+        <Image
+          src={imageUrl}
+          alt={title}
+          className={styles.posterImage}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
           quality={80}
@@ -45,9 +45,9 @@ export default function PosterCard({
         <div className={isMagazine ? styles.magCategoryLabel : styles.categoryBadge}>
           {category?.toUpperCase() === "NOTICE" || category === "공지사항" ? "공지사항" : category}
         </div>
-        
+
         {!isMagazine && (
-          <Link href={`/?author=${author.id}`} className={styles.authorBadge} onClick={(e) => e.stopPropagation()}>
+          <Link href={`/?author=${author.name}`} className={styles.authorBadge} onClick={(e) => e.stopPropagation()}>
             {author.name}
           </Link>
         )}
@@ -62,11 +62,11 @@ export default function PosterCard({
 
       <div className={isMagazine ? styles.magContentArea : styles.contentArea}>
         {isMagazine && (
-           <div className={styles.magCategorySmall}>
-             {category?.toUpperCase() === "NOTICE" || category === "공지사항" ? "공지사항" : category}
-           </div>
+          <div className={styles.magCategorySmall}>
+            {category?.toUpperCase() === "NOTICE" || category === "공지사항" ? "공지사항" : category}
+          </div>
         )}
-        
+
         <h3 className={isMagazine ? styles.magTitle : styles.title}>
           <Link href={`/post/${id}`} className={styles.stretchedLink}>
             {isPublic === false && <span style={{ marginRight: '6px', color: '#ea4335' }}>🔒</span>}
@@ -77,14 +77,14 @@ export default function PosterCard({
         {isMagazine && excerpt && (
           <p className={styles.magExcerpt}>{excerpt}</p>
         )}
-        
+
         <div className={isMagazine ? styles.magMetaInfo : styles.metaInfo}>
           <div className={isMagazine ? "" : styles.metaLeft}>
             {isMagazine ? (
-               <div className={styles.magMetaRow}>
-                 <span className={styles.magDate}>{displayDate}</span>
-                 <span className={styles.magAuthorBadge}>{author.name}</span>
-               </div>
+              <div className={styles.magMetaRow}>
+                <span className={styles.magDate}>{displayDate}</span>
+                <span className={styles.magAuthorBadge}>{author.name}</span>
+              </div>
             ) : (
               <>
                 <span className={styles.metaItem}>
@@ -111,4 +111,4 @@ export default function PosterCard({
       </div>
     </article>
   );
-}
+} https://127.0.0.1:2815/static/artifacts/2523261e-5040-4478-9c4f-eff515811325/localhost_3000_success_1777191969586.png?csrf=1502a18a-1803-41b9-9e2d-3c1c37f13609

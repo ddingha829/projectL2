@@ -74,7 +74,7 @@ export default async function Home({
       post_id,
       address,
       category,
-      post:posts(id, review_comment, created_at, author:profiles!author_id(display_name))
+      post:posts(id, serial_id, review_comment, created_at, author:profiles!author_id(display_name))
     `).order('created_at', { foreignTable: 'posts', ascending: false }).limit(10),
     
     // Feature posts
@@ -219,6 +219,7 @@ export default async function Home({
     return {
       id: p.id,
       postId: p.post_id,
+      postSerialId: p.post?.serial_id, 
       subject: p.subject,
       rating: p.rating,
       userRating: p.user_avg_rating || 0,

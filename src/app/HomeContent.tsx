@@ -489,7 +489,7 @@ export default function HomeContent({
               <div className={styles.authorCardWrapper}>
                 <div className={styles.authorCardHeaderStandard}>
                   <span className={styles.standardCardLabel}>TICGLER PROFILE</span>
-                  <Link href={`/requests/${authorData.id}`} className={styles.headerRequestLinkStandard}>
+                  <Link href={`/requests/${authorData.display_name || authorData.name || authorData.id}`} className={styles.headerRequestLinkStandard}>
                     티끌러님, 이것도 리뷰해주세요! 💬
                   </Link>
                 </div>

@@ -19,8 +19,8 @@ export function ReviewsSection({ recentReviews, isMobile, scrollReviews, reviewR
             <div 
               key={rev.id} 
               className={styles.miniReviewCard} 
-              onClick={() => rev.postId && router.push(`/post/db-${rev.postId}`)}
-              style={{ cursor: rev.postId ? 'pointer' : 'default' }}
+              onClick={() => (rev.postSerialId || rev.postId) && router.push(`/post/${rev.postSerialId || `db-${rev.postId}`}`)}
+              style={{ cursor: (rev.postSerialId || rev.postId) ? 'pointer' : 'default' }}
             >
               <h4 className={styles.miniRevSubject}>{rev.subject}</h4>
               {(rev.address || rev.category) && (
