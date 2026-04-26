@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { logout } from "@/app/login/actions";
+import NotificationSystem from "./NotificationSystem";
 import styles from "./TopNavbar.module.css";
 
 export default function TopNavbar({ 
@@ -216,6 +217,13 @@ export default function TopNavbar({
             <ViewSettingsDropdown />
           </div>
           */}
+
+          {/* Mobile Notification Icon */}
+          {isMobile && user && (
+            <div className={styles.mobileNotifWrap}>
+              <NotificationSystem user={user} />
+            </div>
+          )}
         </div>
 
         <nav className={styles.mainNav}>
@@ -314,6 +322,8 @@ export default function TopNavbar({
             </button>
           </form>
 
+          {/* PC Notification Icon */}
+          {!isMobile && <NotificationSystem user={user} />}
 
           <div className={styles.authWrapper}>
             {user ? (

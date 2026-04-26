@@ -1,0 +1,228 @@
+.notificationWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.bellBtn {
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  border-radius: 50%;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.bellBtn:hover {
+  background: var(--bg-secondary);
+  color: var(--brand-primary);
+  transform: scale(1.05);
+}
+
+.badge {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  background: #ff4b4b; /* More vivid red */
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 800;
+  min-width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  border: 2px solid var(--bg-primary);
+  box-shadow: 0 2px 4px rgba(255, 75, 75, 0.3);
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 12px;
+  width: 320px;
+  max-height: 480px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 800;
+  font-family: var(--font-outfit), sans-serif;
+}
+
+.markAllBtn {
+  background: none;
+  border: none;
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.markAllBtn:hover {
+  background: var(--bg-secondary);
+  color: var(--brand-primary);
+}
+
+.list {
+  overflow-y: auto;
+  flex: 1;
+}
+
+.item {
+  display: flex;
+  gap: 12px;
+  padding: 12px 16px;
+  text-decoration: none;
+  transition: background 0.2s;
+  border-bottom: 1px solid var(--border-light);
+  position: relative;
+}
+
+.item:last-child {
+  border-bottom: none;
+}
+
+.unreadItem {
+  background: rgba(255, 72, 4, 0.03);
+}
+
+.unreadItem::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #ff4804;
+}
+
+.item:hover {
+  background: var(--bg-secondary);
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.avatarPlaceholder {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.message {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+.senderName {
+  font-weight: 800;
+}
+
+.time {
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+}
+
+.preview {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+.empty {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--text-tertiary);
+}
+
+.emptyIcon {
+  font-size: 2rem;
+  margin-bottom: 8px;
+  opacity: 0.3;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .dropdown {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-height: 70vh;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    margin-top: 0;
+  }
+}
+
+.seeAllBtn {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--brand-accent-line);
+  text-decoration: none;
+  background: var(--bg-tertiary);
+  border-top: 1px solid var(--border-light);
+  transition: all 0.2s;
+}
+
+.seeAllBtn:hover {
+  background: var(--bg-secondary);
+  color: #c83a02;
+}

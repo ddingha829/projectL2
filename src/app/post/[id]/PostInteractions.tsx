@@ -35,6 +35,9 @@ export default function PostInteractions({
   const [selectionCoords, setSelectionCoords] = useState<{ x: number, y: number } | null>(null);
   const [isInlineOpen, setIsInlineOpen] = useState(false);
   const [inlineComment, setInlineComment] = useState("");
+  const [replyTo, setReplyTo] = useState<{ id: string, name: string } | null>(null);
+  const [commentLikes, setCommentLikes] = useState<Record<string, number>>({});
+  const [userCommentLikes, setUserCommentLikes] = useState<string[]>([]);
 
 
   const supabase = createClient();
@@ -106,7 +109,21 @@ export default function PostInteractions({
       if (guestLikes.includes(postId)) {
         setIsLikedLocally(true);
       }
+    } else {
+      // Fetch comment likes for user
+      const fetchCommentLikes = async () => {
+        const { data } = await supabase.from('comment_likes').select('comment_id').eq('user_id', user.id);
+        if (data) setUserCommentLikes(data.map(d => d.comment_id));
+      };
+      fetchCommentLikes();
     }
+
+    // Initialize comment likes count
+    const counts: Record<string, number> = {};
+    comments.forEach((c: any) => {
+      counts[c.id] = c.likes_count || 0; // Assuming we add likes_count to comments later or fetch it
+    });
+    setCommentLikes(counts);
 
     return () => document.removeEventListener('selectionchange', handleSelection);
   }, [postId, user]);
@@ -177,7 +194,8 @@ export default function PostInteractions({
     const newCommentData = {
       post_id: postId,
       user_id: user.id,
-      content: finalContent
+      content: finalContent,
+      parent_id: replyTo?.id || null
     };
     
     const { data, error } = await supabase.from('comments').insert(newCommentData).select().single();
@@ -187,7 +205,8 @@ export default function PostInteractions({
     } else if (data) {
       setComments([{ ...data, user: profile }, ...comments]);
       setNewComment("");
-      setSelectedAnchor(null); // Clear anchor after successful posting
+      setSelectedAnchor(null); 
+      setReplyTo(null);
     }
     
     setIsSubmitting(false);
@@ -225,6 +244,24 @@ export default function PostInteractions({
       setComments(comments.map(c => c.id === commentId ? { ...c, content: editContent.trim() } : c));
       setEditingCommentId(null);
       router.refresh();
+    }
+  };
+
+  const handleLikeComment = async (commentId: string) => {
+    if (!user) {
+      alert("로그인이 필요합니다");
+      return;
+    }
+
+    const isLiked = userCommentLikes.includes(commentId);
+    if (isLiked) {
+      await supabase.from('comment_likes').delete().eq('user_id', user.id).eq('comment_id', commentId);
+      setUserCommentLikes(prev => prev.filter(id => id !== commentId));
+      setCommentLikes(prev => ({ ...prev, [commentId]: Math.max(0, (prev[commentId] || 0) - 1) }));
+    } else {
+      await supabase.from('comment_likes').insert({ user_id: user.id, comment_id: commentId });
+      setUserCommentLikes(prev => [...prev, commentId]);
+      setCommentLikes(prev => ({ ...prev, [commentId]: (prev[commentId] || 0) + 1 }));
     }
   };
 
@@ -272,7 +309,7 @@ export default function PostInteractions({
             </div>
           )}
           
-          <form onSubmit={handleAddComment} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <form id="comment-form" onSubmit={handleAddComment} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {activeAnchor && !selectedAnchor && (
               <div 
                 className={`${styles.quotePrompt} ${activeAnchor.text.length > 30 ? styles.quotePromptError : ''}`}
@@ -299,9 +336,15 @@ export default function PostInteractions({
                 <button type="button" onClick={() => setSelectedAnchor(null)}>❌</button>
               </div>
             )}
+            {replyTo && (
+              <div className={styles.replyNotice}>
+                <span>@{replyTo.name} 님에게 답글 남기는 중</span>
+                <button type="button" onClick={() => setReplyTo(null)}>❌</button>
+              </div>
+            )}
             <textarea 
               className={styles.commentInput} 
-              placeholder="자유롭게 의견을 남겨주세요..." 
+              placeholder={replyTo ? "답글을 입력하세요..." : "자유롭게 의견을 남겨주세요..."} 
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               disabled={!user || isSubmitting}
@@ -394,6 +437,26 @@ export default function PostInteractions({
                       )}
                     </>
                   )}
+                </div>
+                <div className={styles.commentFooter}>
+                  <button 
+                    className={`${styles.commentActionBtn} ${userCommentLikes.includes(c.id) ? styles.commentLiked : ''}`}
+                    onClick={() => handleLikeComment(c.id)}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill={userCommentLikes.includes(c.id) ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5">
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                    좋아요 {commentLikes[c.id] || 0}
+                  </button>
+                  <button 
+                    className={styles.commentActionBtn}
+                    onClick={() => {
+                      setReplyTo({ id: c.id, name: c.user?.display_name || '익명' });
+                      document.getElementById('comment-form')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                  >
+                    답글 달기
+                  </button>
                 </div>
               </div>
             );

@@ -711,3 +711,12 @@
   right: 0;
   left: auto;
 }
+
+.mobileNotifWrap {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+}
