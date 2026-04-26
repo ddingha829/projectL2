@@ -3,54 +3,51 @@
 import { createClient } from '@/lib/supabase/server'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
-/**
- * [영구 저장 로직]
- * 1. DB(gallery_image_labels)에서 라벨 조회
- * 2. 없으면 Gemini 호출 후 DB에 저장
- * 3. 있으면 그대로 반환
- */
-async function getOrGenerateLabels(imageUrl: string, title: string, category: string): Promise<string> {
+async function getLabelsForImages(images: { url: string, title: string, category: string }[]) {
   const supabase = await createClient();
+  const imageUrls = images.map(img => img.url);
+
+  // 1. DB에서 이미 존재하는 라벨들을 한꺼번에 가져옵니다 (Bulk DB Check)
+  const { data: existingLabels } = await supabase
+    .from('gallery_image_labels')
+    .select('image_url, labels')
+    .in('image_url', imageUrls);
+
+  const labelMap = new Map(existingLabels?.map(l => [l.image_url, l.labels]) || []);
   
-  // 1. DB에서 먼저 확인
-  try {
-    const { data: existing } = await supabase
-      .from('gallery_image_labels')
-      .select('labels')
-      .eq('image_url', imageUrl)
-      .single();
+  // 2. DB에 없는 신규 이미지 건들만 골라냅니다
+  const missingImages = images.filter(img => !labelMap.has(img.url));
 
-    if (existing?.labels) return existing.labels;
-  } catch (e) {
-    // 테이블이 없거나 조회 실패 시 AI 호출로 이행
-  }
-
-  // 2. DB에 없으면 Gemini 호출
   const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) return `${category}, ${title}`;
+  if (!apiKey) return labelMap;
 
-  try {
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    
-    // 이미지 컨텍스트와 함께 키워드 요청
-    const prompt = `이미지("${imageUrl}")의 분위기와 내용을 분석해주세요. 제목: "${title}", 카테고리: "${category}". 관련 있는 한국어 핵심 키워드 5개를 쉼표로만 구분해서 답해주세요.`;
-    const result = await model.generateContent(prompt);
-    const labels = (await result.response).text().trim();
+  const genAI = new GoogleGenerativeAI(apiKey);
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    // 3. 분석된 라벨을 DB에 영구 저장 (다음번엔 AI 호출 안 함)
-    await supabase
-      .from('gallery_image_labels')
-      .upsert({ image_url: imageUrl, labels: labels }, { onConflict: 'image_url' });
+  // 3. 신규 이미지들에 대해 병렬로 AI 분석 요청 (Promise.all로 동시 처리)
+  // [주의] 무료 티어 레이트 리밋을 고려하여 한 번에 너무 많은 요청은 위험할 수 있으므로 
+  // 실제 서비스 시에는 청크 단위 처리가 필요하지만, 현재 수준에선 병렬 처리가 가장 효과적입니다.
+  const aiTasks = missingImages.map(async (img) => {
+    try {
+      const prompt = `이미지("${img.url}") 분석. 제목: "${img.title}", 카테고리: "${img.category}". 핵심 키워드 5개(쉼표 구분). 단답형으로 출력.`;
+      const result = await model.generateContent(prompt);
+      const labels = (await result.response).text().trim();
 
-    return labels;
-  } catch (e) {
-    console.warn("AI Labeling failed, falling back to manual labels");
-    return `${category}, ${title}`;
-  }
+      // DB에 저장 (Fire and forget - 기다리지 않고 바로 결과 반환)
+      supabase.from('gallery_image_labels').upsert({ image_url: img.url, labels }, { onConflict: 'image_url' }).then();
+      
+      return { url: img.url, labels };
+    } catch (e) {
+      return { url: img.url, labels: `${img.category}, ${img.title}` };
+    }
+  });
+
+  const aiResults = await Promise.all(aiTasks);
+  aiResults.forEach(res => labelMap.set(res.url, res.labels));
+
+  return labelMap;
 }
 
-// HTML 추출 로직 (Quill)
 function extractImagesFromHtml(html: string): string[] {
   const images: string[] = [];
   if (!html) return images;
@@ -76,7 +73,6 @@ export async function getGalleryImages(page: number = 0, limit: number = 40) {
   const from = page * limit
   const to = from + limit - 1
 
-  // 1. 게시물 목록 조회
   const { data: posts, error } = await supabase
     .from('posts')
     .select('id, serial_id, title, image_url, content, created_at, author:profiles!author_id(display_name), category')
@@ -86,34 +82,32 @@ export async function getGalleryImages(page: number = 0, limit: number = 40) {
 
   if (error) return []
 
-  const items: any[] = [];
+  const allPendingImages: { url: string, title: string, category: string, post: any, index: number }[] = [];
   
-  for (const post of posts) {
+  posts.forEach(post => {
     const postImages = new Set<string>();
     if (post.image_url) postImages.add(post.image_url);
     const contentImages = extractImagesFromHtml(post.content || '');
     contentImages.forEach(url => postImages.add(url));
 
-    const imageUrls = Array.from(postImages);
-    
-    for (let index = 0; index < imageUrls.length; index++) {
-      const url = imageUrls[index];
-      
-      // [핵심] DB를 먼저 뒤지고, 없으면 Gemini 한 번만 호출!
-      const aiLabels = await getOrGenerateLabels(url, post.title, post.category || '');
+    Array.from(postImages).forEach((url, index) => {
+      allPendingImages.push({ url, title: post.title, category: post.category || '', post, index });
+    });
+  });
 
-      items.push({
-        id: `${post.id}-${index}`,
-        postId: post.id,
-        serialId: post.serial_id,
-        title: post.title,
-        imageUrl: url,
-        createdAt: post.created_at,
-        authorName: (post.author as any)?.display_name || '익명 작가',
-        labels: `${aiLabels}, ${(post.author as any)?.display_name}, ${post.title}` 
-      });
-    }
-  }
+  // [초고속 모드] 일괄 조회 및 병렬 AI 처리
+  const labelMap = await getLabelsForImages(allPendingImages);
+
+  const items = allPendingImages.map(img => ({
+    id: `${img.post.id}-${img.index}`,
+    postId: img.post.id,
+    serialId: img.post.serial_id,
+    title: img.post.title,
+    imageUrl: img.url,
+    createdAt: img.post.created_at,
+    authorName: (img.post.author as any)?.display_name || '익명 작가',
+    labels: `${labelMap.get(img.url) || ''}, ${(img.post.author as any)?.display_name}, ${img.post.title}`
+  }));
   
   return shuffleArray(items);
 }
