@@ -1,0 +1,22 @@
+.progressContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.05);
+  z-index: 10001;
+  pointer-events: none;
+}
+
+:global(.dark) .progressContainer {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.progressBar {
+  height: 100%;
+  background: linear-gradient(to right, #ff8c00, #ff4804);
+  box-shadow: 0 0 8px rgba(255, 72, 4, 0.5);
+  transition: width 0.15s ease-out;
+  border-radius: 0 2px 2px 0;
+}

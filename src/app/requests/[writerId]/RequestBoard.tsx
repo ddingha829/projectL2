@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { submitReviewRequest, getReviewRequests, replyToRequest } from "@/app/actions/requests";
+import { submitReviewRequest, getReviewRequests, replyToRequest, updateRequestStatus } from "@/app/actions/requests";
 import styles from "./RequestBoard.module.css";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
@@ -38,6 +38,25 @@ export default function RequestBoard({ writerId, writerName, color }: RequestBoa
   const fetchRequests = async () => {
     const data = await getReviewRequests(writerId);
     setRequests(data);
+  };
+
+  const handleStatusUpdate = async (requestId: string, newStatus: string) => {
+    setIsSubmitting(true);
+    const result = await updateRequestStatus(requestId, newStatus);
+    if (result.success) {
+      fetchRequests();
+    }
+    setIsSubmitting(false);
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'pending': return { text: '대기 중', color: '#94a3b8' };
+      case 'writing': return { text: '작성 중', color: '#ff8c00' };
+      case 'completed': return { text: '답변 완료', color: '#10b981' };
+      case 'canceled': return { text: '취소됨', color: '#ef4444' };
+      default: return { text: '대기 중', color: '#94a3b8' };
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -137,6 +156,27 @@ export default function RequestBoard({ writerId, writerName, color }: RequestBoa
                     <span className={styles.date}>{new Date(req.created_at).toLocaleDateString()}</span>
                   </div>
                   <p className={styles.itemContent}>{req.content}</p>
+
+                  <div className={styles.statusRow}>
+                    <span 
+                      className={styles.statusBadge} 
+                      style={{ backgroundColor: getStatusLabel(req.status).color }}
+                    >
+                      {getStatusLabel(req.status).text}
+                    </span>
+                    
+                    {isAuthorUser && !req.reply && (
+                      <div className={styles.statusActions}>
+                        <button 
+                          onClick={() => handleStatusUpdate(req.id, 'writing')}
+                          className={`${styles.statusUpdateBtn} ${req.status === 'writing' ? styles.activeStatus : ''}`}
+                          disabled={isSubmitting}
+                        >
+                          ✍️ 작성 중으로 변경
+                        </button>
+                      </div>
+                    )}
+                  </div>
 
                   {/* Writer's Reply */}
                   {req.reply ? (

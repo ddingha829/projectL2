@@ -4,13 +4,17 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { getNotifications, getUnreadCount, markAsRead, markAllAsRead } from "@/app/actions/notifications";
+import { createClient } from "@/lib/supabase/client";
+import Toast from "@/components/common/Toast";
 import styles from "./NotificationSystem.module.css";
 
 export default function NotificationSystem({ user }: { user: any }) {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<any[]>([]);
+  const [toasts, setToasts] = useState<any[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(false);
+  const supabase = createClient();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const fetchBadge = async () => {
@@ -29,10 +33,60 @@ export default function NotificationSystem({ user }: { user: any }) {
 
   useEffect(() => {
     fetchBadge();
-    // Refresh badge every 1 minute
+    
+    if (!user) return;
+
+    // Supabase Realtime setup
+    const channel = supabase
+      .channel(`realtime:notifications:${user.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'notifications',
+          filter: `receiver_id=eq.${user.id}`
+        },
+        async (payload) => {
+          // 1. Update unread count
+          setUnreadCount(prev => prev + 1);
+          
+          // 2. Fetch sender details if needed (or assume it's in payload)
+          // For Toast, we might need to fetch the sender profile
+          const { data: sender } = await supabase
+            .from('profiles')
+            .select('display_name, avatar_url')
+            .eq('id', payload.new.sender_id)
+            .single();
+
+          // 3. Add to toasts
+          const newToast = {
+            id: payload.new.id,
+            type: payload.new.type.includes('like') ? 'like' : 'comment',
+            senderName: sender?.display_name || '티끌러',
+            senderAvatar: sender?.avatar_url,
+            message: payload.new.type === 'like_post' ? '님의 게시물을 좋아합니다' : 
+                     payload.new.type === 'comment_post' ? '님이 게시물에 댓글을 남겼습니다' :
+                     payload.new.type === 'reply_comment' ? '님이 회원님의 댓글에 답글을 남겼습니다' :
+                     '님이 알림을 보냈습니다'
+          };
+          
+          setToasts(prev => [...prev, newToast]);
+          
+          // 4. Update notifications list if open
+          if (isOpen) {
+            fetchData();
+          }
+        }
+      )
+      .subscribe();
+
     const interval = setInterval(fetchBadge, 60000);
-    return () => clearInterval(interval);
-  }, [user]);
+    return () => {
+      clearInterval(interval);
+      supabase.removeChannel(channel);
+    };
+  }, [user, isOpen]);
 
   useEffect(() => {
     if (isOpen) {
@@ -177,6 +231,19 @@ export default function NotificationSystem({ user }: { user: any }) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Real-time Toasts Container */}
+      <div className={styles.toastContainer}>
+        <AnimatePresence>
+          {toasts.map(toast => (
+            <Toast 
+              key={toast.id}
+              {...toast}
+              onClose={(id) => setToasts(prev => prev.filter(t => t.id !== id))}
+            />
+          ))}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }

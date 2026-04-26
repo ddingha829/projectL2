@@ -17,6 +17,7 @@ export async function submitReviewRequest(writerId: string, content: string) {
       writer_id: writerId,
       user_id: user.id,
       content: content.trim(),
+      status: 'pending'
     })
 
   if (error) {
@@ -52,7 +53,8 @@ export async function replyToRequest(requestId: string, reply: string) {
     .from('review_requests')
     .update({
       reply: reply.trim(),
-      replied_at: new Date().toISOString()
+      replied_at: new Date().toISOString(),
+      status: 'completed'
     })
     .eq('id', requestId)
 
@@ -79,4 +81,20 @@ export async function getReviewRequests(writerId: string) {
   }
 
   return data
+}
+
+export async function updateRequestStatus(requestId: string, status: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { success: false, error: 'Not authenticated' }
+
+  const { error } = await supabase
+    .from('review_requests')
+    .update({ status })
+    .eq('id', requestId)
+
+  if (error) return { success: false, error: error.message }
+  
+  revalidatePath('/', 'layout')
+  return { success: true }
 }

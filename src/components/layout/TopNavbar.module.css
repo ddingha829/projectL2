@@ -158,6 +158,53 @@
   align-items: center;
   gap: 24px;
   justify-self: end;
+  position: relative;
+}
+
+.trendingKeywords {
+  position: absolute;
+  top: 100%;
+  right: 60px;
+  width: 420px;
+  padding: 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: fadeInDown 0.3s ease-out;
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.trendingLabel {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+.keywordList {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.keywordTag {
+  background: none;
+  border: none;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 2px 0;
+}
+
+.keywordTag:hover {
+  color: #ff4804;
+  text-decoration: underline;
 }
 
 .searchBar {

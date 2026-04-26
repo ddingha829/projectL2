@@ -10,6 +10,8 @@ import HeroToggleBtn from "./HeroToggleBtn";
 import PostManageBtns from "./PostManageBtns";
 import ContentSegmenter from "./ContentSegmenter";
 import ShareBtn from "./ShareBtn";
+import ReadingProgressBar from "@/components/common/ReadingProgressBar";
+import SubscribeBtn from "@/components/feed/SubscribeBtn";
 import { getAdminStatus } from "@/app/actions/hero";
 import styles from "./page.module.css";
 
@@ -157,7 +159,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       section: post.category,
       images: [
         {
-          url: post.image_url || '/preview.png',
+          url: `/api/og?title=${encodeURIComponent(post.title)}&author=${encodeURIComponent(post.author?.display_name || '')}&category=${encodeURIComponent(post.category)}&imageUrl=${encodeURIComponent(post.image_url || '')}`,
           width: 1200,
           height: 630,
           alt: post.title,
@@ -168,7 +170,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       card: 'summary_large_image',
       title: post.title,
       description: description,
-      images: [post.image_url || '/preview.png'],
+      images: [`/api/og?title=${encodeURIComponent(post.title)}&author=${encodeURIComponent(post.author?.display_name || '')}&category=${encodeURIComponent(post.category)}&imageUrl=${encodeURIComponent(post.image_url || '')}`],
     },
     alternates: {
       canonical: post.serial_id 
@@ -274,6 +276,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
 
   return (
     <div className={styles.container}>
+      <ReadingProgressBar />
       {/* [신규] 수동 리뷰 카드를 위한 대표 이미지 동적 주입 (좌측 사진 영역 전용) */}
       <style dangerouslySetInnerHTML={{ __html: `
         /* 1. 클래스 기반 선택자 */
@@ -420,6 +423,9 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
                 <Link href={`/?author=${post.authorProfile.id}`} className={styles.authorNameLink}>
                   {post.authorProfile.display_name}
                 </Link>
+                <div style={{ marginTop: '4px', marginBottom: '8px' }}>
+                  <SubscribeBtn authorId={post.authorProfile.id} authorName={post.authorProfile.display_name} />
+                </div>
                 <p className={styles.authorBio}>{post.authorProfile.bio || "생동감 넘치는 리뷰를 작성하는 티끌러입니다."}</p>
                 {post.authorProfile.bullets && post.authorProfile.bullets.length > 0 && (
                   <div className={styles.authorBullets}>

@@ -322,6 +322,26 @@ export default function TopNavbar({
             </button>
           </form>
 
+          {isSearchExpanded && !isMobile && (
+            <div className={styles.trendingKeywords}>
+              <span className={styles.trendingLabel}>지금 많이 찾는 리뷰:</span>
+              <div className={styles.keywordList}>
+                {['오사카여행', '범퍼침대', '독서후기', '맛집추천', '주말전시'].map(tag => (
+                  <button 
+                    key={tag} 
+                    className={styles.keywordTag}
+                    onClick={() => {
+                      router.push(`/?search=${encodeURIComponent(tag)}`);
+                      setIsSearchExpanded(false);
+                    }}
+                  >
+                    #{tag}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* PC Notification Icon */}
           {!isMobile && <NotificationSystem user={user} />}
 

@@ -1,0 +1,34 @@
+.subscribeBtn {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid #ff4804;
+  background: #fff;
+  color: #ff4804;
+  white-space: nowrap;
+}
+
+.subscribeBtn:hover {
+  background: #fff5f2;
+  transform: translateY(-1px);
+}
+
+.subscribed {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #64748b;
+}
+
+.subscribed:hover {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.subscribeBtn:disabled {
+  opacity: 0.6;
+  cursor: default;
+  transform: none;
+}

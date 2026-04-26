@@ -52,6 +52,20 @@
   flex-direction: column;
 }
 
+.groupSection {
+  margin-bottom: 32px;
+}
+
+.groupTitle {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--text-tertiary);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-light);
+  font-family: var(--font-outfit), sans-serif;
+}
+
 .item {
   display: flex;
   align-items: flex-start;
