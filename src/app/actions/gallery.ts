@@ -10,13 +10,10 @@ async function fetchImageAsPart(url: string) {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
       },
-      cache: 'no-store' // 매번 신선한 이미지를 가져와 분석
+      cache: 'no-store'
     });
     
-    if (!response.ok) {
-      console.error(`[AI-DEBUG] Fetch Failed: ${response.status} for URL: ${url}`);
-      return null;
-    }
+    if (!response.ok) return null;
     
     const buffer = await response.arrayBuffer();
     return {
@@ -26,7 +23,6 @@ async function fetchImageAsPart(url: string) {
       },
     };
   } catch (e) {
-    console.error(`[AI-DEBUG] Network Error for ${url}:`, e);
     return null;
   }
 }
@@ -35,38 +31,25 @@ async function getLabelsForImages(images: { url: string, title: string, category
   const supabase = await createClient();
   const imageUrls = images.map(img => img.url);
 
-  // 1. DB 조회 시도 (에러 발생 시 부드럽게 무시)
   let labelMap = new Map();
   try {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('gallery_image_labels')
       .select('image_url, labels')
       .in('image_url', imageUrls);
     
-    if (!error && data) {
-      data.forEach(l => labelMap.set(l.image_url, l.labels));
-    } else if (error) {
-       console.warn("[AI-DEBUG] DB Table missing or error. Please run SQL migration in Supabase dashboard.");
-    }
-  } catch (e) {
-    console.warn("[AI-DEBUG] DB access error, proceeding with AI-only mode.");
-  }
+    if (data) data.forEach(l => labelMap.set(l.image_url, l.labels));
+  } catch (e) {}
 
   const missingImages = images.filter(img => !labelMap.has(img.url));
   const apiKey = process.env.GEMINI_API_KEY;
 
-  if (!apiKey) {
-    console.warn("[AI-DEBUG] GEMINI_API_KEY is missing in .env.local!");
-    return labelMap;
-  }
-  
-  if (missingImages.length === 0) return labelMap;
+  if (!apiKey || missingImages.length === 0) return labelMap;
 
   const genAI = new GoogleGenerativeAI(apiKey);
-  // [강력 추천] 모델 명칭을 gemini-1.5-flash로 시도
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-  console.log(`[AI-DEBUG] Start analyzing ${missingImages.length} images...`);
+  
+  // [강력 처방] 모델 명어를 가장 안정적인 -latest 접미사가 붙은 것으로 변경
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
   const aiTasks = missingImages.map(async (img) => {
     try {
@@ -74,24 +57,19 @@ async function getLabelsForImages(images: { url: string, title: string, category
       let labels = "";
       
       if (imagePart) {
-        const prompt = "Analyze this image. Output exactly 5 Korean search keywords separated by commas (examples: 풍경, 여행, 야경). Do not add any other text.";
+        const prompt = "Identify 5 descriptive Korean keywords for this image content, separated by commas. Output ONLY the keywords.";
         const result = await model.generateContent([prompt, imagePart]);
         labels = (await result.response).text().trim().replace(/[.]/g, '');
       } else {
-        // 이미지 확보 실패 시 제목에서라도 키워드를 추출하여 최소한의 검색 품질 확보
         labels = `${img.category}, ${img.title.split(' ').slice(0, 3).join(', ')}`;
       }
       
-      // DB 저장 (백그라운드 처리)
-      supabase.from('gallery_image_labels').upsert({ image_url: img.url, labels }, { onConflict: 'image_url' })
-        .then(({ error }) => {
-          if (error) console.error(`[AI-DEBUG] DB Save Failed: ${error.message}`);
-          else console.log(`[AI-DEBUG] Successfully saved labels for: ${img.url.substring(0, 30)}...`);
-        });
+      // DB 저장
+      supabase.from('gallery_image_labels').upsert({ image_url: img.url, labels }, { onConflict: 'image_url' }).then();
       
       return { url: img.url, labels };
     } catch (e: any) {
-      console.error(`[AI-DEBUG] Analysis Failed for ${img.url}: ${e?.message || e}`);
+      // 404 에러 등이 날 경우를 대비한 최후의 보루
       return { url: img.url, labels: `${img.category}, ${img.title}` };
     }
   });
