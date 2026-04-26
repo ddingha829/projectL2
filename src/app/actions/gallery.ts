@@ -3,12 +3,28 @@
 import { createClient } from '@/lib/supabase/server'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
-// [고도화] 이미지를 가져와서 Gemini용 Base64 데이터로 변환
+// [정교화] 이미지 분석 실패 원인을 파악할 수 있는 정밀 Fetch 함수
 async function fetchImageAsPart(url: string) {
   try {
-    const response = await fetch(url);
-    if (!response.ok) return null;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+      },
+      next: { revalidate: 3600 }
+    });
+    
+    if (!response.ok) {
+      console.error(`[AI] Image Fetch Failed: ${response.status} ${response.statusText} for ${url}`);
+      return null;
+    }
+    
     const buffer = await response.arrayBuffer();
+    if (buffer.byteLength === 0) {
+      console.error(`[AI] Empty Image Buffer: ${url}`);
+      return null;
+    }
+
     return {
       inlineData: {
         data: Buffer.from(buffer).toString("base64"),
@@ -16,7 +32,7 @@ async function fetchImageAsPart(url: string) {
       },
     };
   } catch (e) {
-    console.error("Fetch failed for AI analysis:", url);
+    console.error(`[AI] Network Error during fetch: ${e} for ${url}`);
     return null;
   }
 }
@@ -37,6 +53,7 @@ async function getLabelsForImages(images: { url: string, title: string, category
   if (!apiKey || missingImages.length === 0) return labelMap;
 
   const genAI = new GoogleGenerativeAI(apiKey);
+  // [모델 최적화] 안정성을 위해 gemini-1.5-flash-latest 사용 권장
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   const aiTasks = missingImages.map(async (img) => {
@@ -45,21 +62,27 @@ async function getLabelsForImages(images: { url: string, title: string, category
       let result;
       
       if (imagePart) {
-        const prompt = "Analyze this image and provide 5 Korean keywords for search labels, separated by commas. (e.g. 풍경, 음식, 도시)";
+        const prompt = "Please analyze this image and output 5 Korean search keywords (comma-separated, no dots). focus on landscape, subject, or mood.";
         result = await model.generateContent([prompt, imagePart]);
       } else {
-        const prompt = `Analyze content based on Title: "${img.title}", Category: "${img.category}". Provide 5 Korean keywords for search labels, comma separated.`;
+        const prompt = `Title: "${img.title}", Category: "${img.category}". Guess 5 Korean search keywords based on this info (comma-separated).`;
         result = await model.generateContent(prompt);
       }
       
-      const labels = (await result.response).text().trim().replace(/[.]/g, ''); 
+      const response = await result.response;
+      const labels = response.text().trim().replace(/[.]/g, ''); 
       
-      // DB 영구 저장
-      supabase.from('gallery_image_labels').upsert({ image_url: img.url, labels }, { onConflict: 'image_url' }).then();
+      // DB 영구 저장 (오류 시에도 무결성 유지)
+      const { error: upsertError } = await supabase
+        .from('gallery_image_labels')
+        .upsert({ image_url: img.url, labels }, { onConflict: 'image_url' });
+      
+      if (upsertError) console.error("[AI] DB Upsert Error:", upsertError.message);
       
       return { url: img.url, labels };
-    } catch (e) {
-      console.warn("AI Labeling failed for:", img.url);
+    } catch (e: any) {
+      // 구체적인 에러 내용 출력
+      console.warn(`[AI] GEMINI Analysis Failed for ${img.url}: ${e?.message || e}`);
       return { url: img.url, labels: `${img.category}, ${img.title}` };
     }
   });
