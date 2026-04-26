@@ -93,109 +93,6 @@ export default function TopNavbar({
 
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
 
-  const ViewSettingsDropdown = ({ isPC = false }: { isPC?: boolean }) => {
-    const [vType, setVType] = useState<string>("card");
-    const mCols = searchParams.get("mCols") || "3";
-    const dCols = searchParams.get("dCols") || "4";
-    const [isOpen, setIsOpen] = useState(false);
-    const viewRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-      const queryType = searchParams.get("viewType");
-      if (queryType) {
-        setVType(queryType);
-      } else {
-        const savedType = localStorage.getItem('viewType');
-        if (savedType) setVType(savedType);
-        else setVType(isMobile ? "card" : "magazine");
-      }
-    }, [searchParams, isMobile]);
-
-    useEffect(() => {
-      function handleClickOutside(e: MouseEvent) {
-        if (viewRef.current && !viewRef.current.contains(e.target as Node)) setIsOpen(false);
-      }
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
-
-    const updateParam = (key: string, val: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set(key, val);
-      
-      // 선호도 저장 (localStorage + Cookie)
-      if (key === 'viewType') {
-        localStorage.setItem('viewType', val);
-        // 서버와 동기화하기 위해 쿠키에 저장 (1년 만료)
-        const cookieName = isMobile ? 'viewType_mobile' : 'viewType_pc';
-        document.cookie = `${cookieName}=${val}; path=/; max-age=${60*60*24*365}`;
-      }
-      
-      router.replace(`?${params.toString()}`, { scroll: false });
-      setIsOpen(false);
-    };
-
-    return (
-      <div className={styles.vDropdownWrap} ref={viewRef}>
-        <button 
-          className={`${styles.vBtn} ${isOpen ? styles.vBtnActive : ''}`} 
-          onClick={() => setIsOpen(!isOpen)} 
-          aria-label="필터 및 보기 설정"
-        >
-          {vType === 'magazine' ? (
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="3" y1="9" x2="21" y2="9"></line>
-              <line x1="9" y1="21" x2="9" y2="9"></line>
-            </svg>
-          ) : (
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="3" width="7" height="7"></rect>
-              <rect x="14" y="3" width="7" height="7"></rect>
-              <rect x="14" y="14" width="7" height="7"></rect>
-              <rect x="3" y="14" width="7" height="7"></rect>
-            </svg>
-          )}
-        </button>
-        {isOpen && (
-          <div className={`${styles.vMenu} ${styles.vMenuRight} ${!isPC ? styles.vMobileMenu : ''}`}>
-            <div className={styles.vMenuHeader}>
-              <span className={styles.vMenuTitle}>디스플레이 설정</span>
-              <button className={styles.vCloseSmall} onClick={() => setIsOpen(false)}>✕</button>
-            </div>
-            <div className={styles.vGroup}>
-              <span className={styles.vLabel}>레이아웃 모드</span>
-              <div className={styles.vOptionsGrid}>
-                <button 
-                  className={`${styles.vCardOpt} ${vType === 'card' ? styles.vActive : ''}`}
-                  onClick={() => updateParam("viewType", "card")}
-                >
-                  <div className={styles.vOptIcon}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-                  </div>
-                  <div className={styles.vOptLabel}>그리드</div>
-                </button>
-                <button 
-                  className={`${styles.vCardOpt} ${vType === 'magazine' ? styles.vActive : ''}`}
-                  onClick={() => updateParam("viewType", "magazine")}
-                >
-                  <div className={styles.vOptIcon}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                      <line x1="3" y1="9" x2="21" y2="9"></line>
-                      <line x1="9" y1="21" x2="9" y2="9"></line>
-                    </svg>
-                  </div>
-                  <div className={styles.vOptLabel}>매거진</div>
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  };
-
   return (
     <header className={styles.header}>
       <div className={styles.navContent}>
@@ -212,13 +109,6 @@ export default function TopNavbar({
             <img src="/logo.png?v=1301" alt="티끌 Ticgle" className={styles.logoImage} />
           </Link>
 
-          {/* [임시 숨김] 모바일 뷰 전환 버튼
-          <div className={styles.mobileViewToggleWrap}>
-            <ViewSettingsDropdown />
-          </div>
-          */}
-
-          {/* Mobile Notification Icon */}
           {isMobile && user && (
             <div className={styles.mobileNotifWrap}>
               <NotificationSystem user={user} />
@@ -265,7 +155,17 @@ export default function TopNavbar({
             onMouseEnter={() => setIsEditorsOpen(true)}
             onMouseLeave={() => setIsEditorsOpen(false)}
           >
-            <span className={styles.navLink}>
+            <span 
+              className={styles.navLink} 
+              style={{ cursor: 'pointer' }}
+              onClick={() => {
+                if (window.location.pathname === '/') {
+                  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                } else {
+                  router.push('/?scrollTo=bottom');
+                }
+              }}
+            >
               티끌러 <span className={styles.miniArrow}>▼</span>
             </span>
             {isEditorsOpen && (
@@ -286,11 +186,10 @@ export default function TopNavbar({
             )}
           </div>
 
-          <Link href="/gallery" className={styles.navLink}>갤러리</Link>
-          <Link href="/reviews" className={styles.navLink}>티끌 플레이스</Link>
+          <Link href="/reviews" className={styles.navLink} style={{ color: '#ff4d00', fontWeight: 'bold' }}>플레이스</Link>
+          <Link href="/gallery" className={styles.navLink} style={{ color: '#ff4d00', fontWeight: 'bold' }}>갤러리</Link>
         </nav>
 
-        {/* Right: Search + Icons + Auth + View Settings */}
         <div className={styles.rightGroup}>
           <form 
             onSubmit={handleSearch} 
@@ -343,7 +242,6 @@ export default function TopNavbar({
             </div>
           )}
 
-          {/* PC Notification Icon */}
           {!isMobile && <NotificationSystem user={user} />}
 
           <div className={styles.authWrapper}>
@@ -412,13 +310,6 @@ export default function TopNavbar({
               <Link href="/login" className={styles.loginButton}>Login</Link>
             )}
           </div>
-
-          {/* PC Only View Settings */}
-          {/* [임시 숨김] PC 뷰 전환 버튼
-          <div className={styles.pcViewToggleWrap}>
-            <ViewSettingsDropdown isPC={true} />
-          </div>
-          */}
         </div>
       </div>
     </header>

@@ -222,7 +222,7 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
           <details className={styles.sidebarDisclosure}>
             <summary className={styles.sidebarSummary}>
               <Link href="/?view=all" className={styles.summaryLink} onClick={onClose}>
-                티끌 
+                티끌 모음
               </Link>
               <span className={styles.disclosureArrow}>▼</span>
             </summary>
@@ -250,8 +250,28 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
           </details>
 
           <details className={styles.sidebarDisclosure}>
-            <summary className={styles.sidebarSummary}>
-              티끌러 <span className={styles.disclosureArrow}>▼</span>
+            <summary 
+              className={styles.sidebarSummary}
+              onClick={(e) => {
+                // 화살표 클릭이 아닌 텍스트 영역 클릭 시 스크롤 시도할 수 있도록 함
+                if ((e.target as HTMLElement).tagName !== 'SUMMARY') return;
+              }}
+            >
+              <span 
+                style={{ cursor: 'pointer' }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (window.location.pathname === '/') {
+                    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                  } else {
+                    router.push('/?scrollTo=bottom');
+                  }
+                  if (onClose) onClose();
+                }}
+              >
+                티끌러
+              </span>
+              <span className={styles.disclosureArrow}>▼</span>
             </summary>
             <div className={styles.disclosureContent}>
               {ALL_AUTHORS.map(editor => (
@@ -268,11 +288,11 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
             </div>
           </details>
 
-          <Link href="/gallery" className={styles.sidebarLink} onClick={onClose}>
-            갤러리
+          <Link href="/reviews" className={styles.sidebarLink} style={{ color: '#ff4d00', fontWeight: 'bold' }} onClick={onClose}>
+            플레이스
           </Link>
-          <Link href="/reviews" className={styles.sidebarLink} onClick={onClose}>
-            티끌 아카이브
+          <Link href="/gallery" className={styles.sidebarLink} style={{ color: '#ff4d00', fontWeight: 'bold' }} onClick={onClose}>
+            갤러리
           </Link>
         </div>
 

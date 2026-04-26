@@ -64,7 +64,7 @@ export default function GalleryPage() {
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <h1 className={styles.title}><span>티끌</span> 갤러리</h1>
+        <h1 className={styles.title}><span style={{ color: '#ff4d00' }}>티끌</span> 갤러리</h1>
         <p className={styles.subtitle}>티끌러들이 남긴 생생한 순간들을 한눈에 만나보세요.</p>
       </header>
 

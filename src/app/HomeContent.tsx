@@ -268,8 +268,16 @@ export default function HomeContent({
   }, [animationKey, categoryFilter, processedAuthorFilter, searchFilter, isViewMore, isMobile, searchParams, initialViewType]);
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: isMobile ? 'instant' : 'smooth' });
-  }, [isViewMore, currentPage, isMobile]);
+    if (searchParams.get('scrollTo') === 'bottom') {
+      // 컨텐츠 로딩 시간을 고려하여 약간의 지연 후 하단으로 스크롤
+      const timer = setTimeout(() => {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      }, 600);
+      return () => clearTimeout(timer);
+    } else {
+      window.scrollTo({ top: 0, behavior: isMobile ? 'instant' : 'smooth' });
+    }
+  }, [isViewMore, currentPage, isMobile, searchParams]);
 
   useEffect(() => {
     if (!heroPosts || heroPosts.length <= 1 || isHeroPaused) return;
