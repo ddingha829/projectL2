@@ -2,7 +2,19 @@
 
 import { createClient } from '@/lib/supabase/server'
 
-// HTML에서 이미지 URL을 추출하는 최소한의 유틸리티 (AI 의존성 제거)
+/** 카테고리 한글 매핑 테이블 */
+const CATEGORY_MAP: Record<string, string> = {
+  movie: '영화',
+  book: '책',
+  game: '게임',
+  restaurant: '맛집',
+  travel: '여행',
+  exhibition: '전시회',
+  other: '기타',
+  feature: '기획전',
+  notice: '공지사항'
+};
+
 function extractImagesSync(html: string): string[] {
   const images: string[] = [];
   if (!html) return images;
@@ -28,7 +40,6 @@ export async function getGalleryImages(page: number = 0, limit: number = 40) {
   const from = page * limit
   const to = from + limit - 1
 
-  // 1. 게시물 조회 (카테고리 포함)
   const { data: posts, error } = await supabase
     .from('posts')
     .select('id, serial_id, title, image_url, content, created_at, author:profiles!author_id(display_name), category')
@@ -43,25 +54,25 @@ export async function getGalleryImages(page: number = 0, limit: number = 40) {
     const postImages = new Set<string>();
     if (post.image_url) postImages.add(post.image_url);
     
-    // 본문 이미지 추출
     const contentImgs = extractImagesSync(post.content || '');
     contentImgs.forEach(url => postImages.add(url));
 
     const authorName = (post.author as any)?.display_name || '익명 작가';
-    const category = post.category || '기타';
+    const categoryKey = post.category || 'other';
+    const categoryName = CATEGORY_MAP[categoryKey] || categoryKey;
 
     Array.from(postImages).forEach((url, index) => {
       items.push({
         id: `${post.id}-${index}`,
         postId: post.id,
         serialId: post.serial_id,
-        title: post.title,
+        title: (post.title || '').normalize('NFC'),
         imageUrl: url,
         createdAt: post.created_at,
-        authorName: authorName,
-        category: category,
-        // 제목, 작성자, 카테고리를 합쳐서 검색용 문자열 생성
-        searchTerms: `${post.title} ${authorName} ${category}`.toLowerCase().normalize('NFC')
+        authorName: authorName.normalize('NFC'),
+        category: categoryName.normalize('NFC'),
+        // [강력 보강] 제목, 작가, 카테고리(한글/영어 모두) 통합 검색 필드
+        searchTerms: `[${categoryName}] [${categoryKey}] ${post.title} ${authorName}`.toLowerCase().normalize('NFC')
       });
     });
   }

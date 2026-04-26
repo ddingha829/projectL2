@@ -34,9 +34,9 @@ export default function GalleryPage() {
     if (!searchQuery.trim()) {
       setFilteredImages(images)
     } else {
-      // 제목, 작가, 카테고리 통합 검색
       const lowerQuery = searchQuery.trim().toLowerCase().normalize('NFC')
       const filtered = images.filter(img => {
+        // searchTerms에는 [카테고리] 제목 작성자 정보가 포함되어 있음
         const terms = (img.searchTerms || '').normalize('NFC')
         return terms.includes(lowerQuery)
       })
