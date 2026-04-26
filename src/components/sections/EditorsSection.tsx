@@ -22,7 +22,7 @@ export function EditorsSection({ editors, isMobile, allPosts = [] }: { editors: 
           })
           .sort((a, b) => b.totalViews - a.totalViews)
           .map((ed: any) => (
-            <Link key={ed.id} href={`/?author=${ed.id}`} className={styles.editorProfileCard}>
+            <Link key={ed.id} href={`/?author=${ed.display_name}`} className={styles.editorProfileCard}>
               {/* Large rounded-square profile photo */}
               <div className={styles.edPhotoWrap}>
                 <Image
