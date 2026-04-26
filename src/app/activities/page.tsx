@@ -45,6 +45,11 @@ export default async function ActivitiesPage() {
     return '방금 전';
   };
 
+  const formatContent = (content: string) => {
+    if (!content) return "";
+    return content.replace(/^\[quote:.*?:(.*?)\]\s*/, '“$1” ');
+  };
+
   return (
     <main className={styles.container}>
       <header className={styles.header}>
@@ -82,7 +87,7 @@ export default async function ActivitiesPage() {
               <p className={styles.messageText}>{getTypeLabel(n)}</p>
               {n.content_preview && (
                 <div className={styles.previewBox}>
-                  {n.content_preview}
+                  {formatContent(n.content_preview)}
                 </div>
               )}
             </div>

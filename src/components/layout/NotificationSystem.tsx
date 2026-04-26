@@ -89,6 +89,12 @@ export default function NotificationSystem({ user }: { user: any }) {
     return '방금 전';
   };
 
+  const formatContent = (content: string) => {
+    if (!content) return "";
+    // [quote:id:text] message format cleanup
+    return content.replace(/^\[quote:.*?:(.*?)\]\s*/, '“$1” ');
+  };
+
   return (
     <div className={styles.notificationWrapper} ref={dropdownRef}>
       <button 
@@ -151,7 +157,7 @@ export default function NotificationSystem({ user }: { user: any }) {
                         <span className={styles.time}>{getTimeAgo(n.created_at)}</span>
                         {n.content_preview && (
                           <div className={styles.preview}>
-                            {n.content_preview}
+                            {formatContent(n.content_preview)}
                           </div>
                         )}
                       </div>
