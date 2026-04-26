@@ -85,10 +85,10 @@ export async function labelPostImages(postId: string, title: string, category: s
 export async function extractImagesFromHtml(html: string): Promise<string[]> {
   const images: string[] = [];
   if (!html) return images;
-  const imgRegex = /<img[^>]+src="([^">]+)"/g;
+  const imgRegex = /<img[^>]+src\s*=\s*['"]([^'"]+)['"]/gi;
   let match;
   while ((match = imgRegex.exec(html)) !== null) {
-    if (match[1]) images.push(match[1]);
+    if (match[1]) images.push(match[1].trim());
   }
   return images;
 }

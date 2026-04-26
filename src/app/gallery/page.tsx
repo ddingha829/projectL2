@@ -34,11 +34,11 @@ export default function GalleryPage() {
     if (!searchQuery.trim()) {
       setFilteredImages(images)
     } else {
-      const lowerQuery = searchQuery.toLowerCase()
+      const lowerQuery = searchQuery.trim().toLowerCase()
       const filtered = images.filter(img => 
-        img.title.toLowerCase().includes(lowerQuery) ||
-        img.authorName.toLowerCase().includes(lowerQuery) ||
-        (img.labels && img.labels.toLowerCase().includes(lowerQuery))
+        (img.title?.toLowerCase().includes(lowerQuery)) ||
+        (img.authorName?.toLowerCase().includes(lowerQuery)) ||
+        (img.labels?.toLowerCase().includes(lowerQuery))
       )
       setFilteredImages(filtered)
     }
