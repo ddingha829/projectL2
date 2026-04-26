@@ -195,7 +195,7 @@ li {
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 11px;
 }
 
 ::-webkit-scrollbar-track {
