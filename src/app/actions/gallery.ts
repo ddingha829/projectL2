@@ -3,19 +3,33 @@
 import { createClient } from '@/lib/supabase/server'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
+// [고도화] 이미지를 직접 가져와서 Gemini에게 전달하는 함수
+async function fetchImageAsPart(url: string) {
+  try {
+    const response = await fetch(url);
+    const buffer = await response.arrayBuffer();
+    return {
+      inlineData: {
+        data: Buffer.from(buffer).toString("base64"),
+        mimeType: "image/jpeg", // 대부분의 업로드 이미지가 jpeg/webp/png
+      },
+    };
+  } catch (e) {
+    console.error("Failed to fetch image for AI analysis:", e);
+    return null;
+  }
+}
+
 async function getLabelsForImages(images: { url: string, title: string, category: string }[]) {
   const supabase = await createClient();
   const imageUrls = images.map(img => img.url);
 
-  // 1. DB에서 이미 존재하는 라벨들을 한꺼번에 가져옵니다 (Bulk DB Check)
   const { data: existingLabels } = await supabase
     .from('gallery_image_labels')
     .select('image_url, labels')
     .in('image_url', imageUrls);
 
   const labelMap = new Map(existingLabels?.map(l => [l.image_url, l.labels]) || []);
-  
-  // 2. DB에 없는 신규 이미지 건들만 골라냅니다
   const missingImages = images.filter(img => !labelMap.has(img.url));
 
   const apiKey = process.env.GEMINI_API_KEY;
@@ -24,20 +38,30 @@ async function getLabelsForImages(images: { url: string, title: string, category
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-  // 3. 신규 이미지들에 대해 병렬로 AI 분석 요청 (Promise.all로 동시 처리)
-  // [주의] 무료 티어 레이트 리밋을 고려하여 한 번에 너무 많은 요청은 위험할 수 있으므로 
-  // 실제 서비스 시에는 청크 단위 처리가 필요하지만, 현재 수준에선 병렬 처리가 가장 효과적입니다.
   const aiTasks = missingImages.map(async (img) => {
     try {
-      const prompt = `이미지("${img.url}") 분석. 제목: "${img.title}", 카테고리: "${img.category}". 핵심 키워드 5개(쉼표 구분). 단답형으로 출력.`;
-      const result = await model.generateContent(prompt);
-      const labels = (await result.response).text().trim();
-
-      // DB에 저장 (Fire and forget - 기다리지 않고 바로 결과 반환)
+      // [정밀도 향상] 이미지를 직접 가져옵니다
+      const imagePart = await fetchImageAsPart(img.url);
+      
+      let result;
+      if (imagePart) {
+        // 이미지를 직접 보고 분석 (High Precision)
+        const prompt = "이 사진을 보고 검색 키워드로 쓰일 핵심 한국어 단어 5개를 쉼표로 구분해서 말해줘. (예: 풍경, 음식, 도시, 사람, 가구)";
+        result = await model.generateContent([prompt, imagePart]);
+      } else {
+        // 이미지 확보 실패 시 텍스트 기반 추론 (Fallback)
+        const prompt = `제목: "${img.title}", 카테고리: "${img.category}". 이 이미지의 내용을 추측해서 핵심 키워드 5개(쉼표 구분)를 알려줘.`;
+        result = await model.generateContent(prompt);
+      }
+      
+      const labels = (await result.response).text().trim().replace(/[.]/g, ''); 
+      
+      // DB 저장 (다음번엔 0.1초 만에 로딩)
       supabase.from('gallery_image_labels').upsert({ image_url: img.url, labels }, { onConflict: 'image_url' }).then();
       
       return { url: img.url, labels };
     } catch (e) {
+      console.error("Gemini Error for:", img.url, e);
       return { url: img.url, labels: `${img.category}, ${img.title}` };
     }
   });
@@ -82,8 +106,7 @@ export async function getGalleryImages(page: number = 0, limit: number = 40) {
 
   if (error) return []
 
-  const allPendingImages: { url: string, title: string, category: string, post: any, index: number }[] = [];
-  
+  const allPendingImages: any[] = [];
   posts.forEach(post => {
     const postImages = new Set<string>();
     if (post.image_url) postImages.add(post.image_url);
@@ -95,10 +118,9 @@ export async function getGalleryImages(page: number = 0, limit: number = 40) {
     });
   });
 
-  // [초고속 모드] 일괄 조회 및 병렬 AI 처리
   const labelMap = await getLabelsForImages(allPendingImages);
 
-  const items = allPendingImages.map(img => ({
+  return allPendingImages.map(img => ({
     id: `${img.post.id}-${img.index}`,
     postId: img.post.id,
     serialId: img.post.serial_id,
@@ -108,6 +130,4 @@ export async function getGalleryImages(page: number = 0, limit: number = 40) {
     authorName: (img.post.author as any)?.display_name || '익명 작가',
     labels: `${labelMap.get(img.url) || ''}, ${(img.post.author as any)?.display_name}, ${img.post.title}`
   }));
-  
-  return shuffleArray(items);
 }
