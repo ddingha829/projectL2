@@ -144,7 +144,7 @@ export async function createPost(formData: FormData) {
     // [AI 선제 분석] 업로드된 이미지들에 대해 즉시 라벨링 수행
     const allImages = new Set<string>();
     if (imageUrl) allImages.add(imageUrl);
-    extractImagesFromHtml(content).forEach(url => allImages.add(url));
+    (await extractImagesFromHtml(content)).forEach(url => allImages.add(url));
     
     // 백그라운드에서 분석 실행 (사용자에게는 바로 성공 반환하여 체감 속도 유지)
     labelPostImages(postData.id, title, category, Array.from(allImages)).catch(err => {

@@ -186,7 +186,7 @@ export async function updatePost(postId: string, formData: FormData): Promise<{ 
     // [AI 선제 분석] 수정 시에도 새로운 이미지가 있다면 분석 수행
     const allImages = new Set<string>();
     if (imageUrl) allImages.add(imageUrl);
-    extractImagesFromHtml(content).forEach(url => allImages.add(url));
+    (await extractImagesFromHtml(content)).forEach(url => allImages.add(url));
     
     labelPostImages(dbPostId, title, category, Array.from(allImages)).catch(err => {
       console.error('[AI-Update] Background labeling failed:', err);

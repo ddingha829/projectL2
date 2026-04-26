@@ -28,11 +28,11 @@ export async function getGalleryImages(page: number = 0, limit: number = 40) {
   if (error || !posts) return []
 
   const imageUrls: string[] = [];
-  posts.forEach(post => {
+  for (const post of posts) {
     if (post.image_url) imageUrls.push(post.image_url);
-    const contentImgs = extractImagesFromHtml(post.content || '');
+    const contentImgs = await extractImagesFromHtml(post.content || '');
     contentImgs.forEach(url => imageUrls.push(url));
-  });
+  }
 
   // 2. 미리 저장된 라벨들 일괄 조회
   const { data: labelsData } = await supabase
@@ -43,10 +43,11 @@ export async function getGalleryImages(page: number = 0, limit: number = 40) {
   const labelMap = new Map(labelsData?.map(l => [l.image_url, l.labels]) || []);
 
   const items: any[] = [];
-  posts.forEach(post => {
+  for (const post of posts) {
     const postImages = new Set<string>();
     if (post.image_url) postImages.add(post.image_url);
-    extractImagesFromHtml(post.content || '').forEach(url => postImages.add(url));
+    const contentImgs = await extractImagesFromHtml(post.content || '');
+    contentImgs.forEach(url => postImages.add(url));
 
     Array.from(postImages).forEach((url, index) => {
       items.push({
@@ -61,7 +62,7 @@ export async function getGalleryImages(page: number = 0, limit: number = 40) {
         labels: `${labelMap.get(url) || ''}, ${(post.author as any)?.display_name || ''}, ${post.title}`
       });
     });
-  });
+  }
   
   return shuffleArray(items);
 }

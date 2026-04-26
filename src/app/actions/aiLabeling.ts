@@ -81,7 +81,7 @@ export async function labelPostImages(postId: string, title: string, category: s
 }
 
 /** HTML에서 이미지 URL 추출 유틸리티 */
-export function extractImagesFromHtml(html: string): string[] {
+export async function extractImagesFromHtml(html: string): Promise<string[]> {
   const images: string[] = [];
   if (!html) return images;
   const imgRegex = /<img[^>]+src="([^">]+)"/g;
