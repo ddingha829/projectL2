@@ -2917,3 +2917,48 @@
     background: var(--bg-secondary) !important;
   }
 }
+
+/* Mobile Hover Animation Reset */
+@media (max-width: 768px) {
+  .card:hover, 
+  .magListItem:hover, 
+  .editorProfileCard:hover, 
+  .miniReviewCard:hover, 
+  .newMainLargeCard:hover, 
+  .postCardC:hover, 
+  .backToMainBtn:hover, 
+  .backToMainBtnInline:hover, 
+  .pageBtn:hover, 
+  .pageBtnSmall:hover, 
+  .slideNavBtn:hover, 
+  .featureBanner:hover, 
+  .viewAllLink:hover, 
+  .viewMoreBtn:hover, 
+  .viewMoreBtnInline:hover,
+  .actionBtn:hover {
+    transform: none !important;
+    box-shadow: none !important;
+    background-color: transparent !important;
+  }
+
+  /* Reset image scales */
+  .featureImage, 
+  .posterImage, 
+  .magThumb, 
+  .newMainLargeImg, 
+  .edPhoto, 
+  .cPhoto,
+  .bannerImage {
+    transition: none !important;
+  }
+
+  .featureBanner:hover .featureImage,
+  .magazineCard:hover .posterImage,
+  .magListItem:hover .magThumb,
+  .newMainLargeCard:hover .newMainLargeImg,
+  .editorProfileCard:hover .edPhoto,
+  .postCardC:hover .cPhoto,
+  .card:hover .bannerImage {
+    transform: none !important;
+  }
+}

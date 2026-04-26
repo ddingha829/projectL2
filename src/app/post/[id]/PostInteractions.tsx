@@ -357,72 +357,84 @@ export default function PostInteractions({
         </div>
 
         <div className={styles.commentList}>
-          {comments.length > 0 ? comments.map((c: any) => {
-            const isAuthor = (c.user_id === authorId) || (c.user?.id === authorId);
-            const dateStr = new Date(c.created_at).toLocaleString('ko-KR', {
-              year: 'numeric',
-              month: '2-digit',
-              day: '2-digit',
-              hour: '2-digit',
-              minute: '2-digit',
-              hour12: false
+          {comments.length > 0 ? (() => {
+            // Root parents
+            const parents = comments.filter(c => !c.parent_id);
+            const childrenMap: Record<string, any[]> = {};
+            
+            // Map each comment to its root parent for 1-level nesting UI
+            comments.forEach(c => {
+              if (c.parent_id) {
+                let rootId = c.parent_id;
+                let safety = 0;
+                while (safety < 5) {
+                  const parentComment = comments.find(pc => pc.id === rootId);
+                  if (parentComment && parentComment.parent_id) {
+                    rootId = parentComment.parent_id;
+                  } else {
+                    break;
+                  }
+                  safety++;
+                }
+                if (!childrenMap[rootId]) childrenMap[rootId] = [];
+                childrenMap[rootId].push(c);
+              }
             });
-            return (
-              <div key={c.id} id={`comment-${c.id}`} className={`${styles.comment} ${isAuthor ? styles.authorComment : ""}`}>
-                <div className={styles.commentHeader}>
-                  <div className={styles.commentUserSide}>
-                    <div className={styles.commentAvatar}>
-                      {c.user?.avatar_url ? (
-                        <img src={c.user.avatar_url} alt={c.user.display_name} />
+
+            return parents.map((p: any) => {
+              const replies = childrenMap[p.id] || [];
+              const isAuthor = (p.user_id === authorId) || (p.user?.id === authorId);
+              const dateStr = new Date(p.created_at).toLocaleString('ko-KR', {
+                year: 'numeric', month: '2-digit', day: '2-digit', 
+                hour: '2-digit', minute: '2-digit', hour12: false
+              });
+
+              return (
+                <div key={p.id} className={styles.commentGroup}>
+                  <div id={`comment-${p.id}`} className={`${styles.comment} ${isAuthor ? styles.authorComment : ""}`}>
+                    <div className={styles.commentHeader}>
+                      <div className={styles.commentUserSide}>
+                        <div className={styles.commentAvatar}>
+                          {p.user?.avatar_url ? (
+                            <img src={p.user.avatar_url} alt={p.user.display_name} />
+                          ) : (
+                            <div className={styles.avatarPlaceholder}>👤</div>
+                          )}
+                        </div>
+                        <div className={styles.commentUserInfoRow}>
+                          <span className={styles.commentNickname}>{p.user?.display_name || p.user?.name || '익명 작가'}</span>
+                          {isAuthor && <span className={styles.writerBadge}>티끌러</span>}
+                        </div>
+                      </div>
+                      <div className={styles.commentMetaRight}>
+                        <span className={styles.commentDate}>{dateStr}</span>
+                        {(user?.id === p.user_id || isAdmin) && (
+                          <div className={styles.commentActions}>
+                            <button className={styles.actionIconBtn} onClick={() => startEditing(p.id, p.content)} title="수정">
+                              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                            </button>
+                            <button className={`${styles.actionIconBtn} ${styles.deleteBtn}`} onClick={() => handleDeleteComment(p.id)} title="삭제">
+                              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className={styles.commentBody}>
+                      {editingCommentId === p.id ? (
+                        <div className={styles.editArea}>
+                          <textarea className={styles.editInput} value={editContent} onChange={(e) => setEditContent(e.target.value)} />
+                          <div className={styles.editActions}>
+                            <button className={styles.saveBtn} onClick={() => handleUpdateComment(p.id)}>저장</button>
+                            <button className={styles.cancelBtn} onClick={() => setEditingCommentId(null)}>취소</button>
+                          </div>
+                        </div>
                       ) : (
-                        <div className={styles.avatarPlaceholder}>👤</div>
-                      )}
-                    </div>
-                    <div className={styles.commentUserInfoRow}>
-                      <span className={styles.commentNickname}>{c.user?.display_name || c.user?.name || '익명 작가'}</span>
-                      {isAuthor && <span className={styles.writerBadge}>티끌러</span>}
-                    </div>
-                  </div>
-                  <div className={styles.commentMetaRight}>
-                    <span className={styles.commentDate}>{dateStr}</span>
-                    
-                    {/* 수정/삭제 버튼 (본인 또는 운영자) */}
-                    {(user?.id === c.user_id || isAdmin) && (
-                      <div className={styles.commentActions}>
-                        <button className={styles.actionIconBtn} onClick={() => startEditing(c.id, c.content)} title="수정">
-                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                        </button>
-                        <button className={`${styles.actionIconBtn} ${styles.deleteBtn}`} onClick={() => handleDeleteComment(c.id)} title="삭제">
-                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div className={styles.commentBody}>
-                  {editingCommentId === c.id ? (
-                    <div className={styles.editArea}>
-                      <textarea 
-                        className={styles.editInput} 
-                        value={editContent} 
-                        onChange={(e) => setEditContent(e.target.value)}
-                      />
-                      <div className={styles.editActions}>
-                        <button className={styles.saveBtn} onClick={() => handleUpdateComment(c.id)}>저장</button>
-                        <button className={styles.cancelBtn} onClick={() => setEditingCommentId(null)}>취소</button>
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      {c.content.startsWith('[quote:') ? (() => {
-                        const match = c.content.match(/^\[quote:(.*?):(.*?)\] (.*)$/);
-                        if (match) {
-                          return (
+                        p.content.startsWith('[quote:') ? (() => {
+                          const match = p.content.match(/^\[quote:(.*?):(.*?)\] (.*)$/);
+                          if (match) return (
                             <>
-                              <div 
-                                className={styles.commentQuote}
-                                onClick={() => handleJump(match[1])}
-                              >
+                              <div className={styles.commentQuote} onClick={() => handleJump(match[1])}>
                                 <span className={styles.quoteIcon}>❝</span>
                                 <span className={styles.quoteText}>{match[2]}</span>
                                 <span className={styles.jumpBadge}>이동</span>
@@ -430,37 +442,107 @@ export default function PostInteractions({
                               <p className={styles.commentText}>{match[3]}</p>
                             </>
                           );
-                        }
-                        return <p className={styles.commentText}>{c.content}</p>;
-                      })() : (
-                        <p className={styles.commentText}>{c.content}</p>
+                          return <p className={styles.commentText}>{p.content}</p>;
+                        })() : <p className={styles.commentText}>{p.content}</p>
                       )}
-                    </>
+                    </div>
+                    <div className={styles.commentFooter}>
+                      <button className={`${styles.commentActionBtn} ${userCommentLikes.includes(p.id) ? styles.commentLiked : ''}`} onClick={() => handleLikeComment(p.id)}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill={userCommentLikes.includes(p.id) ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5">
+                          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                        좋아요 {commentLikes[p.id] || 0}
+                      </button>
+                      <button className={styles.commentActionBtn} onClick={() => { setReplyTo({ id: p.id, name: p.user?.display_name || '익명' }); document.getElementById('comment-form')?.scrollIntoView({ behavior: 'smooth' }); }}>
+                        답글 달기
+                      </button>
+                    </div>
+                  </div>
+
+                  {replies.length > 0 && (
+                    <div className={styles.repliesArea}>
+                      {replies.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()).map((cp: any) => {
+                        const isRepAuthor = (cp.user_id === authorId) || (cp.user?.id === authorId);
+                        const repDateStr = new Date(cp.created_at).toLocaleString('ko-KR', {
+                          year: 'numeric', month: '2-digit', day: '2-digit', 
+                          hour: '2-digit', minute: '2-digit', hour12: false
+                        });
+                        return (
+                          <div key={cp.id} id={`comment-${cp.id}`} className={`${styles.comment} ${styles.replyComment} ${isRepAuthor ? styles.authorComment : ""}`}>
+                            <div className={styles.replyArrow}>└</div>
+                            <div className={styles.replyContent}>
+                              <div className={styles.commentHeader}>
+                                <div className={styles.commentUserSide}>
+                                  <div className={styles.commentAvatar}>
+                                    {cp.user?.avatar_url ? (
+                                      <img src={cp.user.avatar_url} alt={cp.user.display_name} className={styles.smallAvatar} />
+                                    ) : (
+                                      <div className={`${styles.avatarPlaceholder} ${styles.smallAvatarPlaceholder}`}>👤</div>
+                                    )}
+                                  </div>
+                                  <div className={styles.commentUserInfoRow}>
+                                    <span className={styles.commentNickname}>{cp.user?.display_name || cp.user?.name || '익명 작가'}</span>
+                                    {isRepAuthor && <span className={styles.writerBadge}>티끌러</span>}
+                                  </div>
+                                </div>
+                                <div className={styles.commentMetaRight}>
+                                  <span className={styles.commentDate}>{repDateStr}</span>
+                                  {(user?.id === cp.user_id || isAdmin) && (
+                                    <div className={styles.commentActions}>
+                                      <button className={styles.actionIconBtn} onClick={() => startEditing(cp.id, cp.content)} title="수정">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                      </button>
+                                      <button className={`${styles.actionIconBtn} ${styles.deleteBtn}`} onClick={() => handleDeleteComment(cp.id)} title="삭제">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                      </button>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                              <div className={styles.commentBody}>
+                                {editingCommentId === cp.id ? (
+                                  <div className={styles.editArea}>
+                                    <textarea className={styles.editInput} value={editContent} onChange={(e) => setEditContent(e.target.value)} />
+                                    <div className={styles.editActions}>
+                                      <button className={styles.saveBtn} onClick={() => handleUpdateComment(cp.id)}>저장</button>
+                                      <button className={styles.cancelBtn} onClick={() => setEditingCommentId(null)}>취소</button>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  cp.content.startsWith('[quote:') ? (() => {
+                                    const match = cp.content.match(/^\[quote:(.*?):(.*?)\] (.*)$/);
+                                    if (match) return (
+                                      <>
+                                        <div className={styles.commentQuote} onClick={() => handleJump(match[1])}>
+                                          <span className={styles.quoteIcon}>❝</span>
+                                          <span className={styles.quoteText}>{match[2]}</span>
+                                          <span className={styles.jumpBadge}>이동</span>
+                                        </div>
+                                        <p className={styles.commentText}>{match[3]}</p>
+                                      </>
+                                    );
+                                    return <p className={styles.commentText}>{cp.content}</p>;
+                                  })() : <p className={styles.commentText}>{cp.content}</p>
+                                )}
+                              </div>
+                              <div className={styles.commentFooter}>
+                                <button className={`${styles.commentActionBtn} ${userCommentLikes.includes(cp.id) ? styles.commentLiked : ''}`} onClick={() => handleLikeComment(cp.id)}>
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill={userCommentLikes.includes(cp.id) ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                  </svg>
+                                  좋아요 {commentLikes[cp.id] || 0}
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
                   )}
                 </div>
-                <div className={styles.commentFooter}>
-                  <button 
-                    className={`${styles.commentActionBtn} ${userCommentLikes.includes(c.id) ? styles.commentLiked : ''}`}
-                    onClick={() => handleLikeComment(c.id)}
-                  >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill={userCommentLikes.includes(c.id) ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5">
-                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                    </svg>
-                    좋아요 {commentLikes[c.id] || 0}
-                  </button>
-                  <button 
-                    className={styles.commentActionBtn}
-                    onClick={() => {
-                      setReplyTo({ id: c.id, name: c.user?.display_name || '익명' });
-                      document.getElementById('comment-form')?.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                  >
-                    답글 달기
-                  </button>
-                </div>
-              </div>
-            );
-          }) : (
+              );
+            });
+          })() : (
              <p style={{ color: 'var(--text-muted)' }}>첫 번째 댓글을 남겨보세요!</p>
           )}
         </div>

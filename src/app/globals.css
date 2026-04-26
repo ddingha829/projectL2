@@ -186,6 +186,13 @@ li {
   box-shadow: var(--shadow-premium);
 }
 
+@media (max-width: 768px) {
+  .float-shadow:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;

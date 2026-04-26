@@ -1810,3 +1810,128 @@
     font-size: 1rem !important;
   }
 }
+
+/* Threaded Comments Styles */
+.commentGroup {
+  margin-bottom: 24px;
+}
+
+.repliesArea {
+  margin-top: 12px;
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-left: 2px solid var(--border-light);
+  padding-left: 16px;
+}
+
+.replyComment {
+  position: relative;
+  background: var(--bg-primary) !important;
+  border-radius: 12px !important;
+  padding: 12px 16px !important;
+  border: 1px solid var(--border-light) !important;
+  margin-bottom: 0 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03) !important;
+}
+
+.replyArrow {
+  position: absolute;
+  left: -22px;
+  top: 14px;
+  color: var(--border-medium);
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.replyContent {
+  width: 100%;
+}
+
+.smallAvatar {
+  width: 32px !important;
+  height: 32px !important;
+}
+
+.smallAvatarPlaceholder {
+  width: 32px !important;
+  height: 32px !important;
+  font-size: 0.8rem !important;
+}
+
+@media (max-width: 768px) {
+  .repliesArea {
+    margin-left: 10px;
+    padding-left: 12px;
+  }
+  .replyArrow {
+    left: -18px;
+  }
+}
+
+.commentFooter {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-left: 36px;
+  margin-top: 4px;
+}
+
+.commentActionBtn {
+  background: none;
+  border: none;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.commentActionBtn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.commentLiked {
+  color: #ff4804;
+}
+
+.commentLiked:hover {
+  color: #c83a02;
+}
+
+.replyNotice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--bg-tertiary);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  border-left: 4px solid var(--accent-primary);
+}
+
+.replyNotice span {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+}
+
+.replyNotice button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.8rem;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.replyNotice button:hover {
+  opacity: 1;
+}

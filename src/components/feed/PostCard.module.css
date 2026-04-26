@@ -193,4 +193,11 @@
     padding: 4px 8px;
     font-size: 0.85rem;
   }
+  .card:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+  .card:hover .bannerImage {
+    transform: none !important;
+  }
 }
