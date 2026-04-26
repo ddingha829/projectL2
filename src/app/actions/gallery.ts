@@ -3,19 +3,20 @@
 import { createClient } from '@/lib/supabase/server'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
-// [고도화] 이미지를 직접 가져와서 Gemini에게 전달하는 함수
+// [고도화] 이미지를 가져와서 Gemini용 Base64 데이터로 변환
 async function fetchImageAsPart(url: string) {
   try {
     const response = await fetch(url);
+    if (!response.ok) return null;
     const buffer = await response.arrayBuffer();
     return {
       inlineData: {
         data: Buffer.from(buffer).toString("base64"),
-        mimeType: "image/jpeg", // 대부분의 업로드 이미지가 jpeg/webp/png
+        mimeType: "image/jpeg",
       },
     };
   } catch (e) {
-    console.error("Failed to fetch image for AI analysis:", e);
+    console.error("Fetch failed for AI analysis:", url);
     return null;
   }
 }
@@ -33,42 +34,38 @@ async function getLabelsForImages(images: { url: string, title: string, category
   const missingImages = images.filter(img => !labelMap.has(img.url));
 
   const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) return labelMap;
+  if (!apiKey || missingImages.length === 0) return labelMap;
 
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   const aiTasks = missingImages.map(async (img) => {
     try {
-      // [정밀도 향상] 이미지를 직접 가져옵니다
       const imagePart = await fetchImageAsPart(img.url);
-      
       let result;
+      
       if (imagePart) {
-        // 이미지를 직접 보고 분석 (High Precision)
-        const prompt = "이 사진을 보고 검색 키워드로 쓰일 핵심 한국어 단어 5개를 쉼표로 구분해서 말해줘. (예: 풍경, 음식, 도시, 사람, 가구)";
+        const prompt = "Analyze this image and provide 5 Korean keywords for search labels, separated by commas. (e.g. 풍경, 음식, 도시)";
         result = await model.generateContent([prompt, imagePart]);
       } else {
-        // 이미지 확보 실패 시 텍스트 기반 추론 (Fallback)
-        const prompt = `제목: "${img.title}", 카테고리: "${img.category}". 이 이미지의 내용을 추측해서 핵심 키워드 5개(쉼표 구분)를 알려줘.`;
+        const prompt = `Analyze content based on Title: "${img.title}", Category: "${img.category}". Provide 5 Korean keywords for search labels, comma separated.`;
         result = await model.generateContent(prompt);
       }
       
       const labels = (await result.response).text().trim().replace(/[.]/g, ''); 
       
-      // DB 저장 (다음번엔 0.1초 만에 로딩)
+      // DB 영구 저장
       supabase.from('gallery_image_labels').upsert({ image_url: img.url, labels }, { onConflict: 'image_url' }).then();
       
       return { url: img.url, labels };
     } catch (e) {
-      console.error("Gemini Error for:", img.url, e);
+      console.warn("AI Labeling failed for:", img.url);
       return { url: img.url, labels: `${img.category}, ${img.title}` };
     }
   });
 
   const aiResults = await Promise.all(aiTasks);
   aiResults.forEach(res => labelMap.set(res.url, res.labels));
-
   return labelMap;
 }
 
@@ -120,7 +117,7 @@ export async function getGalleryImages(page: number = 0, limit: number = 40) {
 
   const labelMap = await getLabelsForImages(allPendingImages);
 
-  return allPendingImages.map(img => ({
+  const items = allPendingImages.map(img => ({
     id: `${img.post.id}-${img.index}`,
     postId: img.post.id,
     serialId: img.post.serial_id,
@@ -130,4 +127,6 @@ export async function getGalleryImages(page: number = 0, limit: number = 40) {
     authorName: (img.post.author as any)?.display_name || '익명 작가',
     labels: `${labelMap.get(img.url) || ''}, ${(img.post.author as any)?.display_name}, ${img.post.title}`
   }));
+
+  return shuffleArray(items);
 }
