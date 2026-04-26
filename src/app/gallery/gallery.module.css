@@ -43,6 +43,9 @@
 }
 
 @media (max-width: 768px) {
+  .container {
+    padding: 40px 14px;
+  }
   .galleryGrid {
     column-count: 2;
     column-gap: 10px;
@@ -88,7 +91,6 @@
   width: 100%;
   height: auto;
   display: block;
-  vertical-align: bottom; /* Removes pixel-level gap at bottom of image */
 }
 
 .overlay {
