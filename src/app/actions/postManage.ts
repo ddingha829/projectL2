@@ -2,7 +2,6 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
-import { labelPostImages, extractImagesFromHtml } from './aiLabeling'
 
 async function getProfileAndPost(postId: string) {
   const supabase = await createClient()
@@ -183,14 +182,6 @@ export async function updatePost(postId: string, formData: FormData): Promise<{ 
       }
     }
 
-    // [AI 선제 분석] 수정 시에도 새로운 이미지가 있다면 분석 수행
-    const allImages = new Set<string>();
-    if (imageUrl) allImages.add(imageUrl);
-    (await extractImagesFromHtml(content)).forEach(url => allImages.add(url));
-    
-    labelPostImages(dbPostId, title, category, Array.from(allImages)).catch(err => {
-      console.error('[AI-Update] Background labeling failed:', err);
-    });
 
     // 수정한 글의 숫자 ID(serial_id)가 있으면 그 주소로, 없으면 UUID 주소로 이동
     const targetId = updatedData.serial_id ? String(updatedData.serial_id) : `db-${updatedData.id}`

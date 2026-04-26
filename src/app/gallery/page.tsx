@@ -34,16 +34,11 @@ export default function GalleryPage() {
     if (!searchQuery.trim()) {
       setFilteredImages(images)
     } else {
-      // 한글 자소 분리 현상 방지를 위해 NFC 정규화 적용
+      // 제목, 작가, 카테고리 통합 검색
       const lowerQuery = searchQuery.trim().toLowerCase().normalize('NFC')
       const filtered = images.filter(img => {
-        const title = (img.title || '').toLowerCase().normalize('NFC')
-        const author = (img.authorName || '').toLowerCase().normalize('NFC')
-        const labels = (img.labels || '').toLowerCase().normalize('NFC')
-        
-        return title.includes(lowerQuery) || 
-               author.includes(lowerQuery) || 
-               labels.includes(lowerQuery)
+        const terms = (img.searchTerms || '').normalize('NFC')
+        return terms.includes(lowerQuery)
       })
       setFilteredImages(filtered)
     }
@@ -78,7 +73,7 @@ export default function GalleryPage() {
           <span className={styles.searchIcon}>🔍</span>
           <input 
             type="text" 
-            placeholder="제목, 작가 또는 키워드 검색 (예: 풍경, 여행...)" 
+            placeholder="제목, 작가 또는 카테고리 검색 (예: 일상, 음식...)" 
             className={styles.searchInput}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}

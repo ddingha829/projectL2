@@ -3,7 +3,6 @@
 import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
-import { labelPostImages, extractImagesFromHtml } from '@/app/actions/aiLabeling';
 
 export async function createPost(formData: FormData) {
   const supabase = await createClient();
@@ -140,16 +139,6 @@ export async function createPost(formData: FormData) {
         if (insError) console.error('Archive sync insertion error:', insError);
       }
     }
-
-    // [AI 선제 분석] 업로드된 이미지들에 대해 즉시 라벨링 수행
-    const allImages = new Set<string>();
-    if (imageUrl) allImages.add(imageUrl);
-    (await extractImagesFromHtml(content)).forEach(url => allImages.add(url));
-    
-    // 백그라운드에서 분석 실행 (사용자에게는 바로 성공 반환하여 체감 속도 유지)
-    labelPostImages(postData.id, title, category, Array.from(allImages)).catch(err => {
-      console.error('[AI-Action] Background labeling failed:', err);
-    });
 
     await supabase.from('drafts').delete().eq('user_id', user.id);
     revalidatePath('/', 'layout');
