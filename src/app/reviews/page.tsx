@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import styles from "./page.module.css";
 import Link from 'next/link';
 import { useSearchParams } from "next/navigation";
+import layoutStyles from '@/app/layout.module.css';
 import 'leaflet/dist/leaflet.css';
 
 function ReviewArchiveContent() {
@@ -273,156 +274,158 @@ function ReviewArchiveContent() {
   }, []);
 
   return (
-    <div className={styles.container}>
-      <header className={styles.header}>
-        <h1 className={styles.title}><span style={{ color: '#ff4804' }}>티끌</span> 플레이스</h1>
-        <p className={styles.subtitle}>티끌러와 독자가 함께 완성하는 지도입니다.</p>
-        <div className={styles.mapContainer}>
-          <div ref={mapRef} className={styles.mapCanvas} />
-          {!isLoading && subjects.length > 0 && (
-            <div className={styles.mapOverlayText}>
-              🗺️ <strong>{subjects.filter(s => s.reviews.some((r:any) => r.lat)).length}</strong>개의 장소 핀이 꽂혀 있습니다.
-            </div>
-          )}
-        </div>
-        <form 
-          className={styles.searchBox} 
-          onSubmit={(e) => e.preventDefault()}
-        >
-          <input 
-            type="search" /* type "search" instead of "text" for better mobile keyboard */
-            placeholder="작품 제목으로 검색..." 
-            className={styles.searchInput}
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              if (expandedId) setExpandedId(null);
-            }}
-          />
-        </form>
-      </header>
+    <div className={layoutStyles.centeredContent}>
+      <div className={styles.container}>
+        <header className={styles.header}>
+          <h1 className={styles.title}><span style={{ color: '#ff4804' }}>티끌</span> 플레이스</h1>
+          <p className={styles.subtitle}>티끌러와 독자가 함께 완성하는 지도입니다.</p>
+          <div className={styles.mapContainer}>
+            <div ref={mapRef} className={styles.mapCanvas} />
+            {!isLoading && subjects.length > 0 && (
+              <div className={styles.mapOverlayText}>
+                🗺️ <strong>{subjects.filter(s => s.reviews.some((r:any) => r.lat)).length}</strong>개의 장소 핀이 꽂혀 있습니다.
+              </div>
+            )}
+          </div>
+          <form 
+            className={styles.searchBox} 
+            onSubmit={(e) => e.preventDefault()}
+          >
+            <input 
+              type="search" /* type "search" instead of "text" for better mobile keyboard */
+              placeholder="작품 제목으로 검색..." 
+              className={styles.searchInput}
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                if (expandedId) setExpandedId(null);
+              }}
+            />
+          </form>
+        </header>
 
-      {isLoading ? (
-        <div className={styles.loading}>아카이브를 불러오는 중입니다...</div>
-      ) : (
-        <div className={styles.archiveWrapper}>
-          {activeSubject && (
-            <div className={styles.activeSection}>
-              <div className={`${styles.subjectCard} ${styles.activeCard}`}>
-                <div className={styles.subjectMain}>
-                  <div className={styles.subjectTop} onClick={() => { setExpandedId(null); setSearch(''); }}>
-                    <h3 className={styles.subjectName}>{activeSubject.subject}</h3>
-                    <div className={styles.metaWrapper}>
-                      <div className={styles.subjectMeta}>
-                        <div className={styles.avgBadgeLarge}>{activeSubject.avgRating}</div>
-                        <span className={styles.reviewCount}>리뷰 {activeSubject.reviews.length + activeSubject.userReviews.length}개</span>
-                      </div>
-                      <span className={styles.expandIcon}>▴</span>
-                    </div>
-                  </div>
-                  <div className={styles.infographicBox}>
-                    <div className={styles.infoTitle}>티끌러 vs 유저 평점</div>
-                    <div className={styles.comparisonGrid}>
-                      <div className={styles.compItem}>
-                        <div className={styles.compLabel}>티끌러 평점</div>
-                        <div className={styles.compValue} style={{ color: '#204bb8' }}>{activeSubject.editorAvg}</div>
-                        <div className={styles.compBarBg}><div className={styles.compBarFill} style={{ width: `${Number(activeSubject.editorAvg) * 20}%`, backgroundColor: '#204bb8' }} /></div>
-                      </div>
-                      <div className={styles.vsIcon}>VS</div>
-                      <div className={styles.compItem}>
-                        <div className={styles.compLabel}>유저 평점</div>
-                        <div className={styles.compValue} style={{ color: '#666' }}>{activeSubject.userAvg}</div>
-                        <div className={styles.compBarBg}><div className={styles.compBarFill} style={{ width: `${Number(activeSubject.userAvg) * 20}%`, backgroundColor: '#666' }} /></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className={styles.reviewList}>
-                  <div className={styles.reviewDivider}>티끌러 평점</div>
-                  {activeSubject.reviews.map((rev: any) => (
-                    <div key={rev.id} className={styles.reviewItem}>
-                      <div className={styles.reviewHeader}>
-                        <div className={styles.reviewAuthorGroup}>
-                          <div className={styles.authorAvatar}>{rev.author?.avatar_url ? <img src={rev.author.avatar_url} alt="" /> : "👤"}</div>
-                          <span className={styles.authorName}>{rev.author?.display_name || "익명 티끌러"}</span>
+        {isLoading ? (
+          <div className={styles.loading}>아카이브를 불러오는 중입니다...</div>
+        ) : (
+          <div className={styles.archiveWrapper}>
+            {activeSubject && (
+              <div className={styles.activeSection}>
+                <div className={`${styles.subjectCard} ${styles.activeCard}`}>
+                  <div className={styles.subjectMain}>
+                    <div className={styles.subjectTop} onClick={() => { setExpandedId(null); setSearch(''); }}>
+                      <h3 className={styles.subjectName}>{activeSubject.subject}</h3>
+                      <div className={styles.metaWrapper}>
+                        <div className={styles.subjectMeta}>
+                          <div className={styles.avgBadgeLarge}>{activeSubject.avgRating}</div>
+                          <span className={styles.reviewCount}>리뷰 {activeSubject.reviews.length + activeSubject.userReviews.length}개</span>
                         </div>
-                        <div className={styles.ratingBox}>
-                          <div className={styles.stars}>
-                            {[1, 2, 3, 4, 5].map(i => {
-                              const fill = Math.min(Math.max(rev.review_rating - (i - 1), 0), 1) * 100;
-                              return (
-                                <span key={i} className={styles.starWrapper}>
-                                  <span className={styles.starBase}>★</span>
-                                  <span className={styles.starFill} style={{ width: `${fill}%` }}>★</span>
-                                </span>
-                              );
-                            })}
+                        <span className={styles.expandIcon}>▴</span>
+                      </div>
+                    </div>
+                    <div className={styles.infographicBox}>
+                      <div className={styles.infoTitle}>티끌러 vs 유저 평점</div>
+                      <div className={styles.comparisonGrid}>
+                        <div className={styles.compItem}>
+                          <div className={styles.compLabel}>티끌러 평점</div>
+                          <div className={styles.compValue} style={{ color: '#204bb8' }}>{activeSubject.editorAvg}</div>
+                          <div className={styles.compBarBg}><div className={styles.compBarFill} style={{ width: `${Number(activeSubject.editorAvg) * 20}%`, backgroundColor: '#204bb8' }} /></div>
+                        </div>
+                        <div className={styles.vsIcon}>VS</div>
+                        <div className={styles.compItem}>
+                          <div className={styles.compLabel}>유저 평점</div>
+                          <div className={styles.compValue} style={{ color: '#666' }}>{activeSubject.userAvg}</div>
+                          <div className={styles.compBarBg}><div className={styles.compBarFill} style={{ width: `${Number(activeSubject.userAvg) * 20}%`, backgroundColor: '#666' }} /></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className={styles.reviewList}>
+                    <div className={styles.reviewDivider}>티끌러 평점</div>
+                    {activeSubject.reviews.map((rev: any) => (
+                      <div key={rev.id} className={styles.reviewItem}>
+                        <div className={styles.reviewHeader}>
+                          <div className={styles.reviewAuthorGroup}>
+                            <div className={styles.authorAvatar}>{rev.author?.avatar_url ? <img src={rev.author.avatar_url} alt="" /> : "👤"}</div>
+                            <span className={styles.authorName}>{rev.author?.display_name || "익명 티끌러"}</span>
                           </div>
-                          <span className={styles.score}>{rev.review_rating}</span>
-                        </div>
-                      </div>
-                      <p className={styles.reviewText}>{rev.review_comment}</p>
-                      <div className={styles.reviewFooter}>
-                        <span className={styles.date}>{new Date(rev.created_at).toLocaleDateString()}</span>
-                        <Link href={`/post/db-${rev.post_id}`} className={styles.postLink}>원문 티끌 보기 →</Link>
-                      </div>
-                    </div>
-                  ))}
-
-                  {activeSubject.userReviews.length > 0 && (
-                    <>
-                      <div className={styles.reviewDivider}>유저 평점</div>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
-                        {activeSubject.userReviews.map((ur: any) => (
-                          <div key={ur.id} className={`${styles.reviewItem} ${styles.userReviewItem}`}>
-                            <div className={styles.reviewHeader}>
-                              <div className={styles.reviewAuthorGroup}>
-                                <div className={styles.userAvatarSmall}>👤</div>
-                                <span className={styles.userReviewAuthor}>{ur.user?.display_name || "익명 독자"}</span>
-                              </div>
-                              <div className={styles.userReviewScore}>★ {ur.rating}</div>
+                          <div className={styles.ratingBox}>
+                            <div className={styles.stars}>
+                              {[1, 2, 3, 4, 5].map(i => {
+                                const fill = Math.min(Math.max(rev.review_rating - (i - 1), 0), 1) * 100;
+                                return (
+                                  <span key={i} className={styles.starWrapper}>
+                                    <span className={styles.starBase}>★</span>
+                                    <span className={styles.starFill} style={{ width: `${fill}%` }}>★</span>
+                                  </span>
+                                );
+                              })}
                             </div>
-                            <p className={styles.userReviewText}>{ur.comment}</p>
-                            <div className={styles.userReviewDay}>{new Date(ur.created_at).toLocaleDateString()}</div>
+                            <span className={styles.score}>{rev.review_rating}</span>
                           </div>
-                        ))}
+                        </div>
+                        <p className={styles.reviewText}>{rev.review_comment}</p>
+                        <div className={styles.reviewFooter}>
+                          <span className={styles.date}>{new Date(rev.created_at).toLocaleDateString()}</span>
+                          <Link href={`/post/db-${rev.post_id}`} className={styles.postLink}>원문 티끌 보기 →</Link>
+                        </div>
                       </div>
-                    </>
-                  )}
+                    ))}
 
-                  <div className={styles.userVoteBox}>
-                    <h4 className={styles.userVoteTitle}>이 작품이 어떠셨나요?</h4>
-                    <div className={styles.voteControls}>
-                      <select className={styles.ratingSelect} value={userRating} onChange={(e) => setUserRating(Number(e.target.value))}>
-                        <option value="0">평점</option>
-                        {[5,4,3,2,1].map(n => <option key={n} value={n}>{n}점</option>)}
-                      </select>
-                      <textarea placeholder="작품에 대한 한줄평을 남겨주세요." className={styles.voteTextarea} value={userComment} onChange={(e) => setUserComment(e.target.value)} />
-                      <button className={styles.voteBtn} onClick={() => handleUserVote(activeSubject.subject)}>참여하기</button>
+                    {activeSubject.userReviews.length > 0 && (
+                      <>
+                        <div className={styles.reviewDivider}>유저 평점</div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
+                          {activeSubject.userReviews.map((ur: any) => (
+                            <div key={ur.id} className={`${styles.reviewItem} ${styles.userReviewItem}`}>
+                              <div className={styles.reviewHeader}>
+                                <div className={styles.reviewAuthorGroup}>
+                                  <div className={styles.userAvatarSmall}>👤</div>
+                                  <span className={styles.userReviewAuthor}>{ur.user?.display_name || "익명 독자"}</span>
+                                </div>
+                                <div className={styles.userReviewScore}>★ {ur.rating}</div>
+                              </div>
+                              <p className={styles.userReviewText}>{ur.comment}</p>
+                              <div className={styles.userReviewDay}>{new Date(ur.created_at).toLocaleDateString()}</div>
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    )}
+
+                    <div className={styles.userVoteBox}>
+                      <h4 className={styles.userVoteTitle}>이 작품이 어떠셨나요?</h4>
+                      <div className={styles.voteControls}>
+                        <select className={styles.ratingSelect} value={userRating} onChange={(e) => setUserRating(Number(e.target.value))}>
+                          <option value="0">평점</option>
+                          {[5,4,3,2,1].map(n => <option key={n} value={n}>{n}점</option>)}
+                        </select>
+                        <textarea placeholder="작품에 대한 한줄평을 남겨주세요." className={styles.voteTextarea} value={userComment} onChange={(e) => setUserComment(e.target.value)} />
+                        <button className={styles.voteBtn} onClick={() => handleUserVote(activeSubject.subject)}>참여하기</button>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
-          <div className={styles.archiveGrid}>
-            {gridItems.length > 0 ? (
-              gridItems.map((group: any) => (
-                <div key={group.subject} className={styles.brickCard} onClick={() => { setExpandedId(group.subject); setSearch(''); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
-                  <div className={styles.brickHeader}>
-                    <div className={styles.editorRating}>E {group.editorAvg}</div>
-                    <div className={styles.userRating}>U {group.userAvg}</div>
-                  </div>
-                  <div className={styles.brickSubject}>{group.subject}</div>
-                  <div className={styles.brickMeta}>리뷰 {group.reviews.length + group.userReviews.length}개</div>
-                </div>
-              ))
-            ) : (
-              <div className={styles.emptyState}>결과가 없습니다.</div>
             )}
+            <div className={styles.archiveGrid}>
+              {gridItems.length > 0 ? (
+                gridItems.map((group: any) => (
+                  <div key={group.subject} className={styles.brickCard} onClick={() => { setExpandedId(group.subject); setSearch(''); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+                    <div className={styles.brickHeader}>
+                      <div className={styles.editorRating}>E {group.editorAvg}</div>
+                      <div className={styles.userRating}>U {group.userAvg}</div>
+                    </div>
+                    <div className={styles.brickSubject}>{group.subject}</div>
+                    <div className={styles.brickMeta}>리뷰 {group.reviews.length + group.userReviews.length}개</div>
+                  </div>
+                ))
+              ) : (
+                <div className={styles.emptyState}>결과가 없습니다.</div>
+              )}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

@@ -8,6 +8,7 @@ import { AUTHORS } from "@/lib/constants/authors";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useSearchParams, useRouter } from "next/navigation";
+import layoutStyles from "./layout.module.css";
 const ReviewRequest = dynamic(() => import("@/components/feed/ReviewRequest"), { ssr: false });
 import SkeletonCard from "@/components/feed/SkeletonCard";
 
@@ -354,161 +355,178 @@ export default function HomeContent({
         {/* Branch 1: Home Page View (Mixed Sections) */}
         {!showFullGrid ? (
           <div className={styles.homeContainer}>
-            {/* New Main Top Section (Replaces Hero and New Posts) */}
-            <div className={styles.gridSection} style={{ marginTop: isMobile ? '4px' : '7px' }}>
+            <div className={layoutStyles.centeredContent}>
+              {/* New Main Top Section (Replaces Hero and New Posts) */}
+              <div className={styles.gridSection} style={{ marginTop: isMobile ? '4px' : '7px' }}>
 
-              <div className={styles.magSecHeader} style={{ marginBottom: isMobile ? '1px' : '7px', marginTop: isMobile ? '' : '0' }}>
-                <h2 className={styles.magSecTitleNew} style={{ margin: 0, paddingLeft: '8px', display: 'flex', alignItems: 'baseline', flexWrap: 'wrap', gap: '8px' }}>
-                  {magazineIssue ? (
-                    <>
-                      <span>{(() => {
-                        const parts = magazineIssue.number.split('-');
-                        return parts.length === 2 ? `${parts[0]}년 ${parts[1]}회차` : magazineIssue.number;
-                      })()}</span>
-                      <span style={{ color: '#ff4804' }}>티끌 매거진</span>
-                      <span style={{ color: 'var(--text-tertiary)', fontSize: '0.6em', fontWeight: 400 }}>
-                        ({(() => { 
-                          const d = new Date(magazineIssue.publishedAt); 
-                          const yy = String(d.getFullYear()).slice(2); 
-                          const mm = String(d.getMonth() + 1).padStart(2, '0'); 
-                          const dd = String(d.getDate()).padStart(2, '0'); 
-                          return `${yy}.${mm}.${dd}`; 
-                        })()} 발행)
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <span>2026년 1회차</span>
-                      <span style={{ color: '#ff4804' }}>티끌 매거진</span>
-                      <span style={{ color: 'var(--text-tertiary)', fontSize: '0.6em', fontWeight: 400 }}>(발행 준비 중)</span>
-                    </>
-                  )}
-                </h2>
-              </div>
+                <div className={styles.magSecHeader} style={{ marginBottom: isMobile ? '1px' : '7px', marginTop: isMobile ? '' : '0' }}>
+                  <h2 className={styles.magSecTitleNew} style={{ margin: 0, paddingLeft: '8px', display: 'flex', alignItems: 'baseline', flexWrap: 'wrap', gap: '8px' }}>
+                    {magazineIssue ? (
+                      <>
+                        <span>{(() => {
+                          const parts = magazineIssue.number.split('-');
+                          return parts.length === 2 ? `${parts[0]}년 ${parts[1]}회차` : magazineIssue.number;
+                        })()}</span>
+                        <span style={{ color: '#ff4804' }}>티끌 매거진</span>
+                        <span style={{ color: 'var(--text-tertiary)', fontSize: '0.6em', fontWeight: 400 }}>
+                          ({(() => { 
+                            const d = new Date(magazineIssue.publishedAt); 
+                            const yy = String(d.getFullYear()).slice(2); 
+                            const mm = String(d.getMonth() + 1).padStart(2, '0'); 
+                            const dd = String(d.getDate()).padStart(2, '0'); 
+                            return `${yy}.${mm}.${dd}`; 
+                          })()} 발행)
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <span>2026년 1회차</span>
+                        <span style={{ color: '#ff4804' }}>티끌 매거진</span>
+                        <span style={{ color: 'var(--text-tertiary)', fontSize: '0.6em', fontWeight: 400 }}>(발행 준비 중)</span>
+                      </>
+                    )}
+                  </h2>
+                </div>
 
-              <div className={styles.newMainLayout}>
-                {heroPosts.length > 0 && (
-                  <Link href={`/post/${heroPosts[0].id}`} className={styles.newMainLargeCard}>
-                    <div className={styles.newMainLargeThumbWrap}>
-                      <Image 
-                        src={heroPosts[0].imageUrl} 
-                        alt={heroPosts[0].title} 
-                        fill
-                        className={styles.newMainLargeImg}
-                        sizes="(max-width: 768px) 100vw, 60vw"
-                        priority
-                      />
-                    </div>
-                    <div className={styles.newMainLargeInfo}>
-                      <h3 className={styles.newMainLargeTitle}>{heroPosts[0].title}</h3>
-                      <p className={styles.newMainLargeExcerpt}>{stripHtml(heroPosts[0].content).slice(0, 160)}...</p>
-                      <div className={styles.magMetaRow}>
-                        <span className={styles.magCardCategory}>{CATEGORY_LABEL_MAP[heroPosts[0].category || heroPosts[0].category_id || heroPosts[0].categoryId] || heroPosts[0].category}</span>
-                        <div className={styles.magMetaRight}>
-                          <span className={styles.magListAuthor}>{heroPosts[0].author?.name || heroPosts[0].authorProfile?.display_name}</span>
-                          <span className={styles.magListViews}>
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '3px' }}>
-                              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                              <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
-                            {heroPosts[0].views?.toLocaleString()}
-                          </span>
-                          <span className={styles.magListDate}>{heroPosts[0].displayDate}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                )}
-                
-                {/* PC/Mobile: posts 1~3 as B cards */}
-                <div className={styles.newMainSmallList}>
-                  {heroPosts.slice(1, 4).map(post => (
-                    <Link href={`/post/${post.id}`} key={post.id} className={styles.magListItem}>
-                      <div className={styles.magThumbWrap}>
+                <div className={styles.newMainLayout}>
+                  {heroPosts.length > 0 && (
+                    <Link href={`/post/${heroPosts[0].id}`} className={styles.newMainLargeCard}>
+                      <div className={styles.newMainLargeThumbWrap}>
                         <Image 
-                          src={post.imageUrl} 
-                          alt={post.title} 
+                          src={heroPosts[0].imageUrl} 
+                          alt={heroPosts[0].title} 
                           fill
-                          className={styles.magThumb}
-                          sizes="(max-width: 768px) 180px, 200px"
+                          className={styles.newMainLargeImg}
+                          sizes="(max-width: 768px) 100vw, 60vw"
+                          priority
                         />
                       </div>
-                      <div className={styles.magListInfo}>
-                        <h4 className={styles.magListTitle}>{post.title}</h4>
-                        <p className={styles.magListExcerpt}>{stripHtml(post.content).slice(0, 100)}...</p>
+                      <div className={styles.newMainLargeInfo}>
+                        <h3 className={styles.newMainLargeTitle}>{heroPosts[0].title}</h3>
+                        <p className={styles.newMainLargeExcerpt}>{stripHtml(heroPosts[0].content).slice(0, 160)}...</p>
                         <div className={styles.magMetaRow}>
-                          <span className={styles.magCardCategory}>{CATEGORY_LABEL_MAP[post.category || post.category_id || post.categoryId] || post.category}</span>
+                          <span className={styles.magCardCategory}>{CATEGORY_LABEL_MAP[heroPosts[0].category || heroPosts[0].category_id || heroPosts[0].categoryId] || heroPosts[0].category}</span>
                           <div className={styles.magMetaRight}>
-                            <span className={styles.magListAuthor}>{post.author?.name || post.authorProfile?.display_name}</span>
+                            <span className={styles.magListAuthor}>{heroPosts[0].author?.name || heroPosts[0].authorProfile?.display_name}</span>
                             <span className={styles.magListViews}>
                               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '3px' }}>
                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                 <circle cx="12" cy="12" r="3"></circle>
                               </svg>
-                              {post.views?.toLocaleString()}
+                              {heroPosts[0].views?.toLocaleString()}
                             </span>
-                            <span className={styles.magListDate}>{post.displayDate}</span>
+                            <span className={styles.magListDate}>{heroPosts[0].displayDate}</span>
                           </div>
+                        </div>
+                      </div>
+                    </Link>
+                  )}
+                  
+                  {/* PC/Mobile: posts 1~3 as B cards */}
+                  <div className={styles.newMainSmallList}>
+                    {heroPosts.slice(1, 4).map(post => (
+                      <Link href={`/post/${post.id}`} key={post.id} className={styles.magListItem}>
+                        <div className={styles.magThumbWrap}>
+                          <Image 
+                            src={post.imageUrl} 
+                            alt={post.title} 
+                            fill
+                            className={styles.magThumb}
+                            sizes="(max-width: 768px) 180px, 200px"
+                          />
+                        </div>
+                        <div className={styles.magListInfo}>
+                          <h4 className={styles.magListTitle}>{post.title}</h4>
+                          <p className={styles.magListExcerpt}>{stripHtml(post.content).slice(0, 100)}...</p>
+                          <div className={styles.magMetaRow}>
+                            <span className={styles.magCardCategory}>{CATEGORY_LABEL_MAP[post.category || post.category_id || post.categoryId] || post.category}</span>
+                            <div className={styles.magMetaRight}>
+                              <span className={styles.magListAuthor}>{post.author?.name || post.authorProfile?.display_name}</span>
+                              <span className={styles.magListViews}>
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '3px' }}>
+                                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                  <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                                {post.views?.toLocaleString()}
+                              </span>
+                              <span className={styles.magListDate}>{post.displayDate}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 2. New Posts Section: Title + C-cards (Posts 4~8) */}
+                <div className={styles.magSecHeader} style={{ borderBottom: 'none', marginBottom: isMobile ? '1px' : '7px' }}>
+                  <h2 className={styles.resultsTitle} style={{ margin: 0, paddingLeft: '8px' }}>
+                    새로운 <span style={{ color: '#ff4804' }}>티끌</span>
+                  </h2>
+                  {allPosts.length > 0 && (
+                    <button className={styles.magSecMoreBtn} onClick={() => router.push('/?view=all')}>
+                      more {'>'}
+                    </button>
+                  )}
+                </div>
+
+                <div className={`${styles.editorsGrid} ${isMobile ? styles.horizontalScrollMobile : ''}`} style={{ marginBottom: '40px' }}>
+                  {otherPosts.slice(0, 5).map((post: any) => (
+                    <Link href={`/post/${post.id}`} key={post.id} className={styles.postCardC}>
+                      <div className={styles.cPhotoWrap}>
+                        <Image 
+                          src={post.imageUrl} 
+                          alt={post.title} 
+                          className={styles.cPhoto}
+                          width={220}
+                          height={220}
+                        />
+                      </div>
+                      <div className={styles.cCardBody}>
+                        <h3 className={styles.cTitle}>{post.title}</h3>
+                        <p className={styles.cExcerpt}>{stripHtml(post.content).slice(0, 80)}...</p>
+                      </div>
+                      <div className={styles.cCardFooter}>
+                        <span className={styles.magCardCategory}>
+                          {CATEGORY_LABEL_MAP[post.category || post.category_id || post.categoryId] || post.category}
+                        </span>
+                        <div className={styles.magMetaRight}>
+                          <span className={styles.magListAuthor}>
+                            {post.author?.name || post.authorProfile?.display_name || "익명"}
+                          </span>
+                          <span className={styles.magListViews}>
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '3px' }}>
+                              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                              <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            {post.views?.toLocaleString() || 0}
+                          </span>
                         </div>
                       </div>
                     </Link>
                   ))}
                 </div>
-              </div>
 
-              {/* 2. New Posts Section: Title + C-cards (Posts 4~8) */}
-              <div className={styles.magSecHeader} style={{ borderBottom: 'none', marginBottom: isMobile ? '1px' : '7px' }}>
-                <h2 className={styles.resultsTitle} style={{ margin: 0, paddingLeft: '8px' }}>
-                  새로운 <span style={{ color: '#ff4804' }}>티끌</span>
-                </h2>
-                {allPosts.length > 0 && (
-                  <button className={styles.magSecMoreBtn} onClick={() => router.push('/?view=all')}>
-                    more {'>'}
-                  </button>
-                )}
-              </div>
-
-              <div className={`${styles.editorsGrid} ${isMobile ? styles.horizontalScrollMobile : ''}`} style={{ marginBottom: '40px' }}>
-                {otherPosts.slice(0, 5).map((post: any) => (
-                  <Link href={`/post/${post.id}`} key={post.id} className={styles.postCardC}>
-                    <div className={styles.cPhotoWrap}>
-                      <Image 
-                        src={post.imageUrl} 
-                        alt={post.title} 
-                        className={styles.cPhoto}
-                        width={220}
-                        height={220}
+                {/* [모바일] 하단 섹션 순차로딩 (IntersectionObserver 이용) */}
+                {isMobile ? (
+                  <>
+                    <LazySection threshold={0.05}>
+                      <ReviewsSection 
+                        recentReviews={recentReviews} 
+                        isMobile={isMobile} 
+                        scrollReviews={scrollReviews} 
+                        reviewRef={reviewRef} 
+                        router={router} 
+                        MOCK_REVIEWS={MOCK_REVIEWS} 
                       />
-                    </div>
-                    <div className={styles.cCardBody}>
-                      <h3 className={styles.cTitle}>{post.title}</h3>
-                      <p className={styles.cExcerpt}>{stripHtml(post.content).slice(0, 80)}...</p>
-                    </div>
-                    <div className={styles.cCardFooter}>
-                      <span className={styles.magCardCategory}>
-                        {CATEGORY_LABEL_MAP[post.category || post.category_id || post.categoryId] || post.category}
-                      </span>
-                      <div className={styles.magMetaRight}>
-                        <span className={styles.magListAuthor}>
-                          {post.author?.name || post.authorProfile?.display_name || "익명"}
-                        </span>
-                        <span className={styles.magListViews}>
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '3px' }}>
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                          </svg>
-                          {post.views?.toLocaleString() || 0}
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
+                    </LazySection>
 
-              {/* [모바일] 하단 섹션 순차로딩 (IntersectionObserver 이용) */}
-              {isMobile ? (
-                <>
-                  <LazySection threshold={0.05}>
+                    <LazySection threshold={0.05}>
+                      <EditorsSection editors={editors} isMobile={isMobile} allPosts={allPosts} />
+                    </LazySection>
+                  </>
+                ) : (
+                  <>
                     <ReviewsSection 
                       recentReviews={recentReviews} 
                       isMobile={isMobile} 
@@ -517,246 +535,233 @@ export default function HomeContent({
                       router={router} 
                       MOCK_REVIEWS={MOCK_REVIEWS} 
                     />
-                  </LazySection>
-
-                  <LazySection threshold={0.05}>
                     <EditorsSection editors={editors} isMobile={isMobile} allPosts={allPosts} />
-                  </LazySection>
-                </>
-              ) : (
-                <>
-                  <ReviewsSection 
-                    recentReviews={recentReviews} 
-                    isMobile={isMobile} 
-                    scrollReviews={scrollReviews} 
-                    reviewRef={reviewRef} 
-                    router={router} 
-                    MOCK_REVIEWS={MOCK_REVIEWS} 
-                  />
-                  <EditorsSection editors={editors} isMobile={isMobile} allPosts={allPosts} />
-                </>
-              )}
+                  </>
+                )}
+              </div>
             </div>
           </div>
         ) : (
           /* Branch 2: Search/Filter/ViewAll Results View */
           <div className={styles.homeContainer}>
-            {/* Author Card (for Author Filter) */}
-            {authorData && (
-              <div className={styles.authorCardWrapper}>
-                <div className={styles.authorCardHeaderStandard}>
-                  <span className={styles.standardCardLabel}>TICGLER PROFILE</span>
-                  <Link href={`/requests/${authorData.display_name || authorData.name || authorData.id}`} className={styles.headerRequestLinkStandard}>
-                    티끌러님, 이것도 리뷰해주세요! 💬
-                  </Link>
-                </div>
-                <div className={styles.authorCardMainStandard}>
-                  <div className={styles.authorCardMediaStandard}>
-                    <Image 
-                      src={(authorData.avatar && (authorData.avatar.startsWith('http') || authorData.avatar.startsWith('/'))) ? authorData.avatar : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"} 
-                      alt={authorData.name} 
-                      width={220}
-                      height={220}
-                      style={{ objectFit: 'cover', width: '100%', height: '100%' }}
-                    />
+            <div className={layoutStyles.centeredContent}>
+              {/* Author Card (for Author Filter) */}
+              {authorData && (
+                <div className={styles.authorCardWrapper}>
+                  <div className={styles.authorCardHeaderStandard}>
+                    <span className={styles.standardCardLabel}>TICGLER PROFILE</span>
+                    <Link href={`/requests/${authorData.display_name || authorData.name || authorData.id}`} className={styles.headerRequestLinkStandard}>
+                      티끌러님, 이것도 리뷰해주세요! 💬
+                    </Link>
                   </div>
-                  <div className={styles.authorCardInfoStandard}>
-                    <div className={styles.authorNameStandard}>{authorData.name}</div>
-                    <p className={styles.authorBioStandard}>{authorData.description.bio || "생동감 넘치는 리뷰를 작성하는 티끌러입니다."}</p>
-                    {authorData.description.bullets && authorData.description.bullets.length > 0 && (
-                      <div className={styles.authorBulletsStandard}>
-                        {authorData.description.bullets.map((b: string, i: number) => (
-                          <span key={i} className={styles.authorBulletStandard}># {b}</span>
-                        ))}
-                      </div>
-                    )}
+                  <div className={styles.authorCardMainStandard}>
+                    <div className={styles.authorCardMediaStandard}>
+                      <Image 
+                        src={(authorData.avatar && (authorData.avatar.startsWith('http') || authorData.avatar.startsWith('/'))) ? authorData.avatar : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"} 
+                        alt={authorData.name} 
+                        width={220}
+                        height={220}
+                        style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                      />
+                    </div>
+                    <div className={styles.authorCardInfoStandard}>
+                      <div className={styles.authorNameStandard}>{authorData.name}</div>
+                      <p className={styles.authorBioStandard}>{authorData.description.bio || "생동감 넘치는 리뷰를 작성하는 티끌러입니다."}</p>
+                      {authorData.description.bullets && authorData.description.bullets.length > 0 && (
+                        <div className={styles.authorBulletsStandard}>
+                          {authorData.description.bullets.map((b: string, i: number) => (
+                            <span key={i} className={styles.authorBulletStandard}># {b}</span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
+              )}
+
+              {/* Results Title & Controls */}
+              <div className={styles.resultsHeader}>
+                <h1 className={styles.resultsTitle}>
+                  { isViewMore ? (
+                    <><span style={{ color: '#ff4804' }}>티끌</span> 모음</>
+                  ) : displayTitle}
+                </h1>
+                {(vType as any) === 'card' && (
+                  <div className={`${styles.headerColControls} ${styles.mobileOnly}`}>
+                    <div className={styles.headerColSelector}>
+                      {(isMobile ? ['1', '2', '3'] : ['2', '3', '4']).map(n => (
+                        <button 
+                          key={n}
+                          className={`${styles.headerColBtn} ${ (isMobile ? mobileGridCols : cardCols) === parseInt(n) ? styles.headerColActive : ''}`}
+                          onClick={() => updateParam(isMobile ? "mCols" : "dCols", n)}
+                        >
+                          {n}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
 
-            {/* Results Title & Controls */}
-            <div className={styles.resultsHeader}>
-              <h1 className={styles.resultsTitle}>
-                { isViewMore ? (
-                  <><span style={{ color: '#ff4804' }}>티끌</span> 모음</>
-                ) : displayTitle}
-              </h1>
-              {(vType as any) === 'card' && (
-                <div className={`${styles.headerColControls} ${styles.mobileOnly}`}>
-                  <div className={styles.headerColSelector}>
-                    {(isMobile ? ['1', '2', '3'] : ['2', '3', '4']).map(n => (
-                      <button 
-                        key={n}
-                        className={`${styles.headerColBtn} ${ (isMobile ? mobileGridCols : cardCols) === parseInt(n) ? styles.headerColActive : ''}`}
-                        onClick={() => updateParam(isMobile ? "mCols" : "dCols", n)}
+              {/* Category Pills & Desktop Controls */}
+              <div className={styles.categoryPillRow}>
+                <nav className={styles.categoryPillNav}>
+                  <div className={styles.pillContainer}>
+                    {[
+                      { id: 'all', name: '전체' },
+                      { id: 'restaurant', name: '맛집' },
+                      { id: 'travel', name: '여행' },
+                      { id: 'movie', name: '영화' },
+                      { id: 'game', name: '게임' },
+                      { id: 'book', name: '책' },
+                      { id: 'exhibition', name: '전시' },
+                      { id: 'other', name: '기타' },
+                      { id: 'feature', name: '기획전' }
+                    ].map(cat => (
+                      <button
+                        key={cat.id}
+                        onClick={() => {
+                          const params = new URLSearchParams(searchParams.toString());
+                          if (cat.id === 'all') params.delete('category');
+                          else params.set('category', cat.id);
+                          router.push(`/?${params.toString()}`);
+                        }}
+                        className={`${styles.pillBtn} ${ (categoryFilter === cat.id || (!categoryFilter && cat.id === 'all')) ? styles.pillActive : ''}`}
                       >
-                        {n}
+                        {cat.name}
                       </button>
                     ))}
                   </div>
-                </div>
-              )}
-            </div>
+                </nav>
 
-            {/* Category Pills & Desktop Controls */}
-            <div className={styles.categoryPillRow}>
-              <nav className={styles.categoryPillNav}>
-                <div className={styles.pillContainer}>
-                  {[
-                    { id: 'all', name: '전체' },
-                    { id: 'restaurant', name: '맛집' },
-                    { id: 'travel', name: '여행' },
-                    { id: 'movie', name: '영화' },
-                    { id: 'game', name: '게임' },
-                    { id: 'book', name: '책' },
-                    { id: 'exhibition', name: '전시' },
-                    { id: 'other', name: '기타' },
-                    { id: 'feature', name: '기획전' }
-                  ].map(cat => (
-                    <button
-                      key={cat.id}
-                      onClick={() => {
-                        const params = new URLSearchParams(searchParams.toString());
-                        if (cat.id === 'all') params.delete('category');
-                        else params.set('category', cat.id);
-                        router.push(`/?${params.toString()}`);
-                      }}
-                      className={`${styles.pillBtn} ${ (categoryFilter === cat.id || (!categoryFilter && cat.id === 'all')) ? styles.pillActive : ''}`}
-                    >
-                      {cat.name}
-                    </button>
-                  ))}
-                </div>
-              </nav>
+                {(vType as any) === 'card' && (
+                  <div className={`${styles.headerColControls} ${styles.desktopOnly}`}>
+                    <div className={styles.headerColSelector}>
+                      {(isMobile ? ['1', '2', '3'] : ['2', '3', '4']).map(n => (
+                        <button 
+                          key={n}
+                          className={`${styles.headerColBtn} ${ (isMobile ? mobileGridCols : cardCols) === parseInt(n) ? styles.headerColActive : ''}`}
+                          onClick={() => updateParam(isMobile ? "mCols" : "dCols", n)}
+                        >
+                          {n}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
 
-              {(vType as any) === 'card' && (
-                <div className={`${styles.headerColControls} ${styles.desktopOnly}`}>
-                  <div className={styles.headerColSelector}>
-                    {(isMobile ? ['1', '2', '3'] : ['2', '3', '4']).map(n => (
-                      <button 
-                        key={n}
-                        className={`${styles.headerColBtn} ${ (isMobile ? mobileGridCols : cardCols) === parseInt(n) ? styles.headerColActive : ''}`}
-                        onClick={() => updateParam(isMobile ? "mCols" : "dCols", n)}
-                      >
-                        {n}
-                      </button>
+              {/* The Main Grid Results Area */}
+              <div key={isMobile ? 'mobile-grid' : `grid-${vType}-${cardCols}`} className={styles.gridListFade}>
+                {(vType as any) === 'card' ? (
+                  <div 
+                    className={styles.gridList}
+                    style={{ 
+                      '--mobile-cols': mobileGridCols,
+                      '--desktop-cols': cardCols,
+                      '--grid-gap': isMobile ? (mobileGridCols === 3 ? '4.8px' : mobileGridCols === 2 ? '6px' : '24px') : '24px'
+                    } as React.CSSProperties}
+                  >
+                    {displayPosts.map((post, index) => (
+                      <PosterCard 
+                        key={post.id} 
+                        {...post} 
+                        aspectRatio="default" 
+                        isOneCol={(isMobile && mobileGridCols === 1) || (!isMobile && cardCols === 1)}
+                        isDense={!isMobile && cardCols === 4}
+                        isMinimal={(isMobile && mobileGridCols === 3)}
+                        isPublic={post.isPublic}
+                        priority={index < (isMobile ? 2 : 4)}
+                      />
                     ))}
                   </div>
-                </div>
-              )}
-            </div>
-
-            {/* The Main Grid Results Area */}
-            <div key={isMobile ? 'mobile-grid' : `grid-${vType}-${cardCols}`} className={styles.gridListFade}>
-              {(vType as any) === 'card' ? (
-                <div 
-                  className={styles.gridList}
-                  style={{ 
-                    '--mobile-cols': mobileGridCols,
-                    '--desktop-cols': cardCols,
-                    '--grid-gap': isMobile ? (mobileGridCols === 3 ? '4.8px' : mobileGridCols === 2 ? '6px' : '24px') : '24px'
-                  } as React.CSSProperties}
-                >
-                  {displayPosts.map((post, index) => (
-                    <PosterCard 
-                      key={post.id} 
-                      {...post} 
-                      aspectRatio="default" 
-                      isOneCol={(isMobile && mobileGridCols === 1) || (!isMobile && cardCols === 1)}
-                      isDense={!isMobile && cardCols === 4}
-                      isMinimal={(isMobile && mobileGridCols === 3)}
-                      isPublic={post.isPublic}
-                      priority={index < (isMobile ? 2 : 4)}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className={styles.magazineLayout}>
-                  {/* Body: Grouped by Category */}
-                  <div className={styles.magBody}>
-                    {['restaurant', 'travel', 'movie', 'game', 'book', 'exhibition', 'other'].map(catId => {
-                      const label = CATEGORY_LABEL_MAP[catId];
-                      const catPosts = paginatedData.filter(p => (
-                        String(p.category_id) === catId || String(p.categoryId) === catId || String(p.category) === catId || (label && p.category === label)
-                      )).slice(0, 4);
-                      
-                      if (catPosts.length === 0) return null;
-                      const catName = label || catPosts[0].category;
-                      
-                      return (
-                        <div key={catId} className={styles.magSection}>
-                          <div className={styles.magSecHeader}>
-                            <h3 className={styles.magSecTitleNew}>{catName}</h3>
-                            <button 
-                              className={styles.magSecMoreBtn}
-                              onClick={() => {
-                                const params = new URLSearchParams(searchParams.toString());
-                                params.set('category', catId);
-                                router.push(`/?${params.toString()}`);
-                              }}
-                            >
-                              more {'>'}
-                            </button>
-                          </div>
-                          <div className={styles.magList}>
-                            {catPosts.map((post: any) => {
-                              const excerpt = stripHtml(post.content).slice(0, 100);
-                              return (
-                                <Link href={`/post/${post.id}`} key={post.id} className={styles.magListItem}>
-                                  <div className={styles.magThumbWrap}>
-                                    <Image 
-                                      src={post.imageUrl} 
-                                      alt={post.title} 
-                                      className={styles.magThumb} 
-                                      fill
-                                      sizes="(max-width: 768px) 110px, 130px"
-                                      quality={70} 
-                                      style={{ objectFit: 'cover' }} 
-                                    />
-                                  </div>
-                                  <div className={styles.magListInfo}>
-                                    <h4 className={styles.magListTitle}>{post.title}</h4>
-                                    <p className={styles.magListExcerpt}>{excerpt}...</p>
-                                    <div className={styles.magMetaRow}>
-                                      <span className={styles.magCardCategory}>{CATEGORY_LABEL_MAP[post.category || post.category_id || post.categoryId] || post.category}</span>
-                                      <div className={styles.magMetaRight}>
-                                        <span className={styles.magListAuthor}>{post.author?.name || post.authorProfile?.display_name}</span>
-                                        <span className={styles.magListViews}>
-                                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '3px' }}>
-                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                            <circle cx="12" cy="12" r="3"></circle>
-                                          </svg>
-                                          {post.views?.toLocaleString()}
-                                        </span>
-                                        <span className={styles.magListDate}>{post.displayDate}</span>
+                ) : (
+                  <div className={styles.magazineLayout}>
+                    {/* Body: Grouped by Category */}
+                    <div className={styles.magBody}>
+                      {['restaurant', 'travel', 'movie', 'game', 'book', 'exhibition', 'other'].map(catId => {
+                        const label = CATEGORY_LABEL_MAP[catId];
+                        const catPosts = paginatedData.filter(p => (
+                          String(p.category_id) === catId || String(p.categoryId) === catId || String(p.category) === catId || (label && p.category === label)
+                        )).slice(0, 4);
+                        
+                        if (catPosts.length === 0) return null;
+                        const catName = label || catPosts[0].category;
+                        
+                        return (
+                          <div key={catId} className={styles.magSection}>
+                            <div className={styles.magSecHeader}>
+                              <h3 className={styles.magSecTitleNew}>{catName}</h3>
+                              <button 
+                                className={styles.magSecMoreBtn}
+                                onClick={() => {
+                                  const params = new URLSearchParams(searchParams.toString());
+                                  params.set('category', catId);
+                                  router.push(`/?${params.toString()}`);
+                                }}
+                              >
+                                more {'>'}
+                              </button>
+                            </div>
+                            <div className={styles.magList}>
+                              {catPosts.map((post: any) => {
+                                const excerpt = stripHtml(post.content).slice(0, 100);
+                                return (
+                                  <Link href={`/post/${post.id}`} key={post.id} className={styles.magListItem}>
+                                    <div className={styles.magThumbWrap}>
+                                      <Image 
+                                        src={post.imageUrl} 
+                                        alt={post.title} 
+                                        className={styles.magThumb} 
+                                        fill
+                                        sizes="(max-width: 768px) 110px, 130px"
+                                        quality={70} 
+                                        style={{ objectFit: 'cover' }} 
+                                      />
+                                    </div>
+                                    <div className={styles.magListInfo}>
+                                      <h4 className={styles.magListTitle}>{post.title}</h4>
+                                      <p className={styles.magListExcerpt}>{excerpt}...</p>
+                                      <div className={styles.magMetaRow}>
+                                        <span className={styles.magCardCategory}>{CATEGORY_LABEL_MAP[post.category || post.category_id || post.categoryId] || post.category}</span>
+                                        <div className={styles.magMetaRight}>
+                                          <span className={styles.magListAuthor}>{post.author?.name || post.authorProfile?.display_name}</span>
+                                          <span className={styles.magListViews}>
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '3px' }}>
+                                              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                              <circle cx="12" cy="12" r="3"></circle>
+                                            </svg>
+                                            {post.views?.toLocaleString()}
+                                          </span>
+                                          <span className={styles.magListDate}>{post.displayDate}</span>
+                                        </div>
                                       </div>
                                     </div>
-                                  </div>
-                                </Link>
-                              );
-                            })}
+                                  </Link>
+                                );
+                              })}
+                            </div>
                           </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Bottom Sentinel for Infinite Scroll */}
+              {displayPosts.length < paginatedData.length && (
+                <div ref={sentinelRef} className={styles.sentinel}>
+                  <div className={styles.skeletonGrid}>
+                    {[1, 2, 3, 4].map(i => (
+                      <div key={i} className={isMobile && i > 2 ? styles.mobileHidden : ""}>
+                        <SkeletonCard />
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
             </div>
-
-            {/* Bottom Sentinel for Infinite Scroll */}
-            {displayPosts.length < paginatedData.length && (
-              <div ref={sentinelRef} className={styles.sentinel}>
-                <div className={styles.skeletonGrid}>
-                  {[1, 2, 3, 4].map(i => (
-                    <div key={i} className={isMobile && i > 2 ? styles.mobileHidden : ""}>
-                      <SkeletonCard />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         )}
       </div>

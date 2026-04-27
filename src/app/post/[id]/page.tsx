@@ -14,6 +14,7 @@ import ReadingProgressBar from "@/components/common/ReadingProgressBar";
 import SubscribeBtn from "@/components/feed/SubscribeBtn";
 import { getAdminStatus } from "@/app/actions/hero";
 import styles from "./page.module.css";
+import layoutStyles from "@/app/layout.module.css";
 
 const CATEGORY_MAP: Record<string, string> = {
   movie: "영화", 
@@ -275,184 +276,186 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
   };
 
   return (
-    <div className={styles.container}>
-      <ReadingProgressBar />
-      {/* [신규] 수동 리뷰 카드를 위한 대표 이미지 동적 주입 (좌측 사진 영역 전용) */}
-      <style dangerouslySetInnerHTML={{ __html: `
-        /* 1. 클래스 기반 선택자 */
-        .ql-review-card[data-place-id="manual"] .review-card-map,
-        .ql-review-card[data-place-id="manual"] .review-card-manual-photo-area {
-          background-image: url('${post.image_url || 'https://ticgle.kr/logo.png'}') !important;
-          background-size: cover !important;
-          background-position: center !important;
-          background-repeat: no-repeat !important;
-          width: 220px !important;
-          min-width: 220px !important;
-          height: 220px !important;
-          display: block !important;
-          border-right: 1px solid #f1f5f9 !important;
-        }
-        /* 2. 속성 기반 무적 선택자 보완 */
-        div[data-place-id="manual"] .review-card-map {
-          background-image: url('${post.image_url || ''}') !important;
-          width: 220px !important;
-          min-width: 220px !important;
-        }
-        /* 3. 메인 배경 초기화 */
-        .ql-review-card[data-place-id="manual"] .review-card-main {
-          background-image: none !important;
-          background-color: white !important;
-          display: flex !important;
-        }
-      `}} />
+    <div className={`${layoutStyles.centeredContent} ${layoutStyles.postViewInner}`}>
+      <div className={styles.container}>
+        <ReadingProgressBar />
+        {/* [신규] 수동 리뷰 카드를 위한 대표 이미지 동적 주입 (좌측 사진 영역 전용) */}
+        <style dangerouslySetInnerHTML={{ __html: `
+          /* 1. 클래스 기반 선택자 */
+          .ql-review-card[data-place-id="manual"] .review-card-map,
+          .ql-review-card[data-place-id="manual"] .review-card-manual-photo-area {
+            background-image: url('${post.image_url || 'https://ticgle.kr/logo.png'}') !important;
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            width: 220px !important;
+            min-width: 220px !important;
+            height: 220px !important;
+            display: block !important;
+            border-right: 1px solid #f1f5f9 !important;
+          }
+          /* 2. 속성 기반 무적 선택자 보완 */
+          div[data-place-id="manual"] .review-card-map {
+            background-image: url('${post.image_url || ''}') !important;
+            width: 220px !important;
+            min-width: 220px !important;
+          }
+          /* 3. 메인 배경 초기화 */
+          .ql-review-card[data-place-id="manual"] .review-card-main {
+            background-image: none !important;
+            background-color: white !important;
+            display: flex !important;
+          }
+        `}} />
 
-      {/* Structured Data for Google */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      
-      <div className={styles.topNav}>
-        <Link href="/" className={styles.backBtn}>← 목록으로 돌아가기</Link>
+        {/* Structured Data for Google */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         
-        <div className={styles.topNavRight}>
-          {isAdmin && isDbPost && (
-            <HeroToggleBtn postId={post.id} initialIsHero={post.is_hero || false} />
-          )}
-
-          <ShareBtn 
-            title={post.title} 
-            imageUrl={post.image_url} 
-            description={post.content
-              ?.replace(/<br\s*\/?>/gi, '\n')
-              ?.replace(/<\/p>/gi, '\n')
-              ?.replace(/<[^>]+>/g, '')
-              ?.replace(/&nbsp;/gi, ' ')
-              ?.trim()
-              .substring(0, 65) + '...'
-            }
-          />
+        <div className={styles.topNav}>
+          <Link href="/" className={styles.backBtn}>← 목록으로 돌아가기</Link>
           
-          <PostManageBtns 
-            postId={post.id} 
-            displayId={id}
-            authorId={post.author?.id || post.author_id} 
-            currentUserId={user?.id || ''} 
-            role={currentUserRole || 'user'} 
-          />
-        </div>
-      </div>
-      
-      <article className={styles.post}>
-        <header className={styles.header}>
-          <div className={styles.meta}>
-            <span className={styles.category}>{post.category}</span>
-            <span className={styles.dot}>•</span>
-            <span className={styles.date}>{new Date(post.created_at).toLocaleDateString('ko-KR')}</span>
-            <Link href={`/?author=${post.author?.display_name || post.author?.name}`} className={styles.authorBadgeDetail}>
-              {post.author?.display_name || post.author?.name || '익명 작가'}
-            </Link>
-            <span className={styles.dot}>•</span>
-            <span className={styles.viewCountDetail}>조회수 {post.views?.toLocaleString()}</span>
-            {post.is_public === false && (
-              <span style={{ 
-                background: '#ea4335', 
-                color: 'white', 
-                padding: '2px 8px', 
-                borderRadius: '4px', 
-                fontSize: '0.7rem', 
-                fontWeight: 800,
-                marginLeft: '8px',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '4px'
-              }}>
-                🔒 비공개
-              </span>
+          <div className={styles.topNavRight}>
+            {isAdmin && isDbPost && (
+              <HeroToggleBtn postId={post.id} initialIsHero={post.is_hero || false} />
             )}
+
+            <ShareBtn 
+              title={post.title} 
+              imageUrl={post.image_url} 
+              description={post.content
+                ?.replace(/<br\s*\/?>/gi, '\n')
+                ?.replace(/<\/p>/gi, '\n')
+                ?.replace(/<[^>]+>/g, '')
+                ?.replace(/&nbsp;/gi, ' ')
+                ?.trim()
+                .substring(0, 65) + '...'
+              }
+            />
             
+            <PostManageBtns 
+              postId={post.id} 
+              displayId={id}
+              authorId={post.author?.id || post.author_id} 
+              currentUserId={user?.id || ''} 
+              role={currentUserRole || 'user'} 
+            />
           </div>
-          
-          <h1 className={styles.title}>{post.title}</h1>
-        </header>
-
-        {post.show_main_image !== false && post.image_url && (
-          <div className={styles.mainImageWrapper}>
-            <a href={post.image_url} target="_blank" rel="noopener noreferrer">
-              <Image 
-                src={post.image_url} 
-                alt={post.title} 
-                className={styles.mainImage} 
-                width={1200}
-                height={800}
-                priority
-                sizes="(max-width: 768px) 100vw, 1200px"
-                style={{ cursor: 'zoom-in' }} 
-                title="클릭하여 원본 이미지 보기" 
-              />
-            </a>
-          </div>
-        )}
+        </div>
         
-        <ContentSegmenter content={post.content} comments={commentsData} />
-        
-
-        {/* Editor Profile Card */}
-        {post.authorProfile && (
-          <div className={styles.authorCardWrapper}>
-            <div className={styles.authorCardHeader}>
-              <span>TICGLER PROFILE</span>
-              <Link href={`/requests/${post.authorProfile.display_name || post.authorProfile.id}`} className={styles.headerRequestLink}>
-                티끌러님, 이것도 리뷰해주세요! 💬
+        <article className={styles.post}>
+          <header className={styles.header}>
+            <div className={styles.meta}>
+              <span className={styles.category}>{post.category}</span>
+              <span className={styles.dot}>•</span>
+              <span className={styles.date}>{new Date(post.created_at).toLocaleDateString('ko-KR')}</span>
+              <Link href={`/?author=${post.author?.display_name || post.author?.name}`} className={styles.authorBadgeDetail}>
+                {post.author?.display_name || post.author?.name || '익명 작가'}
               </Link>
+              <span className={styles.dot}>•</span>
+              <span className={styles.viewCountDetail}>조회수 {post.views?.toLocaleString()}</span>
+              {post.is_public === false && (
+                <span style={{ 
+                  background: '#ea4335', 
+                  color: 'white', 
+                  padding: '2px 8px', 
+                  borderRadius: '4px', 
+                  fontSize: '0.7rem', 
+                  fontWeight: 800,
+                  marginLeft: '8px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}>
+                  🔒 비공개
+                </span>
+              )}
+              
             </div>
-            <div className={styles.authorCardContent}>
-                <div className={styles.authorAvatarArea}>
-                   <div className={styles.authorAvatarLarge}>
-                      <Image 
-                        src={(post.authorProfile.avatar_url && (post.authorProfile.avatar_url.startsWith('http') || post.authorProfile.avatar_url.startsWith('/'))) ? post.authorProfile.avatar_url : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"} 
-                        alt={post.authorProfile.display_name} 
-                        width={220}
-                        height={220}
-                        className={styles.authorAvatarImg}
-                        style={{ objectFit: 'cover', width: '100%', height: '100%' }}
-                      />
-                   </div>
-                </div>
-              <div className={styles.authorDetailsArea}>
-                <Link href={`/?author=${post.authorProfile.display_name}`} className={styles.authorNameLink}>
-                  {post.authorProfile.display_name}
+            
+            <h1 className={styles.title}>{post.title}</h1>
+          </header>
+
+          {post.show_main_image !== false && post.image_url && (
+            <div className={styles.mainImageWrapper}>
+              <a href={post.image_url} target="_blank" rel="noopener noreferrer">
+                <Image 
+                  src={post.image_url} 
+                  alt={post.title} 
+                  className={styles.mainImage} 
+                  width={1200}
+                  height={800}
+                  priority
+                  sizes="(max-width: 768px) 100vw, 1200px"
+                  style={{ cursor: 'zoom-in' }} 
+                  title="클릭하여 원본 이미지 보기" 
+                />
+              </a>
+            </div>
+          )}
+          
+          <ContentSegmenter content={post.content} comments={commentsData} />
+          
+
+          {/* Editor Profile Card */}
+          {post.authorProfile && (
+            <div className={styles.authorCardWrapper}>
+              <div className={styles.authorCardHeader}>
+                <span>TICGLER PROFILE</span>
+                <Link href={`/requests/${post.authorProfile.display_name || post.authorProfile.id}`} className={styles.headerRequestLink}>
+                  티끌러님, 이것도 리뷰해주세요! 💬
                 </Link>
-                <div style={{ marginTop: '4px', marginBottom: '8px' }}>
-                  <SubscribeBtn authorId={post.authorProfile.id} authorName={post.authorProfile.display_name} />
-                </div>
-                <p className={styles.authorBio}>{post.authorProfile.bio || "생동감 넘치는 리뷰를 작성하는 티끌러입니다."}</p>
-                {post.authorProfile.bullets && post.authorProfile.bullets.length > 0 && (
-                  <div className={styles.authorBullets}>
-                    {post.authorProfile.bullets.map((b: string, i: number) => (
-                      <span key={i} className={styles.authorBullet}># {b}</span>
-                    ))}
+              </div>
+              <div className={styles.authorCardContent}>
+                  <div className={styles.authorAvatarArea}>
+                     <div className={styles.authorAvatarLarge}>
+                        <Image 
+                          src={(post.authorProfile.avatar_url && (post.authorProfile.avatar_url.startsWith('http') || post.authorProfile.avatar_url.startsWith('/'))) ? post.authorProfile.avatar_url : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"} 
+                          alt={post.authorProfile.display_name} 
+                          width={220}
+                          height={220}
+                          className={styles.authorAvatarImg}
+                          style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                        />
+                     </div>
                   </div>
-                )}
+                <div className={styles.authorDetailsArea}>
+                  <Link href={`/?author=${post.authorProfile.display_name}`} className={styles.authorNameLink}>
+                    {post.authorProfile.display_name}
+                  </Link>
+                  <div style={{ marginTop: '4px', marginBottom: '8px' }}>
+                    <SubscribeBtn authorId={post.authorProfile.id} authorName={post.authorProfile.display_name} />
+                  </div>
+                  <p className={styles.authorBio}>{post.authorProfile.bio || "생동감 넘치는 리뷰를 작성하는 티끌러입니다."}</p>
+                  {post.authorProfile.bullets && post.authorProfile.bullets.length > 0 && (
+                    <div className={styles.authorBullets}>
+                      {post.authorProfile.bullets.map((b: string, i: number) => (
+                        <span key={i} className={styles.authorBullet}># {b}</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        <div className={styles.separator} />
+          <div className={styles.separator} />
 
-        {/* Interaction Bar with Prev/Next Navigation */}
-        <PostInteractions 
-          postId={post.id} 
-          authorId={post.author?.id || post.author_id}
-          initialLikes={post.likes_count || 0} 
-          initialComments={commentsData} 
-          user={user} 
-          isAdmin={isAdmin}
-          prevId={post.prevId}
-          nextId={post.nextId}
-        />
-      </article>
+          {/* Interaction Bar with Prev/Next Navigation */}
+          <PostInteractions 
+            postId={post.id} 
+            authorId={post.author?.id || post.author_id}
+            initialLikes={post.likes_count || 0} 
+            initialComments={commentsData} 
+            user={user} 
+            isAdmin={isAdmin}
+            prevId={post.prevId}
+            nextId={post.nextId}
+          />
+        </article>
+      </div>
     </div>
   );
 }

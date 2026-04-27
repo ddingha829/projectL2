@@ -265,8 +265,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         {isMobileOpen && (
           <div className={gridStyles.mobileOverlay} onClick={() => setIsMobileOpen(false)}></div>
         )}
-        <main className={gridStyles.contentWrapper} style={{ position: 'relative' }}>
-          <div className={`${gridStyles.contentInner} ${isPostDetail ? gridStyles.postViewInner : ''}`} style={{ width: '100%' }}>
+        <main className={gridStyles.contentWrapper} style={{ position: 'relative', width: '100%' }}>
+          <div className={gridStyles.mainLayoutContainer}>
             {children}
           </div>
         </main>

@@ -16,13 +16,20 @@
 
 /* Removed local gradients to allow global background */
 
-.contentInner {
+.mainLayoutContainer {
   width: 100%;
-  max-width: 1200px;
-  padding: 0 20px; /* Increased by 5px from 15px */
   display: flex;
   flex-direction: column;
-  gap: 20px; /* Reduced gap between blocks for tighter fit */
+  gap: 0;
+  min-height: 100vh;
+}
+
+/* This class will be applied to sections that need to be centered */
+.centeredContent {
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
 
@@ -40,8 +47,7 @@
 }
 
 @media (max-width: 1100px) {
-  .contentInner {
-    max-width: 100%;
+  .centeredContent {
     padding: 0 24px;
   }
 }
@@ -59,15 +65,14 @@
     padding: 2px 0 8px 0; /* 상단바와의 간격을 위해 대폭 축소 (12->2px) */
   }
 
-  .contentInner {
-    padding: 0 22px; /* 2x for normal screens */
-    gap: 16px;
+  .centeredContent {
+    padding: 0 22px;
     width: 100%;
-    overflow-x: clip; /* hidden 브레이크 방지 */
+    overflow-x: clip;
   }
   
-  .contentInner.postViewInner {
-    padding: 0 11px !important; /* Keep original for post view */
+  .centeredContent.postViewInner {
+    padding: 0 11px !important;
   }
   
   .mobileFAB {
