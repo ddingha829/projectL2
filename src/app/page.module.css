@@ -2069,9 +2069,8 @@
   .reviewHorizontalGrid {
     margin-left: 0;
     margin-right: 0;
-    padding-left: 16px;
-    /* Start aligned with header */
-    padding-right: 16px;
+    padding: 0 !important;
+    /* Removed 16px side padding to match horizontalScrollGrid (Line 996) */
     gap: 16px;
     /* Exactly matched to horizontalScrollGrid gap (Line 994) */
     padding-bottom: 15px !important;

@@ -14,8 +14,16 @@ export default function NotificationSystem({ user }: { user: any }) {
   const [toasts, setToasts] = useState<any[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const supabase = createClient();
   const dropdownRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const fetchBadge = async () => {
     if (!user) return;
@@ -183,25 +191,15 @@ export default function NotificationSystem({ user }: { user: any }) {
             
             <motion.div 
               className={styles.dropdown}
-              initial={{ 
-                opacity: 0, 
-                x: (typeof window !== 'undefined' && window.innerWidth <= 768) ? '100%' : 0,
-                y: (typeof window !== 'undefined' && window.innerWidth <= 768) ? 0 : 10,
-                scale: (typeof window !== 'undefined' && window.innerWidth <= 768) ? 1 : 0.95
+              initial={isMobile ? { x: "100%" } : { opacity: 0, y: 10, scale: 0.95 }}
+              animate={{ x: 0, opacity: 1, y: 0, scale: 1 }}
+              exit={isMobile ? { x: "100%" } : { opacity: 0, y: 10, scale: 0.95 }}
+              transition={{ 
+                type: isMobile ? "spring" : "tween",
+                damping: 25, 
+                stiffness: 200,
+                duration: isMobile ? undefined : 0.2
               }}
-              animate={{ 
-                opacity: 1, 
-                x: 0,
-                y: 0,
-                scale: 1 
-              }}
-              exit={{ 
-                opacity: 0, 
-                x: (typeof window !== 'undefined' && window.innerWidth <= 768) ? '100%' : 0,
-                y: (typeof window !== 'undefined' && window.innerWidth <= 768) ? 0 : 10,
-                scale: (typeof window !== 'undefined' && window.innerWidth <= 768) ? 1 : 0.95
-              }}
-              transition={{ duration: 0.25, ease: "easeInOut" }}
             >
               <div className={styles.header}>
                 <h3>알림</h3>

@@ -74,9 +74,10 @@
 
 .header h3 {
   margin: 0;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 800;
   font-family: var(--font-outfit), sans-serif;
+  white-space: nowrap;
 }
 
 .markAllBtn {
@@ -221,20 +222,22 @@
   }
 
   .dropdown {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: auto;
-    width: 85%;
-    max-width: 320px;
-    height: 100%;
-    max-height: none;
-    border-radius: 0;
-    border-left: 1px solid var(--border-light);
-    margin-top: 0;
-    z-index: 5000;
-    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+    position: fixed !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    right: 0 !important;
+    left: auto !important;
+    width: 85% !important;
+    max-width: 340px !important;
+    height: 100dvh !important; /* Use dynamic viewport height */
+    max-height: none !important;
+    border-radius: 0 !important;
+    border: none !important;
+    border-left: 1px solid var(--border-light) !important;
+    margin-top: 0 !important;
+    z-index: 9999 !important;
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.2) !important;
+    background: var(--bg-primary) !important;
   }
 
   .bellBtn:hover {
