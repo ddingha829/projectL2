@@ -621,26 +621,43 @@ export default function RichTextEditor({ content, onChange, placeholder = "" }: 
 
             <div className={styles.editorContainer}>
                 <style dangerouslySetInnerHTML={{ __html: `
-                    /* 1. 순수 블랙 텍스트 강제 적용 */
+                    /* [에디토리얼 시스템] 통합 컬러 핸들링 */
                     .ql-editor {
-                        color: #000000 !important;
+                        color: var(--text-primary) !important;
                         --base-width: 1100;
-                        --f-unit: clamp(0.6px, calc(100cqw / var(--base-width)), 1px);
+                        --f-unit: clamp(0.51px, calc(100cqw / var(--base-width)), 1px);
                         container-type: inline-size;
                         font-family: var(--font-noto-sans) !important;
                         font-weight: 400 !important;
-                        background-color: #ffffff !important;
+                        background-color: var(--bg-primary) !important;
                         word-break: keep-all !important;
                         overflow-wrap: break-word !important;
                         padding: calc(60 * var(--f-unit)) calc(65 * var(--f-unit)) !important;
                         transition: all 0.3s ease;
                     }
+
+                    @media (max-width: 768px) {
+                        .ql-editor {
+                            padding: calc(40 * var(--f-unit)) calc(20 * var(--f-unit)) !important;
+                        }
+                    }
+
+                    @media (prefers-color-scheme: dark) {
+                        .ql-editor {
+                            background-color: #1a1a1a !important;
+                            color: #e2e8f0 !important;
+                        }
+                        .ql-editor * {
+                            color: #e2e8f0 !important;
+                        }
+                        /* 다크모드에서 대표 이미지 아웃라인 선명도 조절 */
+                        .ql-editor img[data-main-image="true"] {
+                            outline-color: #ff5c22 !important;
+                        }
+                    }
+
                     .ql-editor.ql-blank::before { content: "" !important; display: none !important; }
 
-                    .ql-editor * {
-                        color: #000000 !important;
-                    }
-                    
                     .ql-snow .ql-picker.ql-color .ql-picker-item[data-value="#000000"] {
                         background-color: #000000 !important;
                     }

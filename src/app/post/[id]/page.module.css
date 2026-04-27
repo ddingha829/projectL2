@@ -158,13 +158,16 @@
 
 @media (max-width: 1024px) {
   .post {
-    padding: 40px 50px;
+    /* Kept fluid to match editor exactly */
+    border-radius: 20px; 
   }
 }
 
 @media (max-width: 768px) {
   .post {
-    padding: 30px 20px;
+    /* Kept horizontal fluid padding but can adjust vertical if needed */
+    /* To match RichTextEditor mobile exactly: */
+    padding: calc(40 * var(--fluid-unit)) calc(20 * var(--fluid-unit)); 
     border-radius: 16px;
     box-shadow: var(--shadow-sm);
   }
@@ -215,12 +218,12 @@
 }
 
 .date {
-  font-size: 1rem; /* Increased 10% from 0.9rem */
+  font-size: 0.9rem; /* Reduced 10% from 1rem */
   font-weight: 500;
 }
 
 .viewCountDetail {
-  font-size: 0.9rem;
+  font-size: 0.81rem; /* Reduced 10% from 0.9rem */
   font-weight: 700;
   color: var(--text-secondary);
 }
@@ -244,13 +247,13 @@
 
 .content {
   font-size: 1rem;
-  line-height: 1.8; /* 기본 간격을 사용자 요청에 따라 1.8로 설정 */
-  color: #000000;
+  line-height: 1.8;
+  color: var(--text-primary); /* Changed from #000000 */
   margin-bottom: 30px;
   font-family: var(--font-noto-sans), sans-serif;
-  font-weight: 300; /* 기본 노토산스 Light 설정 */
+  font-weight: 400; /* Increased from 300 for better readability */
   letter-spacing: -0.015em;
-  word-break: keep-all; /* 어절 단위 줄바꿈 적용 */
+  word-break: keep-all;
   overflow-wrap: break-word;
 }
 
@@ -267,7 +270,7 @@
 :root {
   --base-card-width: 1100;
   /* 0.6 하한선 적용: PC(약 48자) 대비 모바일(약 24자) 호흡 구현 */
-  --fluid-unit: clamp(0.6px, calc(100cqw / var(--base-card-width)), 1px);
+  --fluid-unit: clamp(0.51px, calc(100cqw / var(--base-card-width)), 1px);
 }
 
 .content {
@@ -437,13 +440,13 @@
     font-size: 0.9rem !important;
   }
   .date {
-    font-size: 0.9rem !important;
+    font-size: 0.81rem !important; /* Reduced 10% from 0.9rem */
   }
   .authorBadgeDetail {
     font-size: 0.675rem !important;
   }
   .viewCountDetail {
-    font-size: 0.81rem !important;
+    font-size: 0.73rem !important; /* Reduced 10% from 0.81rem */
   }
   .mainImageWrapper {
     border-radius: 12px;

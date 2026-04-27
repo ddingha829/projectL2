@@ -137,7 +137,7 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  font-size: 0.72rem;
+  font-size: 0.68rem; /* Reduced 5% from 0.72rem */
   color: #ffffff;
   font-weight: 500;
   margin-top: 0;
@@ -412,7 +412,7 @@
 }
 
 .magDate {
-  font-size: 0.72rem;
+  font-size: 0.68rem; /* Reduced 5% from 0.72rem */
   color: var(--text-tertiary);
   font-weight: 500;
 }

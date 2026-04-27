@@ -1479,8 +1479,8 @@
 }
 
 .magListDate {
-  font-size: 0.68rem;
-  /* Normalized with views */
+  font-size: 0.65rem;
+  /* Reduced 5% from 0.68rem */
   color: var(--text-tertiary);
   font-weight: 500;
   letter-spacing: 0.01em;
@@ -1491,7 +1491,8 @@
 .magListViews {
   display: inline-flex;
   align-items: center;
-  font-size: 0.68rem;
+  font-size: 0.65rem;
+  /* Reduced 5% from 0.68rem */
   color: var(--text-secondary);
   font-weight: 600;
   letter-spacing: -0.01em;
