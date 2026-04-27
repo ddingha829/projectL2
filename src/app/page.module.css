@@ -2072,18 +2072,18 @@
     padding-left: 16px;
     /* Start aligned with header */
     padding-right: 16px;
-    gap: 4px;
-    /* Reduced internal gap for reviews */
+    gap: 12px;
+    /* Matched to C-card grid gap */
     padding-bottom: 15px !important;
     /* Significantly reduced from 40px to shrink gap below */
   }
 
   .miniReviewCard {
-    flex: 0 0 58% !important;
+    flex: 0 0 calc(50% - 6px) !important;
+    /* Matched to C-card 2nd col width */
     aspect-ratio: 1 / 1;
     padding: 16px 16px 4px 16px;
     gap: 2px !important;
-    /* Extremely tight gap (Reduced by 70%+) */
     border: 1.2px solid var(--border-medium) !important;
   }
 
@@ -2837,8 +2837,8 @@
 
   /* Inner items for swiping carousels */
   .horizontalScrollMobile>* {
-    flex: 0 0 58% !important;
-    /* Matched to Review card width (10% reduction variant) */
+    flex: 0 0 calc(50% - 6px) !important;
+    /* Matched to Review card width (Synchronized with C-card) */
     scroll-snap-align: start;
     height: auto !important;
   }
