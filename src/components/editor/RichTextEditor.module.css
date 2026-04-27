@@ -28,6 +28,12 @@
   margin-bottom: 12px;
 }
 
+@media (max-width: 768px) {
+  .modeToggleContainer {
+    display: none; /* 실제 모바일 기기에서는 토글 숨김 */
+  }
+}
+
 .modeToggleTrack {
   display: flex;
   background: #f1f5f9;
@@ -80,7 +86,7 @@
 }
 
 .mobilePreviewMode {
-  width: 420px !important;
+  width: 395px !important; /* 내부 375px + 좌우 테두리 각 10px */
   margin: 0 auto;
 }
 

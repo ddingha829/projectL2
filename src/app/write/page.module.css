@@ -383,10 +383,10 @@
 
 @media (max-width: 768px) {
   .container {
-    padding: 20px 0;
+    padding: 20px; /* 메인 페이지와 동일한 수준의 여백 확보 */
   }
   .inputGroup {
-    padding: 0 4px;
+    padding: 0; /* 컨테이너 패딩으로 관리 */
   }
   .title {
     font-size: 1.5rem;

@@ -625,14 +625,14 @@ export default function RichTextEditor({ content, onChange, placeholder = "" }: 
                     .ql-editor {
                         color: #000000 !important;
                         --base-width: 1100;
-                        --f-unit: clamp(0.7px, calc(100cqw / var(--base-width)), 1px);
+                        --f-unit: clamp(0.6px, calc(100cqw / var(--base-width)), 1px);
                         container-type: inline-size;
                         font-family: var(--font-noto-sans) !important;
                         font-weight: 400 !important;
                         background-color: #ffffff !important;
                         word-break: keep-all !important;
                         overflow-wrap: break-word !important;
-                        padding: calc(60 * var(--f-unit)) calc(80 * var(--f-unit)) !important;
+                        padding: calc(60 * var(--f-unit)) calc(65 * var(--f-unit)) !important;
                         transition: all 0.3s ease;
                     }
                     .ql-editor.ql-blank::before { content: "" !important; display: none !important; }
