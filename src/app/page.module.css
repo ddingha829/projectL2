@@ -2822,10 +2822,8 @@
     overflow-x: auto !important;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
-    gap: 12px !important;
-    /* Restored to 12px */
-    padding: 0 8px 20px 8px !important;
-    /* Base 16 + 8 = 24 */
+    gap: 16px !important;
+    padding: 0 16px 20px 16px !important;
     margin: 0 !important;
     scrollbar-width: none;
   }
@@ -2836,7 +2834,7 @@
 
   /* Inner items for swiping carousels */
   .horizontalScrollMobile>* {
-    flex: 0 0 58% !important;
+    flex: 0 0 53% !important;
     /* Restored to ensure other cards don't shrink */
     scroll-snap-align: start;
     height: auto !important;
