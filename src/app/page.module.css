@@ -890,7 +890,7 @@
 
   .sectionTitle {
     font-size: 1.29rem;
-    /* Reduced 10% from 1.43rem */
+    padding: 0 16px !important;
     white-space: nowrap;
     text-align: left;
     margin: 0;
@@ -1516,7 +1516,9 @@
 
 @media (max-width: 768px) {
   .recentReviewsSection {
-    margin-top: 0;
+    margin-top: 15px !important;
+    margin-bottom: 0px !important;
+    padding: 0 !important; /* Removed 16px padding to match gridSection structure */
   }
 }
 
@@ -2067,14 +2069,12 @@
 
 @media (max-width: 768px) {
   .reviewHorizontalGrid {
-    margin-left: 0;
-    margin-right: 0;
-    padding: 0 !important;
-    /* Removed 16px side padding to match horizontalScrollGrid (Line 996) */
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 16px 20px 16px !important;
+    /* Exactly matching horizontalScrollMobile */
     gap: 16px;
-    /* Exactly matched to horizontalScrollGrid gap (Line 994) */
-    padding-bottom: 15px !important;
-    /* Significantly reduced from 40px to shrink gap below */
+    width: 100% !important;
   }
 
   .miniReviewCard {

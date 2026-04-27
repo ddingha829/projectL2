@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { getNotifications, getUnreadCount, markAsRead, markAllAsRead, deleteNotification } from "@/app/actions/notifications";
@@ -10,6 +11,7 @@ import styles from "./NotificationSystem.module.css";
 
 export default function NotificationSystem({ user }: { user: any }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [toasts, setToasts] = useState<any[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -19,6 +21,7 @@ export default function NotificationSystem({ user }: { user: any }) {
   const dropdownRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
+    setMounted(true);
     const checkMobile = () => setIsMobile(window.innerWidth <= 768);
     checkMobile();
     window.addEventListener('resize', checkMobile);
@@ -181,100 +184,186 @@ export default function NotificationSystem({ user }: { user: any }) {
       <AnimatePresence>
         {isOpen && (
           <>
-            <motion.div 
-              className={styles.backdrop}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsOpen(false)}
-            />
-            
-            <motion.div 
-              className={styles.dropdown}
-              initial={isMobile ? { x: "100%" } : { opacity: 0, y: 10, scale: 0.95 }}
-              animate={{ x: 0, opacity: 1, y: 0, scale: 1 }}
-              exit={isMobile ? { x: "100%" } : { opacity: 0, y: 10, scale: 0.95 }}
-              transition={{ 
-                type: isMobile ? "spring" : "tween",
-                damping: 25, 
-                stiffness: 200,
-                duration: isMobile ? undefined : 0.2
-              }}
-            >
-              <div className={styles.header}>
-                <h3>알림</h3>
-                <div className={styles.headerActions}>
-                  {unreadCount > 0 && (
-                    <button className={styles.markAllBtn} onClick={handleMarkAllAsRead}>
-                      모두 읽음
-                    </button>
-                  )}
-                  <button className={styles.mobileCloseBtn} onClick={() => setIsOpen(false)}>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="18" y1="6" x2="6" y2="18"></line>
-                      <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                  </button>
-                </div>
-              </div>
-
-              <div className={styles.list}>
-                {loading ? (
-                  <div className={styles.empty}>불러오는 중...</div>
-                ) : notifications.length > 0 ? (
-                  <>
-                    {notifications.map((n) => (
-                      <div key={n.id} className={styles.itemWrapper}>
-                        <Link 
-                          href={`/post/db-${n.post_id}${n.type.includes('comment') ? `#comment-${n.comment_id}` : ''}`}
-                          className={`${styles.item} ${!n.is_read ? styles.unreadItem : ''}`}
-                          onClick={() => {
-                            if (!n.is_read) handleMarkAsRead(n.id);
-                            setIsOpen(false);
-                          }}
-                        >
-                          {n.sender?.avatar_url ? (
-                            <img src={n.sender.avatar_url} alt="" className={styles.avatar} />
-                          ) : (
-                            <div className={styles.avatarPlaceholder}>👤</div>
-                          )}
-                          <div className={styles.content}>
-                            <div className={styles.message}>
-                              <span className={styles.senderName}>{n.sender?.display_name || '익명'}</span>
-                              {getTypeLabel(n)}
-                            </div>
-                            <span className={styles.time}>{getTimeAgo(n.created_at)}</span>
-                            {n.content_preview && (
-                              <div className={styles.preview}>
-                                {formatContent(n.content_preview)}
-                              </div>
-                            )}
-                          </div>
-                        </Link>
-                        <button 
-                          className={styles.deleteBtn}
-                          onClick={(e) => handleDelete(e, n.id)}
-                          aria-label="알림 삭제"
-                        >
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                          </svg>
+            {mounted && isMobile ? createPortal(
+              <>
+                <motion.div 
+                  className={styles.backdrop}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setIsOpen(false)}
+                />
+                
+                <motion.div 
+                  className={styles.dropdown}
+                  initial={{ x: "100%" }}
+                  animate={{ x: 0 }}
+                  exit={{ x: "100%" }}
+                  transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                >
+                  <div className={styles.header}>
+                    <h3>알림</h3>
+                    <div className={styles.headerActions}>
+                      {unreadCount > 0 && (
+                        <button className={styles.markAllBtn} onClick={handleMarkAllAsRead}>
+                          모두 읽음
                         </button>
-                      </div>
-                    ))}
-                    <Link href="/activities" className={styles.seeAllBtn} onClick={() => setIsOpen(false)}>
-                      모든 활동 보기
-                    </Link>
-                  </>
-                ) : (
-                  <div className={styles.empty}>
-                    <div className={styles.emptyIcon}>🔔</div>
-                    <p>새로운 알림이 없습니다</p>
+                      )}
+                      <button className={styles.mobileCloseBtn} onClick={() => setIsOpen(false)}>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                      </button>
+                    </div>
                   </div>
-                )}
-              </div>
-            </motion.div>
+    
+                  <div className={styles.list}>
+                    {loading ? (
+                      <div className={styles.empty}>불러오는 중...</div>
+                    ) : notifications.length > 0 ? (
+                      <>
+                        {notifications.map((n) => (
+                          <div key={n.id} className={styles.itemWrapper}>
+                            <Link 
+                              href={`/post/db-${n.post_id}${n.type.includes('comment') ? `#comment-${n.comment_id}` : ''}`}
+                              className={`${styles.item} ${!n.is_read ? styles.unreadItem : ''}`}
+                              onClick={() => {
+                                if (!n.is_read) handleMarkAsRead(n.id);
+                                setIsOpen(false);
+                              }}
+                            >
+                              {n.sender?.avatar_url ? (
+                                <img src={n.sender.avatar_url} alt="" className={styles.avatar} />
+                              ) : (
+                                <div className={styles.avatarPlaceholder}>👤</div>
+                              )}
+                              <div className={styles.content}>
+                                <div className={styles.message}>
+                                  <span className={styles.senderName}>{n.sender?.display_name || '익명'}</span>
+                                  {getTypeLabel(n)}
+                                </div>
+                                <span className={styles.time}>{getTimeAgo(n.created_at)}</span>
+                                {n.content_preview && (
+                                  <div className={styles.preview}>
+                                    {formatContent(n.content_preview)}
+                                  </div>
+                                )}
+                              </div>
+                            </Link>
+                            <button 
+                              className={styles.deleteBtn}
+                              onClick={(e) => handleDelete(e, n.id)}
+                              aria-label="알림 삭제"
+                            >
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                              </svg>
+                            </button>
+                          </div>
+                        ))}
+                        <Link href="/activities" className={styles.seeAllBtn} onClick={() => setIsOpen(false)}>
+                          모든 활동 보기
+                        </Link>
+                      </>
+                    ) : (
+                      <div className={styles.empty}>
+                        <div className={styles.emptyIcon}>🔔</div>
+                        <p>새로운 알림이 없습니다</p>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              </>,
+              document.body
+            ) : (
+              <>
+                <motion.div 
+                  className={styles.backdrop}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setIsOpen(false)}
+                />
+                
+                <motion.div 
+                  className={styles.dropdown}
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <div className={styles.header}>
+                    <h3>알림</h3>
+                    <div className={styles.headerActions}>
+                      {unreadCount > 0 && (
+                        <button className={styles.markAllBtn} onClick={handleMarkAllAsRead}>
+                          모두 읽음
+                        </button>
+                      )}
+                    </div>
+                  </div>
+    
+                  <div className={styles.list}>
+                    {loading ? (
+                      <div className={styles.empty}>불러오는 중...</div>
+                    ) : notifications.length > 0 ? (
+                      <>
+                        {notifications.map((n) => (
+                          <div key={n.id} className={styles.itemWrapper}>
+                            <Link 
+                              href={`/post/db-${n.post_id}${n.type.includes('comment') ? `#comment-${n.comment_id}` : ''}`}
+                              className={`${styles.item} ${!n.is_read ? styles.unreadItem : ''}`}
+                              onClick={() => {
+                                if (!n.is_read) handleMarkAsRead(n.id);
+                                setIsOpen(false);
+                              }}
+                            >
+                              {n.sender?.avatar_url ? (
+                                <img src={n.sender.avatar_url} alt="" className={styles.avatar} />
+                              ) : (
+                                <div className={styles.avatarPlaceholder}>👤</div>
+                              )}
+                              <div className={styles.content}>
+                                <div className={styles.message}>
+                                  <span className={styles.senderName}>{n.sender?.display_name || '익명'}</span>
+                                  {getTypeLabel(n)}
+                                </div>
+                                <span className={styles.time}>{getTimeAgo(n.created_at)}</span>
+                                {n.content_preview && (
+                                  <div className={styles.preview}>
+                                    {formatContent(n.content_preview)}
+                                  </div>
+                                )}
+                              </div>
+                            </Link>
+                            <button 
+                              className={styles.deleteBtn}
+                              onClick={(e) => handleDelete(e, n.id)}
+                              aria-label="알림 삭제"
+                            >
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                              </svg>
+                            </button>
+                          </div>
+                        ))}
+                        <Link href="/activities" className={styles.seeAllBtn} onClick={() => setIsOpen(false)}>
+                          모든 활동 보기
+                        </Link>
+                      </>
+                    ) : (
+                      <div className={styles.empty}>
+                        <div className={styles.emptyIcon}>🔔</div>
+                        <p>새로운 알림이 없습니다</p>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              </>
+            )}
           </>
         )}
       </AnimatePresence>
