@@ -24,11 +24,11 @@ const ReactQuill = dynamic(async () => {
                 icons['place'] = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
             }
 
-            // 1. Font Family (Class Attributor) - Noto Sans Light가 기본값(false)
+            // 1. Font Family (Class Attributor) - Noto Sans Thin이 기본값(false)이 되도록 함
             const Font = (Quill as any).import('formats/font');
             if (Font) {
                 Font.whitelist = [
-                    'notosans', 'notosans-thin', 'notosans-medium', 'notosans-bold', 'notosans-black',
+                    'notosans', 'notosans-medium', 'notosans-bold', 'notosans-black',
                     'nanummyeongjo', 'nanumgothic', 'inter', 'merriweather'
                 ];
                 (Quill as any).register(Font, true);
@@ -39,7 +39,7 @@ const ReactQuill = dynamic(async () => {
             if (StyleAttributor) {
                 const SizeStyle = new StyleAttributor('size', 'font-size', {
                     scope: Parchment.Scope.INLINE,
-                    whitelist: ['10px', '11px', '12px', '13px', '16px', '18px', '20px', '24px', '32px', '48px']
+                    whitelist: ['10px', '11px', '12px', '13px', '16px', '18px', '20px', '24px', '32px', '48px'] // 14px는 false로 처리
                 });
                 (Quill as any).register(SizeStyle, true);
             }
@@ -558,12 +558,11 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
     const modules = useMemo(() => ({
         toolbar: {
             container: [
-                [{ 'header': [1, 2, 3, false] }],
                 [{ 'font': [
-                    false, 'notosans', 'notosans-thin', 'notosans-medium', 'notosans-bold', 'notosans-black',
+                    false, 'notosans', 'notosans-medium', 'notosans-bold', 'notosans-black',
                     'nanummyeongjo', 'nanumgothic', 'inter', 'merriweather'
                 ] }],
-                [{ 'size': ['10px', '11px', '12px', '13px', false, '16px', '18px', '20px', '24px', '32px', '48px'] }],
+                [{ 'size': [false, '10px', '11px', '12px', '13px', '16px', '18px', '20px', '24px', '32px', '48px'] }],
                 [{ 'line-height': ['1-0', '1-2', '1-4', '1-5', false, '1-8', '2-0', '2-5', '3-0'] }],
                 ['bold', 'italic', 'underline', 'strike'],
                 [{ 'color': [] }, { 'background': [] }],
@@ -590,6 +589,66 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
 
     return (
         <div className={styles.editorContainer}>
+            {/* [최종 무기] 어떠한 CSS보다 높은 우선순위를 위해 스타일 태그 직접 주입 */}
+            <style dangerouslySetInnerHTML={{ __html: `
+                /* 1. 폰트 선택기 라벨 교체 */
+                body .ql-snow .ql-picker.ql-font .ql-picker-label::before,
+                body .ql-snow .ql-picker.ql-font .ql-picker-item::before {
+                    content: '노토 (Thin)' !important;
+                }
+                body .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="notosans"]::before,
+                body .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="notosans"]::before {
+                    content: '노토산스 (Regular)' !important;
+                }
+                body .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="notosans-medium"]::before,
+                body .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="notosans-medium"]::before { content: '노토 (Medium)' !important; }
+                body .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="notosans-bold"]::before,
+                body .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="notosans-bold"]::before { content: '노토 (Bold)' !important; }
+                body .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="notosans-black"]::before,
+                body .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="notosans-black"]::before { content: '노토 (Black)' !important; }
+                body .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="nanummyeongjo"]::before,
+                body .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="nanummyeongjo"]::before { content: '나눔명조' !important; }
+                body .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="nanumgothic"]::before,
+                body .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="nanumgothic"]::before { content: '나눔고딕' !important; }
+                body .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="inter"]::before,
+                body .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="inter"]::before { content: 'Inter' !important; }
+                body .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="merriweather"]::before,
+                body .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="merriweather"]::before { content: 'Merriweather' !important; }
+
+                /* 2. 글자 크기 라벨 교체 */
+                body .ql-snow .ql-picker.ql-size .ql-picker-label::before,
+                body .ql-snow .ql-picker.ql-size .ql-picker-item::before {
+                    content: '14px' !important;
+                }
+                body .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="10px"]::before,
+                body .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="10px"]::before { content: '10px' !important; }
+                body .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="11px"]::before,
+                body .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="11px"]::before { content: '11px' !important; }
+                body .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="12px"]::before,
+                body .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="12px"]::before { content: '12px' !important; }
+                body .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="13px"]::before,
+                body .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="13px"]::before { content: '13px' !important; }
+                body .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="16px"]::before,
+                body .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="16px"]::before { content: '16px' !important; }
+                body .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="18px"]::before,
+                body .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="18px"]::before { content: '18px' !important; }
+                body .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="20px"]::before,
+                body .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="20px"]::before { content: '20px' !important; }
+                body .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="24px"]::before,
+                body .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="24px"]::before { content: '24px' !important; }
+                body .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="32px"]::before,
+                body .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="32px"]::before { content: '32px' !important; }
+                body .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="48px"]::before,
+                body .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="48px"]::before { content: '48px' !important; }
+
+                /* 3. 에디터 내부 본문 스타일 (노토 Thin 강제) */
+                .ql-editor {
+                    font-family: var(--font-noto-sans) !important;
+                    font-weight: 100 !important;
+                    font-size: 14px !important;
+                }
+            ` }} />
+
             {(selectedImage || selectedCard) && !showCropModal && (
                 <div 
                     className={styles.imageFloatingToolbar}

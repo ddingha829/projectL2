@@ -1,10 +1,15 @@
 .editorContainer {
-  border: 1px solid var(--border-medium);
-  border-radius: 12px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
   overflow: visible !important;
-  background: var(--bg-primary);
-  box-shadow: var(--shadow-sm);
+  background: #fff;
+  box-shadow: var(--shadow-md);
   position: relative;
+  transition: box-shadow 0.3s ease;
+}
+
+.editorContainer:focus-within {
+  box-shadow: var(--shadow-lg);
 }
 
 /* 중간 단계의 모든 컨테이너가 sticky를 방해하지 않도록 함 */
@@ -48,14 +53,15 @@
   position: -webkit-sticky !important;
   position: sticky !important;
   top: var(--header-height) !important;
-  z-index: 1000 !important; /* 충분히 높게 */
-  background: var(--bg-primary) !important;
+  z-index: 1000 !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px);
   border-top: none !important;
   border-left: none !important;
   border-right: none !important;
-  border-bottom: 1px solid var(--border-medium) !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
-  transition: none; /* 스티키 시 떨림 방지 */
+  border-bottom: 1px solid var(--border-light) !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
 @media (max-width: 768px) {
@@ -103,7 +109,15 @@
 
 .editorContainer :global(.ql-editor) {
   min-height: 600px !important;
-  padding-bottom: 100px;
+  padding: 60px 80px 100px 80px; /* 상세 페이지와 동일한 패딩 부여 */
+  background-color: #fff;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+@media (max-width: 768px) {
+  .editorContainer :global(.ql-editor) {
+    padding: 30px 20px 100px 20px;
+  }
 }
 
 .toolbar button {
@@ -237,11 +251,33 @@
   line-height: 0.7 !important;
 }
 
-/* Custom Labels for Quill */
-:global(.ql-snow .ql-picker.ql-font .ql-picker-label::before),
-:global(.ql-snow .ql-picker.ql-font .ql-picker-item::before) { content: '폰트 선택'; }
-:global(.ql-snow .ql-picker.ql-size .ql-picker-label::before),
-:global(.ql-snow .ql-picker.ql-size .ql-picker-item::before) { content: '크기'; }
+/* 1. Font Family Picker - Ultra Specificity */
+.editorContainer :global(.ql-snow .ql-picker.ql-font .ql-picker-label::before),
+.editorContainer :global(.ql-snow .ql-picker.ql-font .ql-picker-item::before) {
+  content: '노토 (Thin)' !important;
+}
+
+.editorContainer :global(.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="notosans"]::before),
+.editorContainer :global(.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="notosans"]::before) {
+  content: '노토산스 (Regular)' !important;
+}
+
+/* 2. Font Size Picker - Ultra Specificity */
+.editorContainer :global(.ql-snow .ql-picker.ql-size .ql-picker-label::before),
+.editorContainer :global(.ql-snow .ql-picker.ql-size .ql-picker-item::before) {
+  content: '14px' !important;
+}
+
+.editorContainer :global(.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="10px"]::before) { content: '10px' !important; }
+.editorContainer :global(.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="11px"]::before) { content: '11px' !important; }
+.editorContainer :global(.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="12px"]::before) { content: '12px' !important; }
+.editorContainer :global(.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="13px"]::before) { content: '13px' !important; }
+.editorContainer :global(.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="16px"]::before) { content: '16px' !important; }
+.editorContainer :global(.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="18px"]::before) { content: '18px' !important; }
+.editorContainer :global(.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="20px"]::before) { content: '20px' !important; }
+.editorContainer :global(.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="24px"]::before) { content: '24px' !important; }
+.editorContainer :global(.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="32px"]::before) { content: '32px' !important; }
+.editorContainer :global(.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="48px"]::before) { content: '48px' !important; }
 
 /* Quill Review Card Blot Styles */
 :global(.ql-review-card) {
