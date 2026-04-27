@@ -217,7 +217,7 @@ interface RichTextEditorProps {
     placeholder?: string;
 }
 
-export default function RichTextEditor({ content, onChange, placeholder }: RichTextEditorProps) {
+export default function RichTextEditor({ content, onChange, placeholder = "" }: RichTextEditorProps) {
     const supabase = createClient();
     const [isClient, setIsClient] = useState(false);
     const quillRef = useRef<any>(null);
@@ -230,6 +230,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
     const [originalFile, setOriginalFile] = useState<File | null>(null);
     const [selectedImage, setSelectedImage] = useState<HTMLImageElement | null>(null);
     const [selectedCard, setSelectedCard] = useState<HTMLElement | null>(null);
+    const [isMobilePreview, setIsMobilePreview] = useState(false);
     const [toolbarPos, setToolbarPos] = useState({ top: 0, left: 0 });
 
     const compressImage = async (file: File): Promise<Blob> => {
@@ -582,23 +583,76 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
         'header', 'font', 'size', 'line-height',
         'bold', 'italic', 'underline', 'strike',
         'color', 'background', 'align',
-        'list', 'image', 'link', 'video', 'review-card'
+        'list', 'image', 'link', 'video', 'review-card', 'color', 'background'
     ];
 
     if (!isClient) return <div className={styles.loading}>티끌러를 불러오는 중입니다...</div>;
 
     return (
-        <div className={styles.editorContainer}>
-            {/* [최종 무기] 어떠한 CSS보다 높은 우선순위를 위해 스타일 태그 직접 주입 */}
-            <style dangerouslySetInnerHTML={{ __html: `
+        <div className={`${styles.editorOverallWrapper} ${isMobilePreview ? styles.mobilePreviewMode : ''}`}>
+            <div className={styles.modeToggleContainer}>
+                <div className={styles.modeToggleTrack}>
+                    <button 
+                        type="button"
+                        className={`${styles.modeButton} ${!isMobilePreview ? styles.active : ''}`}
+                        onClick={() => setIsMobilePreview(false)}
+                    >
+                        <svg className={styles.modeIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                            <line x1="8" y1="21" x2="16" y2="21"></line>
+                            <line x1="12" y1="17" x2="12" y2="21"></line>
+                        </svg>
+                        <span className={styles.label}>Desktop</span>
+                    </button>
+                    <button 
+                        type="button"
+                        className={`${styles.modeButton} ${isMobilePreview ? styles.active : ''}`}
+                        onClick={() => setIsMobilePreview(true)}
+                    >
+                        <svg className={styles.modeIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                        </svg>
+                        <span className={styles.label}>Mobile</span>
+                    </button>
+                    <div className={styles.activeGlider} style={{ transform: isMobilePreview ? 'translateX(100%)' : 'translateX(0)' }} />
+                </div>
+            </div>
+
+            <div className={styles.editorContainer}>
+                <style dangerouslySetInnerHTML={{ __html: `
+                    /* 1. 순수 블랙 텍스트 강제 적용 */
+                    .ql-editor {
+                        color: #000000 !important;
+                        --base-width: 1100;
+                        --f-unit: clamp(0.7px, calc(100cqw / var(--base-width)), 1px);
+                        container-type: inline-size;
+                        font-family: var(--font-noto-sans) !important;
+                        font-weight: 400 !important;
+                        background-color: #ffffff !important;
+                        word-break: keep-all !important;
+                        overflow-wrap: break-word !important;
+                        padding: calc(60 * var(--f-unit)) calc(80 * var(--f-unit)) !important;
+                        transition: all 0.3s ease;
+                    }
+                    .ql-editor.ql-blank::before { content: "" !important; display: none !important; }
+
+                    .ql-editor * {
+                        color: #000000 !important;
+                    }
+                    
+                    .ql-snow .ql-picker.ql-color .ql-picker-item[data-value="#000000"] {
+                        background-color: #000000 !important;
+                    }
+
                 /* 1. 폰트 선택기 라벨 교체 */
                 body .ql-snow .ql-picker.ql-font .ql-picker-label::before,
                 body .ql-snow .ql-picker.ql-font .ql-picker-item::before {
-                    content: '노토 (Thin)' !important;
+                    content: '노토 (Regular)' !important;
                 }
                 body .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="notosans"]::before,
                 body .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="notosans"]::before {
-                    content: '노토산스 (Regular)' !important;
+                    content: '노토 (Regular)' !important;
                 }
                 body .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="notosans-medium"]::before,
                 body .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="notosans-medium"]::before { content: '노토 (Medium)' !important; }
@@ -641,11 +695,32 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                 body .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="48px"]::before,
                 body .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="48px"]::before { content: '48px' !important; }
 
-                /* 3. 에디터 내부 본문 스타일 (노토 Thin 강제) */
-                .ql-editor {
-                    font-family: var(--font-noto-sans) !important;
-                    font-weight: 100 !important;
-                    font-size: 14px !important;
+                    transition: all 0.3s ease; /* 미리보기 전환 시 부드러운 효과 */
+                }
+
+                /* 기본 14px -> 20px 매핑 적용 (1.43배 확대) */
+                .ql-editor, .ql-editor p, .ql-editor li {
+                    font-size: calc(20 * var(--f-unit)) !important;
+                }
+
+                /* 모든 지원 크기를 가변 단위로 매칭 */
+                .ql-editor [class*="ql-size-10px"] { font-size: calc(21 * var(--f-unit)) !important; }
+                .ql-editor [class*="ql-size-11px"] { font-size: calc(23 * var(--f-unit)) !important; }
+                .ql-editor [class*="ql-size-12px"] { font-size: calc(24 * var(--f-unit)) !important; }
+                .ql-editor [class*="ql-size-13px"] { font-size: calc(26 * var(--f-unit)) !important; }
+                .ql-editor [class*="ql-size-14px"] { font-size: calc(30 * var(--f-unit)) !important; }
+                .ql-editor [class*="ql-size-16px"] { font-size: calc(34 * var(--f-unit)) !important; }
+                .ql-editor [class*="ql-size-18px"] { font-size: calc(38 * var(--f-unit)) !important; }
+                .ql-editor [class*="ql-size-20px"] { font-size: calc(42 * var(--f-unit)) !important; }
+                .ql-editor [class*="ql-size-24px"] { font-size: calc(51 * var(--f-unit)) !important; }
+                .ql-editor [class*="ql-size-32px"] { font-size: calc(68 * var(--f-unit)) !important; }
+                .ql-editor [class*="ql-size-48px"] { font-size: calc(102 * var(--f-unit)) !important; }
+
+                /* Placeholder도 가변 크기 적용 */
+                .ql-editor.ql-blank::before {
+                    font-size: calc(30 * var(--f-unit)) !important;
+                    color: #adb5bd !important;
+                    letter-spacing: normal !important;
                 }
             ` }} />
 
@@ -756,6 +831,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                     />
                 )}
             </AnimatePresence>
+            </div>
         </div>
     );
 }

@@ -2854,14 +2854,28 @@
     /* Restored to 12px */
   }
 
-  /* Shrink metadata font sizes by 5% on mobile */
+  /* Shrink metadata font sizes on mobile */
   .magCardCategory,
-  .magListAuthor,
   .magStat,
   .magListDate,
   .cStats,
   .cStat {
     font-size: 0.62rem !important;
+  }
+
+  /* 티끌러 이름 5% 추가 축소 (0.62 * 0.95 = 0.59) */
+  .magListAuthor {
+    font-size: 0.59rem !important;
+  }
+
+  /* 조회수 숫자 및 아이콘 20% 축소 (0.62 * 0.8 = 0.5) */
+  .magListViews {
+    font-size: 0.5rem !important;
+  }
+
+  .magListViews svg {
+    width: 10px !important;
+    height: 10px !important;
   }
 
   /* Hide review date on mobile */

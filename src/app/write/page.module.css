@@ -15,9 +15,10 @@
 }
 
 .title {
-  font-size: 2rem;
-  font-weight: 800;
-  color: var(--text-primary);
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #000000;
+  letter-spacing: -0.02em;
 }
 
 .formContainer {
@@ -43,18 +44,24 @@
 
 .inputGroup label {
   font-weight: 600;
-  color: var(--text-primary);
+  color: #000000;
 }
 
 .input {
-  padding: 14px 16px;
-  border-radius: 12px;
+  padding: 16px 20px;
+  border-radius: 14px;
   border: 1px solid var(--border-medium);
-  background-color: var(--bg-secondary);
-  color: var(--text-primary);
-  font-size: 1rem;
-  transition: border-color 0.2s;
+  background-color: #fff; /* 에디터와 통일감을 위해 흰색 배율로 */
+  color: #000000;
+  font-size: 1.05rem;
+  transition: all 0.2s;
   outline: none;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.input:focus {
+  border-color: #000;
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
 }
 
 .textarea {
@@ -181,12 +188,13 @@
 .checkboxGroup {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
-  background: var(--bg-primary);
+  gap: 10px;
+  padding: 10px 16px;
+  background: #fff;
   border: 1px solid var(--border-medium);
-  border-radius: 8px;
+  border-radius: 10px;
   transition: all 0.2s;
+  cursor: pointer;
 }
 
 .checkboxGroup:hover {
