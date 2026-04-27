@@ -360,7 +360,7 @@ export default function HomeContent({
               <div className={styles.gridSection} style={{ marginTop: isMobile ? '4px' : '7px' }}>
 
                 <div className={styles.magSecHeader} style={{ marginBottom: isMobile ? '1px' : '7px', marginTop: isMobile ? '' : '0' }}>
-                  <h2 className={styles.magSecTitleNew} style={{ margin: 0, display: 'flex', alignItems: 'baseline', flexWrap: 'wrap', gap: '8px' }}>
+                  <h2 className={styles.magSecTitleNew} style={{ margin: 0, paddingLeft: '8px', display: 'flex', alignItems: 'baseline', flexWrap: 'wrap', gap: '8px' }}>
                     {magazineIssue ? (
                       <>
                         <span>{(() => {
@@ -459,7 +459,7 @@ export default function HomeContent({
 
                 {/* 2. New Posts Section: Title + C-cards (Posts 4~8) */}
                 <div className={styles.magSecHeader} style={{ borderBottom: 'none', marginBottom: isMobile ? '1px' : '7px' }}>
-                  <h2 className={styles.resultsTitle} style={{ margin: 0 }}>
+                  <h2 className={styles.resultsTitle} style={{ margin: 0, paddingLeft: '8px' }}>
                     새로운 <span style={{ color: '#ff4804' }}>티끌</span>
                   </h2>
                   {allPosts.length > 0 && (

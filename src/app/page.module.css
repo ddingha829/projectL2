@@ -890,7 +890,6 @@
 
   .sectionTitle {
     font-size: 1.29rem;
-    padding: 0 16px !important;
     white-space: nowrap;
     text-align: left;
     margin: 0;
@@ -1518,7 +1517,7 @@
   .recentReviewsSection {
     margin-top: 15px !important;
     margin-bottom: 0px !important;
-    padding: 0 !important; /* Removed 16px padding to match gridSection structure */
+    padding: 0 16px !important;
   }
 }
 
@@ -2069,12 +2068,14 @@
 
 @media (max-width: 768px) {
   .reviewHorizontalGrid {
-    margin-left: -22px !important;
-    margin-right: -22px !important;
-    width: calc(100% + 44px) !important;
-    padding: 0 16px 20px 16px !important;
-    /* Exactly matching horizontalScrollMobile and its breakout */
+    margin-left: 0;
+    margin-right: 0;
+    padding: 0 !important;
+    /* Removed 16px side padding to match horizontalScrollGrid (Line 996) */
     gap: 16px;
+    /* Exactly matched to horizontalScrollGrid gap (Line 994) */
+    padding-bottom: 15px !important;
+    /* Significantly reduced from 40px to shrink gap below */
   }
 
   .miniReviewCard {
@@ -2822,8 +2823,10 @@
     overflow-x: auto !important;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
-    gap: 16px !important;
-    padding: 0 16px 20px 16px !important;
+    gap: 12px !important;
+    /* Restored to 12px */
+    padding: 0 8px 20px 8px !important;
+    /* Base 16 + 8 = 24 */
     margin: 0 !important;
     scrollbar-width: none;
   }
@@ -2834,7 +2837,7 @@
 
   /* Inner items for swiping carousels */
   .horizontalScrollMobile>* {
-    flex: 0 0 53% !important;
+    flex: 0 0 58% !important;
     /* Restored to ensure other cards don't shrink */
     scroll-snap-align: start;
     height: auto !important;
