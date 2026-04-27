@@ -2072,15 +2072,15 @@
     padding-left: 16px;
     /* Start aligned with header */
     padding-right: 16px;
-    gap: 12px;
-    /* Matched to C-card grid gap */
+    gap: 16px;
+    /* Exactly matched to horizontalScrollGrid gap (Line 994) */
     padding-bottom: 15px !important;
     /* Significantly reduced from 40px to shrink gap below */
   }
 
   .miniReviewCard {
-    flex: 0 0 calc(50% - 6px) !important;
-    /* Matched to C-card 2nd col width */
+    flex: 0 0 53% !important;
+    /* Execat match to horizontalScrollGrid > article (Line 1007) */
     aspect-ratio: 1 / 1;
     padding: 16px 16px 4px 16px;
     gap: 2px !important;
@@ -2837,8 +2837,8 @@
 
   /* Inner items for swiping carousels */
   .horizontalScrollMobile>* {
-    flex: 0 0 calc(50% - 6px) !important;
-    /* Matched to Review card width (Synchronized with C-card) */
+    flex: 0 0 58% !important;
+    /* Restored to ensure other cards don't shrink */
     scroll-snap-align: start;
     height: auto !important;
   }
