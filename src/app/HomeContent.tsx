@@ -91,6 +91,35 @@ interface HomeContentProps {
   } | null;
 }
 
+function LazySection({ children, threshold = 0.1 }: { children: React.ReactNode, threshold?: number }) {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, [threshold]);
+
+  return (
+    <div ref={ref} style={{ minHeight: isVisible ? 'auto' : '100px' }}>
+      {isVisible ? children : null}
+    </div>
+  );
+}
+
 export default function HomeContent({ 
   heroPosts,
   otherPosts,
@@ -476,17 +505,37 @@ export default function HomeContent({
                 ))}
               </div>
 
-              <ReviewsSection 
-                recentReviews={recentReviews} 
-                isMobile={isMobile} 
-                scrollReviews={scrollReviews} 
-                reviewRef={reviewRef} 
-                router={router} 
-                MOCK_REVIEWS={MOCK_REVIEWS} 
-              />
+              {/* [모바일] 하단 섹션 순차로딩 (IntersectionObserver 이용) */}
+              {isMobile ? (
+                <>
+                  <LazySection threshold={0.05}>
+                    <ReviewsSection 
+                      recentReviews={recentReviews} 
+                      isMobile={isMobile} 
+                      scrollReviews={scrollReviews} 
+                      reviewRef={reviewRef} 
+                      router={router} 
+                      MOCK_REVIEWS={MOCK_REVIEWS} 
+                    />
+                  </LazySection>
 
-              {/* Editors Section (Dynamically Loaded) */}
-              <EditorsSection editors={editors} isMobile={isMobile} allPosts={allPosts} />
+                  <LazySection threshold={0.05}>
+                    <EditorsSection editors={editors} isMobile={isMobile} allPosts={allPosts} />
+                  </LazySection>
+                </>
+              ) : (
+                <>
+                  <ReviewsSection 
+                    recentReviews={recentReviews} 
+                    isMobile={isMobile} 
+                    scrollReviews={scrollReviews} 
+                    reviewRef={reviewRef} 
+                    router={router} 
+                    MOCK_REVIEWS={MOCK_REVIEWS} 
+                  />
+                  <EditorsSection editors={editors} isMobile={isMobile} allPosts={allPosts} />
+                </>
+              )}
             </div>
           </div>
         ) : (

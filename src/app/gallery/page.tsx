@@ -29,20 +29,26 @@ export default function GalleryPage() {
     setLoading(false)
   }, [page, loading, hasMore])
 
-  // 실시간 필터링
-  useEffect(() => {
+  // 검색 버튼 클릭 시 필터링 수행
+  const handleSearch = useCallback(() => {
     if (!searchQuery.trim()) {
       setFilteredImages(images)
     } else {
       const lowerQuery = searchQuery.trim().toLowerCase().normalize('NFC')
       const filtered = images.filter(img => {
-        // searchTerms에는 [카테고리] 제목 작성자 정보가 포함되어 있음
         const terms = (img.searchTerms || '').normalize('NFC')
         return terms.includes(lowerQuery)
       })
       setFilteredImages(filtered)
     }
   }, [searchQuery, images])
+
+  // 초기 로딩 시 이미지 데이터 설정
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setFilteredImages(images)
+    }
+  }, [images])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -77,7 +83,13 @@ export default function GalleryPage() {
             className={styles.searchInput}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleSearch()
+            }}
           />
+          <button className={styles.searchButton} onClick={handleSearch}>
+            검색
+          </button>
         </div>
       </div>
 
@@ -87,6 +99,7 @@ export default function GalleryPage() {
             key={`${img.id}-${idx}`} 
             href={`/post/${img.serialId || `db-${img.id}`}`}
             className={styles.galleryItem}
+            style={{ animationDelay: `${(idx % 20) * 0.05}s` }}
           >
             <div className={styles.imageWrapper}>
               <img 

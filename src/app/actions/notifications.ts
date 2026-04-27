@@ -82,3 +82,17 @@ export async function markAllAsRead() {
 
   return { success: true };
 }
+export async function deleteNotification(notificationId: string) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from('notifications')
+    .delete()
+    .eq('id', notificationId);
+
+  if (error) {
+    console.error('Delete notification error:', error);
+    return { success: false, error };
+  }
+
+  return { success: true };
+}

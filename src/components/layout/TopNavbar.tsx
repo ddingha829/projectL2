@@ -96,7 +96,7 @@ export default function TopNavbar({
   return (
     <header className={styles.header}>
       <div className={styles.navContent}>
-        <div className={styles.leftGroup}>
+        {isMobile && (
           <button className={styles.hamburgerBtn} onClick={onMobileToggle}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="3" y1="12" x2="21" y2="12"></line>
@@ -104,17 +104,19 @@ export default function TopNavbar({
               <line x1="3" y1="18" x2="21" y2="18"></line>
             </svg>
           </button>
-          
+        )}
+
+        <div className={styles.leftGroup}>
           <Link href="/" className={styles.logoLink}>
             <img src="/logo.png?v=1301" alt="티끌 Ticgle" className={styles.logoImage} />
           </Link>
-
-          {isMobile && user && (
-            <div className={styles.mobileNotifWrap}>
-              <NotificationSystem user={user} />
-            </div>
-          )}
         </div>
+
+        {isMobile && user && (
+          <div className={styles.mobileNotifWrap}>
+            <NotificationSystem user={user} />
+          </div>
+        )}
 
         <nav className={styles.mainNav}>
           <div 
