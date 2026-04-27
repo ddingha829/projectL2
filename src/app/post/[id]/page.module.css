@@ -269,26 +269,26 @@
 */
 :root {
   --base-card-width: 1100;
-  /* 0.6 하한선 적용: PC(약 48자) 대비 모바일(약 24자) 호흡 구현 */
-  --fluid-unit: clamp(0.51px, calc(100cqw / var(--base-card-width)), 1px);
+  /* 0.75 하한선 적용: PC(약 48자) 대비 모바일(약 24자) 50% 호흡 구현 */
+  --fluid-unit: clamp(0.75px, calc(100cqw / var(--base-card-width)), 1px);
 }
 
 .content {
   container-type: inline-size;
 }
 
-/* 폰트 크기 매핑: 1.43배 확대 (기본 14px -> 20px 대응) */
-.content :global(.ql-size-10px) { font-size: calc(14 * var(--fluid-unit)) !important; }
-.content :global(.ql-size-11px) { font-size: calc(15 * var(--fluid-unit)) !important; }
-.content :global(.ql-size-12px) { font-size: calc(17 * var(--fluid-unit)) !important; }
-.content :global(.ql-size-13px) { font-size: calc(18 * var(--fluid-unit)) !important; }
-.content :global(.ql-size-14px), .content p { font-size: calc(20 * var(--fluid-unit)) !important; }
-.content :global(.ql-size-16px) { font-size: calc(23 * var(--fluid-unit)) !important; }
-.content :global(.ql-size-18px) { font-size: calc(26 * var(--fluid-unit)) !important; }
-.content :global(.ql-size-20px) { font-size: calc(28 * var(--fluid-unit)) !important; }
-.content :global(.ql-size-24px) { font-size: calc(34 * var(--fluid-unit)) !important; }
-.content :global(.ql-size-32px) { font-size: calc(46 * var(--fluid-unit)) !important; }
-.content :global(.ql-size-48px) { font-size: calc(68 * var(--fluid-unit)) !important; }
+/* 폰트 크기 매핑: 1:1 가변 시스템 (PC 기준 1.0배) */
+.content :global(.ql-size-10px) { font-size: calc(10 * var(--fluid-unit)) !important; }
+.content :global(.ql-size-11px) { font-size: calc(11 * var(--fluid-unit)) !important; }
+.content :global(.ql-size-12px) { font-size: calc(12 * var(--fluid-unit)) !important; }
+.content :global(.ql-size-13px) { font-size: calc(13 * var(--fluid-unit)) !important; }
+.content :global(.ql-size-14px) { font-size: calc(14 * var(--fluid-unit)) !important; }
+.content :global(.ql-size-16px) { font-size: calc(16 * var(--fluid-unit)) !important; }
+.content :global(.ql-size-18px) { font-size: calc(18 * var(--fluid-unit)) !important; }
+.content :global(.ql-size-20px) { font-size: calc(20 * var(--fluid-unit)) !important; }
+.content :global(.ql-size-24px) { font-size: calc(24 * var(--fluid-unit)) !important; }
+.content :global(.ql-size-32px) { font-size: calc(32 * var(--fluid-unit)) !important; }
+.content :global(.ql-size-48px) { font-size: calc(48 * var(--fluid-unit)) !important; }
 
 /* 기본 본문 텍스트 (클래스 누락 대비) */
 .content p, .content li, .content span:not([class*="ql-size"]) {

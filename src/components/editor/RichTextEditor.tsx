@@ -625,7 +625,7 @@ export default function RichTextEditor({ content, onChange, placeholder = "" }: 
                     .ql-editor {
                         color: var(--text-primary) !important;
                         --base-width: 1100;
-                        --f-unit: clamp(0.51px, calc(100cqw / var(--base-width)), 1px);
+                        --f-unit: clamp(0.75px, calc(100cqw / var(--base-width)), 1px);
                         container-type: inline-size;
                         font-family: var(--font-noto-sans) !important;
                         font-weight: 400 !important;
@@ -686,11 +686,19 @@ export default function RichTextEditor({ content, onChange, placeholder = "" }: 
                 body .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="merriweather"]::before,
                 body .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="merriweather"]::before { content: 'Merriweather' !important; }
 
-                /* 2. 글자 크기 라벨 교체 */
+                /* 2. 글자 크기 라벨 교체 (기본 20px 지원) */
                 body .ql-snow .ql-picker.ql-size .ql-picker-label::before,
                 body .ql-snow .ql-picker.ql-size .ql-picker-item::before {
-                    content: '14px' !important;
+                    content: '20px' !important;
                 }
+
+                @media (max-width: 768px) {
+                    body .ql-snow .ql-picker.ql-size .ql-picker-label::before,
+                    body .ql-snow .ql-picker.ql-size .ql-picker-item::before {
+                        content: '15px' !important;
+                    }
+                }
+
                 body .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="10px"]::before,
                 body .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="10px"]::before { content: '10px' !important; }
                 body .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="11px"]::before,
@@ -720,18 +728,18 @@ export default function RichTextEditor({ content, onChange, placeholder = "" }: 
                     font-size: calc(20 * var(--f-unit)) !important;
                 }
 
-                /* 모든 지원 크기를 가변 단위로 매칭 */
-                .ql-editor [class*="ql-size-10px"] { font-size: calc(21 * var(--f-unit)) !important; }
-                .ql-editor [class*="ql-size-11px"] { font-size: calc(23 * var(--f-unit)) !important; }
-                .ql-editor [class*="ql-size-12px"] { font-size: calc(24 * var(--f-unit)) !important; }
-                .ql-editor [class*="ql-size-13px"] { font-size: calc(26 * var(--f-unit)) !important; }
-                .ql-editor [class*="ql-size-14px"] { font-size: calc(30 * var(--f-unit)) !important; }
-                .ql-editor [class*="ql-size-16px"] { font-size: calc(34 * var(--f-unit)) !important; }
-                .ql-editor [class*="ql-size-18px"] { font-size: calc(38 * var(--f-unit)) !important; }
-                .ql-editor [class*="ql-size-20px"] { font-size: calc(42 * var(--f-unit)) !important; }
-                .ql-editor [class*="ql-size-24px"] { font-size: calc(51 * var(--f-unit)) !important; }
-                .ql-editor [class*="ql-size-32px"] { font-size: calc(68 * var(--f-unit)) !important; }
-                .ql-editor [class*="ql-size-48px"] { font-size: calc(102 * var(--f-unit)) !important; }
+                /* 모든 지원 크기를 가변 단위로 매칭 (1:1 시스템) */
+                .ql-editor [class*="ql-size-10px"] { font-size: calc(10 * var(--f-unit)) !important; }
+                .ql-editor [class*="ql-size-11px"] { font-size: calc(11 * var(--f-unit)) !important; }
+                .ql-editor [class*="ql-size-12px"] { font-size: calc(12 * var(--f-unit)) !important; }
+                .ql-editor [class*="ql-size-13px"] { font-size: calc(13 * var(--f-unit)) !important; }
+                .ql-editor [class*="ql-size-14px"] { font-size: calc(14 * var(--f-unit)) !important; }
+                .ql-editor [class*="ql-size-16px"] { font-size: calc(16 * var(--f-unit)) !important; }
+                .ql-editor [class*="ql-size-18px"] { font-size: calc(18 * var(--f-unit)) !important; }
+                .ql-editor [class*="ql-size-20px"] { font-size: calc(20 * var(--f-unit)) !important; }
+                .ql-editor [class*="ql-size-24px"] { font-size: calc(24 * var(--f-unit)) !important; }
+                .ql-editor [class*="ql-size-32px"] { font-size: calc(32 * var(--f-unit)) !important; }
+                .ql-editor [class*="ql-size-48px"] { font-size: calc(48 * var(--f-unit)) !important; }
 
                 /* Placeholder도 가변 크기 적용 */
                 .ql-editor.ql-blank::before {
