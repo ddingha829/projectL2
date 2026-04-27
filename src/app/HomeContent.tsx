@@ -371,10 +371,9 @@ export default function HomeContent({
                         <span style={{ color: 'var(--text-tertiary)', fontSize: '0.6em', fontWeight: 400 }}>
                           ({(() => { 
                             const d = new Date(magazineIssue.publishedAt); 
-                            const yy = String(d.getFullYear()).slice(2); 
                             const mm = String(d.getMonth() + 1).padStart(2, '0'); 
                             const dd = String(d.getDate()).padStart(2, '0'); 
-                            return `${yy}.${mm}.${dd}`; 
+                            return `${mm}.${dd}`; 
                           })()} 발행)
                         </span>
                       </>
