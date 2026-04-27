@@ -889,8 +889,8 @@
   }
 
   .sectionTitle {
-    font-size: 1.43rem;
-    /* Increased 10% from 1.3rem */
+    font-size: 1.29rem;
+    /* Reduced 10% from 1.43rem */
     white-space: nowrap;
     text-align: left;
     margin: 0;
@@ -2113,8 +2113,8 @@
   }
 
   .miniRevSubject {
-    font-size: 1.05rem;
-    /* Reduced 5% from 1.1rem */
+    font-size: 0.95rem;
+    /* Reduced 10% from 1.05rem */
     white-space: normal;
     display: -webkit-box;
     -webkit-line-clamp: 2;
