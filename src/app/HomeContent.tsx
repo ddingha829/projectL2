@@ -685,9 +685,10 @@ export default function HomeContent({
                     <div className={styles.magBody}>
                     {(() => {
                       const activeCat = categoryFilter;
-                      // 전체보기(view=all)이면서 카테고리 필터가 없는 경우 '최신순'으로 표시
-                      if (isViewMore && (!activeCat || activeCat === 'all')) {
-                        // All Categories state: show as a single flat list "Latest"
+                      const hasActiveCat = activeCat && activeCat !== 'all';
+
+                      if (!hasActiveCat) {
+                        // All Categories state (latest posts)
                         return (
                           <div className={styles.magSectionFull}>
                             <div className={styles.magSecHeader}>
@@ -735,62 +736,55 @@ export default function HomeContent({
                         );
                       }
 
-                      // Specific Category state: current grouping logic (filtered by DB action)
-                      return ['restaurant', 'travel', 'movie', 'game', 'book', 'exhibition', 'other'].map(catId => {
-                        const label = CATEGORY_LABEL_MAP[catId];
-                        const catPosts = paginatedData.filter(p => (
-                          String(p.category_id) === catId || String(p.categoryId) === catId || String(p.category) === catId || (label && p.category === label)
-                        )).slice(0, 4);
-                        
-                        if (catPosts.length === 0) return null;
-                        const catName = label || catPosts[0].category;
-                        
-                        return (
-                          <div key={catId} className={styles.magSection}>
-                            <div className={styles.magSecHeader}>
-                              <h3 className={styles.magSecTitleNew}>{catName}</h3>
-                            </div>
-                            <div className={styles.magList}>
-                              {catPosts.map((post: any) => {
-                                const excerpt = stripHtml(post.content).slice(0, 100);
-                                return (
-                                  <Link href={`/post/${post.id}`} key={post.id} className={styles.magListItem}>
-                                    <div className={styles.magThumbWrap}>
-                                      <Image 
-                                        src={post.imageUrl} 
-                                        alt={post.title} 
-                                        className={styles.magThumb} 
-                                        fill
-                                        sizes="(max-width: 768px) 110px, 130px"
-                                        quality={70} 
-                                        style={{ objectFit: 'cover' }} 
-                                      />
-                                    </div>
-                                    <div className={styles.magListInfo}>
-                                      <h4 className={styles.magListTitle}>{post.title}</h4>
-                                      <p className={styles.magListExcerpt}>{excerpt}...</p>
-                                      <div className={styles.magMetaRow}>
-                                        <span className={styles.magCardCategory}>{CATEGORY_LABEL_MAP[post.category || post.category_id || post.categoryId] || post.category}</span>
-                                        <div className={styles.magMetaRight}>
-                                          <span className={styles.magListAuthor}>{post.author?.name || post.authorProfile?.display_name}</span>
-                                          <span className={styles.magListViews}>
-                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '3px' }}>
-                                              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                              <circle cx="12" cy="12" r="3"></circle>
-                                            </svg>
-                                            {post.views?.toLocaleString()}
-                                          </span>
-                                          <span className={styles.magListDate}>{post.displayDate}</span>
-                                        </div>
+                      // Specific Category state
+                      const label = CATEGORY_LABEL_MAP[activeCat];
+                      const catName = label || paginatedData[0]?.category || "게시물";
+
+                      return (
+                        <div className={styles.magSectionFull}>
+                          <div className={styles.magSecHeader}>
+                            <h3 className={styles.magSecTitleNew}>{catName}</h3>
+                          </div>
+                          <div className={styles.magListGrid}>
+                            {paginatedData.map((post: any) => {
+                              const excerpt = stripHtml(post.content).slice(0, 100);
+                              return (
+                                <Link href={`/post/${post.id}`} key={post.id} className={styles.magListItem}>
+                                  <div className={styles.magThumbWrap}>
+                                    <Image 
+                                      src={post.imageUrl} 
+                                      alt={post.title} 
+                                      className={styles.magThumb} 
+                                      fill
+                                      sizes="(max-width: 768px) 110px, 130px"
+                                      quality={70} 
+                                      style={{ objectFit: 'cover' }} 
+                                    />
+                                  </div>
+                                  <div className={styles.magListInfo}>
+                                    <h4 className={styles.magListTitle}>{post.title}</h4>
+                                    <p className={styles.magListExcerpt}>{excerpt}...</p>
+                                    <div className={styles.magMetaRow}>
+                                      <span className={styles.magCardCategory}>{CATEGORY_LABEL_MAP[post.category || post.category_id || post.categoryId] || post.category}</span>
+                                      <div className={styles.magMetaRight}>
+                                        <span className={styles.magListAuthor}>{post.author?.name || post.authorProfile?.display_name}</span>
+                                        <span className={styles.magListViews}>
+                                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '3px' }}>
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                            <circle cx="12" cy="12" r="3"></circle>
+                                          </svg>
+                                          {post.views?.toLocaleString()}
+                                        </span>
+                                        <span className={styles.magListDate}>{post.displayDate}</span>
                                       </div>
                                     </div>
-                                  </Link>
-                                );
-                              })}
-                            </div>
+                                  </div>
+                                </Link>
+                              );
+                            })}
                           </div>
-                        );
-                      });
+                        </div>
+                      );
                     })()}
                     </div>
                   </div>
