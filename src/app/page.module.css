@@ -1899,6 +1899,7 @@
   padding: 10px 0 40px 0;
   /* Side padding removed as buttons are now siblings */
   scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   margin: 0;

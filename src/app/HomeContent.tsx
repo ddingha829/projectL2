@@ -239,7 +239,7 @@ export default function HomeContent({
 
   const scrollReviews = (direction: 'left' | 'right') => {
     if (!reviewRef.current) return;
-    const scrollAmount = 350;
+    const scrollAmount = reviewRef.current.clientWidth * 0.8;
     reviewRef.current.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
   };
 
