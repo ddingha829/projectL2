@@ -364,7 +364,7 @@ export default function HomeContent({
                   isFirst
                   noGrid
                   customTitle={
-                    <h2 className={styles.magSecTitleNew} style={{ margin: 0, paddingLeft: '8px', display: 'flex', alignItems: 'baseline', flexWrap: 'wrap', gap: '8px' }}>
+                    <h2 className={styles.magSecTitleNew} style={{ margin: 0, paddingLeft: '8px', display: 'flex', alignItems: 'baseline', flexWrap: 'nowrap', gap: '6px' }}>
                       {magazineIssue ? (
                         <>
                           <span>{(() => {

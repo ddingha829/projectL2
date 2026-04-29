@@ -149,7 +149,7 @@
   }
 
   .sectionTitle {
-    font-size: 1.42rem; /* Increased 10% from 1.29rem */
+    font-size: 1.35rem; /* Reduced ~5% from 1.42rem to prevent wrapping */
     white-space: nowrap;
     line-height: 1;
     padding-left: 8px;

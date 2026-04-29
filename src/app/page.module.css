@@ -2808,9 +2808,10 @@
   }
 
   .magSecTitleNew {
-    font-size: 1.58rem !important; /* Increased 10% from 1.44rem */
+    font-size: 1.35rem !important; /* Standardized with .sectionTitle (1.35rem) */
     margin-bottom: 4px !important;
     border: none !important;
+    white-space: nowrap;
   }
 
   .sectionHeader,
