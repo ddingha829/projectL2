@@ -684,8 +684,9 @@ export default function HomeContent({
                     {/* Body: Grouped by Category */}
                     <div className={styles.magBody}>
                     {(() => {
-                      const activeCat = searchParams.get('category');
-                      if (!activeCat) {
+                      const activeCat = categoryFilter;
+                      // 전체보기(view=all)이면서 카테고리 필터가 없는 경우 '최신순'으로 표시
+                      if (isViewMore && (!activeCat || activeCat === 'all')) {
                         // All Categories state: show as a single flat list "Latest"
                         return (
                           <div className={styles.magSection}>
