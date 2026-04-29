@@ -56,9 +56,6 @@ export const metadata: Metadata = {
       "naver-site-verification": "f0c679c5f194d03d31525b3c07c1dca4e79a85bc",
     },
   },
-  icons: {
-    icon: "/favicon.ico",
-  },
   openGraph: {
     title: "티끌 ticgle",
     description: "티끌 모아 반짝이는, 일상 매거진",
