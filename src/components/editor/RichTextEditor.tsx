@@ -404,9 +404,9 @@ export default function RichTextEditor({ content, onChange, placeholder = "" }: 
                     }
                 };
 
-                qlEditor.addEventListener('click', handleEditorClick as EventListener);
-                qlEditor.addEventListener('paste', handlePaste as EventListener);
-                qlEditor.addEventListener('drop', handleDrop as EventListener);
+                qlEditor.addEventListener('click', handleEditorClick as any);
+                qlEditor.addEventListener('paste', handlePaste as any);
+                qlEditor.addEventListener('drop', handleDrop as any);
                 qlEditor.onscroll = () => {
                     setSelectedImage(null);
                     setSelectedCard(null);
