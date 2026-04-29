@@ -378,14 +378,14 @@ export default function HomeContent({
                               const mm = String(d.getMonth() + 1).padStart(2, '0'); 
                               const dd = String(d.getDate()).padStart(2, '0'); 
                               return `${mm}.${dd}`; 
-                            })()} 발행)
+                            })()})
                           </span>
                         </>
                       ) : (
                         <>
                           <span>2026년 1회차</span>
                           <span style={{ color: '#ff4804' }}>티끌 매거진</span>
-                          <span style={{ color: 'var(--text-tertiary)', fontSize: '0.57em', fontWeight: 400 }}>(발행 준비 중)</span>
+                          <span style={{ color: 'var(--text-tertiary)', fontSize: '0.57em', fontWeight: 400 }}>(준비 중)</span>
                         </>
                       )}
                     </h2>
