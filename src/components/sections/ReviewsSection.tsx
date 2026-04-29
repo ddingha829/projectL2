@@ -48,14 +48,9 @@ export function ReviewsSection({ recentReviews, isMobile, scrollReviews, reviewR
                 </div>
               </div>
               <p className={styles.miniRevText}>{rev.comment || "작성된 한줄평이 없습니다."}</p>
-              <div className={styles.miniRevDateRow}>
-                <span className={styles.miniRevDate}>{new Date(rev.date).toLocaleDateString()}</span>
-              </div>
               <div className={styles.miniRevFooter}>
                 <span className={styles.miniRevAuthor}>{rev.authorName}</span>
-                {rev.postId && (
-                  <Link href={`/reviews?search=${encodeURIComponent(rev.subject)}`} className={styles.miniRevLink} onClick={(e) => e.stopPropagation()}>티끌플레이스</Link>
-                )}
+                <span className={styles.miniRevDate}>{new Date(rev.date).toLocaleDateString()}</span>
               </div>
             </div>
           ))}
