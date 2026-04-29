@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
-import { MOCK_POSTS } from "@/app/page";
 import PostInteractions from "./PostInteractions";
 import HeroToggleBtn from "./HeroToggleBtn";
 import PostManageBtns from "./PostManageBtns";
@@ -55,27 +54,7 @@ const getPost = cache(async (id: string) => {
   const isNumericId = /^\d+$/.test(id);
 
   if (!isNumericId && !isDbPost) {
-    const mockPost = MOCK_POSTS.find(p => p.id === id);
-    if (!mockPost) return null;
-    
-    post = {
-       id: mockPost.id,
-       category: CATEGORY_MAP[mockPost.categoryId] || mockPost.categoryId,
-       title: mockPost.title,
-       content: mockPost.content,
-       image_url: mockPost.imageUrl,
-       created_at: mockPost.date,
-       likes_count: mockPost.likes,
-       author: {
-           id: mockPost.author.id,
-           display_name: mockPost.author.name,
-           avatar_url: mockPost.author.avatar
-       }
-    };
-    commentsData = [
-      { id: "c1", content: "정말 공감되는 리뷰네요! 사진도 너무 예뻐요.", created_at: "2024-03-22T10:00:00Z", user: { display_name: "심쿵리뷰어" } },
-      { id: "c2", content: "저도 여기 가봤는데 분위기 진짜 좋더라구요.", created_at: "2024-03-22T13:00:00Z", user: { display_name: "맛집탐험대" } }
-    ];
+    return null;
   } else {
     // Determine query filter
     const query = supabase

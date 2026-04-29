@@ -106,6 +106,41 @@
   flex-shrink: 0;
 }
 
+.kakaoBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 13px 16px;
+  border-radius: 12px;
+  border: none;
+  background-color: #FEE500;
+  color: #191919;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 10px;
+}
+
+.kakaoBtn:hover {
+  background-color: #FADA0A;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(254, 229, 0, 0.3);
+}
+
+.kakaoBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.kakaoIcon {
+  flex-shrink: 0;
+}
+
 /* 구분선 */
 .divider {
   display: flex;

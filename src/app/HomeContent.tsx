@@ -127,7 +127,6 @@ export default function HomeContent({
   allPosts,
   displayTitle, 
   animationKey,
-  isInitialVisit: _isInitialVisit,
   recentReviews = [],
   featurePosts = [],
   userProfile,

@@ -8,10 +8,6 @@ import { getLatestMagazineIssue } from "@/app/actions/magazine";
 export const dynamic = 'force-dynamic';
 export const revalidate = 60; // 60초 캐싱으로 부하 감소 및 속도 향상
 
-export const MOCK_AUTHORS = {};
-
-export const MOCK_POSTS: any[] = [];
-
 export const metadata = {
   alternates: {
     canonical: 'https://ticgle.kr',
@@ -142,8 +138,7 @@ export default async function Home({
     return new Date(b.date).getTime() - new Date(a.date).getTime();
   };
 
-  const normalMocks = MOCK_POSTS.map(m => ({ ...m, displayDate: m.date }));
-  let allPosts = [...livePosts, ...normalMocks].sort(sortByDate);
+  let allPosts = livePosts.sort(sortByDate);
 
   // Magazine Posts Extraction
   let finalHeroPosts = [];
@@ -256,7 +251,6 @@ export default async function Home({
         featurePosts={featurePosts}
         displayTitle={displayTitle}
         animationKey={animationKey}
-        isInitialVisit={isInitialVisit}
         recentReviews={mappedReviews}
         userProfile={userProfile}
         isMobileServer={isMobileServer}
