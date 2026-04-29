@@ -1973,12 +1973,12 @@
 }
 
 .miniRevHeader {
-  height: 48px;
+  height: 40px; /* Reduced from 48px to pull rating up */
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   gap: 2px;
-  margin-bottom: 4px;
+  margin-bottom: 0;
 }
 
 .miniRevSubject {
@@ -2010,7 +2010,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: -1.8px !important; /* Reduced gap between Address/Title and Rating by 30% (6px * 0.3 = 1.8px) */
+  margin-top: -4px !important; /* Pull up even further as requested */
 }
 
 .miniRevInnerRow {
