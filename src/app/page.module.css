@@ -2040,8 +2040,8 @@
   margin: 0;
   margin-bottom: auto; /* Pushes the date and footer to the absolute bottom perfectly */
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* Reduced to 2 to fit within the strict 1:1 square safely */
-  line-clamp: 2;
+  -webkit-line-clamp: 3; /* Increased to 3 as footer space was reduced */
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
   word-break: keep-all;
@@ -2070,7 +2070,7 @@
 }
 
 .miniRevAuthor {
-  font-size: 0.8rem;
+  font-size: 0.68rem; /* Synchronized with C-card footer meta size (0.68rem) */
   color: var(--brand-primary);
   /* Highlighted with logo color on PC too */
   font-weight: 800;
@@ -2079,7 +2079,7 @@
 }
 
 .miniRevLink {
-  font-size: 0.78rem;
+  font-size: 0.68rem; /* Synchronized with C-card footer meta size (0.68rem) */
   font-weight: 800;
   color: #888;
   text-decoration: none;
