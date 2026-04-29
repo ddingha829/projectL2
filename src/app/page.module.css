@@ -1972,6 +1972,15 @@
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.06);
 }
 
+.miniRevHeader {
+  height: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 2px;
+  margin-bottom: 4px;
+}
+
 .miniRevSubject {
   font-size: 1.05rem;
   /* Reduced 5% from 1.1rem */

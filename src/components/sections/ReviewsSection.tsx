@@ -25,12 +25,14 @@ export function ReviewsSection({ recentReviews, isMobile, scrollReviews, reviewR
               onClick={() => (rev.postSerialId || rev.postId) && router.push(`/post/${rev.postSerialId || `db-${rev.postId}`}`)}
               style={{ cursor: (rev.postSerialId || rev.postId) ? 'pointer' : 'default' }}
             >
-              <h4 className={styles.miniRevSubject}>{rev.subject}</h4>
-              {(rev.address || rev.category) && (
-                <div className={styles.miniRevLocation}>
-                  {rev.category || rev.address}
-                </div>
-              )}
+              <div className={styles.miniRevHeader}>
+                <h4 className={styles.miniRevSubject}>{rev.subject}</h4>
+                {(rev.address || rev.category) && (
+                  <div className={styles.miniRevLocation}>
+                    {rev.category || rev.address}
+                  </div>
+                )}
+              </div>
               <div className={styles.miniRevRating}>
                 <div className={styles.miniRevInnerRow}>
                   <div className={styles.miniRevStars}>
