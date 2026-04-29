@@ -689,11 +689,11 @@ export default function HomeContent({
                       if (isViewMore && (!activeCat || activeCat === 'all')) {
                         // All Categories state: show as a single flat list "Latest"
                         return (
-                          <div className={styles.magSection}>
+                          <div className={styles.magSectionFull}>
                             <div className={styles.magSecHeader}>
                               <h3 className={styles.magSecTitleNew}>최신순</h3>
                             </div>
-                            <div className={styles.magList}>
+                            <div className={styles.magListGrid}>
                               {paginatedData.map((post: any) => {
                                 const excerpt = stripHtml(post.content).slice(0, 100);
                                 return (

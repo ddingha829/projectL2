@@ -1237,16 +1237,36 @@
 }
 
 .magList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .magList {
+    gap: 8px !important;
+    /* 30% 추가 축소 */
+  }
+}
+
+.magSectionFull {
+  grid-column: span 2;
+  width: 100%;
+}
+
+.magListGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
 }
 
 @media (max-width: 768px) {
-  .magList {
+  .magSectionFull {
+    grid-column: span 1;
+  }
+  .magListGrid {
     grid-template-columns: 1fr;
-    gap: 8px !important;
-    /* 30% 추가 축소 */
+    gap: 8px;
   }
 }
 
