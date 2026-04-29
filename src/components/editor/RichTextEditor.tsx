@@ -372,7 +372,41 @@ export default function RichTextEditor({ content, onChange, placeholder = "" }: 
                     }
                 };
 
+                const handlePaste = async (e: ClipboardEvent) => {
+                    const items = e.clipboardData?.items;
+                    if (!items) return;
+                    
+                    let hasImage = false;
+                    for (let i = 0; i < items.length; i++) {
+                        if (items[i].type.indexOf('image') !== -1) {
+                            hasImage = true;
+                            const file = items[i].getAsFile();
+                            if (file) {
+                                e.preventDefault(); // Prevent default only if we found an image
+                                await handleImageFile(file);
+                            }
+                        }
+                    }
+                };
+
+                const handleDrop = async (e: DragEvent) => {
+                    const items = e.dataTransfer?.items;
+                    if (!items) return;
+
+                    for (let i = 0; i < items.length; i++) {
+                        if (items[i].type.indexOf('image') !== -1) {
+                            const file = items[i].getAsFile();
+                            if (file) {
+                                e.preventDefault(); // Prevent default base64 drop
+                                await handleImageFile(file);
+                            }
+                        }
+                    }
+                };
+
                 qlEditor.addEventListener('click', handleEditorClick as EventListener);
+                qlEditor.addEventListener('paste', handlePaste as EventListener);
+                qlEditor.addEventListener('drop', handleDrop as EventListener);
                 qlEditor.onscroll = () => {
                     setSelectedImage(null);
                     setSelectedCard(null);

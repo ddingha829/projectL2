@@ -1,6 +1,5 @@
 import { MetadataRoute } from 'next'
 import { createClient } from '@/lib/supabase/server'
-import { MOCK_POSTS } from './page'
 
 export const revalidate = 3600; // 1시간마다 갱신
 
@@ -23,15 +22,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }))
 
-  // 3. Map Mock posts
-  const mockEntries = MOCK_POSTS.map((post) => ({
-    url: `${baseUrl}/post/${post.id}`,
-    lastModified: new Date(post.date),
-    changeFrequency: 'monthly' as const,
-    priority: 0.5,
-  }))
-
-  // 4. Static pages
+  // 3. Static pages
   const staticPages = [
     {
       url: baseUrl,
@@ -71,5 +62,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ]
 
-  return [...staticPages, ...postEntries, ...mockEntries]
+  return [...staticPages, ...postEntries]
 }

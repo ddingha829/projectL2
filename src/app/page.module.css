@@ -1509,15 +1509,13 @@
 }
 
 .recentReviewsSection {
-  margin-top: 10px;
   position: relative;
 }
 
 @media (max-width: 768px) {
   .recentReviewsSection {
-    margin-top: 15px !important;
-    margin-bottom: 0px !important;
-    padding: 0 16px !important;
+    /* margin-top는 SectionLayout이 제어, padding은 centeredContent가 제공 */
+    margin-bottom: 0;
   }
 }
 
@@ -1691,7 +1689,7 @@
 }
 
 .edBio {
-  font-size: 0.75rem;
+  font-size: 12px; /* Synchronized with C-card content size */
   color: var(--text-secondary);
   line-height: 1.5;
   margin: 0;
@@ -1876,7 +1874,7 @@
   display: flex;
   overflow-x: auto;
   min-width: 0;
-  gap: 16px;
+  gap: 14px; /* PC: Match C-card editorsGrid gap exactly */
   padding: 10px 0 40px 0;
   /* Side padding removed as buttons are now siblings */
   scroll-snap-type: x mandatory;
@@ -1890,48 +1888,57 @@
 }
 
 .scrollBtn {
-  position: relative;
-  width: 60px;
-  height: min(250px, 100%);
-  background: transparent;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  background: var(--brand-accent-line);
   border: none;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 10;
   cursor: pointer;
   transition: all 0.2s;
-  color: var(--text-muted);
-  flex-shrink: 0;
+  color: #ffffff;
+  box-shadow: none;
+}
+
+.scrollBtn svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 3px;
 }
 
 .scrollBtn:hover {
-  color: var(--brand-primary);
-  transform: translateY(-50%) scale(1.4);
+  transform: translateY(-50%) scale(1.15);
+  background: var(--brand-accent-line);
+  box-shadow: none;
 }
 
 .scrollBtnLeft {
-  margin-right: 0;
+  left: -14px;
 }
 
 .scrollBtnRight {
-  margin-left: 0;
+  right: -14px;
 }
 
 .miniReviewCard {
-  flex: 0 0 calc(25% - 12px);
+  flex: 0 0 calc(20% - 11.2px); /* PC: 5 columns exactly matching C-card */
   aspect-ratio: 1 / 1;
   background: #ffffff;
-  /* Explicitly white */
   border: 1.5px solid var(--border-medium);
   border-radius: 12px;
+  box-sizing: border-box !important; /* Ensure padding doesn't affect width */
   padding: 20px 20px 10px 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
   scroll-snap-align: start;
   display: flex;
   flex-direction: column;
-  gap: 7px;
-  /* Reduced from 10px to naturally tighten all elements */
+  gap: 6px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
 }
@@ -1948,11 +1955,12 @@
   font-weight: 800;
   margin: 0 !important;
   color: var(--text-primary);
-  line-height: 1.2;
+  line-height: 1.4; /* Increased from 1.2 to prevent bottom clipping of Korean characters */
   letter-spacing: -0.04rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  padding-bottom: 2px;
 }
 
 .miniRevLocation {
@@ -1970,6 +1978,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 8px;
+  margin-top: -1.8px !important; /* Reduced gap between Address/Title and Rating by 30% (6px * 0.3 = 1.8px) */
 }
 
 .miniRevInnerRow {
@@ -2004,24 +2013,24 @@
 }
 
 .miniRevText {
-  font-size: 0.87rem;
+  font-size: 12px; /* Synchronized with C-card content size (0.75rem = 12px) */
   color: var(--text-secondary);
-  line-height: 1.5;
+  line-height: 1.5; /* Synchronized with C-card (1.5) */
   margin: 0;
+  margin-bottom: auto; /* Pushes the date and footer to the absolute bottom perfectly */
   display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
+  -webkit-line-clamp: 2; /* Reduced to 2 to fit within the strict 1:1 square safely */
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  font-weight: 500;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 .miniRevDateRow {
-  margin-top: auto;
   display: flex;
   justify-content: flex-end;
-  padding: 4px 0 0 0;
-  /* Removed bottom padding */
+  /* Removed top padding to pull it closer to text */
 }
 
 .miniRevDate {
@@ -2034,10 +2043,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 0;
-  /* Removed margin-top to stick to date row */
-  padding-top: 2px;
-  /* Tightest possible padding */
+  /* Removed margin-top: auto so it sticks to the date row directly */
+  padding-top: 4px;
   border-top: 1px solid var(--border-light);
 }
 
@@ -2068,35 +2075,31 @@
 
 @media (max-width: 768px) {
   .reviewHorizontalGrid {
-    margin-left: 0;
-    margin-right: 0;
-    padding: 0 !important;
-    /* Removed 16px side padding to match horizontalScrollGrid (Line 996) */
-    gap: 16px;
-    /* Exactly matched to horizontalScrollGrid gap (Line 994) */
-    padding-bottom: 15px !important;
-    /* Significantly reduced from 40px to shrink gap below */
+    padding: 0 0 15px 0 !important; /* No side padding — centeredContent handles margins */
+    gap: 12px; /* Match horizontalScrollMobile gap */
   }
 
   .miniReviewCard {
-    flex: 0 0 53% !important;
-    /* Execat match to horizontalScrollGrid > article (Line 1007) */
+    /* === 폭을 C카드와 동일하게 55%로 통일 === */
+    flex: 0 0 55% !important;
+    width: 55% !important;
     aspect-ratio: 1 / 1;
-    padding: 16px 16px 4px 16px;
-    gap: 2px !important;
+    padding: 14px 14px 8px 14px;
+    gap: 4px !important;
     border: 1.2px solid var(--border-medium) !important;
+    box-sizing: border-box !important;
+    /* 모바일: transition/hover 효과 완전 비활성화 */
+    transition: none !important;
   }
 
   .miniRevAuthor {
     font-size: 0.64rem !important;
-    /* Reduced 20% from 0.8rem */
     color: var(--brand-primary) !important;
     font-weight: 800 !important;
   }
 
   .miniRevLink {
     font-size: 0.62rem !important;
-    /* Reduced 20% from 0.78rem */
     font-weight: 800;
   }
 
@@ -2114,7 +2117,6 @@
 
   .miniRevSubject {
     font-size: 0.95rem;
-    /* Reduced 10% from 1.05rem */
     white-space: normal;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -2127,26 +2129,21 @@
   }
 
   .miniRevText {
-    font-size: 0.72rem !important;
-    /* Reduced further to 0.76rem */
-    -webkit-line-clamp: 4 !important;
-    /* Increase to 4 lines to avoid ... */
-    line-clamp: 4 !important;
+    font-size: 12px !important; /* Synchronized with C-card content size (12px) */
+    -webkit-line-clamp: 3 !important;
+    line-clamp: 3 !important;
   }
 
   .miniRevStars {
     font-size: 1.24rem !important;
-    /* Reduced 10% from 1.38rem */
   }
 
   .miniRevScore {
     font-size: 1.3rem !important;
-    /* Reduced 10% from 1.45rem */
   }
 
   .miniRevFooter {
-    padding-top: 4px !important;
-    /* Reduced from 10px to stick footer to border */
+    padding-top: 5px !important;
   }
 
   .scrollBtn {
@@ -2582,7 +2579,7 @@
 
 .magSecTitleNew {
   font-family: var(--font-outfit), sans-serif;
-  font-size: 2.22rem;
+  font-size: 2.44rem; /* Increased 10% from 2.22rem */
   /* Unified with .sectionTitle */
   font-weight: 800;
   color: var(--text-primary);
@@ -2629,6 +2626,7 @@
   border: 1.5px solid var(--border-medium);
   /* Match edCard border width */
   overflow: hidden;
+  box-sizing: border-box !important;
   text-decoration: none;
   transition: all 0.25s ease;
   height: 100%;
@@ -2690,7 +2688,7 @@
 }
 
 .cExcerpt {
-  font-size: 0.75rem;
+  font-size: 12px; /* Base content size for all cards */
   /* Exact match to edBio */
   color: var(--text-secondary);
   line-height: 1.5;
@@ -2778,7 +2776,7 @@
   }
 
   .magSecTitleNew {
-    font-size: 1.44rem !important;
+    font-size: 1.58rem !important; /* Increased 10% from 1.44rem */
     margin-bottom: 4px !important;
     border: none !important;
   }
@@ -2816,17 +2814,19 @@
   }
 
 
-  /* Horizontal Scroll Alignment: Match section titles (24px total indent) */
-  /* Logic: Base page 16px + grid 8px = 24px */
+  /* ===================================================
+   모바일 가로 스크롤 컨테이너 — 좌우 패딩 0으로 통일
+   centeredContent(.layout.module.css)가 전역 좌우 여백(22px)을
+   이미 제공하므로, 스크롤 컨테이너 자체에는 패딩 불필요.
+   모든 섹션(새로운티끌/한줄평/티끌러)이 동일한 기준선을 공유.
+   =================================================== */
   .horizontalScrollMobile {
     display: flex !important;
     overflow-x: auto !important;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     gap: 12px !important;
-    /* Restored to 12px */
-    padding: 0 8px 20px 8px !important;
-    /* Base 16 + 8 = 24 */
+    padding: 0 0 20px 0 !important;
     margin: 0 !important;
     scrollbar-width: none;
   }
@@ -2836,11 +2836,11 @@
   }
 
   /* Inner items for swiping carousels */
-  .horizontalScrollMobile>* {
-    flex: 0 0 58% !important;
-    /* Restored to ensure other cards don't shrink */
+  .horizontalScrollMobile > * {
+    flex: 0 0 55% !important;
     scroll-snap-align: start;
     height: auto !important;
+    transition: none !important;
   }
 
   /* Force Editors Grid to behave as scroll container */
@@ -2848,11 +2848,9 @@
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
-    padding: 0 8px 20px 8px !important;
-    /* Match horizontalScrollMobile */
+    padding: 0 0 20px 0 !important;
     margin: 0 !important;
     gap: 12px !important;
-    /* Restored to 12px */
   }
 
   /* Shrink metadata font sizes on mobile */
@@ -2938,35 +2936,51 @@
   }
 }
 
-/* Mobile Hover Animation Reset */
+/* =====================================================
+   모바일: 카드 오버레이/호버 효과 완전 제거
+   마우스가 없는 터치 기기에서는 hover 인터랙션이 무의미함.
+   transition도 제거하여 불필요한 GPU 레이어 생성을 방지.
+   ===================================================== */
 @media (max-width: 768px) {
-  .card:hover, 
-  .magListItem:hover, 
-  .editorProfileCard:hover, 
-  .miniReviewCard:hover, 
-  .newMainLargeCard:hover, 
-  .postCardC:hover, 
-  .backToMainBtn:hover, 
-  .backToMainBtnInline:hover, 
-  .pageBtn:hover, 
-  .pageBtnSmall:hover, 
-  .slideNavBtn:hover, 
-  .featureBanner:hover, 
-  .viewAllLink:hover, 
-  .viewMoreBtn:hover, 
+  /* transition 자체를 제거 — hover가 트리거되더라도 애니메이션 없음 */
+  .card,
+  .magListItem,
+  .editorProfileCard,
+  .miniReviewCard,
+  .newMainLargeCard,
+  .postCardC,
+  .featureBanner {
+    transition: none !important;
+  }
+
+  /* :hover 상태도 원래값 유지 */
+  .card:hover,
+  .magListItem:hover,
+  .editorProfileCard:hover,
+  .miniReviewCard:hover,
+  .newMainLargeCard:hover,
+  .postCardC:hover,
+  .backToMainBtn:hover,
+  .backToMainBtnInline:hover,
+  .pageBtn:hover,
+  .pageBtnSmall:hover,
+  .slideNavBtn:hover,
+  .featureBanner:hover,
+  .viewAllLink:hover,
+  .viewMoreBtn:hover,
   .viewMoreBtnInline:hover,
   .actionBtn:hover {
     transform: none !important;
     box-shadow: none !important;
-    background-color: transparent !important;
+    border-color: var(--border-medium) !important; /* 오렌지 테두리 변경 방지 */
   }
 
-  /* Reset image scales */
-  .featureImage, 
-  .posterImage, 
-  .magThumb, 
-  .newMainLargeImg, 
-  .edPhoto, 
+  /* 이미지 scale 애니메이션 제거 */
+  .featureImage,
+  .posterImage,
+  .magThumb,
+  .newMainLargeImg,
+  .edPhoto,
   .cPhoto,
   .bannerImage {
     transition: none !important;

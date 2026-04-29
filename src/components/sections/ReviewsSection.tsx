@@ -2,14 +2,17 @@
 
 import styles from "../../app/page.module.css";
 import Link from "next/link";
+import SectionLayout from "@/components/shared/SectionLayout";
 
-export function ReviewsSection({ recentReviews, isMobile, scrollReviews, reviewRef, router, MOCK_REVIEWS }: any) {
+export function ReviewsSection({ recentReviews, isMobile, scrollReviews, reviewRef, router, MOCK_REVIEWS, moreHref }: any) {
   return (
-    <div className={styles.recentReviewsSection}>
-      <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '15px', marginBottom: isMobile ? '1px' : '7px' }}>
-        <h2 className={styles.sectionTitle} style={{ paddingLeft: '8px' }}>한줄 <span style={{ color: '#ff4804' }}>평</span></h2>
-        <div className={styles.headerSpacer}></div>
-      </header>
+    <SectionLayout
+      title="한줄 "
+      titleHighlight="평"
+      moreHref={moreHref}
+      noGrid
+      className={styles.recentReviewsSection}
+    >
       <div className={styles.recentReviewsWrapper}>
         <button className={`${styles.scrollBtn} ${styles.scrollBtnLeft}`} onClick={() => scrollReviews('left')}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
@@ -61,6 +64,6 @@ export function ReviewsSection({ recentReviews, isMobile, scrollReviews, reviewR
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
         </button>
       </div>
-    </div>
+    </SectionLayout>
   );
 }

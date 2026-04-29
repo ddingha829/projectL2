@@ -3,14 +3,18 @@
 import styles from "../../app/page.module.css";
 import Link from "next/link";
 import Image from "next/image";
+import SectionLayout from "@/components/shared/SectionLayout";
 
-export function EditorsSection({ editors, isMobile, allPosts = [] }: { editors: any[], isMobile: boolean, allPosts?: any[] }) {
+export function EditorsSection({ editors, isMobile, allPosts = [], moreHref }: { editors: any[], isMobile: boolean, allPosts?: any[], moreHref?: string }) {
   return (
-    <div className={styles.editorsSection}>
-      <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '25px', marginBottom: isMobile ? '1px' : '7px' }}>
-        <h2 className={styles.sectionTitle} style={{ paddingLeft: '8px' }}><span style={{ color: '#ff4804' }}>티끌</span>러</h2>
-        <div className={styles.headerSpacer}></div>
-      </header>
+    <SectionLayout
+      titleHighlight="티끌"
+      title=""
+      titleSuffix="러"
+      moreHref={moreHref}
+      noGrid
+      className={styles.editorsSection}
+    >
       <div className={`${styles.editorsGrid} ${isMobile ? styles.horizontalScrollMobile : ''}`}>
         {editors
           .map(ed => {
@@ -67,6 +71,6 @@ export function EditorsSection({ editors, isMobile, allPosts = [] }: { editors: 
             </Link>
           ))}
       </div>
-    </div>
+    </SectionLayout>
   );
 }

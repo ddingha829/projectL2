@@ -1,0 +1,189 @@
+/* ============================================================
+   SectionLayout — 공통 섹션 레이아웃 디자인 시스템
+   UI_GUIDE.md 규격 준수:
+   - PC 섹션 간격: margin-top 35px, title-content gap 8px
+   - Mobile 섹션 간격: margin-top 12px, title-content gap 4px
+   - 첫 번째 섹션은 margin-top: 0
+   ============================================================ */
+
+/* --- 섹션 헤더 (제목 + more 버튼) --- */
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 35px;
+  margin-bottom: 8px;
+  padding: 0;
+  border-bottom: none;
+}
+
+.sectionHeader.isFirst {
+  margin-top: 0;
+}
+
+/* --- 섹션 제목 통합 스타일 --- */
+.sectionTitle {
+  font-family: var(--font-noto-sans), sans-serif;
+  font-size: 2.44rem; /* Increased 10% from 2.22rem */
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.03em;
+  margin: 0;
+  padding: 0;
+  padding-left: 8px;
+  flex: 0 0 auto;
+  text-align: left;
+  position: relative;
+  display: inline-block;
+  line-height: 1.2;
+}
+
+.sectionTitleLink {
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+  display: flex;
+  align-items: center;
+}
+
+.sectionTitleLink:hover {
+  opacity: 0.7;
+}
+
+.sectionTitleBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  text-align: left;
+  transition: opacity 0.2s ease;
+  display: flex;
+  align-items: center;
+}
+
+.sectionTitleBtn:hover {
+  opacity: 0.7;
+}
+
+/* 포인트 컬러 (티끌, 평 등) */
+.sectionTitle :global(span),
+.titleHighlight {
+  color: #ff4804;
+}
+
+/* 장식 제거 (UI_GUIDE §3) */
+.sectionTitle::after {
+  display: none;
+}
+
+/* --- Spacer (제목과 버튼 사이) --- */
+.headerSpacer {
+  flex: 1;
+  min-width: 12px;
+}
+
+/* --- More 버튼 --- */
+.moreBtn {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-medium);
+  cursor: pointer;
+  padding: 6px 14px;
+  border-radius: 40px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.moreBtn:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--text-primary);
+}
+
+/* --- 콘텐츠 그리드 컨테이너 --- */
+.contentGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-auto-rows: 1fr;
+  gap: 16px;
+  margin-top: 0;
+}
+
+/* Grid Variant: 카드 4열 */
+.contentGrid.cols4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* Grid Variant: 카드 3열 */
+.contentGrid.cols3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* Grid Variant: 카드 2열 */
+.contentGrid.cols2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* Grid Variant: 세로 리스트 (B카드 등) */
+.contentGrid.verticalList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* --- 모바일 응답형 --- */
+@media (max-width: 768px) {
+  .sectionHeader {
+    margin-top: 12px;
+    margin-bottom: 4px;
+    padding-bottom: 4px;
+    gap: 12px;
+  }
+
+  .sectionHeader.isFirst {
+    margin-top: 4px;
+  }
+
+  .sectionTitle {
+    font-size: 1.42rem; /* Increased 10% from 1.29rem */
+    white-space: nowrap;
+    line-height: 1;
+    padding-left: 8px;
+  }
+
+  .moreBtn {
+    font-size: 0.7rem;
+    padding: 4px 10px;
+  }
+
+  .contentGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  /* 모바일 가로 스크롤 모드 */
+  .contentGrid.horizontalScroll {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 12px;
+    padding: 0 8px 20px 8px;
+    margin: 0;
+    scrollbar-width: none;
+  }
+
+  .contentGrid.horizontalScroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .contentGrid.horizontalScroll > * {
+    flex: 0 0 58%;
+    scroll-snap-align: start;
+    height: auto;
+  }
+}

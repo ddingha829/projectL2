@@ -9,6 +9,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useSearchParams, useRouter } from "next/navigation";
 import layoutStyles from "./layout.module.css";
+import SectionLayout from "@/components/shared/SectionLayout";
 const ReviewRequest = dynamic(() => import("@/components/feed/ReviewRequest"), { ssr: false });
 import SkeletonCard from "@/components/feed/SkeletonCard";
 
@@ -66,7 +67,7 @@ interface HomeContentProps {
   allPosts: any[];
   displayTitle: string;
   animationKey: string;
-  isInitialVisit: boolean;
+  isInitialVisit?: boolean;
   recentReviews?: {
     id: string;
     subject: string;
@@ -356,35 +357,40 @@ export default function HomeContent({
           <div className={styles.homeContainer}>
             <div className={layoutStyles.centeredContent}>
               {/* New Main Top Section (Replaces Hero and New Posts) */}
-              <div className={styles.gridSection} style={{ marginTop: isMobile ? '4px' : '7px' }}>
+              <div className={styles.gridSection}>
 
-                <div className={styles.magSecHeader} style={{ marginBottom: isMobile ? '1px' : '7px', marginTop: isMobile ? '' : '0' }}>
-                  <h2 className={styles.magSecTitleNew} style={{ margin: 0, paddingLeft: '8px', display: 'flex', alignItems: 'baseline', flexWrap: 'wrap', gap: '8px' }}>
-                    {magazineIssue ? (
-                      <>
-                        <span>{(() => {
-                          const parts = magazineIssue.number.split('-');
-                          return parts.length === 2 ? `${parts[0]}년 ${parts[1]}회차` : magazineIssue.number;
-                        })()}</span>
-                        <span style={{ color: '#ff4804' }}>티끌 매거진</span>
-                        <span style={{ color: 'var(--text-tertiary)', fontSize: '0.6em', fontWeight: 400 }}>
-                          ({(() => { 
-                            const d = new Date(magazineIssue.publishedAt); 
-                            const mm = String(d.getMonth() + 1).padStart(2, '0'); 
-                            const dd = String(d.getDate()).padStart(2, '0'); 
-                            return `${mm}.${dd}`; 
-                          })()} 발행)
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        <span>2026년 1회차</span>
-                        <span style={{ color: '#ff4804' }}>티끌 매거진</span>
-                        <span style={{ color: 'var(--text-tertiary)', fontSize: '0.6em', fontWeight: 400 }}>(발행 준비 중)</span>
-                      </>
-                    )}
-                  </h2>
-                </div>
+                <SectionLayout
+                  title=""
+                  isFirst
+                  noGrid
+                  customTitle={
+                    <h2 className={styles.magSecTitleNew} style={{ margin: 0, paddingLeft: '8px', display: 'flex', alignItems: 'baseline', flexWrap: 'wrap', gap: '8px' }}>
+                      {magazineIssue ? (
+                        <>
+                          <span>{(() => {
+                            const parts = magazineIssue.number.split('-');
+                            return parts.length === 2 ? `${parts[0]}년 ${parts[1]}회차` : magazineIssue.number;
+                          })()}</span>
+                          <span style={{ color: '#ff4804' }}>티끌 매거진</span>
+                          <span style={{ color: 'var(--text-tertiary)', fontSize: '0.57em', fontWeight: 400 }}>
+                            ({(() => { 
+                              const d = new Date(magazineIssue.publishedAt); 
+                              const mm = String(d.getMonth() + 1).padStart(2, '0'); 
+                              const dd = String(d.getDate()).padStart(2, '0'); 
+                              return `${mm}.${dd}`; 
+                            })()} 발행)
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <span>2026년 1회차</span>
+                          <span style={{ color: '#ff4804' }}>티끌 매거진</span>
+                          <span style={{ color: 'var(--text-tertiary)', fontSize: '0.57em', fontWeight: 400 }}>(발행 준비 중)</span>
+                        </>
+                      )}
+                    </h2>
+                  }
+                >
 
                 <div className={styles.newMainLayout}>
                   {heroPosts.length > 0 && (
@@ -455,55 +461,53 @@ export default function HomeContent({
                     ))}
                   </div>
                 </div>
+                </SectionLayout>
 
                 {/* 2. New Posts Section: Title + C-cards (Posts 4~8) */}
-                <div className={styles.magSecHeader} style={{ borderBottom: 'none', marginBottom: isMobile ? '1px' : '7px' }}>
-                  <h2 className={styles.resultsTitle} style={{ margin: 0, paddingLeft: '8px' }}>
-                    새로운 <span style={{ color: '#ff4804' }}>티끌</span>
-                  </h2>
-                  {allPosts.length > 0 && (
-                    <button className={styles.magSecMoreBtn} onClick={() => router.push('/?view=all')}>
-                      more {'>'}
-                    </button>
-                  )}
-                </div>
-
-                <div className={`${styles.editorsGrid} ${isMobile ? styles.horizontalScrollMobile : ''}`} style={{ marginBottom: '40px' }}>
-                  {otherPosts.slice(0, 5).map((post: any) => (
-                    <Link href={`/post/${post.id}`} key={post.id} className={styles.postCardC}>
-                      <div className={styles.cPhotoWrap}>
-                        <Image 
-                          src={post.imageUrl} 
-                          alt={post.title} 
-                          className={styles.cPhoto}
-                          width={220}
-                          height={220}
-                        />
-                      </div>
-                      <div className={styles.cCardBody}>
-                        <h3 className={styles.cTitle}>{post.title}</h3>
-                        <p className={styles.cExcerpt}>{stripHtml(post.content).slice(0, 80)}...</p>
-                      </div>
-                      <div className={styles.cCardFooter}>
-                        <span className={styles.magCardCategory}>
-                          {CATEGORY_LABEL_MAP[post.category || post.category_id || post.categoryId] || post.category}
-                        </span>
-                        <div className={styles.magMetaRight}>
-                          <span className={styles.magListAuthor}>
-                            {post.author?.name || post.authorProfile?.display_name || "익명"}
-                          </span>
-                          <span className={styles.magListViews}>
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '3px' }}>
-                              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                              <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
-                            {post.views?.toLocaleString() || 0}
-                          </span>
+                <SectionLayout 
+                  title="새로운 " 
+                  titleHighlight="티끌" 
+                  moreHref="/?view=all"
+                  showMore={false}
+                  noGrid
+                >
+                  <div className={`${styles.editorsGrid} ${isMobile ? styles.horizontalScrollMobile : ''}`} style={{ marginBottom: '40px' }}>
+                    {otherPosts.slice(0, 5).map((post: any) => (
+                      <Link href={`/post/${post.id}`} key={post.id} className={styles.postCardC}>
+                        <div className={styles.cPhotoWrap}>
+                          <Image 
+                            src={post.imageUrl} 
+                            alt={post.title} 
+                            className={styles.cPhoto}
+                            width={220}
+                            height={220}
+                          />
                         </div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
+                        <div className={styles.cCardBody}>
+                          <h3 className={styles.cTitle}>{post.title}</h3>
+                          <p className={styles.cExcerpt}>{stripHtml(post.content).slice(0, 80)}...</p>
+                        </div>
+                        <div className={styles.cCardFooter}>
+                          <span className={styles.magCardCategory}>
+                            {CATEGORY_LABEL_MAP[post.category || post.category_id || post.categoryId] || post.category}
+                          </span>
+                          <div className={styles.magMetaRight}>
+                            <span className={styles.magListAuthor}>
+                              {post.author?.name || post.authorProfile?.display_name || "익명"}
+                            </span>
+                            <span className={styles.magListViews}>
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '3px' }}>
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                              </svg>
+                              {post.views?.toLocaleString() || 0}
+                            </span>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </SectionLayout>
 
                 {/* [모바일] 하단 섹션 순차로딩 (IntersectionObserver 이용) */}
                 {isMobile ? (
@@ -516,11 +520,12 @@ export default function HomeContent({
                         reviewRef={reviewRef} 
                         router={router} 
                         MOCK_REVIEWS={MOCK_REVIEWS} 
+                        moreHref="/reviews"
                       />
                     </LazySection>
 
                     <LazySection threshold={0.05}>
-                      <EditorsSection editors={editors} isMobile={isMobile} allPosts={allPosts} />
+                      <EditorsSection editors={editors} isMobile={isMobile} allPosts={allPosts} moreHref="/?view=editors" />
                     </LazySection>
                   </>
                 ) : (
@@ -532,8 +537,9 @@ export default function HomeContent({
                       reviewRef={reviewRef} 
                       router={router} 
                       MOCK_REVIEWS={MOCK_REVIEWS} 
+                      moreHref="/reviews"
                     />
-                    <EditorsSection editors={editors} isMobile={isMobile} allPosts={allPosts} />
+                    <EditorsSection editors={editors} isMobile={isMobile} allPosts={allPosts} moreHref="/?view=editors" />
                   </>
                 )}
               </div>
@@ -677,7 +683,59 @@ export default function HomeContent({
                   <div className={styles.magazineLayout}>
                     {/* Body: Grouped by Category */}
                     <div className={styles.magBody}>
-                      {['restaurant', 'travel', 'movie', 'game', 'book', 'exhibition', 'other'].map(catId => {
+                    {(() => {
+                      const activeCat = searchParams.get('category');
+                      if (!activeCat) {
+                        // All Categories state: show as a single flat list "Latest"
+                        return (
+                          <div className={styles.magSection}>
+                            <div className={styles.magSecHeader}>
+                              <h3 className={styles.magSecTitleNew}>최신순</h3>
+                            </div>
+                            <div className={styles.magList}>
+                              {paginatedData.map((post: any) => {
+                                const excerpt = stripHtml(post.content).slice(0, 100);
+                                return (
+                                  <Link href={`/post/${post.id}`} key={post.id} className={styles.magListItem}>
+                                    <div className={styles.magThumbWrap}>
+                                      <Image 
+                                        src={post.imageUrl} 
+                                        alt={post.title} 
+                                        className={styles.magThumb} 
+                                        fill
+                                        sizes="(max-width: 768px) 110px, 130px"
+                                        quality={70} 
+                                        style={{ objectFit: 'cover' }} 
+                                      />
+                                    </div>
+                                    <div className={styles.magListInfo}>
+                                      <h4 className={styles.magListTitle}>{post.title}</h4>
+                                      <p className={styles.magListExcerpt}>{excerpt}...</p>
+                                      <div className={styles.magMetaRow}>
+                                        <span className={styles.magCardCategory}>{CATEGORY_LABEL_MAP[post.category || post.category_id || post.categoryId] || post.category}</span>
+                                        <div className={styles.magMetaRight}>
+                                          <span className={styles.magListAuthor}>{post.author?.name || post.authorProfile?.display_name}</span>
+                                          <span className={styles.magListViews}>
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '3px' }}>
+                                              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                              <circle cx="12" cy="12" r="3"></circle>
+                                            </svg>
+                                            {post.views?.toLocaleString()}
+                                          </span>
+                                          <span className={styles.magListDate}>{post.displayDate}</span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </Link>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        );
+                      }
+
+                      // Specific Category state: current grouping logic (filtered by DB action)
+                      return ['restaurant', 'travel', 'movie', 'game', 'book', 'exhibition', 'other'].map(catId => {
                         const label = CATEGORY_LABEL_MAP[catId];
                         const catPosts = paginatedData.filter(p => (
                           String(p.category_id) === catId || String(p.categoryId) === catId || String(p.category) === catId || (label && p.category === label)
@@ -690,16 +748,6 @@ export default function HomeContent({
                           <div key={catId} className={styles.magSection}>
                             <div className={styles.magSecHeader}>
                               <h3 className={styles.magSecTitleNew}>{catName}</h3>
-                              <button 
-                                className={styles.magSecMoreBtn}
-                                onClick={() => {
-                                  const params = new URLSearchParams(searchParams.toString());
-                                  params.set('category', catId);
-                                  router.push(`/?${params.toString()}`);
-                                }}
-                              >
-                                more {'>'}
-                              </button>
                             </div>
                             <div className={styles.magList}>
                               {catPosts.map((post: any) => {
@@ -741,7 +789,8 @@ export default function HomeContent({
                             </div>
                           </div>
                         );
-                      })}
+                      });
+                    })()}
                     </div>
                   </div>
                 )}

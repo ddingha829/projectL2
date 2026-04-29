@@ -3,17 +3,19 @@
 import styles from "../../app/page.module.css";
 import Link from "next/link";
 import Image from "next/image";
+import SectionLayout from "@/components/shared/SectionLayout";
 
 export function FeatureSection({ featurePosts, isMobile }: { featurePosts: any[], isMobile: boolean }) {
   return (
-    <div className={styles.featureSection}>
-      <header className={styles.sectionHeader} style={{ marginTop: isMobile ? '12px' : '25px', marginBottom: isMobile ? '1px' : '7px' }}>
-        <h2 className={styles.sectionTitle} style={{ paddingLeft: '8px' }}><span style={{ color: '#ff4804' }}>티끌</span> 모은 태산</h2>
-        <div className={styles.headerSpacer}></div>
-        <Link href="/?category=feature" className={styles.viewAllLink}>
-          MORE <span className={styles.linkIcon}>{'>'}</span>
-        </Link>
-      </header>
+    <SectionLayout
+      titleHighlight="티끌"
+      title=""
+      titleSuffix=" 모은 태산"
+      moreHref="/?category=feature"
+      showMore
+      noGrid
+      className={styles.featureSection}
+    >
       <div className={styles.featureGrid}>
         {(featurePosts.length > 0 ? featurePosts : [
           { id: 'f1', title: '티끌러 선정 2026.4 최고의 점심메뉴', imageUrl: 'https://images.unsplash.com/photo-1525648199074-cee30ba79a4a?auto=format&fit=crop&w=1600&q=80' }
@@ -34,6 +36,6 @@ export function FeatureSection({ featurePosts, isMobile }: { featurePosts: any[]
           </Link>
         ))}
       </div>
-    </div>
+    </SectionLayout>
   );
 }
