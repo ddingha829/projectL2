@@ -68,6 +68,7 @@ export async function updatePost(postId: string, formData: FormData): Promise<{ 
     const isPublic = formData.get('isPublic') === 'on'
     const isFeature = formData.get('isFeature') === 'on'
     const showMainImage = formData.get('showMainImage') !== 'off'
+    const trivia = (formData.get('trivia') as string || '').trim();
     
     let reviewSubject = formData.get('reviewSubject') as string
     let reviewRating = parseInt(formData.get('reviewRating') as string) || 0
@@ -112,14 +113,15 @@ export async function updatePost(postId: string, formData: FormData): Promise<{ 
     }
 
     const updateData: Record<string, any> = { 
-      title, content, category, 
-      image_url: imageUrl,
-      is_public: isPublic,
-      show_main_image: showMainImage,
-      review_subject: reviewSubject || null,
-      review_rating: reviewRating,
-      review_comment: reviewComment || null
-    }
+    title, content, category, 
+    image_url: imageUrl,
+    is_public: isPublic,
+    show_main_image: showMainImage,
+    trivia: trivia || null,
+    review_subject: reviewSubject || null,
+    review_rating: reviewRating,
+    review_comment: reviewComment || null
+  }
 
     // admin만 editors_pick 및 is_feature 변경 가능
     if (profile.role === 'admin') {

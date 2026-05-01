@@ -38,6 +38,7 @@ export default function WritePostForm({ role }: { role: string }) {
   const [isPublic, setIsPublic] = useState(true);
   const [isFeature, setIsFeature] = useState(false);
   const [showMainImage, setShowMainImage] = useState(true);
+  const [trivia, setTrivia] = useState("");
   
   const [isUploading, setIsUploading] = useState(false);
   const [isDraftSaving, setIsDraftSaving] = useState(false);
@@ -81,6 +82,7 @@ export default function WritePostForm({ role }: { role: string }) {
           setIsPublic(draft.is_public !== false);
           setIsFeature(draft.is_feature || false);
           setShowMainImage(draft.show_main_image !== false);
+          setTrivia(draft.trivia || "");
           return;
         }
       }
@@ -93,6 +95,7 @@ export default function WritePostForm({ role }: { role: string }) {
           setCategory(data.category || "movie");
           setContent(data.content || "");
           setMainImageUrl(data.mainImageUrl || "");
+          setTrivia(data.trivia || "");
         } else {
           // 불러오지 않겠다고 하면 삭제 여부를 물어봐서 반복 팝업 방지
           if (confirm("더 이상 이 임시저장 내용을 보관하지 않고 삭제할까요?")) {
@@ -121,10 +124,10 @@ export default function WritePostForm({ role }: { role: string }) {
     }
   }, [content, mainImageUrl]);
 
-  const lastStateRef = useRef({ title, content, category, mainImageUrl, showMainImage });
+  const lastStateRef = useRef({ title, content, category, mainImageUrl, showMainImage, trivia });
   useEffect(() => {
-    lastStateRef.current = { title, content, category, mainImageUrl, showMainImage };
-  }, [title, content, category, mainImageUrl, showMainImage]);
+    lastStateRef.current = { title, content, category, mainImageUrl, showMainImage, trivia };
+  }, [title, content, category, mainImageUrl, showMainImage, trivia]);
 
   useEffect(() => {
     const autoSaveTimer = setInterval(() => {
@@ -151,7 +154,8 @@ export default function WritePostForm({ role }: { role: string }) {
       isEditorsPick,
       isPublic,
       isFeature,
-      showMainImage
+      showMainImage,
+      trivia
     });
     
     if (result.success) {
@@ -176,6 +180,7 @@ export default function WritePostForm({ role }: { role: string }) {
         setTitle("");
         setContent("");
         setMainImageUrl("");
+        setTrivia("");
       } else {
         alert(`DB 삭제 중 오류 발생: ${result.error}`);
       }
@@ -297,6 +302,20 @@ export default function WritePostForm({ role }: { role: string }) {
           placeholder="리뷰를 작성해 보세요!"
         />
         <textarea name="content" value={content} style={{ display: 'none' }} readOnly />
+      </div>
+
+      <div className={styles.inputGroup}>
+        <label htmlFor="trivia">💡 티끌 상식 (선택)</label>
+        <input 
+          type="text" 
+          id="trivia" 
+          name="trivia" 
+          placeholder="이 글과 관련된 아주 정말 쓸데없는 상식을 적어주세요 (예: 오렌지는 사실 귤과 자몽의 교배종이다)" 
+          className={styles.input} 
+          value={trivia}
+          onChange={(e) => setTrivia(e.target.value)}
+        />
+        <p style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', marginTop: '6px' }}>* 작가 프로필 상단에 이탤릭체로 노출됩니다.</p>
       </div>
 
       <div className={styles.optionsSection}>

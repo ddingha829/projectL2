@@ -369,6 +369,15 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
           
           <ContentSegmenter content={post.content} comments={commentsData} />
           
+          {post.trivia && (
+            <div className={styles.triviaWrapper}>
+              <div className={styles.triviaLabel}>TICGLE TRIVIA</div>
+              <p className={styles.triviaContent}>
+                {post.trivia}
+              </p>
+            </div>
+          )}
+
           {/* Editor Profile Card */}
           {post.authorProfile && (
             <div className={styles.authorCardWrapper}>

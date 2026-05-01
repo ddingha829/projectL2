@@ -32,6 +32,7 @@ export async function createPost(formData: FormData) {
     const isPublic = !isPrivate; 
     const isFeature = formData.get('isFeature') === 'on';
     const showMainImage = formData.get('showMainImage') !== 'off';
+    const trivia = (formData.get('trivia') as string || '').trim();
     let reviewSubject = (formData.get('reviewSubject') as string || '').trim();
     let reviewRating = parseInt(formData.get('reviewRating') as string || '0');
     let reviewComment = (formData.get('reviewComment') as string || '').trim();
@@ -92,6 +93,7 @@ export async function createPost(formData: FormData) {
           is_public: isPublic,
           is_feature: isFeature || category === 'feature',
           show_main_image: showMainImage,
+          trivia: trivia || null,
           review_subject: reviewSubject || null,
           review_rating: reviewRating || 0,
           review_comment: reviewComment || null
@@ -181,6 +183,7 @@ export async function saveDraft(data: {
   isPublic: boolean;
   isFeature: boolean;
   showMainImage: boolean;
+  trivia?: string;
   reviewSubject?: string;
   reviewRating?: number;
   reviewComment?: string;
@@ -201,6 +204,7 @@ export async function saveDraft(data: {
       is_public: data.isPublic,
       is_feature: data.isFeature,
       show_main_image: data.showMainImage,
+      trivia: data.trivia || null,
       review_subject: data.reviewSubject || null,
       review_rating: data.reviewRating || 0,
       review_comment: data.reviewComment || null,

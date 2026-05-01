@@ -85,6 +85,7 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
         isAdmin={profile?.role === 'admin'}
         initialIsPublic={post.is_public !== false}
         initialShowMainImage={post.show_main_image !== false}
+        initialTrivia={post.trivia || ''}
       />
     </div>
   )

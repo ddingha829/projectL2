@@ -28,15 +28,18 @@ interface EditPostFormProps {
   initialReviewSubject: string
   initialReviewRating: number
   initialReviewComment: string
+  initialTrivia?: string
 }
 
 export default function EditPostForm({
   postId, initialTitle, initialContent, initialCategory,
   initialImageUrl, initialIsEditorsPick,
   isAdmin, initialIsPublic, initialShowMainImage,
-  initialReviewSubject, initialReviewRating, initialReviewComment
+  initialReviewSubject, initialReviewRating, initialReviewComment,
+  initialTrivia = ""
 }: EditPostFormProps) {
   const [content, setContent] = useState(initialContent)
+  const [trivia, setTrivia] = useState(initialTrivia)
   const [isPublic, setIsPublic] = useState(initialIsPublic)
   const [imageUrl, setImageUrl] = useState(initialImageUrl)
   const [showMainImage, setShowMainImage] = useState(initialShowMainImage)
@@ -90,6 +93,7 @@ export default function EditPostForm({
             if (data.content) setContent(data.content);
             if (data.imageUrl) setImageUrl(data.imageUrl);
             if (data.showMainImage !== undefined) setShowMainImage(data.showMainImage);
+            if (data.trivia) setTrivia(data.trivia);
           }
         }
         
@@ -106,7 +110,8 @@ export default function EditPostForm({
   useEffect(() => {
     const isInitialContent = content === initialContent && 
                              imageUrl === initialImageUrl && 
-                             showMainImage === initialShowMainImage;
+                             showMainImage === initialShowMainImage &&
+                             trivia === initialTrivia;
     
     if (isInitialContent || isSubmitting) return;
 
@@ -174,6 +179,7 @@ export default function EditPostForm({
     formData.set('content', content)
     formData.set('imageUrl', imageUrl)
     formData.set('showMainImage', showMainImage ? 'on' : 'off')
+    formData.set('trivia', trivia)
     isSubmittingRef.current = true;
     setIsSubmitting(true);
     startTransition(async () => {
@@ -205,7 +211,8 @@ export default function EditPostForm({
         isEditorsPick: initialIsEditorsPick,
         isPublic,
         isFeature: initialCategory === 'feature',
-        showMainImage
+        showMainImage,
+        trivia
       });
       if (result.success) {
         alert("수정 중인 내용이 내 보관함에 저장되었습니다.");
@@ -266,6 +273,20 @@ export default function EditPostForm({
         <label>내용</label>
         <RichTextEditor content={content} onChange={setContent} />
         <textarea name="content" value={content} style={{ display: 'none' }} readOnly />
+      </div>
+
+      <div className={styles.inputGroup}>
+        <label htmlFor="trivia">💡 티끌 상식 (선택)</label>
+        <input 
+          type="text" 
+          id="trivia" 
+          name="trivia" 
+          placeholder="이 글과 관련된 아주 정말 쓸데없는 상식을 적어주세요" 
+          className={styles.input} 
+          value={trivia}
+          onChange={(e) => setTrivia(e.target.value)}
+        />
+        <p style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)', marginTop: '6px' }}>* 작가 프로필 상단에 이탤릭체로 노출됩니다.</p>
       </div>
 
       {isAdmin && (
