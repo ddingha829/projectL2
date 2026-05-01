@@ -17,6 +17,7 @@ function ReviewArchiveContent() {
   const [userComment, setUserComment] = useState("");
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
   const [isMapReady, setIsMapReady] = useState(false);
   
   const searchParams = useSearchParams();
@@ -190,8 +191,12 @@ function ReviewArchiveContent() {
         mapInstanceRef.current = initialMap;
         setIsMapReady(true);
 
-        // 레이아웃 보정 (사이즈 재계산)
-        setTimeout(() => initialMap.invalidateSize(), 500);
+        // 레이아웃 보정 (사이즈 재계산) - 타이머 ID 저장 및 방어적 체크 추가
+        timerRef.current = setTimeout(() => {
+          if (mapInstanceRef.current) {
+            initialMap.invalidateSize();
+          }
+        }, 500);
       } catch (error) {
         console.error("Leaflet Init Error:", error);
       }
@@ -200,6 +205,9 @@ function ReviewArchiveContent() {
     initMap();
 
     return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
