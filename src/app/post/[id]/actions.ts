@@ -31,3 +31,19 @@ export async function getRecommendedPost(currentPostId: string, categoryId: stri
 
   return latestPosts?.[0] || null;
 }
+
+/**
+ * 게시물이 속한 매거진 호수 정보 가져오기
+ */
+export async function getMagazineIssueInfo(postId: string) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('magazine_issues')
+    .select('issue_number')
+    .or(`post_a_id.eq.${postId},post_b1_id.eq.${postId},post_b2_id.eq.${postId},post_b3_id.eq.${postId}`)
+    .maybeSingle();
+
+  if (error || !data) return null;
+  return data.issue_number;
+}

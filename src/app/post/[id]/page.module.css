@@ -180,57 +180,118 @@
 
 .meta {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.metaMain {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.metaSub {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-tertiary);
+  font-size: 0.8rem;
 }
 
 .category {
-  font-weight: 800;
+  font-weight: 900;
   color: var(--text-primary);
-  font-size: 1rem; /* Increased 10% from 0.9rem */
+  font-size: 0.95rem;
+  letter-spacing: -0.02em;
 }
 
-.authorBadgeDetail {
-  background-color: #0a467d;
-  color: #fff;
-  padding: 4px 12px;
+.issueBadgeCompact {
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 0.65rem;
+  font-weight: 900;
+  color: #ff4804;
+  background: var(--bg-tertiary);
+  padding: 0 8px;
   border-radius: 4px;
-  font-size: 0.75rem; 
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 18px;
+  line-height: 1;
+}
+
+.authorNameCompact {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.authorNameCompact:hover {
+  color: var(--accent-primary);
+}
+
+.readingTimeCompact {
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-tertiary);
+  opacity: 0.8;
+}
+
+.privateBadgeCompact {
+  background: #ea4335;
+  color: white;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 0.65rem;
   font-weight: 800;
   display: inline-flex;
   align-items: center;
-  text-decoration: none;
-  transition: all 0.2s;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.authorBadgeDetail:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.1);
+.dot {
+  color: var(--text-tertiary);
+  opacity: 0.4;
+  font-size: 0.7rem;
 }
 
-.date {
-  font-size: 0.9rem; /* Reduced 10% from 1rem */
-  font-weight: 500;
+.header {
+  margin-bottom: 24px;
 }
-
-.viewCountDetail {
-  font-size: 0.81rem; /* Reduced 10% from 0.9rem */
-  font-weight: 700;
-  color: var(--text-secondary);
-}
-
 
 .title {
-  font-size: 2.8rem; /* Increased for premium feel */
+  font-size: 2.6rem;
   font-weight: 900;
-  line-height: 1.25;
+  line-height: 1.2;
   letter-spacing: -0.04em;
   color: var(--text-primary);
-  margin-bottom: 20px;
-  word-break: keep-all;
-  overflow-wrap: break-word;
+  margin-top: 12px;
+}
+
+@media (max-width: 768px) {
+  .meta {
+    gap: 4px 8px;
+    margin-bottom: 16px;
+  }
+  .category {
+    font-size: 0.85rem;
+  }
+  .authorNameCompact {
+    font-size: 0.8rem;
+  }
+  .metaSub {
+    font-size: 0.75rem;
+  }
+  .title {
+    font-size: 1.8rem;
+    margin-top: 8px;
+  }
 }
 
 .dot {
@@ -1974,4 +2035,73 @@
 
 .replyNotice button:hover {
   opacity: 1;
+}
+
+/* Inline Marginalia & Highlight Styles */
+.quoteHighlight {
+  border-bottom: 2px dashed rgba(255, 72, 4, 0.4);
+  background-color: rgba(255, 72, 4, 0.05);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0 1px;
+}
+
+.quoteHighlight:hover {
+  background-color: rgba(255, 72, 4, 0.15);
+  border-bottom-color: rgba(255, 72, 4, 0.8);
+}
+
+.marginaliaTooltip {
+  position: fixed;
+  z-index: 10000;
+  background: white;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 0 1px rgba(0, 0, 0, 0.1);
+  width: 280px;
+  pointer-events: none;
+  font-family: var(--font-outfit), sans-serif;
+  border: 1px solid var(--border-light);
+  display: none;
+  animation: marginaliaFadeIn 0.2s ease-out;
+}
+
+@keyframes marginaliaFadeIn {
+  from { opacity: 0; transform: translate(-50%, -95%); }
+  to { opacity: 1; transform: translate(-50%, -100%); }
+}
+
+.marginaliaItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.marginaliaAuthor {
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: #ff4804;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.marginaliaBody {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+  font-family: inherit;
+}
+
+.marginaliaDivider {
+  height: 1px;
+  background: var(--border-light);
+  margin: 10px 0;
+  opacity: 0.5;
+}
+
+@media (max-width: 768px) {
+  .marginaliaTooltip {
+    width: 240px;
+    padding: 10px;
+  }
 }

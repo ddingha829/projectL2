@@ -12,7 +12,7 @@ import ShareBtn from "./ShareBtn";
 import ReadingProgressBar from "@/components/common/ReadingProgressBar";
 import SubscribeBtn from "@/components/feed/SubscribeBtn";
 import { getAdminStatus } from "@/app/actions/hero";
-import { getRecommendedPost } from "./actions";
+import { getRecommendedPost, getMagazineIssueInfo } from "./actions";
 import styles from "./page.module.css";
 import layoutStyles from "@/app/layout.module.css";
 
@@ -150,7 +150,6 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     },
     twitter: {
       card: 'summary_large_image',
-
       title: post.title,
       description: description,
       images: [`/api/og?title=${encodeURIComponent(post.title)}&author=${encodeURIComponent(post.author?.display_name || '')}&category=${encodeURIComponent(post.category)}&imageUrl=${encodeURIComponent(post.image_url || '')}`],
@@ -201,8 +200,15 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
     if (likeRecord) isLiked = true;
   }
 
-  // 3. 추천 게시물 가져오기
-  const recommendedPost = await getRecommendedPost(post.id, post.category_id || post.category);
+  // 3. 추천 게시물 및 매거진 정보 가져오기
+  const [recommendedPost, issueNumber] = await Promise.all([
+    getRecommendedPost(post.id, post.category_id || post.category),
+    getMagazineIssueInfo(post.id)
+  ]);
+
+  // [신규] 독서 예상 시간 계산 (공백 제외 한글 약 500자당 1분)
+  const plainText = post.content.replace(/<[^>]+>/g, '').replace(/\s/g, '');
+  const readingTime = Math.ceil(plainText.length / 500) || 1;
 
   // JSON-LD Structured Data
   const schemaType = SCHEMA_TYPE_MAP[post.category_id || post.category] || "Product";
@@ -317,31 +323,29 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
         <article className={styles.post}>
           <header className={styles.header}>
             <div className={styles.meta}>
-              <span className={styles.category}>{post.category}</span>
-              <span className={styles.dot}>•</span>
-              <span className={styles.date}>{new Date(post.created_at).toLocaleDateString('ko-KR')}</span>
-              <Link href={`/?author=${post.author?.display_name || post.author?.name}`} className={styles.authorBadgeDetail}>
-                {post.author?.display_name || post.author?.name || '익명 작가'}
-              </Link>
-              <span className={styles.dot}>•</span>
-              <span className={styles.viewCountDetail}>조회수 {post.views?.toLocaleString()}</span>
-              {post.is_public === false && (
-                <span style={{ 
-                  background: '#ea4335', 
-                  color: 'white', 
-                  padding: '2px 8px', 
-                  borderRadius: '4px', 
-                  fontSize: '0.7rem', 
-                  fontWeight: 800,
-                  marginLeft: '8px',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '4px'
-                }}>
-                  🔒 비공개
-                </span>
-              )}
+              <div className={styles.metaMain}>
+                <span className={styles.category}>{post.category}</span>
+                {issueNumber && (
+                  <span className={styles.issueBadgeCompact}>TICGLE {issueNumber}</span>
+                )}
+                <span className={styles.dot}>•</span>
+                <Link href={`/?author=${post.author?.display_name || post.author?.name}`} className={styles.authorNameCompact}>
+                  {post.author?.display_name || post.author?.name || '익명 작가'}
+                </Link>
+              </div>
+              <div className={styles.metaSub}>
+                <span className={styles.dot}>•</span>
+                <span className={styles.date}>{new Date(post.created_at).toLocaleDateString('ko-KR')}</span>
+                <span className={styles.dot}>•</span>
+                <span className={styles.readingTimeCompact}>{readingTime}분 소요</span>
+                <span className={styles.dot}>•</span>
+                <span className={styles.viewCountDetail}>조회수 {post.views?.toLocaleString()}</span>
+                {post.is_public === false && (
+                  <span className={styles.privateBadgeCompact}>🔒 비공개</span>
+                )}
+              </div>
             </div>
+            
             <h1 className={styles.title}>{post.title}</h1>
           </header>
 

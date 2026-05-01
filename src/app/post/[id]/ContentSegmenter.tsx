@@ -26,16 +26,57 @@ export default function ContentSegmenter({
     }
 
     // 2. Highlighting logic
-    const quoteMap = new Map<string, string>(); // text -> commentId
+    const quoteMap = new Map<string, any[]>(); // text -> comment info array
     comments.forEach(c => {
       const match = c.content.match(/^\[quote:(.*?):(.*?)\]/);
       if (match && match[2]) {
-        quoteMap.set(match[2], c.id);
+        const quoteText = match[2];
+        const existing = quoteMap.get(quoteText) || [];
+        // 인용 표시 제거 후 순수 내용만 추출
+        const cleanContent = c.content.replace(/^\[quote:.*?:.*?\]\s*/, '').trim();
+        existing.push({ 
+          id: c.id, 
+          author: c.user?.display_name || '익명 작가',
+          content: cleanContent.substring(0, 80) + (cleanContent.length > 80 ? '...' : '')
+        });
+        quoteMap.set(quoteText, existing);
       }
     });
 
+    // 툴팁 요소 생성 (한 번만)
+    let tooltip = document.getElementById('marginalia-tooltip');
+    if (!tooltip) {
+      tooltip = document.createElement('div');
+      tooltip.id = 'marginalia-tooltip';
+      tooltip.className = styles.marginaliaTooltip;
+      document.body.appendChild(tooltip);
+    }
+
+    const showTooltip = (e: MouseEvent, data: any[]) => {
+      if (!tooltip) return;
+      const contentHtml = data.map(d => `
+        <div class="${styles.marginaliaItem}">
+          <div class="${styles.marginaliaAuthor}">${d.author}</div>
+          <div class="${styles.marginaliaBody}">${d.content}</div>
+        </div>
+      `).join('<div class="${styles.marginaliaDivider}"></div>');
+      
+      tooltip.innerHTML = contentHtml;
+      tooltip.style.display = 'block';
+      
+      const x = e.clientX;
+      const y = e.clientY - 10;
+      tooltip.style.left = `${x}px`;
+      tooltip.style.top = `${y}px`;
+      tooltip.style.transform = 'translate(-50%, -100%)';
+    };
+
+    const hideTooltip = () => {
+      if (tooltip) tooltip.style.display = 'none';
+    };
+
     if (quoteMap.size > 0) {
-      highlightNodes(el, quoteMap);
+      highlightNodes(el, quoteMap, showTooltip, hideTooltip);
     }
 
     // 3. Image click handling
@@ -171,7 +212,12 @@ export default function ContentSegmenter({
     });
   }, [content, comments]);
 
-  const highlightNodes = (root: HTMLElement, quoteMap: Map<string, string>) => {
+  const highlightNodes = (
+    root: HTMLElement, 
+    quoteMap: Map<string, any[]>, 
+    onShow: (e: MouseEvent, data: any[]) => void, 
+    onHide: () => void
+  ) => {
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
     const nodes = [];
     let node;
@@ -182,7 +228,7 @@ export default function ContentSegmenter({
       let parent = textNode.parentElement;
       if (!parent || parent.tagName === 'SCRIPT' || parent.classList.contains(styles.quoteHighlight)) return;
 
-      for (const [quoteText, commentId] of quoteMap.entries()) {
+      for (const [quoteText, commentData] of quoteMap.entries()) {
         const index = nodeContent.indexOf(quoteText);
         if (index >= 0) {
           const range = document.createRange();
@@ -191,19 +237,25 @@ export default function ContentSegmenter({
 
           const span = document.createElement('span');
           span.className = styles.quoteHighlight;
-          span.title = "댓글에서 인용됨 (클릭 시 이동)";
+          
+          // Tooltip Events
+          span.onmouseenter = (e) => onShow(e, commentData);
+          span.onmouseleave = () => onHide();
+
           span.onclick = (e) => {
             e.stopPropagation();
-            const target = document.getElementById(`comment-${commentId}`);
+            onHide();
+            // 여러 개일 경우 첫 번째 댓글로 이동
+            const target = document.getElementById(`comment-${commentData[0].id}`);
             if (target) {
               target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              target.style.backgroundColor = 'rgba(186, 230, 253, 0.4)';
+              target.style.backgroundColor = 'rgba(255, 72, 4, 0.15)';
               setTimeout(() => target.style.backgroundColor = '', 2000);
             }
           };
           
           range.surroundContents(span);
-          break; // Avoid overlapping for simplified version
+          break; 
         }
       }
     });
