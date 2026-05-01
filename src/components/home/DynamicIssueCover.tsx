@@ -99,9 +99,12 @@ export default function DynamicIssueCover({ posts, issueNumber }: DynamicIssueCo
 
           <motion.h1 
             className={styles.mainTitle}
-            animate={{ x: mousePos.x * 0.8, y: mousePos.y * 0.8 }}
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0, x: mousePos.x * 0.8, y: mousePos.y * 0.8 }}
+            animate={{ 
+              opacity: 1, 
+              x: mousePos.x * 0.8, 
+              y: mousePos.y * 0.8 
+            }}
             transition={{ delay: 0.3, duration: 1 }}
           >
             {mainPost.title}
