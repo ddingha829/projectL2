@@ -4,10 +4,11 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import NextStoryCard from "./NextStoryCard";
 import styles from "./page.module.css";
 
 export default function PostInteractions({ 
-  postId, authorId, initialLikes, initialComments, user, prevId, nextId, isAdmin = false, initialIsLiked = false 
+  postId, authorId, initialLikes, initialComments, user, prevId, nextId, recommendedPost, isAdmin = false, initialIsLiked = false 
 }: { 
   postId: string, 
   authorId: string, 
@@ -16,6 +17,7 @@ export default function PostInteractions({
   user: any,
   prevId?: string,
   nextId?: string,
+  recommendedPost: any, // 추가
   isAdmin?: boolean,
   initialIsLiked?: boolean
 }) {
@@ -300,6 +302,9 @@ export default function PostInteractions({
       </div>
 
       <section id="comments" className={styles.commentsSection}>
+        {/* [Premium Editorial] Next Story Recommendation - Placed inside section, below the thick border */}
+        <NextStoryCard post={recommendedPost} />
+        
         <h2 className={styles.commentsTitle}>댓글 ({comments.length})</h2>
         
         <div className={styles.commentInputArea}>

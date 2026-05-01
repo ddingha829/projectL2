@@ -12,6 +12,7 @@ import ShareBtn from "./ShareBtn";
 import ReadingProgressBar from "@/components/common/ReadingProgressBar";
 import SubscribeBtn from "@/components/feed/SubscribeBtn";
 import { getAdminStatus } from "@/app/actions/hero";
+import { getRecommendedPost } from "./actions";
 import styles from "./page.module.css";
 import layoutStyles from "@/app/layout.module.css";
 
@@ -77,6 +78,7 @@ const getPost = cache(async (id: string) => {
     post = {
        ...dbPost,
        category: CATEGORY_MAP[dbPost.category] || dbPost.category,
+       category_id: dbPost.category, // 원본 카테고리 ID 보존
        is_hero: dbPost.is_hero || false,
        is_public: dbPost.is_public,
        author: {
@@ -148,6 +150,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     },
     twitter: {
       card: 'summary_large_image',
+
       title: post.title,
       description: description,
       images: [`/api/og?title=${encodeURIComponent(post.title)}&author=${encodeURIComponent(post.author?.display_name || '')}&category=${encodeURIComponent(post.category)}&imageUrl=${encodeURIComponent(post.image_url || '')}`],
@@ -175,22 +178,11 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
   const { post, comments: commentsData, isDbPost, actualId } = data;
 
   // [신규] 비밀글 접근 권한 관리
-  // 1. 글이 존재하지 않으면 404
-  if (!post) notFound();
-
-  // 2. 비밀글(is_public: false)인 경우 검증
   if (post.is_public === false) {
     const isAuthor = user && (user.id === post.author?.id || user.id === post.author_id);
-    
-    // 작성자도 아니고 관리자도 아니면 404 (보안상 403보다 404 권장)
     if (!isAuthor && !isAdmin) {
       notFound();
     }
-  }
-
-  // Increment Views (side effect)
-  if (isDbPost) {
-    // Moved to client-side in PostInteractions.tsx for deduplication
   }
   
   let currentUserRole = 'user'
@@ -208,6 +200,9 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
     currentUserRole = profile?.role || 'user';
     if (likeRecord) isLiked = true;
   }
+
+  // 3. 추천 게시물 가져오기
+  const recommendedPost = await getRecommendedPost(post.id, post.category_id || post.category);
 
   // JSON-LD Structured Data
   const schemaType = SCHEMA_TYPE_MAP[post.category_id || post.category] || "Product";
@@ -258,9 +253,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
     <div className={`${layoutStyles.centeredContent} ${layoutStyles.postViewInner}`}>
       <div className={styles.container}>
         <ReadingProgressBar />
-        {/* [신규] 수동 리뷰 카드를 위한 대표 이미지 동적 주입 (좌측 사진 영역 전용) */}
         <style dangerouslySetInnerHTML={{ __html: `
-          /* 1. 클래스 기반 선택자 */
           .ql-review-card[data-place-id="manual"] .review-card-map,
           .ql-review-card[data-place-id="manual"] .review-card-manual-photo-area {
             background-image: url('${post.image_url || 'https://ticgle.kr/logo.png'}') !important;
@@ -273,13 +266,11 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
             display: block !important;
             border-right: 1px solid #f1f5f9 !important;
           }
-          /* 2. 속성 기반 무적 선택자 보완 */
           div[data-place-id="manual"] .review-card-map {
             background-image: url('${post.image_url || ''}') !important;
             width: 220px !important;
             min-width: 220px !important;
           }
-          /* 3. 메인 배경 초기화 */
           .ql-review-card[data-place-id="manual"] .review-card-main {
             background-image: none !important;
             background-color: white !important;
@@ -287,7 +278,6 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
           }
         `}} />
 
-        {/* Structured Data for Google */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -351,9 +341,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
                   🔒 비공개
                 </span>
               )}
-              
             </div>
-            
             <h1 className={styles.title}>{post.title}</h1>
           </header>
 
@@ -377,7 +365,6 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
           
           <ContentSegmenter content={post.content} comments={commentsData} />
           
-
           {/* Editor Profile Card */}
           {post.authorProfile && (
             <div className={styles.authorCardWrapper}>
@@ -420,18 +407,18 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
             </div>
           )}
 
-          <div className={styles.separator} />
-
-          {/* Interaction Bar with Prev/Next Navigation */}
+          {/* Interaction Bar & Next Story Card (Inside PostInteractions) */}
           <PostInteractions 
             postId={post.id} 
-            authorId={post.author?.id || post.author_id}
-            initialLikes={post.likes_count || 0} 
-            initialComments={commentsData} 
-            user={user} 
-            isAdmin={isAdmin}
+            authorId={post.author_id}
+            initialLikes={post.likes_count || 0}
+            initialComments={commentsData || []}
+            user={user}
             prevId={post.prevId}
             nextId={post.nextId}
+            recommendedPost={recommendedPost}
+            isAdmin={isAdmin}
+            initialIsLiked={isLiked}
           />
         </article>
       </div>
