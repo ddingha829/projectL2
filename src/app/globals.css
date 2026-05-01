@@ -57,53 +57,6 @@
   --transition-slow: 0.6s cubic-bezier(0.2, 0, 0, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg-primary: #121212; /* Rich dark gray instead of #2C2C2C */
-    --bg-secondary: #1e1e1e;
-    --bg-tertiary: #2a2a2a;
-    
-    --text-primary: #f9fafb;
-    --text-secondary: #d1d5db;
-    --text-tertiary: #9ca3af; /* Adjusted for better visibility */
-    
-    --brand-primary: #f9fafb;
-    --brand-primary-hover: #e5e7eb;
-    --brand-accent-soft: #2e2019; /* A deep, warm brown for dark mode */
-    --brand-accent-soft-text: #ff8c4f; /* A brighter orange for dark mode text */
-
-    
-    /* Semantic Badges Dark */
-    --badge-bg-admin: rgba(239, 68, 68, 0.15);
-    --badge-text-admin: #f87171;
-    --badge-bg-editor: rgba(16, 185, 129, 0.15);
-    --badge-text-editor: #34d399;
-    --badge-bg-user: rgba(249, 250, 251, 0.1);
-    --badge-text-user: #f9fafb;
-    --brand-primary-hover: #e5e7eb;
-    --brand-accent-line: #ff4804;
-    --accent-primary: var(--brand-primary);
-    --accent-hover: var(--brand-primary-hover);
-    --accent-line: var(--brand-accent-line);
-    
-    --border-light: #2a2a2a;
-    --border-medium: #374151;
-    --divider-color: rgba(255, 255, 255, 0.1);
-    
-    --glass-bg: rgba(18, 18, 18, 0.8);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    
-    --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.4);
-    --shadow-md: 0 8px 12px rgba(0, 0, 0, 0.5);
-    --shadow-lg: 0 16px 24px rgba(0, 0, 0, 0.6);
-
-    /* Paper feel in dark mode */
-    --text-primary: #ffffff;
-    --text-secondary: #e5e7eb;
-    --text-tertiary: #9ca3af;
-    --border-light: #2a2a2a;
-  }
-}
 
 * {
   box-sizing: border-box;
@@ -143,14 +96,6 @@ body {
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  body {
-    background: radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.05), transparent 80%),
-                radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.04), transparent 80%);
-    background-attachment: fixed;
-    background-color: var(--bg-primary);
-  }
-}
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-outfit), var(--font-noto-sans), sans-serif;
@@ -391,11 +336,12 @@ li {
 /* 에디터 기본 본문 스타일 강제 설정 (노토 Thin 발동) */
 .ql-editor {
     font-family: var(--font-noto-sans) !important;
-    font-weight: 100 !important; /* Thin */
+    font-weight: 400 !important; /* Regular (Matches Post Detail) */
     font-size: 14px !important;
     line-height: 1.6 !important;
-    word-break: keep-all !important;
+    word-break: break-all !important; 
     overflow-wrap: break-word !important;
+    line-break: strict !important;
 }
 
 /* ============================================================
@@ -627,40 +573,5 @@ li {
   }
   .place-name {
     font-size: 1.25rem !important;
-  }
-}
-@media (prefers-color-scheme: dark) {
-  .review-card-inner, .review-card-header, .review-card-main, .review-card-body {
-    background-color: #1a1a1a !important;
-    border-color: #333 !important;
-  }
-  
-  .place-name {
-    color: #fff !important;
-  }
-  
-  .place-address {
-    color: #ccc !important;
-  }
-  
-  .review-comment blockquote {
-    color: #eee !important;
-    border-left-color: #ff4804 !important;
-  }
-  
-  .score-badge {
-    background-color: #333 !important;
-  }
-  
-  .score-value {
-    color: #fff !important;
-  }
-  
-  .brand-label {
-    color: #ff8c4f !important;
-  }
-
-  .review-card-header {
-    background-color: #222 !important;
   }
 }

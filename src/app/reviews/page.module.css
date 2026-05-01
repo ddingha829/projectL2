@@ -230,11 +230,6 @@
   z-index: 2;
 }
 
-@media (prefers-color-scheme: dark) {
-  .brickCard:hover {
-    background: rgba(0, 0, 0, 0.1);
-  }
-}
 
 .brickHeader {
   display: flex;

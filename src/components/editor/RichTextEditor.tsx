@@ -655,39 +655,47 @@ export default function RichTextEditor({ content, onChange, placeholder = "" }: 
 
             <div className={styles.editorContainer}>
                 <style dangerouslySetInnerHTML={{ __html: `
-                    /* [에디토리얼 시스템] 통합 컬러 핸들링 */
+                    /* [에디토리얼 시스템] 상세 페이지와 글자 크기 100% 동기화 */
+                    .editorContainer {
+                        --base-card-width: 1100;
+                        /* 부모는 더이상 컨테이너가 아님 */
+                    }
+
                     .ql-editor {
                         color: var(--text-primary) !important;
-                        --base-width: 1100;
-                        --f-unit: clamp(0.75px, calc(100cqw / var(--base-width)), 1px);
-                        container-type: inline-size;
                         font-family: var(--font-noto-sans) !important;
                         font-weight: 400 !important;
-                        background-color: var(--bg-primary) !important;
-                        word-break: keep-all !important;
+                        background-color: #fff !important;
+                        word-break: break-all !important;
                         overflow-wrap: break-word !important;
-                        padding: calc(60 * var(--f-unit)) calc(65 * var(--f-unit)) !important;
+                        line-break: strict !important;
+                        line-height: 1.8 !important;
+                        letter-spacing: -0.015em !important;
+                        
+                        /* [핵심] 상세 페이지 .post의 패딩(65px*2)을 제외한 본문 너비와 똑같이 맞춤 */
+                        width: calc(100% - (130 * clamp(0.75px, calc(100vw / var(--base-card-width)), 1px))) !important;
+                        margin: 0 auto !important;
+                        
+                        /* 이제 이 상자가 컨테이너가 되어 상세 페이지 .content와 동일한 cqw를 가짐 */
+                        container-type: inline-size;
+                        --fluid-unit: clamp(0.75px, calc(100cqw / var(--base-card-width)), 1px);
+                        
+                        padding: calc(60 * var(--fluid-unit)) 0 100px 0 !important;
                         transition: all 0.3s ease;
+                        scrollbar-gutter: stable;
                     }
 
                     @media (max-width: 768px) {
                         .ql-editor {
-                            padding: calc(40 * var(--f-unit)) calc(20 * var(--f-unit)) !important;
+                            width: calc(100% - (40 * clamp(0.75px, calc(100vw / var(--base-card-width)), 1px))) !important;
+                            padding: calc(40 * var(--fluid-unit)) 0 100px 0 !important;
                         }
                     }
 
-                    @media (prefers-color-scheme: dark) {
-                        .ql-editor {
-                            background-color: #1a1a1a !important;
-                            color: #e2e8f0 !important;
-                        }
-                        .ql-editor * {
-                            color: #e2e8f0 !important;
-                        }
-                        /* 다크모드에서 대표 이미지 아웃라인 선명도 조절 */
-                        .ql-editor img[data-main-image="true"] {
-                            outline-color: #ff5c22 !important;
-                        }
+                    /* 문단 간격 제거 (상세 페이지 .content p와 동일) */
+                    .ql-editor p {
+                        margin: 0 !important;
+                        padding: 0 !important;
                     }
 
                     .ql-editor.ql-blank::before { content: "" !important; display: none !important; }
@@ -754,30 +762,38 @@ export default function RichTextEditor({ content, onChange, placeholder = "" }: 
                 body .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="48px"]::before,
                 body .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="48px"]::before { content: '48px' !important; }
 
-                    transition: all 0.3s ease; /* 미리보기 전환 시 부드러운 효과 */
-                }
-
-                /* 기본 14px -> 20px 매핑 적용 (1.43배 확대) */
+                /* 기본 본문 크기: 상세 페이지와 동일 (20 * fluid-unit) */
                 .ql-editor, .ql-editor p, .ql-editor li {
-                    font-size: calc(20 * var(--f-unit)) !important;
+                    font-size: calc(20 * var(--fluid-unit)) !important;
                 }
 
-                /* 모든 지원 크기를 가변 단위로 매칭 (1:1 시스템) */
-                .ql-editor [class*="ql-size-10px"] { font-size: calc(10 * var(--f-unit)) !important; }
-                .ql-editor [class*="ql-size-11px"] { font-size: calc(11 * var(--f-unit)) !important; }
-                .ql-editor [class*="ql-size-12px"] { font-size: calc(12 * var(--f-unit)) !important; }
-                .ql-editor [class*="ql-size-13px"] { font-size: calc(13 * var(--f-unit)) !important; }
-                .ql-editor [class*="ql-size-14px"] { font-size: calc(14 * var(--f-unit)) !important; }
-                .ql-editor [class*="ql-size-16px"] { font-size: calc(16 * var(--f-unit)) !important; }
-                .ql-editor [class*="ql-size-18px"] { font-size: calc(18 * var(--f-unit)) !important; }
-                .ql-editor [class*="ql-size-20px"] { font-size: calc(20 * var(--f-unit)) !important; }
-                .ql-editor [class*="ql-size-24px"] { font-size: calc(24 * var(--f-unit)) !important; }
-                .ql-editor [class*="ql-size-32px"] { font-size: calc(32 * var(--f-unit)) !important; }
-                .ql-editor [class*="ql-size-48px"] { font-size: calc(48 * var(--f-unit)) !important; }
+                /* 모든 지원 크기를 가변 단위로 매칭 (상세 페이지와 동일) */
+                .ql-editor [class*="ql-size-10px"] { font-size: calc(10 * var(--fluid-unit)) !important; }
+                .ql-editor [class*="ql-size-11px"] { font-size: calc(11 * var(--fluid-unit)) !important; }
+                .ql-editor [class*="ql-size-12px"] { font-size: calc(12 * var(--fluid-unit)) !important; }
+                .ql-editor [class*="ql-size-13px"] { font-size: calc(13 * var(--fluid-unit)) !important; }
+                .ql-editor [class*="ql-size-14px"] { font-size: calc(14 * var(--fluid-unit)) !important; }
+                .ql-editor [class*="ql-size-16px"] { font-size: calc(16 * var(--fluid-unit)) !important; }
+                .ql-editor [class*="ql-size-18px"] { font-size: calc(18 * var(--fluid-unit)) !important; }
+                .ql-editor [class*="ql-size-20px"] { font-size: calc(20 * var(--fluid-unit)) !important; }
+                .ql-editor [class*="ql-size-24px"] { font-size: calc(24 * var(--fluid-unit)) !important; }
+                .ql-editor [class*="ql-size-32px"] { font-size: calc(32 * var(--fluid-unit)) !important; }
+                .ql-editor [class*="ql-size-48px"] { font-size: calc(48 * var(--fluid-unit)) !important; }
+
+                /* 행간 클래스 (상세 페이지와 동일) */
+                .ql-editor .ql-line-height-1-0 { line-height: 1.0 !important; }
+                .ql-editor .ql-line-height-1-2 { line-height: 1.2 !important; }
+                .ql-editor .ql-line-height-1-4 { line-height: 1.4 !important; }
+                .ql-editor .ql-line-height-1-5 { line-height: 1.5 !important; }
+                .ql-editor .ql-line-height-1-6 { line-height: 1.6 !important; }
+                .ql-editor .ql-line-height-1-8 { line-height: 1.8 !important; }
+                .ql-editor .ql-line-height-2-0 { line-height: 2.0 !important; }
+                .ql-editor .ql-line-height-2-5 { line-height: 2.5 !important; }
+                .ql-editor .ql-line-height-3-0 { line-height: 3.0 !important; }
 
                 /* Placeholder도 가변 크기 적용 */
                 .ql-editor.ql-blank::before {
-                    font-size: calc(30 * var(--f-unit)) !important;
+                    font-size: calc(30 * var(--fluid-unit)) !important;
                     color: #adb5bd !important;
                     letter-spacing: normal !important;
                 }

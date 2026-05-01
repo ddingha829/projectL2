@@ -173,13 +173,6 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  .post {
-    background-color: var(--bg-secondary);
-    border-color: var(--border-medium);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-  }
-}
 
 .header {
   margin-bottom: 30px;
@@ -253,8 +246,9 @@
   font-family: var(--font-noto-sans), sans-serif;
   font-weight: 400; /* Increased from 300 for better readability */
   letter-spacing: -0.015em;
-  word-break: keep-all;
-  overflow-wrap: break-word;
+  word-break: break-all !important;
+  overflow-wrap: break-word !important;
+  line-break: strict !important;
 }
 
 /* 문단 간격 제거하여 줄간격 설정만으로 제어되게 함 */
@@ -849,11 +843,7 @@
   padding-left: 20px;
 }
 
-@media (prefers-color-scheme: dark) {
-  .loginPrompt {
-    background-color: rgba(10, 10, 10, 0.85);
-  }
-}
+
 
 .loginActionBtn {
   background-color: var(--text-main);
@@ -911,11 +901,7 @@
   background-color: rgba(0, 0, 0, 0.02);
 }
 
-@media (prefers-color-scheme: dark) {
-  .comment:hover {
-    background-color: rgba(255, 255, 255, 0.03);
-  }
-}
+
 
 .comment.highlighted {
   background-color: rgba(255, 72, 4, 0.08) !important;
@@ -1108,26 +1094,7 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-@media (prefers-color-scheme: dark) {
-  .heroAdminArea {
-    background: linear-gradient(135deg, rgba(255, 200, 0, 0.06) 0%, rgba(255, 120, 0, 0.06) 100%);
-    border-color: rgba(255, 185, 0, 0.3);
-  }
-  .heroAdminArea::before {
-    color: #d4a017;
-    background: rgba(255, 200, 0, 0.12);
-  }
-  .heroToggleBtn {
-    color: #c8a000;
-    border-color: rgba(200, 160, 0, 0.45);
-  }
-  .heroToggleBtnActive {
-    color: #1a0f00;
-  }
-  .heroMessage {
-    color: #3dbb6a;
-  }
-}
+
 
 .postReviewSection {
   margin: 40px auto 20px auto;
@@ -1351,7 +1318,7 @@
   border-bottom: none;
   cursor: pointer;
   padding: 0 4px;
-  margin: 0 -2px;
+  margin: 0 -4px; /* Offset the 4px padding perfectly to prevent text wrapping changes */
   transition: all 0.2s;
   border-radius: 3px;
 }

@@ -2916,58 +2916,7 @@
   }
 }
 
-/* Dark Mode High-Contrast Visibility Overrides */
-@media (prefers-color-scheme: dark) {
 
-  .postCardA,
-  .postCardB,
-  .postCardC,
-  .miniReviewCard,
-  .editorProfileCard,
-  .magListItem,
-  .magListInfo,
-  .newMainLargeCard,
-  .authorCardWrapper {
-    background: var(--bg-secondary) !important;
-
-    border-color: var(--border-medium) !important;
-  }
-
-  .cExcerpt,
-  .miniRevText,
-  .edBio,
-  .magListExcerpt,
-  .authorBioStandard {
-    color: var(--text-secondary) !important;
-  }
-
-  .cTitle,
-  .edName,
-  .miniRevSubject,
-  .magListTitle,
-  .authorNameStandard {
-    color: var(--text-primary) !important;
-  }
-
-  .cStat,
-  .miniRevAuthor,
-  .magListAuthor,
-  .magListDate,
-  .miniRevDate,
-  .miniRevLocation,
-  .authorBulletStandard {
-    color: var(--text-tertiary) !important;
-  }
-
-  .authorCardHeaderStandard {
-    background: #0d1b2a !important;
-    /* Deeper navy for dark mode header */
-  }
-
-  .authorCardMainStandard {
-    background: var(--bg-secondary) !important;
-  }
-}
 
 /* =====================================================
    모바일: 카드 오버레이/호버 효과 완전 제거

@@ -54,17 +54,3 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  .actionBtn {
-    background: rgba(30, 30, 30, 0.8);
-    border-color: rgba(255, 255, 255, 0.15);
-  }
-  
-  @media (max-width: 768px) {
-    .actionBtn {
-      background: #1a1a1a !important; /* Solid dark for visibility */
-      border-color: rgba(255, 255, 255, 0.2) !important;
-      color: #fff !important;
-    }
-  }
-}
