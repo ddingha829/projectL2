@@ -12,6 +12,7 @@ import layoutStyles from "./layout.module.css";
 import SectionLayout from "@/components/shared/SectionLayout";
 const ReviewRequest = dynamic(() => import("@/components/feed/ReviewRequest"), { ssr: false });
 import SkeletonCard from "@/components/feed/SkeletonCard";
+import DynamicIssueCover from "@/components/home/DynamicIssueCover";
 
 // [최적화] 하단 섹션들을 동적 임포트하여 초기 JS 번들 크기를 줄이고 로딩 속도 개선
 const FeatureSection = dynamic(() => import("@/components/sections/FeatureSection").then(mod => mod.FeatureSection), { 
@@ -351,6 +352,15 @@ export default function HomeContent({
 
   return (
     <>
+      {/* 
+        [보류] 인터랙티브 매거진 커버 기능
+        isInitialVisit && heroPosts.length > 0 && (
+          <DynamicIssueCover 
+            posts={heroPosts} 
+            issueNumber={magazineIssue?.number || "2026-1"} 
+          />
+        )
+      */}
       <div className={styles.container}>
         {/* Branch 1: Home Page View (Mixed Sections) */}
         {!showFullGrid ? (

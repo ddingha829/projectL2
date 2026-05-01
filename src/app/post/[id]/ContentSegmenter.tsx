@@ -54,6 +54,14 @@ export default function ContentSegmenter({
 
     const showTooltip = (e: MouseEvent, data: any[]) => {
       if (!tooltip) return;
+      
+      const count = data.length;
+      const isHot = count >= 4;
+      
+      const headerHtml = isHot 
+        ? `<div class="${styles.marginaliaHotBadge}">🔥 ${count}명의 티끌러가 대화 중</div>`
+        : `<div class="${styles.marginaliaCount}">${count}개의 의견</div>`;
+
       const contentHtml = data.map(d => `
         <div class="${styles.marginaliaItem}">
           <div class="${styles.marginaliaAuthor}">${d.author}</div>
@@ -61,7 +69,7 @@ export default function ContentSegmenter({
         </div>
       `).join('<div class="${styles.marginaliaDivider}"></div>');
       
-      tooltip.innerHTML = contentHtml;
+      tooltip.innerHTML = headerHtml + contentHtml;
       tooltip.style.display = 'block';
       
       const x = e.clientX;
@@ -236,7 +244,14 @@ export default function ContentSegmenter({
           range.setEnd(textNode, index + quoteText.length);
 
           const span = document.createElement('span');
-          span.className = styles.quoteHighlight;
+          const count = commentData.length;
+          
+          // 강도에 따른 클래스 부여
+          let intensityClass = styles.quoteHighlight;
+          if (count >= 4) intensityClass = styles.quoteHot;
+          else if (count >= 2) intensityClass = styles.quoteMedium;
+          
+          span.className = intensityClass;
           
           // Tooltip Events
           span.onmouseenter = (e) => onShow(e, commentData);

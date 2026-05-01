@@ -2051,19 +2051,58 @@
   border-bottom-color: rgba(255, 72, 4, 0.8);
 }
 
+.quoteMedium {
+  border-bottom: 2px solid rgba(255, 72, 4, 0.5);
+  background-color: rgba(255, 72, 4, 0.08);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0 1px;
+}
+
+.quoteHot {
+  border-bottom: 2.5px solid rgba(255, 72, 4, 0.9);
+  background-color: rgba(255, 72, 4, 0.12);
+  box-shadow: 0 0 12px rgba(255, 72, 4, 0.15);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0 2px;
+  font-weight: 600;
+}
+
 .marginaliaTooltip {
   position: fixed;
   z-index: 10000;
   background: white;
   border-radius: 12px;
-  padding: 14px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 0 1px rgba(0, 0, 0, 0.1);
-  width: 280px;
+  padding: 16px;
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.18), 0 0 1px rgba(0, 0, 0, 0.1);
+  width: 300px;
   pointer-events: none;
   font-family: var(--font-outfit), sans-serif;
   border: 1px solid var(--border-light);
   display: none;
-  animation: marginaliaFadeIn 0.2s ease-out;
+  animation: marginaliaFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.marginaliaCount {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--text-tertiary);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.marginaliaHotBadge {
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: white;
+  background: linear-gradient(135deg, #ff4804, #ff8c04);
+  padding: 4px 10px;
+  border-radius: 6px;
+  margin-bottom: 14px;
+  display: inline-block;
+  box-shadow: 0 4px 12px rgba(255, 72, 4, 0.25);
 }
 
 @keyframes marginaliaFadeIn {
