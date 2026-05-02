@@ -655,12 +655,6 @@ export default function RichTextEditor({ content, onChange, placeholder = "" }: 
 
             <div className={styles.editorContainer}>
                 <style dangerouslySetInnerHTML={{ __html: `
-                    /* [에디토리얼 시스템] 상세 페이지와 글자 크기 100% 동기화 */
-                    .editorContainer {
-                        --base-card-width: 1100;
-                        /* 부모는 더이상 컨테이너가 아님 */
-                    }
-
                     .ql-editor {
                         color: var(--text-primary) !important;
                         font-family: var(--font-noto-sans) !important;
@@ -677,12 +671,10 @@ export default function RichTextEditor({ content, onChange, placeholder = "" }: 
                         margin: 0 auto !important;
                         
                         /* 이제 이 상자가 컨테이너가 되어 상세 페이지 .content와 동일한 cqw를 가짐 */
-                        container-type: inline-size;
                         --fluid-unit: clamp(0.75px, calc(100cqw / var(--base-card-width)), 1px);
                         
                         padding: calc(60 * var(--fluid-unit)) 0 100px 0 !important;
                         transition: all 0.3s ease;
-                        scrollbar-gutter: stable;
                     }
 
                     @media (max-width: 768px) {

@@ -154,6 +154,7 @@
   word-break: keep-all;
   overflow-wrap: break-word;
   animation: slideUp 0.6s cubic-bezier(0.2, 0, 0.2, 1);
+  container-type: inline-size;
 }
 
 @media (max-width: 1024px) {
@@ -323,13 +324,11 @@
    모바일 너비 375px / 글자 13px (약 26자) -> PC의 절반 호흡
 */
 :root {
-  --base-card-width: 1100;
   /* 0.75 하한선 적용: PC(약 48자) 대비 모바일(약 24자) 50% 호흡 구현 */
   --fluid-unit: clamp(0.75px, calc(100cqw / var(--base-card-width)), 1px);
 }
 
 .content {
-  container-type: inline-size;
 }
 
 /* 폰트 크기 매핑: 1:1 가변 시스템 (PC 기준 1.0배) */

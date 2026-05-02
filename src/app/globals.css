@@ -55,6 +55,9 @@
   --transition-fast: 0.2s cubic-bezier(0.2, 0, 0, 1);
   --transition-normal: 0.35s cubic-bezier(0.2, 0, 0, 1);
   --transition-slow: 0.6s cubic-bezier(0.2, 0, 0, 1);
+
+  /* Editorial System Tokens */
+  --base-card-width: 1100;
 }
 
 

@@ -352,15 +352,12 @@ export default function HomeContent({
 
   return (
     <>
-      {/* 
-        [보류] 인터랙티브 매거진 커버 기능
-        isInitialVisit && heroPosts.length > 0 && (
-          <DynamicIssueCover 
-            posts={heroPosts} 
-            issueNumber={magazineIssue?.number || "2026-1"} 
-          />
-        )
-      */}
+      {isInitialVisit && heroPosts.length > 0 && (
+        <DynamicIssueCover 
+          posts={heroPosts} 
+          issueNumber={magazineIssue?.number || "2026-1"} 
+        />
+      )}
       <div className={styles.container}>
         {/* Branch 1: Home Page View (Mixed Sections) */}
         {!showFullGrid ? (
