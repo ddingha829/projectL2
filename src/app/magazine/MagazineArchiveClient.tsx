@@ -148,7 +148,7 @@ export default function MagazineArchiveClient({ initialIssues }: MagazineArchive
                   </motion.div>
 
                   <motion.h2 
-                    className={styles.storyTitle}
+                    className={`${styles.storyTitle} ${post.title.length > 50 ? styles.longTitle : ''}`}
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2, duration: 1 }}

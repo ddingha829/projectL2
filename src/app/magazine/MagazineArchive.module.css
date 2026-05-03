@@ -173,6 +173,11 @@
   color: #ffffff !important;
 }
 
+.longTitle {
+  font-size: clamp(1.4rem, 4.2vw, 3.15rem) !important;
+  /* Reduced by 30% from clamp(2rem, 6vw, 4.5rem) */
+}
+
 .storyExcerpt {
   font-size: 1.25rem;
   line-height: 1.6;
