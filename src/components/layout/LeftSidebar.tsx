@@ -295,6 +295,9 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
               <Link href="/reviews" className={styles.disclosureLink} onClick={onClose}>
                 플레이스
               </Link>
+              <Link href="/library" className={styles.disclosureLink} onClick={onClose}>
+                라이브러리
+              </Link>
               <Link href="/gallery" className={styles.disclosureLink} onClick={onClose}>
                 갤러리
               </Link>
