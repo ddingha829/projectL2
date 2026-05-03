@@ -2979,22 +2979,22 @@
   }
 }
 
-/* [신규] 매거진 영역 강조 스타일 (주황색 테두리 적용) */
+/* [실험] 매거진 영역 다크 스타일 (Midnight Editorial) */
 .magazineSection {
-  background: #fffcfb; /* 따뜻한 종이 느낌의 베이스 */
-  border: 1.5px solid rgba(255, 72, 4, 0.15);
-  border-left: 8px solid #ff4804; /* 잡지 책등(Spine) 느낌의 강조선 */
-  border-radius: 12px 32px 32px 12px; /* 비대칭 라운딩으로 책 느낌 강조 */
-  padding: 20px 40px 40px 40px; /* 상단 여백을 절반(20px)으로 줄임 */
+  background: #0d0d0d; /* 심해와 같은 깊은 블랙 */
+  border: 1.5px solid rgba(255, 72, 4, 0.3);
+  border-left: 8px solid #ff4804;
+  border-radius: 12px 32px 32px 12px;
+  padding: 20px 40px 40px 40px;
   margin-left: -40px;
   margin-right: -40px;
   margin-top: 20px !important;
   margin-bottom: 60px !important;
   
-  /* 다층 그림자로 부드러운 입체감 */
+  /* 네온 효과를 살짝 더한 다층 그림자 */
   box-shadow: 
-    0 20px 60px -10px rgba(255, 72, 4, 0.1), 
-    0 10px 30px -5px rgba(0, 0, 0, 0.04);
+    0 25px 80px -10px rgba(255, 72, 4, 0.2), 
+    0 10px 40px -5px rgba(0, 0, 0, 0.8);
     
   position: relative;
   overflow: hidden;
@@ -3004,11 +3004,11 @@
 .magazineSection:hover {
   transform: translateY(-4px);
   box-shadow: 
-    0 30px 70px -10px rgba(255, 72, 4, 0.15), 
-    0 15px 40px -5px rgba(0, 0, 0, 0.06);
+    0 40px 100px -10px rgba(255, 72, 4, 0.3), 
+    0 20px 50px -5px rgba(0, 0, 0, 0.9);
 }
 
-/* 배경 워터마크 효과 */
+/* 배경 워터마크 효과 (다크 모드에 맞춰 조정) */
 .magazineSection::before {
   content: "TICGLE";
   position: absolute;
@@ -3016,7 +3016,7 @@
   right: -10px;
   font-size: 9rem;
   font-weight: 950;
-  color: rgba(255, 72, 4, 0.04);
+  color: rgba(255, 255, 255, 0.02); /* 극도로 은은한 화이트 */
   font-family: var(--font-outfit), sans-serif;
   letter-spacing: -0.05em;
   pointer-events: none;
@@ -3041,10 +3041,10 @@
     width: calc(100% + 44px) !important;
     margin-top: 0 !important;
     margin-bottom: 40px !important;
-    background: #fffcfb;
+    background: #0d0d0d;
     border: none;
-    border-top: 1px solid rgba(255, 72, 4, 0.15);
-    border-bottom: 1px solid rgba(255, 72, 4, 0.15);
+    border-top: 1px solid rgba(255, 72, 4, 0.3);
+    border-bottom: 1px solid rgba(255, 72, 4, 0.3);
     border-left: 6px solid #ff4804; /* 모바일에서도 책등 효과 유지 */
     box-shadow: none;
   }
@@ -3059,15 +3059,15 @@
 
 .magSecTitleNew {
   font-family: var(--font-noto-sans), sans-serif;
-  font-size: 2.22rem; /* 다른 섹션 타이틀과 동일하게 확대 */
+  font-size: 2.22rem; 
   font-weight: 850;
   letter-spacing: -0.03em;
-  color: var(--text-primary);
+  color: #fff; /* 화이트 타이틀 */
 }
 
 .issueBadge {
-  background: #000;
-  color: #fff;
+  background: #fff;
+  color: #000;
   padding: 2px 10px;
   border-radius: 4px;
   font-family: var(--font-outfit), sans-serif;
@@ -3091,4 +3091,37 @@
   .viewMoreBtnInline {
     font-size: 1rem !important; 
   }
+}
+/* [실험] 내부 카드 스타일 강제 오버라이드 */
+.magazineSection .newMainLargeCard,
+.magazineSection .magListItem {
+  background: #1a1a1a !important;
+  border-color: #333 !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+}
+
+.magazineSection .newMainLargeTitle,
+.magazineSection .magListTitle {
+  color: #fff !important;
+}
+
+.magazineSection .newMainLargeExcerpt,
+.magazineSection .magListExcerpt,
+.magazineSection .magListAuthor,
+.magazineSection .magListDate {
+  color: #999 !important;
+}
+
+.magazineSection .magCardCategory {
+  background: rgba(255, 72, 4, 0.15) !important;
+  color: #ff6a33 !important;
+  border: 1px solid rgba(255, 72, 4, 0.3) !important;
+}
+
+.magazineSection .viewMoreBtnInline {
+  color: #666 !important;
+}
+
+.magazineSection .viewMoreBtnInline:hover {
+  color: #ff4804 !important;
 }
