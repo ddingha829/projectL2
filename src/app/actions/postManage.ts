@@ -173,11 +173,10 @@ export async function updatePost(postId: string, formData: FormData): Promise<{ 
             comment: comm?.trim() || '',
             lat: lat ? (parseFloat(lat) || null) : null,
             lng: lng ? (parseFloat(lng) || null) : null,
-            embed_url: emb || null,
             place_id: pId || (type === 'movie' ? tmdb : null),
             address: addr || null,
             category: type || cat || null,
-            embed_url: emb || (type === 'movie' ? img : null) // movie인 경우 img를 embed_url에 저장 (이미지 컬럼 부재 대비)
+            embed_url: emb || (type === 'movie' ? img : null)
           };
         }).filter((entry): entry is any => entry !== null);
 
