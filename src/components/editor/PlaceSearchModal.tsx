@@ -25,7 +25,8 @@ interface PlaceSearchModalProps {
         lng?: number,
         category?: string,
         type?: 'place' | 'movie' | 'manual',
-        imageUrl?: string
+        imageUrl?: string,
+        tmdbRating?: string
     }) => void;
     onCancel: () => void;
 }
