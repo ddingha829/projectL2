@@ -73,6 +73,16 @@
   border-color: var(--brand-accent-line);
 }
 
+.expandedCard {
+  grid-column: 1 / -1; /* 전 행 차지하여 아래로 확장되는 아코디언 효과 */
+  aspect-ratio: auto !important;
+  cursor: default !important;
+}
+
+.expandedCard:hover {
+  transform: none;
+}
+
 .posterArea {
   position: relative;
   width: 22.2%; /* 전체 가로의 약 2/9 (3:1 카드에서 2:3 포스터를 위함) */
@@ -337,6 +347,9 @@
     margin-bottom: 8px !important; /* PC처럼 제목-한줄평 사이 간격 확보 */
     padding-right: 50px !important;
   } 
+  .representativeComment { font-size: 0.6rem !important; } /* 추가 15% 축소 (0.7 -> 0.6) */
+  .authorBadge { font-size: 0.6rem !important; }
+  .tmdbRating { font-size: 0.65rem !important; }
   .userRatingBadge {
     top: 10px !important;
     right: 16px !important;

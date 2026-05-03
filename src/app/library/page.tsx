@@ -175,7 +175,11 @@ function LibraryContent() {
           <div className={styles.libraryGrid}>
             {filtered.length > 0 ? (
               filtered.map((item: any) => (
-                <div key={item.subject} className={styles.workCard} onClick={() => setExpandedId(expandedId === item.subject ? null : item.subject)}>
+                <div 
+                  key={item.subject} 
+                  className={`${styles.workCard} ${expandedId === item.subject ? styles.expandedCard : ''}`}
+                  onClick={() => setExpandedId(expandedId === item.subject ? null : item.subject)}
+                >
                   <div className={styles.posterArea}>
                     {item.imageUrl ? (
                       <img src={item.imageUrl} alt={item.subject} className={styles.posterImage} />
