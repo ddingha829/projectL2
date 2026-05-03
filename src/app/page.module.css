@@ -1281,7 +1281,7 @@
   width: 100%;
   padding: 0 !important;
   border-radius: 12px;
-  border: 1.5px solid var(--border-medium);
+  border: 3px solid var(--border-medium);
   background: #ffffff;
   /* Explicitly white to contrast with off-white site bg */
   text-decoration: none;
@@ -1649,7 +1649,7 @@
 .editorProfileCard {
   background: #ffffff;
   /* Explicitly white */
-  border: 1.5px solid var(--border-medium);
+  border: 3px solid var(--border-medium);
   border-radius: 20px;
   display: flex;
   flex-direction: column;
@@ -1952,7 +1952,7 @@
   flex: 0 0 calc(20% - 11.2px); /* PC: 5 columns exactly matching C-card */
   aspect-ratio: 1 / 1;
   background: #ffffff;
-  border: 1.5px solid var(--border-medium);
+  border: 3px solid var(--border-medium);
   border-radius: 12px;
   box-sizing: border-box !important; /* Ensure padding doesn't affect width */
   padding: 20px 20px 10px 20px;
@@ -2655,7 +2655,7 @@
   flex-direction: column;
   background: #ffffff;
   border-radius: 16px;
-  border: 1.5px solid var(--border-medium);
+  border: 3px solid var(--border-medium);
   /* Match edCard border width */
   overflow: hidden;
   box-sizing: border-box !important;
