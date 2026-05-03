@@ -70,7 +70,7 @@ function LibraryContent() {
             reviews: [], 
             userReviews: [], 
             avgRating: 0,
-            imageUrl: p.embed_url, // embed_url에서 이미지를 가져옴
+            imageUrl: (p.category === 'movie' && p.embed_url?.includes('google.com/maps')) ? null : p.embed_url, // 영화인데 구글맵 주소면 무시 (엑박 방지)
             tmdbRating: tmdbRating,
             category: p.category || (p.address?.includes('TMDB') ? 'movie' : 'book')
           };
@@ -86,7 +86,10 @@ function LibraryContent() {
           post_title: p.post?.title
         });
         // Prefer poster if multiple reviews exist
-        if (!grouped[key].imageUrl && p.embed_url) grouped[key].imageUrl = p.embed_url;
+        if (!grouped[key].imageUrl && p.embed_url) {
+          const isJunkMovieUrl = p.category === 'movie' && p.embed_url.includes('google.com/maps');
+          if (!isJunkMovieUrl) grouped[key].imageUrl = p.embed_url;
+        }
       });
 
       if (userReviewsData) {

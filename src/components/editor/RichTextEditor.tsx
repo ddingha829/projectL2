@@ -571,9 +571,10 @@ export default function RichTextEditor({ content, onChange, placeholder = "" }: 
         category?: string
     }) => {
         const quill = quillRef.current?.getEditor();
-        if (quill) {
             const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-            const embedUrl = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=place_id:${placeData.placeId || encodeURIComponent(placeData.placeName)}&zoom=15&language=ko`;
+            const embedUrl = placeData.type === 'movie' 
+                ? '' 
+                : `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=place_id:${placeData.placeId || encodeURIComponent(placeData.placeName)}&zoom=15&language=ko`;
             
             if (selectedCard) {
                 // [수정 모드] 기존 위치를 찾아서 교체

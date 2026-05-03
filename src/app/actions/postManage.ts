@@ -176,7 +176,7 @@ export async function updatePost(postId: string, formData: FormData): Promise<{ 
             place_id: pId || (type === 'movie' ? tmdb : null),
             address: addr || null,
             category: type || cat || null,
-            embed_url: emb || (type === 'movie' ? img : null)
+            embed_url: type === 'movie' ? (img || emb) : (emb || img || null)
           };
         }).filter((entry): entry is any => entry !== null);
 
