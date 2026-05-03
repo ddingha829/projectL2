@@ -328,8 +328,8 @@
     grid-template-columns: 1fr;
     gap: 16px;
   }
-  .workTitle { font-size: 0.95rem; } /* 제목 20% 축소 (1.2 -> 0.96) */
-  .representativeComment { font-size: 0.8rem; } /* 내용 20% 축소 (1.0 -> 0.8) */
-  .authorBadge { font-size: 0.7rem; }
-  .tmdbRating { font-size: 0.75rem; }
+  .workTitle { font-size: 0.95rem !important; height: auto !important; } 
+  .representativeComment { font-size: 0.75rem !important; } 
+  .authorBadge { font-size: 0.65rem !important; }
+  .tmdbRating { font-size: 0.7rem !important; }
 }
