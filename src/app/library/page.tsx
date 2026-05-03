@@ -72,7 +72,9 @@ function LibraryContent() {
             avgRating: 0,
             imageUrl: (p.category === 'movie' && p.embed_url?.includes('google.com/maps')) ? null : p.embed_url, // 영화인데 구글맵 주소면 무시 (엑박 방지)
             tmdbRating: tmdbRating,
-            category: p.category || (p.address?.includes('TMDB') ? 'movie' : 'book')
+            category: p.category || (p.address?.includes('TMDB') ? 'movie' : 'book'),
+            comment: p.comment,
+            authorName: p.post?.author?.display_name || "익명 티끌러"
           };
         }
         grouped[key].reviews.push({
@@ -187,11 +189,14 @@ function LibraryContent() {
                   
                   <div className={styles.workInfo}>
                     <h3 className={styles.workTitle}>{item.subject}</h3>
+                    {item.comment && (
+                      <p className={styles.representativeComment}>"{item.comment}"</p>
+                    )}
                     <div className={styles.workMeta}>
-                      <span className={styles.categoryBadge}>{item.category === 'movie' ? 'MOVIE' : 'BOOK'}</span>
                       {item.tmdbRating && (
                         <span className={styles.tmdbRating}>TMDB {item.tmdbRating}</span>
                       )}
+                      <span className={styles.authorBadge}>{item.authorName}</span>
                     </div>
                   </div>
 

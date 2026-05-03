@@ -50,20 +50,21 @@
 
 .libraryGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 32px;
-  margin-top: 40px;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 30px;
 }
 
 .workCard {
   background: var(--bg-primary);
-  border-radius: 16px;
+  border-radius: 12px;
   overflow: hidden;
-  border: 1px solid var(--border-light);
+  border: 1.5px solid #888888;
   transition: all 0.4s cubic-bezier(0.2, 0, 0, 1);
   cursor: pointer;
   display: flex;
   flex-direction: column;
+  aspect-ratio: 3 / 5; /* 카드 전체 비율 3:5 (Taller Portrait) */
 }
 
 .workCard:hover {
@@ -75,7 +76,7 @@
 .posterArea {
   position: relative;
   width: 100%;
-  aspect-ratio: 2 / 3;
+  aspect-ratio: 4 / 5; /* 내부 포스터 비율 4:5 (Portrait) */
   background: #f1f5f9;
   overflow: hidden;
 }
@@ -110,37 +111,70 @@
 }
 
 .workInfo {
-  padding: 20px;
+  padding: 12px;
   flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .workTitle {
-  font-size: 1.25rem;
+  font-size: 0.95rem;
   font-weight: 850;
-  margin: 0 0 12px 0;
+  margin: 0 0 4px 0;
   color: var(--text-primary);
   line-height: 1.3;
   letter-spacing: -0.02em;
+  height: 2.6em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.commentContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 8px;
+}
+
+.representativeComment {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-bottom: 0 !important;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* 가로형이라 1줄로 제한 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.4;
+  word-break: keep-all;
+}
+
+.authorBadge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--brand-accent-line);
+  text-align: right;
+  letter-spacing: 0.02em;
+  margin-left: auto; /* TMDB 평점 없을 때도 오른쪽 정렬 유지 */
+}
+
+.authorBadge::before {
+  content: '— ';
+  opacity: 0.5;
 }
 
 .workMeta {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 12px;
-}
-
-.categoryBadge {
-  font-size: 0.65rem;
-  font-weight: 900;
-  background: var(--bg-tertiary);
-  color: var(--text-secondary);
-  padding: 3px 8px;
-  border-radius: 4px;
-  letter-spacing: 0.05em;
+  margin-top: auto;
 }
 
 .tmdbRating {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 700;
   color: var(--brand-accent-line);
 }
