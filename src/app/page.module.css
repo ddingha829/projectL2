@@ -3004,7 +3004,7 @@
 
 @media (max-width: 768px) {
   .magazineSection {
-    padding: 20px 12px;
+    padding: 20px 22px;
     border-radius: 0; /* 모바일에서는 화면 끝까지 붙여서 더 시원하게 보이도록 */
     margin-left: -22px !important; /* centeredContent 패딩(22px) 무시 */
     margin-right: -22px !important;
