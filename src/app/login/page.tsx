@@ -96,6 +96,7 @@ export default function LoginPage() {
             {isPending ? "연결 중..." : "Google 계정으로 로그인"}
           </button>
 
+          {/* 카카오톡 로그인 잠시 비활성화
           <button 
             type="button"
             className={styles.kakaoBtn}
@@ -107,6 +108,7 @@ export default function LoginPage() {
             </svg>
             {isPending ? "연결 중..." : "카카오톡으로 로그인"}
           </button>
+          */}
         </div>
 
         <div className={styles.divider}>
