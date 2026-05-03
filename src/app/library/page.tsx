@@ -212,28 +212,22 @@ function LibraryContent() {
 
                   {expandedId === item.subject && (
                     <div className={styles.expandedContent} onClick={(e) => e.stopPropagation()}>
-                      <div className={styles.comparisonBox}>
-                        <div className={styles.compRow}>
-                          <span className={styles.compLabel}>티끌러 평점</span>
-                          <span className={styles.compValue}>{item.editorAvg}</span>
-                        </div>
-                        <div className={styles.compRow}>
-                          <span className={styles.compLabel}>유저 평점</span>
-                          <span className={styles.compValue}>{item.userAvg}</span>
-                        </div>
-                      </div>
-
-                      <div className={styles.reviewsList}>
-                        {item.reviews.map((rev: any) => (
-                          <div key={rev.id} className={styles.reviewSnippet}>
-                            <div className={styles.snippetHeader}>
-                              <span className={styles.snippetAuthor}>{rev.author.display_name}</span>
-                              <span className={styles.snippetScore}>★ {rev.review_rating}</span>
-                            </div>
-                            <p className={styles.snippetText}>{rev.review_comment}</p>
-                            <Link href={`/post/db-${rev.post_id}`} className={styles.goLink}>상세 보기 →</Link>
+                      <div className={styles.compactExpandHeader}>
+                        <div className={styles.comparisonBox}>
+                          <div className={styles.compRow}>
+                            <span className={styles.compLabel}>티끌러 평점</span>
+                            <span className={styles.compValue}>{item.editorAvg}</span>
                           </div>
-                        ))}
+                          <div className={styles.compRow}>
+                            <span className={styles.compLabel}>유저 평점</span>
+                            <span className={styles.compValue}>{item.userAvg}</span>
+                          </div>
+                        </div>
+                        {item.reviews.length > 0 && (
+                          <Link href={`/post/db-${item.reviews[0].post_id}`} className={styles.viewPostBtn}>
+                            게시물 보기 →
+                          </Link>
+                        )}
                       </div>
 
                       <div className={styles.voteForm}>

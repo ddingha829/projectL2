@@ -324,7 +324,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
             <h1 className={styles.title}>{post.title}</h1>
           </header>
 
-          {post.show_main_image !== false && post.image_url && (
+          {post.show_main_image !== false && post.image_url && !(post.review_subject && post.image_url.includes('tmdb.org')) && (
             <div className={styles.mainImageWrapper}>
               <a href={post.image_url} target="_blank" rel="noopener noreferrer">
                 <Image 

@@ -29,6 +29,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'ichef.bbci.co.uk',
       },
+      {
+        protocol: 'https',
+        hostname: 'image.tmdb.org',
+      },
     ],
   },
   // 보안 헤더 설정
