@@ -50,8 +50,8 @@
 
 .libraryGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(2, 1fr); /* 한 행에 2개씩 */
+  gap: 24px;
   margin-top: 30px;
 }
 
@@ -63,8 +63,8 @@
   transition: all 0.4s cubic-bezier(0.2, 0, 0, 1);
   cursor: pointer;
   display: flex;
-  flex-direction: column;
-  aspect-ratio: 3 / 5; /* 카드 전체 비율 3:5 (Taller Portrait) */
+  flex-direction: row; /* 가로형 배치 */
+  aspect-ratio: 3 / 1; /* 카드 전체 비율 3:1 */
 }
 
 .workCard:hover {
@@ -75,10 +75,12 @@
 
 .posterArea {
   position: relative;
-  width: 100%;
-  aspect-ratio: 4 / 5; /* 내부 포스터 비율 4:5 (Portrait) */
+  width: 22.2%; /* 전체 가로의 약 2/9 (3:1 카드에서 2:3 포스터를 위함) */
+  height: 100%;
+  aspect-ratio: 2 / 3; /* 이미지 비율 2:3 */
   background: #f1f5f9;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .posterImage {
@@ -111,15 +113,16 @@
 }
 
 .workInfo {
-  padding: 12px;
+  padding: 16px 20px;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  width: 77.8%;
 }
 
 .workTitle {
-  font-size: 0.95rem;
+  font-size: 1.2rem;
   font-weight: 850;
   margin: 0 0 4px 0;
   color: var(--text-primary);
@@ -140,20 +143,20 @@
 }
 
 .representativeComment {
-  font-size: 0.75rem;
+  font-size: 1rem;
   color: var(--text-secondary);
   font-style: italic;
   margin-bottom: 0 !important;
   display: -webkit-box;
-  -webkit-line-clamp: 1; /* 가로형이라 1줄로 제한 */
+  -webkit-line-clamp: 3; /* 가로로 길어져서 3줄까지 허용 */
   -webkit-box-orient: vertical;
   overflow: hidden;
-  line-height: 1.4;
+  line-height: 1.5;
   word-break: keep-all;
 }
 
 .authorBadge {
-  font-size: 0.65rem;
+  font-size: 0.8rem;
   font-weight: 800;
   color: var(--brand-accent-line);
   text-align: right;
@@ -174,7 +177,7 @@
 }
 
 .tmdbRating {
-  font-size: 0.7rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: var(--brand-accent-line);
 }
@@ -322,8 +325,11 @@
 @media (max-width: 768px) {
   .title { font-size: 2.2rem; }
   .libraryGrid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
-  .workTitle { font-size: 1.05rem; }
+  .workTitle { font-size: 0.95rem; } /* 제목 20% 축소 (1.2 -> 0.96) */
+  .representativeComment { font-size: 0.8rem; } /* 내용 20% 축소 (1.0 -> 0.8) */
+  .authorBadge { font-size: 0.7rem; }
+  .tmdbRating { font-size: 0.75rem; }
 }
