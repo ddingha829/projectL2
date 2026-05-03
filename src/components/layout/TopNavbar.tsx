@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { logout } from "@/app/login/actions";
 import NotificationSystem from "./NotificationSystem";
+import { CATEGORY_LIST } from "@/lib/constants/categories";
 import styles from "./TopNavbar.module.css";
 
 export default function TopNavbar({ 
@@ -129,16 +130,7 @@ export default function TopNavbar({
             </Link>
             {isCategoryOpen && (
               <div className={styles.navDropdown}>
-                {[
-                  { id: 'restaurant', name: '맛집' },
-                  { id: 'travel', name: '여행' },
-                  { id: 'movie', name: '영화' },
-                  { id: 'game', name: '게임' },
-                  { id: 'book', name: '책' },
-                  { id: 'exhibition', name: '전시회' },
-                  { id: 'other', name: '기타' },
-                  { id: 'feature', name: '기획전' }
-                ].map(cat => (
+                {CATEGORY_LIST.map(cat => (
                   <Link 
                     key={cat.id} 
                     href={`/?category=${cat.id}`} 

@@ -7,6 +7,7 @@ import { toggleHeroPost } from '@/app/actions/hero'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import MagazineManager from './MagazineManager'
+import { CATEGORY_MAP, CATEGORY_LIST } from '@/lib/constants/categories'
 
 interface AdminDashboardProps {
   initialPosts: any[]
@@ -242,9 +243,9 @@ export default function AdminDashboard({
       {activeTab === 'categories' && (
         <div className={styles.glassCard}>
           <div className={styles.categoryGrid}>
-            {["movie", "book", "game", "restaurant", "travel", "exhibition", "other"].map(cat => (
-              <div key={cat} className={styles.categoryCard}>
-                <span>{cat.charAt(0).toUpperCase() + cat.slice(1)}</span>
+            {CATEGORY_LIST.map(cat => (
+              <div key={cat.id} className={styles.categoryCard}>
+                <span>{cat.name}</span>
                 <div style={{ display: 'flex', gap: '8px' }}>
                   <button className={styles.actionBtn}>🔼</button>
                   <button className={styles.actionBtn}>🔽</button>
@@ -284,7 +285,7 @@ function StatsView({ posts, users, visitCount, todayVisitCount, totalViews, tren
 
   const totalViewsAggregation = Object.values(categoryStats).reduce((a: any, b: any) => a + b, 0) as number;
   const mappedStats = Object.entries(categoryStats).reduce((acc: any, [name, val]) => {
-    const krName = name === 'restaurant' ? '맛집' : name === 'travel' ? '여행' : name === 'movie' ? '영화' : name === 'game' ? '게임' : name === 'book' ? '책' : name === 'exhibition' ? '전시' : '기타';
+    const krName = CATEGORY_MAP[name] || name;
     acc[krName] = (acc[krName] || 0) + (val as number);
     return acc;
   }, {});

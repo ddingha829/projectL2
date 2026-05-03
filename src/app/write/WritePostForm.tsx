@@ -8,6 +8,7 @@ import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/client";
 import { useSearchParams } from "next/navigation";
 import { compressImage } from "@/lib/utils/image";
+import { CATEGORY_LIST } from "@/lib/constants/categories";
 
 const RichTextEditor = dynamic(() => import("@/components/editor/RichTextEditor"), { 
   ssr: false, 
@@ -258,14 +259,9 @@ export default function WritePostForm({ role }: { role: string }) {
           value={category}
           onChange={(e) => setCategory(e.target.value)}
         >
-          <option value="movie">영화 (Movie)</option>
-          <option value="book">책 (Book)</option>
-          <option value="game">게임 (Game)</option>
-          <option value="restaurant">맛집 (Restaurant)</option>
-          <option value="travel">여행 (Travel)</option>
-          <option value="exhibition">전시회 (Exhibition)</option>
-          <option value="other">기타 (Other)</option>
-          {role === 'admin' && <option value="feature">✨ 기획전 (Feature)</option>}
+          {CATEGORY_LIST.map(cat => (
+            <option key={cat.id} value={cat.id}>{cat.name}</option>
+          ))}
           {role === 'admin' && <option value="notice">📢 공지사항 (Notice)</option>}
         </select>
       </div>

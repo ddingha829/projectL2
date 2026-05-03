@@ -451,8 +451,8 @@
 
   .catPill,
   .pillBtn {
-    padding: 4px 10px !important;
-    font-size: 0.55rem !important;
+    padding: 6px 14px !important;
+    font-size: 0.75rem !important;
     border-radius: 20px !important;
   }
 
@@ -2977,4 +2977,50 @@
   .card:hover .bannerImage {
     transform: none !important;
   }
+}
+
+/* [신규] 매거진 영역 강조 스타일 (주황색 테두리 적용) */
+.magazineSection {
+  background: linear-gradient(180deg, rgba(255, 72, 4, 0.06) 0%, #ffffff 100%);
+  border: 2px solid rgba(255, 72, 4, 0.45);
+  border-radius: 28px;
+  padding: 35px 30px;
+  margin-top: 5px !important;
+  margin-bottom: 50px !important;
+  box-shadow: 0 15px 45px rgba(255, 72, 4, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .magazineSection {
+    padding: 24px 18px;
+    border-radius: 22px;
+    margin-top: 0 !important;
+    margin-bottom: 35px !important;
+    background: linear-gradient(180deg, rgba(255, 72, 4, 0.05) 0%, #ffffff 100%);
+    border: 2px solid rgba(255, 72, 4, 0.4);
+    box-shadow: 0 4px 15px rgba(255, 72, 4, 0.07);
+  }
+}
+
+.magSecTitleNew {
+  font-family: var(--font-noto-sans), sans-serif;
+  font-size: 1.25rem;
+  font-weight: 850;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+}
+
+.issueBadge {
+  background: #000;
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 4px;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 0.65em;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  margin-right: 8px;
+  vertical-align: middle;
 }

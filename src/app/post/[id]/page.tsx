@@ -15,34 +15,9 @@ import { getAdminStatus } from "@/app/actions/hero";
 import { getRecommendedPost, getMagazineIssueInfo } from "./actions";
 import styles from "./page.module.css";
 import layoutStyles from "@/app/layout.module.css";
+import { CATEGORY_MAP, SCHEMA_TYPE_MAP } from "@/lib/constants/categories";
 
-const CATEGORY_MAP: Record<string, string> = {
-  movie: "영화", 
-  book: "책", 
-  game: "게임", 
-  restaurant: "맛집", 
-  other: "기타",
-  travel: "여행",
-  exhibition: "전시회"
-};
 
-const SCHEMA_TYPE_MAP: Record<string, string> = {
-  movie: "Movie",
-  book: "Book",
-  game: "VideoGame",
-  restaurant: "Restaurant",
-  exhibition: "Event",
-  travel: "LocalBusiness",
-  other: "Product",
-  // 한글 키 대응
-  "영화": "Movie",
-  "책": "Book",
-  "게임": "VideoGame",
-  "맛집": "Restaurant",
-  "전시회": "Event",
-  "여행": "LocalBusiness",
-  "기타": "Product"
-};
 
 // Cached post fetching for both Metadata and Page content
 const getPost = cache(async (id: string) => {

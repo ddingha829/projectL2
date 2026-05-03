@@ -8,6 +8,7 @@ import styles from '@/app/write/page.module.css'
 import dynamic from 'next/dynamic'
 import { createClient } from '@/lib/supabase/client'
 import { compressImage } from '@/lib/utils/image'
+import { CATEGORY_LIST } from '@/lib/constants/categories'
 
 const RichTextEditor = dynamic(() => import('@/components/editor/RichTextEditor'), {
   ssr: false,
@@ -227,14 +228,10 @@ export default function EditPostForm({
       <div className={styles.inputGroup}>
         <label htmlFor="category">카테고리</label>
         <select id="category" name="category" required className={styles.input} defaultValue={initialCategory}>
-          <option value="movie">영화</option>
-          <option value="book">책</option>
-          <option value="game">게임</option>
-          <option value="restaurant">맛집</option>
-          <option value="travel">여행</option>
-          <option value="exhibition">전시회</option>
-          <option value="other">기타</option>
-          <option value="feature">✨ 기획전</option>
+          {CATEGORY_LIST.map(cat => (
+            <option key={cat.id} value={cat.id}>{cat.name}</option>
+          ))}
+          {isAdmin && <option value="notice">📢 공지사항 (Notice)</option>}
         </select>
       </div>
 

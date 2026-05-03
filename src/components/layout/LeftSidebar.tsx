@@ -10,6 +10,8 @@ import { createClient } from "@/lib/supabase/client";
 import { useTransition } from "react";
 import { logout } from "@/app/login/actions";
 
+import { CATEGORY_LIST } from "@/lib/constants/categories";
+
 const CATEGORIES = [
   { id: "all", name: "전체 글 보기" },
 ];
@@ -227,16 +229,7 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
               <span className={styles.disclosureArrow}>▼</span>
             </summary>
             <div className={styles.disclosureContent}>
-              {[
-                  { id: 'restaurant', name: '맛집' },
-                  { id: 'travel', name: '여행' },
-                  { id: 'movie', name: '영화' },
-                  { id: 'game', name: '게임' },
-                  { id: 'book', name: '책' },
-                  { id: 'exhibition', name: '전시회' },
-                  { id: 'other', name: '기타' },
-                  { id: 'feature', name: '기획전' }
-              ].map(cat => (
+              {CATEGORY_LIST.map(cat => (
                 <Link 
                   key={cat.id} 
                   href={`/?category=${cat.id}`} 

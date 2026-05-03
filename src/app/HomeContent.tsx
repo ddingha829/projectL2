@@ -10,6 +10,7 @@ import dynamic from "next/dynamic";
 import { useSearchParams, useRouter } from "next/navigation";
 import layoutStyles from "./layout.module.css";
 import SectionLayout from "@/components/shared/SectionLayout";
+import { CATEGORY_MAP, CATEGORY_LIST } from "@/lib/constants/categories";
 const ReviewRequest = dynamic(() => import("@/components/feed/ReviewRequest"), { ssr: false });
 import SkeletonCard from "@/components/feed/SkeletonCard";
 import DynamicIssueCover from "@/components/home/DynamicIssueCover";
@@ -147,13 +148,7 @@ export default function HomeContent({
   // 1. Label Map (Define first to use in Memo)
   const CATEGORY_LABEL_MAP: Record<string, string> = useMemo(() => ({
     'all': '전체',
-    'restaurant': '맛집',
-    'travel': '여행',
-    'movie': '영화',
-    'game': '게임',
-    'book': '책',
-    'exhibition': '전시회',
-    'other': '기타'
+    ...CATEGORY_MAP
   }), []);
 
   // 2. Safe Author Parsing
@@ -370,16 +365,19 @@ export default function HomeContent({
                   title=""
                   isFirst
                   noGrid
+                  className={styles.magazineSection}
                   customTitle={
-                    <h2 className={styles.magSecTitleNew} style={{ margin: 0, paddingLeft: '8px', display: 'flex', alignItems: 'baseline', flexWrap: 'nowrap', gap: '6px' }}>
+                    <h2 className={styles.magSecTitleNew} style={{ margin: 0, display: 'flex', alignItems: 'center', flexWrap: 'nowrap' }}>
                       {magazineIssue ? (
                         <>
-                          <span>{(() => {
-                            const parts = magazineIssue.number.split('-');
-                            return parts.length === 2 ? `${parts[0]}년 ${parts[1]}회차` : magazineIssue.number;
-                          })()}</span>
+                          <span className={styles.issueBadge}>
+                            {(() => {
+                              const parts = magazineIssue.number.split('-');
+                              return parts.length === 2 ? `${parts[0]} ISSUE ${parts[1]}` : magazineIssue.number;
+                            })()}
+                          </span>
                           <span style={{ color: '#ff4804' }}>티끌 매거진</span>
-                          <span style={{ color: 'var(--text-tertiary)', fontSize: '0.57em', fontWeight: 400 }}>
+                          <span style={{ color: 'var(--text-tertiary)', fontSize: '0.57em', fontWeight: 400, marginLeft: '8px' }}>
                             ({(() => { 
                               const d = new Date(magazineIssue.publishedAt); 
                               const mm = String(d.getMonth() + 1).padStart(2, '0'); 
@@ -390,9 +388,9 @@ export default function HomeContent({
                         </>
                       ) : (
                         <>
-                          <span>2026년 1회차</span>
+                          <span className={styles.issueBadge}>2026 ISSUE 1</span>
                           <span style={{ color: '#ff4804' }}>티끌 매거진</span>
-                          <span style={{ color: 'var(--text-tertiary)', fontSize: '0.57em', fontWeight: 400 }}>(준비 중)</span>
+                          <span style={{ color: 'var(--text-tertiary)', fontSize: '0.57em', fontWeight: 400, marginLeft: '8px' }}>(준비 중)</span>
                         </>
                       )}
                     </h2>
@@ -620,14 +618,7 @@ export default function HomeContent({
                   <div className={styles.pillContainer}>
                     {[
                       { id: 'all', name: '전체' },
-                      { id: 'restaurant', name: '맛집' },
-                      { id: 'travel', name: '여행' },
-                      { id: 'movie', name: '영화' },
-                      { id: 'game', name: '게임' },
-                      { id: 'book', name: '책' },
-                      { id: 'exhibition', name: '전시' },
-                      { id: 'other', name: '기타' },
-                      { id: 'feature', name: '기획전' }
+                      ...CATEGORY_LIST
                     ].map(cat => (
                       <button
                         key={cat.id}
