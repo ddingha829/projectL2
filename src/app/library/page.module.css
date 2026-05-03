@@ -63,8 +63,14 @@
   transition: all 0.4s cubic-bezier(0.2, 0, 0, 1);
   cursor: pointer;
   display: flex;
-  flex-direction: row; /* 가로형 배치 */
-  aspect-ratio: 3 / 1; /* 카드 전체 비율 3:1 */
+  flex-direction: column; /* 세로 방향으로 확장 가능하도록 변경 */
+}
+
+.cardMain {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  aspect-ratio: 3 / 1; /* 기존 카드 비율을 상단 영역에 적용 */
 }
 
 .workCard:hover {
@@ -74,9 +80,12 @@
 }
 
 .expandedCard {
-  grid-column: 1 / -1; /* 전 행 차지하여 아래로 확장되는 아코디언 효과 */
-  aspect-ratio: auto !important;
+  grid-column: 1 / -1;
   cursor: default !important;
+}
+
+.expandedCard .cardMain {
+  border-bottom: 1px solid var(--border-light);
 }
 
 .expandedCard:hover {

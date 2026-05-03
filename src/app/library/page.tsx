@@ -178,27 +178,29 @@ function LibraryContent() {
                 <div 
                   key={item.subject} 
                   className={`${styles.workCard} ${expandedId === item.subject ? styles.expandedCard : ''}`}
-                  onClick={() => setExpandedId(expandedId === item.subject ? null : item.subject)}
+                  onClick={() => handleExpand(item.subject)}
                 >
-                  <div className={styles.posterArea}>
-                    {item.imageUrl ? (
-                      <img src={item.imageUrl} alt={item.subject} className={styles.posterImage} />
-                    ) : (
-                      <div className={styles.posterPlaceholder}>NO POSTER</div>
-                    )}
-                  </div>
-                  
-                  <div className={styles.workInfo}>
-                    <div className={styles.userRatingBadge}>{item.avgRating}</div>
-                    <h3 className={styles.workTitle}>{item.subject}</h3>
-                    {item.comment && (
-                      <p className={styles.representativeComment}>"{item.comment}"</p>
-                    )}
-                    <div className={styles.workMeta}>
-                      {item.tmdbRating && (
-                        <span className={styles.tmdbRating}>TMDB {item.tmdbRating}</span>
+                  <div className={styles.cardMain}>
+                    <div className={styles.posterArea}>
+                      {item.imageUrl ? (
+                        <img src={item.imageUrl} alt={item.subject} className={styles.posterImage} />
+                      ) : (
+                        <div className={styles.posterPlaceholder}>NO POSTER</div>
                       )}
-                      <span className={styles.authorBadge}>{item.authorName}</span>
+                    </div>
+                    
+                    <div className={styles.workInfo}>
+                      <div className={styles.userRatingBadge}>{item.avgRating}</div>
+                      <h3 className={styles.workTitle}>{item.subject}</h3>
+                      {item.comment && (
+                        <p className={styles.representativeComment}>"{item.comment}"</p>
+                      )}
+                      <div className={styles.workMeta}>
+                        {item.tmdbRating && (
+                          <span className={styles.tmdbRating}>TMDB {item.tmdbRating}</span>
+                        )}
+                        <span className={styles.authorBadge}>{item.authorName}</span>
+                      </div>
                     </div>
                   </div>
 
