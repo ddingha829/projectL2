@@ -323,7 +323,7 @@
   .title { font-size: 2.2rem; }
   .libraryGrid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
+    gap: 12px;
   }
   .workTitle { font-size: 1.05rem; }
 }
