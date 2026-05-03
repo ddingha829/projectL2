@@ -76,7 +76,9 @@ export default function SectionLayout({
           <span className={styles.titleHighlight}>{titleHighlight}</span>
         )}
         {titleSuffix || ""}
-        {(moreHref || onMoreClick) && " >"}
+        {(moreHref || onMoreClick) && (
+          <span className={styles.sectionArrow}>❯</span>
+        )}
       </>
     );
 

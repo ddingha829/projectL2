@@ -71,6 +71,22 @@
   color: #ff4804;
 }
 
+.sectionArrow {
+  color: #888;
+  font-weight: 900;
+  font-size: 0.5em; /* 제목 크기에 비례하여 조정 */
+  margin-left: 10px;
+  display: inline-block;
+  vertical-align: middle;
+  transition: all 0.2s ease;
+}
+
+.sectionTitleLink:hover .sectionArrow,
+.sectionTitleBtn:hover .sectionArrow {
+  color: #ff4804;
+  transform: translateX(4px);
+}
+
 /* 장식 제거 (UI_GUIDE §3) */
 .sectionTitle::after {
   display: none;
