@@ -3034,7 +3034,7 @@
 
 @media (max-width: 768px) {
   .magazineSection {
-    padding: 30px 22px;
+    padding: 15px 22px 30px 22px; /* 상단 여백 50% 감소 (30px -> 15px) */
     border-radius: 0;
     margin-left: -22px !important;
     margin-right: -22px !important;
@@ -3076,4 +3076,19 @@
   letter-spacing: 0.05em;
   margin-right: 8px;
   vertical-align: middle;
+}
+.viewMoreBtnInline {
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.viewMoreBtnInline:hover {
+  color: #ff4804 !important;
+  transform: translateX(3px);
+}
+
+@media (max-width: 768px) {
+  .viewMoreBtnInline {
+    font-size: 0.68rem !important; /* 모바일에서 글자 크기 20% 축소 (0.85rem * 0.8) */
+  }
 }

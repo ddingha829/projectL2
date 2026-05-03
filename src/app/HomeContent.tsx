@@ -400,7 +400,7 @@ export default function HomeContent({
                         </Link>
                       </h2>
                       <Link href="/magazine" className={styles.viewMoreBtnInline} style={{ color: '#888', fontWeight: 700, fontSize: '0.85rem' }}>
-                        이전 매거진 보기 →
+                        이전 매거진 →
                       </Link>
                     </div>
                   }
