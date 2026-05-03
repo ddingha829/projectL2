@@ -26,6 +26,12 @@ function LibraryContent() {
     }
   }, [urlSearch]);
 
+  const handleExpand = (id: string) => {
+    setExpandedId(expandedId === id ? null : id);
+    setUserRating(0);
+    setUserComment("");
+  };
+
   const fetchData = async () => {
     setIsLoading(true);
     try {
