@@ -368,7 +368,6 @@
   box-shadow: 0 20px 40px rgba(0,0,0,0.06) !important;
   position: relative !important;
   transition: all 0.3s ease !important;
-  border-top: 4px solid #ff4804 !important;
   padding: 0 !important;
   margin: 0 !important;
   gap: 0 !important; /* 그리드 틈새 박멸 */
@@ -472,19 +471,22 @@
 
 /* Premium Header */
 :global(.review-card-header) {
-  padding: 14px 24px !important; /* 글자에만 여백 부여 */
-  border-bottom: 1px solid #f1f5f9 !important;
+  padding: 10px 24px !important; /* 높이 조절 */
+  border-bottom: none !important;
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
-  background: #fff !important;
+  background: #ff4804 !important; /* 헤더 전체 주황색 */
 }
 
 :global(.brand-label) {
   font-size: 0.75rem !important;
   font-weight: 900 !important;
-  color: #ff4804 !important;
-  letter-spacing: 0.1em !important;
+  color: #fff !important;
+  background: transparent !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  letter-spacing: 0.12em !important;
   text-transform: uppercase !important;
 }
 
@@ -622,6 +624,24 @@
   padding-left: 14px !important;
   border-left: 3px solid #ff4804 !important;
   margin: 0 !important;
+}
+
+:global(.review-card-movie-poster) {
+  width: 220px !important;
+  min-width: 220px !important;
+  height: 220px !important;
+  background-color: #000 !important;
+  position: relative !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+:global(.review-card-movie-poster img) {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
 }
 
 :global(.stars-row-modern) {

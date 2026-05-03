@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader } from '@googlemaps/js-api-loader';
+import { searchMovies, getTMDBImageUrl, TMDBMovie } from '@/lib/tmdb';
 import styles from './RichTextEditor.module.css';
 
 interface PlaceSearchModalProps {
@@ -22,7 +23,9 @@ interface PlaceSearchModalProps {
         placeId?: string,
         lat?: number,
         lng?: number,
-        category?: string
+        category?: string,
+        type?: 'place' | 'movie' | 'manual',
+        imageUrl?: string
     }) => void;
     onCancel: () => void;
 }
@@ -45,6 +48,11 @@ const PlaceSearchModal: React.FC<PlaceSearchModalProps> = ({ onSelect, onCancel,
     const [manualAddress, setManualAddress] = useState(initialData?.placeId === 'manual' ? initialData.address : '');
     const [manualCategory, setManualCategory] = useState(initialData?.placeId === 'manual' ? (initialData as any).category || '' : '');
     
+    // Movie Search State
+    const [isMovie, setIsMovie] = useState(false);
+    const [movieResults, setMovieResults] = useState<TMDBMovie[]>([]);
+    const [selectedMovie, setSelectedMovie] = useState<TMDBMovie | null>(null);
+    
     // Services Refs
     const autocompleteService = useRef<google.maps.places.AutocompleteService | null>(null);
     const placesService = useRef<google.maps.places.PlacesService | null>(null);
@@ -65,19 +73,26 @@ const PlaceSearchModal: React.FC<PlaceSearchModalProps> = ({ onSelect, onCancel,
 
     const handleSearch = async (query: string) => {
         setSearchQuery(query);
-        if (!query.trim() || !autocompleteService.current) {
+        if (!query.trim()) {
             setResults([]);
+            setMovieResults([]);
             return;
         }
 
         setIsLoading(true);
-        autocompleteService.current.getPlacePredictions(
-            { input: query, language: 'ko' },
-            (predictions) => {
-                setResults(predictions || []);
-                setIsLoading(false);
-            }
-        );
+        if (isMovie) {
+            const movies = await searchMovies(query);
+            setMovieResults(movies);
+            setIsLoading(false);
+        } else if (autocompleteService.current) {
+            autocompleteService.current.getPlacePredictions(
+                { input: query, language: 'ko' },
+                (predictions) => {
+                    setResults(predictions || []);
+                    setIsLoading(false);
+                }
+            );
+        }
     };
 
     const handleSelectResult = (prediction: google.maps.places.AutocompletePrediction) => {
@@ -113,7 +128,17 @@ const PlaceSearchModal: React.FC<PlaceSearchModalProps> = ({ onSelect, onCancel,
         e.preventDefault();
         e.stopPropagation();
         
-        if (isManual) {
+        if (isMovie && selectedMovie) {
+            onSelect({
+                placeName: selectedMovie.title,
+                address: `${selectedMovie.release_date.split('-')[0]}년 개봉 · TMDB 평점 ${selectedMovie.vote_average.toFixed(1)}`,
+                rating,
+                comment: comment.trim() || `${selectedMovie.title} 리뷰입니다!`,
+                placeId: `movie-${selectedMovie.id}`,
+                type: 'movie',
+                imageUrl: getTMDBImageUrl(selectedMovie.poster_path) || ''
+            });
+        } else if (isManual) {
             if (!manualName.trim()) {
                 alert("제목을 입력해주세요.");
                 return;
@@ -124,7 +149,8 @@ const PlaceSearchModal: React.FC<PlaceSearchModalProps> = ({ onSelect, onCancel,
                 rating,
                 comment: comment.trim() || `${manualName} 리뷰입니다!`,
                 placeId: 'manual',
-                category: manualCategory.trim()
+                category: manualCategory.trim(),
+                type: 'manual'
             });
         } else if (selectedPlace) {
             onSelect({
@@ -134,7 +160,8 @@ const PlaceSearchModal: React.FC<PlaceSearchModalProps> = ({ onSelect, onCancel,
                 comment: comment.trim() || `${selectedPlace.name} 추천합니다!`,
                 placeId: selectedPlace.placeId,
                 lat: selectedPlace.lat,
-                lng: selectedPlace.lng
+                lng: selectedPlace.lng,
+                type: 'place'
             });
         }
     };
@@ -197,15 +224,22 @@ const PlaceSearchModal: React.FC<PlaceSearchModalProps> = ({ onSelect, onCancel,
                     <div className={styles.toggleContainer}>
                         <button 
                             type="button"
-                            className={`${styles.toggleBtn} ${!isManual ? styles.active : ''}`}
-                            onClick={() => setIsManual(false)}
+                            className={`${styles.toggleBtn} ${(!isManual && !isMovie) ? styles.active : ''}`}
+                            onClick={() => { setIsManual(false); setIsMovie(false); setResults([]); setMovieResults([]); setSelectedMovie(null); setSelectedPlace(null); setSearchQuery(''); }}
                         >
                             장소 검색
                         </button>
                         <button 
                             type="button"
+                            className={`${styles.toggleBtn} ${isMovie ? styles.active : ''}`}
+                            onClick={() => { setIsMovie(true); setIsManual(false); setResults([]); setMovieResults([]); setSelectedMovie(null); setSelectedPlace(null); setSearchQuery(''); }}
+                        >
+                            영화 검색
+                        </button>
+                        <button 
+                            type="button"
                             className={`${styles.toggleBtn} ${isManual ? styles.active : ''}`}
-                            onClick={() => setIsManual(true)}
+                            onClick={() => { setIsManual(true); setIsMovie(false); setResults([]); setMovieResults([]); setSelectedMovie(null); setSelectedPlace(null); setSearchQuery(''); }}
                         >
                             직접 입력
                         </button>
@@ -216,7 +250,74 @@ const PlaceSearchModal: React.FC<PlaceSearchModalProps> = ({ onSelect, onCancel,
                 <div className={styles.modalBody}>
                     <div className={styles.stepGrid}>
                         <div className={styles.stepSection}>
-                            {isManual ? (
+                            {isMovie ? (
+                                <>
+                                    <h4 className={styles.stepTitle}>1. 영화 정보 검색</h4>
+                                    <div className={styles.searchBox}>
+                                        <div className={styles.searchInputWrapper}>
+                                            <input 
+                                                type="text" 
+                                                placeholder="영화 제목을 입력하세요" 
+                                                value={searchQuery}
+                                                onChange={(e) => setSearchQuery(e.target.value)}
+                                                onKeyDown={handleKeyPress}
+                                            />
+                                            <button 
+                                                type="button" 
+                                                className={styles.inlineSearchBtnCompact}
+                                                onClick={() => handleSearch(searchQuery)}
+                                            >
+                                                검색
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className={styles.resultsContainer}>
+                                        {isLoading && <div className={styles.listLoader}><div className={styles.miniLoader}></div></div>}
+                                        {movieResults.length > 0 ? (
+                                            movieResults.map((movie) => (
+                                                <div 
+                                                    key={movie.id} 
+                                                    className={`${styles.resultRow} ${selectedMovie?.id === movie.id ? styles.active : ''}`}
+                                                    onClick={() => setSelectedMovie(movie)}
+                                                >
+                                                    <div className={styles.resInfo} style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                                                        {movie.poster_path && (
+                                                            <img 
+                                                                src={getTMDBImageUrl(movie.poster_path)!} 
+                                                                alt={movie.title} 
+                                                                style={{ width: '40px', height: '60px', borderRadius: '4px', objectFit: 'cover' }} 
+                                                            />
+                                                        )}
+                                                        <div>
+                                                            <div className={styles.resName}>{movie.title}</div>
+                                                            <div className={styles.resAddr}>{movie.release_date} · {movie.original_title}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        ) : !isLoading && searchQuery && (
+                                            <div className={styles.emptyMsg}>검색 결과가 없습니다.</div>
+                                        )}
+                                    </div>
+                                    <div className={styles.mapPreviewCompact}>
+                                        {selectedMovie ? (
+                                            <div style={{ position: 'relative', width: '100%', height: '100%', background: '#000', overflow: 'hidden' }}>
+                                                {selectedMovie.poster_path ? (
+                                                    <img 
+                                                        src={getTMDBImageUrl(selectedMovie.poster_path)!} 
+                                                        alt={selectedMovie.title} 
+                                                        style={{ width: '100%', height: '100%', objectFit: 'contain' }} 
+                                                    />
+                                                ) : (
+                                                    <div className={styles.mapPlaceholder}>포스터 이미지가 없습니다</div>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <div className={styles.mapPlaceholder}>영화를 선택하면 포스터가 표시됩니다</div>
+                                        )}
+                                    </div>
+                                </>
+                            ) : isManual ? (
                                 <>
                                     <h4 className={styles.stepTitle}>1. 리뷰 대상 정보 입력</h4>
                                     <div className={styles.manualInputs}>
@@ -376,7 +477,7 @@ const PlaceSearchModal: React.FC<PlaceSearchModalProps> = ({ onSelect, onCancel,
                         type="button"
                         onClick={handleInsert} 
                         className={styles.confirmBtn} 
-                        disabled={isManual ? !manualName.trim() : !selectedPlace}
+                        disabled={isMovie ? !selectedMovie : isManual ? !manualName.trim() : !selectedPlace}
                     >
                         {initialData ? '수정 완료' : '리뷰 카드 완성'}
                     </button>

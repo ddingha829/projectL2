@@ -96,6 +96,8 @@ const ReactQuill = dynamic(async () => {
                     node.setAttribute('data-category', value.category || ''); 
                     node.setAttribute('data-lat', value.lat?.toString() || '');
                     node.setAttribute('data-lng', value.lng?.toString() || '');
+                    node.setAttribute('data-type', value.type || 'place');
+                    node.setAttribute('data-image-url', value.imageUrl || '');
                     node.id = 'ticgle-place';
                     
                     const rating = Number(value.rating) || 0;
@@ -120,24 +122,29 @@ const ReactQuill = dynamic(async () => {
                         node.classList.add('review-card-manual-photo');
                     }
                     
-                    const mapOrImageHtml = isManual 
-                        ? `<div class="review-card-map review-card-manual-photo-area" style="width:220px !important; min-width:220px !important; height:100% !important; background-color:#f8fafc; position:relative;"></div>`
-                        : `<div class="review-card-map"><iframe src="${value.embedUrl}" frameborder="0"></iframe></div>`;
+                    const isMovie = value.type === 'movie';
+                    const mapOrImageHtml = isMovie
+                        ? `<div class="review-card-map review-card-movie-poster" style="width:220px !important; min-width:220px !important; height:100% !important; background-color:#000; position:relative; overflow:hidden;"><img src="${value.imageUrl}" style="width:100%; height:100%; object-fit:cover;" /></div>`
+                        : isManual 
+                            ? `<div class="review-card-map review-card-manual-photo-area" style="width:220px !important; min-width:220px !important; height:100% !important; background-color:#f8fafc; position:relative;"></div>`
+                            : `<div class="review-card-map"><iframe src="${value.embedUrl}" frameborder="0"></iframe></div>`;
+                    
+                    const brandLabel = isMovie ? 'TICGLE MOVIE' : 'TICGLE PLACE';
                     
                     node.innerHTML = `
                         <div class="review-card-inner" style="margin: 0 auto;">
                             <div class="review-card-header">
-                                <span class="brand-label">TICGLE PLACE</span>
+                                <span class="brand-label">${brandLabel}</span>
                             </div>
                             <div class="review-card-main">
-                                ${isManual ? mapOrImageHtml : `<a href="${googleMapsUrl}" target="_blank" rel="noopener noreferrer" class="review-card-map-link">${mapOrImageHtml}</a>`}
+                                ${isManual || isMovie ? mapOrImageHtml : `<a href="${googleMapsUrl}" target="_blank" rel="noopener noreferrer" class="review-card-map-link">${mapOrImageHtml}</a>`}
                                 
-                                ${isManual ? `
+                                ${isManual || isMovie ? `
                                     <div class="review-card-body" style="display:flex !important;">
                                         <div class="review-card-top" style="width:100%;">
                                             <div class="place-info">
                                                 <h3 class="place-name">${value.placeName}</h3>
-                                                <p class="place-address">${value.category || value.address || ''}</p>
+                                                <p class="place-address">${isMovie ? value.address : (value.category || value.address || '')}</p>
                                             </div>
                                             <div class="score-column" style="display:flex; flex-direction:column; align-items:center; gap:6px; margin-left:auto; flex-shrink:0;">
                                                 <div class="score-badge">
@@ -185,7 +192,9 @@ const ReactQuill = dynamic(async () => {
                         embedUrl: node.getAttribute('data-embed-url'),
                         category: node.getAttribute('data-category'),
                         lat: node.getAttribute('data-lat') ? parseFloat(node.getAttribute('data-lat')!) : undefined,
-                        lng: node.getAttribute('data-lng') ? parseFloat(node.getAttribute('data-lng')!) : undefined
+                        lng: node.getAttribute('data-lng') ? parseFloat(node.getAttribute('data-lng')!) : undefined,
+                        type: node.getAttribute('data-type') as any,
+                        imageUrl: node.getAttribute('data-image-url') || undefined
                     };
                 }
             }
