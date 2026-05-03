@@ -347,12 +347,14 @@ export default function HomeContent({
 
   return (
     <>
-      {isInitialVisit && heroPosts.length > 0 && (
+      {/* [잠시 비활성화] 매거진 인트로
+      isInitialVisit && heroPosts.length > 0 && (
         <DynamicIssueCover 
           posts={heroPosts} 
           issueNumber={magazineIssue?.number || "2026-1"} 
         />
-      )}
+      )
+      */}
       <div className={styles.container}>
         {/* Branch 1: Home Page View (Mixed Sections) */}
         {!showFullGrid ? (

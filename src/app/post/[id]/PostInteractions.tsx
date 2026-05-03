@@ -354,6 +354,7 @@ export default function PostInteractions({
               onChange={(e) => setNewComment(e.target.value)}
               disabled={!user || isSubmitting}
               required
+              suppressHydrationWarning
             />
             <button type="submit" className={styles.submitBtn} disabled={!user || isSubmitting || !newComment.trim()}>
               {isSubmitting ? "등록 중..." : "등록"}
@@ -428,7 +429,12 @@ export default function PostInteractions({
                     <div className={styles.commentBody}>
                       {editingCommentId === p.id ? (
                         <div className={styles.editArea}>
-                          <textarea className={styles.editInput} value={editContent} onChange={(e) => setEditContent(e.target.value)} />
+                          <textarea 
+                            className={styles.editInput} 
+                            value={editContent} 
+                            onChange={(e) => setEditContent(e.target.value)} 
+                            suppressHydrationWarning
+                          />
                           <div className={styles.editActions}>
                             <button className={styles.saveBtn} onClick={() => handleUpdateComment(p.id)}>저장</button>
                             <button className={styles.cancelBtn} onClick={() => setEditingCommentId(null)}>취소</button>
@@ -596,6 +602,7 @@ export default function PostInteractions({
                 autoFocus
                 value={inlineComment}
                 onChange={(e) => setInlineComment(e.target.value)}
+                suppressHydrationWarning
               />
               <div className={styles.inlineActions}>
                 <button 
