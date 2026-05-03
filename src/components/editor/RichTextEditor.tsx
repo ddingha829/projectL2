@@ -125,7 +125,7 @@ const ReactQuill = dynamic(async () => {
                     
                     const isMovie = value.type === 'movie';
                     const mapOrImageHtml = isMovie
-                        ? `<div class="review-card-map review-card-movie-poster" style="width:220px !important; min-width:220px !important; height:100% !important; background-color:#000; position:relative; overflow:hidden;"><img src="${value.imageUrl}" style="width:100%; height:100%; object-fit:cover;" /></div>`
+                        ? `<div class="review-card-map review-card-movie-poster" style="width:220px !important; min-width:220px !important; height:100% !important; background-color:#000; position:relative; overflow:hidden;"><img src="${value.imageUrl}" style="width:100%; height:100%; object-fit:cover; display:block;" /></div>`
                         : isManual 
                             ? `<div class="review-card-map review-card-manual-photo-area" style="width:220px !important; min-width:220px !important; height:100% !important; background-color:#f8fafc; position:relative;"></div>`
                             : `<div class="review-card-map"><iframe src="${value.embedUrl}" frameborder="0"></iframe></div>`;
@@ -134,10 +134,7 @@ const ReactQuill = dynamic(async () => {
                     
                     node.innerHTML = `
                         <div class="review-card-inner" style="margin: 0 auto;">
-                            <div class="review-card-header">
-                                <span class="brand-label">${brandLabel}</span>
-                            </div>
-                            <div class="review-card-main">
+                            <div class="review-card-header"><span class="brand-label">${brandLabel}</span></div><div class="review-card-main">
                                 ${isManual || isMovie ? mapOrImageHtml : `<a href="${googleMapsUrl}" target="_blank" rel="noopener noreferrer" class="review-card-map-link">${mapOrImageHtml}</a>`}
                                 
                                 ${isManual || isMovie ? `

@@ -217,6 +217,35 @@ export default function ContentSegmenter({
           }
         }
       }
+
+      // C. Gap & Rounding Aggressive Fix (For Post View)
+      const header = card.querySelector('.review-card-header') as HTMLElement;
+      const main = card.querySelector('.review-card-main') as HTMLElement;
+      if (header && main) {
+        // 헤더와 메인 사이의 모든 공백/텍스트 노드 제거
+        let next = header.nextSibling;
+        while (next && next !== main) {
+          const toRemove = next;
+          next = next.nextSibling;
+          if (toRemove.nodeType === Node.TEXT_NODE || (toRemove as HTMLElement).tagName === 'BR') {
+            toRemove.remove();
+          }
+        }
+        header.style.marginBottom = '0';
+        main.style.marginTop = '-1px'; // 강제 밀착
+      }
+      
+      const map = card.querySelector('.review-card-map') as HTMLElement;
+      if (map) {
+        map.style.borderRadius = '0';
+        map.style.marginTop = '0';
+        const img = map.querySelector('img');
+        if (img) {
+          img.style.display = 'block';
+          img.style.borderRadius = '0';
+          img.style.marginTop = '0';
+        }
+      }
     });
   }, [content, comments]);
 

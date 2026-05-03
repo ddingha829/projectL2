@@ -371,7 +371,6 @@ li {
   box-shadow: 0 20px 40px rgba(0,0,0,0.06) !important;
   position: relative !important;
   transition: all 0.3s ease !important;
-  border-top: 4px solid #ff4804 !important;
   padding: 0 !important;
   margin: 0 !important;
   gap: 0 !important;
@@ -379,18 +378,19 @@ li {
 
 .review-card-header {
   grid-column: 1 / span 2 !important;
-  padding: 14px 24px !important;
-  border-bottom: 1px solid #f1f5f9 !important;
+  padding: 12px 24px !important;
+  border-bottom: none !important;
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
-  background: #fff !important;
+  background: #ff4804 !important;
+  margin: 0 !important; /* 여백 제거 */
 }
 
 .brand-label {
   font-size: 0.75rem !important;
   font-weight: 900 !important;
-  color: #ff4804 !important;
+  color: #fff !important;
   letter-spacing: 0.1em !important;
   text-transform: uppercase !important;
 }
@@ -402,6 +402,7 @@ li {
   height: 220px !important;
   padding: 0 !important;
   margin: 0 !important;
+  margin-top: -1px !important; /* 헤더와의 미세한 틈새 방지 */
   align-items: stretch !important;
   overflow: hidden !important;
   background: #fff !important;
