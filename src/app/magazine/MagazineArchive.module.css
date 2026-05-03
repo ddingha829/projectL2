@@ -1,0 +1,261 @@
+.archiveContainer {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - var(--header-height));
+  background: #000;
+  color: #fff;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.topControls {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.issueSelectorWrap {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(20px);
+  padding: 15px 30px;
+  border-radius: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  pointer-events: auto;
+}
+
+.navArrow {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: all 0.3s;
+}
+
+.navArrow:hover:not(:disabled) {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+.navArrow:disabled {
+  opacity: 0.1;
+  cursor: default;
+}
+
+.issueInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.issueLabel {
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 0.65rem;
+  font-weight: 900;
+  color: #ff4804;
+  letter-spacing: 0.3em;
+}
+
+.issueNumber {
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 1.1rem;
+  font-weight: 900;
+}
+
+.snapScrollContainer {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overscroll-behavior-y: contain;
+}
+
+.snapScrollContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.storySection {
+  width: 100%;
+  height: calc(100vh - var(--header-height));
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  position: relative;
+}
+
+.storyLink {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
+.bgWrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.bgImage {
+  object-fit: cover;
+  opacity: 0.5;
+}
+
+.vignette {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 100%),
+              linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, transparent 20%, transparent 80%, rgba(0,0,0,0.8) 100%);
+}
+
+.contentArea {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 40px;
+  text-align: center;
+}
+
+.storyMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.storyIndex {
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 0.8rem;
+  font-weight: 900;
+  color: #ff4804;
+  letter-spacing: 0.2em;
+}
+
+.storyCategory {
+  font-size: 1.1rem;
+  font-weight: 700;
+  opacity: 0.7;
+}
+
+.storyTitle {
+  font-size: clamp(2rem, 6vw, 4.5rem);
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  margin-bottom: 40px;
+  text-shadow: 0 10px 40px rgba(0,0,0,0.8);
+  max-width: 1200px;
+  color: #ffffff !important;
+}
+
+.viewAction {
+  margin-top: 20px;
+}
+
+.viewBtn {
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 1rem;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  padding: 12px 30px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 30px;
+  transition: all 0.3s;
+}
+
+.storyLink:hover .viewBtn {
+  background: #fff;
+  color: #000;
+  border-color: #fff;
+}
+
+.brandLogo {
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: 0.3em;
+  opacity: 0.2;
+}
+
+@media (max-width: 768px) {
+  .archiveContainer {
+    height: calc(100vh - var(--header-height-mobile));
+  }
+  
+  .topControls {
+    top: 15px;
+  }
+
+  .issueSelectorWrap {
+    padding: 8px 16px;
+    gap: 12px;
+    border-radius: 30px;
+    background: rgba(0, 0, 0, 0.6);
+    max-width: 90%;
+  }
+
+  .navArrow {
+    font-size: 1.2rem;
+    padding: 5px;
+  }
+
+  .issueLabel {
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+  }
+
+  .issueNumber {
+    font-size: 0.85rem;
+  }
+
+  .storySection {
+    height: calc(100vh - var(--header-height-mobile));
+  }
+
+  .contentArea {
+    padding: 0 20px;
+  }
+
+  .storyTitle {
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+    line-height: 1.2;
+  }
+
+  .brandLogo {
+    bottom: 20px;
+    left: 20px;
+    font-size: 0.9rem;
+    display: none; /* 모바일에서는 로고 숨김 (가독성 위해) */
+  }
+
+  .viewBtn {
+    font-size: 0.85rem;
+    padding: 10px 24px;
+  }
+}

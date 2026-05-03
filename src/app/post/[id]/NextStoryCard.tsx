@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./NextStoryCard.module.css";
+import { CATEGORY_MAP } from "@/lib/constants/categories";
 
 interface RecommendedPost {
   id: string;
@@ -10,15 +11,7 @@ interface RecommendedPost {
   category: string;
 }
 
-const CATEGORY_MAP: Record<string, string> = {
-  movie: "영화", 
-  book: "책", 
-  game: "게임", 
-  restaurant: "맛집", 
-  other: "기타",
-  travel: "여행",
-  exhibition: "전시회"
-};
+
 
 export default function NextStoryCard({ post }: { post: RecommendedPost | null }) {
   if (!post) return null;

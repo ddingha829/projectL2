@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { headers, cookies } from "next/headers";
 import { getAdminStatus } from "@/app/actions/hero";
 import { getLatestMagazineIssue } from "@/app/actions/magazine";
+import { CATEGORY_MAP } from "@/lib/constants/categories";
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 60; // 60초 캐싱으로 부하 감소 및 속도 향상
@@ -24,17 +25,7 @@ export default async function Home({
   const authorFilter = resolvedParams?.author as string;
   const searchFilter = resolvedParams?.search as string;
 
-  const CATEGORY_MAP: Record<string, string> = {
-    movie: "영화",
-    book: "책",
-    game: "게임",
-    restaurant: "맛집",
-    travel: "여행",
-    exhibition: "전시회",
-    other: "기타",
-    feature: "기획전",
-    notice: "공지사항"
-  };
+
 
   const supabase = await createClient();
   

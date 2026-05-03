@@ -108,3 +108,27 @@ export async function getLatestMagazineIssue() {
 
   return { data }
 }
+
+/**
+ * 모든 매거진 회차 목록 가져오기
+ */
+export async function getAllMagazineIssues() {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from('magazine_issues')
+    .select(`
+      *,
+      post_a:posts!post_a_id(*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets)),
+      post_b1:posts!post_b1_id(*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets)),
+      post_b2:posts!post_b2_id(*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets)),
+      post_b3:posts!post_b3_id(*, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets))
+    `)
+    .order('published_at', { ascending: false })
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  return { data }
+}

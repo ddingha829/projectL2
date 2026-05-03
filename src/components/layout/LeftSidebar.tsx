@@ -221,6 +221,9 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
 
         {/* New Mobile-Optimized Navigation Menu */}
         <div className={styles.sidebarNav}>
+          <Link href="/magazine" className={styles.sidebarLink} style={{ fontWeight: '800' }} onClick={onClose}>
+            매거진
+          </Link>
           <details className={styles.sidebarDisclosure}>
             <summary className={styles.sidebarSummary}>
               <Link href="/?view=all" className={styles.summaryLink} onClick={onClose}>

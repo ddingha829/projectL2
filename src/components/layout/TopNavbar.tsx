@@ -120,6 +120,7 @@ export default function TopNavbar({
         )}
 
         <nav className={styles.mainNav}>
+          <Link href="/magazine" className={styles.navLink} style={{ fontWeight: '800' }}>매거진</Link>
           <div 
             className={styles.dropdownContainer}
             onMouseEnter={() => setIsCategoryOpen(true)}

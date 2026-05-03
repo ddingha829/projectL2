@@ -8,7 +8,8 @@ export const CATEGORY_MAP: Record<string, string> = {
   finance: "재테크",
   game: "게임",
   other: "기타",
-  notice: "공지사항"
+  notice: "공지사항",
+  feature: "기획전"
 };
 
 export const CATEGORY_LIST = [

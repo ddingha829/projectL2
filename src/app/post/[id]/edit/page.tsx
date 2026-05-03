@@ -3,11 +3,9 @@ import { createClient } from '@/lib/supabase/server'
 import EditPostForm from './EditPostForm'
 import styles from '@/app/write/page.module.css'
 import Link from 'next/link'
+import { CATEGORY_MAP } from '@/lib/constants/categories'
 
-const CATEGORY_MAP: Record<string, string> = {
-  movie: '영화', book: '책', game: '게임',
-  restaurant: '맛집', other: '기타', travel: '여행', exhibition: '전시회'
-}
+
 
 export default async function EditPostPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params

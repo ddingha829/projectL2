@@ -1,19 +1,9 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { CATEGORY_MAP } from '@/lib/constants/categories'
 
-/** 카테고리 한글 매핑 테이블 */
-const CATEGORY_MAP: Record<string, string> = {
-  movie: '영화',
-  book: '책',
-  game: '게임',
-  restaurant: '맛집',
-  travel: '여행',
-  exhibition: '전시회',
-  other: '기타',
-  feature: '기획전',
-  notice: '공지사항'
-};
+
 
 function extractImagesSync(html: string): string[] {
   const images: string[] = [];
