@@ -13,9 +13,27 @@ interface MagazineArchiveClientProps {
 
 const stripHtml = (html: string) => {
   if (!html) return "";
-  // <p>, <br>, <div> 태그를 줄바꿈 문자로 변환하여 줄바꿈 유지
-  let text = html.replace(/<\/p>|<br\s*\/?>|<\/div>/gi, "\n");
-  return text.replace(/<[^>]*>?/gm, "").replace(/&nbsp;/g, " ");
+  
+  // 1. 티끌플레이스 커스텀 카드 레이아웃 제거
+  let cleanHtml = html.replace(/<div[^>]+class="[^"]*ql-review-card[^"]*"[^>]*>[\s\S]*?<\/div>\s*<\/div>\s*<\/div>/gi, '');
+  
+  // 2. 텍스트 아티팩트 제거
+  cleanHtml = cleanHtml
+    .replace(/TICGLE PLACE/g, '')
+    .replace(/구글 지도에서 크게 보기/g, '')
+    .replace(/별점 [0-9.]+/g, '');
+
+  // 3. 줄바꿈 보존 및 태그 제거
+  let text = cleanHtml.replace(/<\/p>|<br\s*\/?>|<\/div>/gi, "\n");
+  return text
+    .replace(/<[^>]*>?/gm, "")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/&amp;/gi, '&')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
+    .trim();
 };
 
 export default function MagazineArchiveClient({ initialIssues }: MagazineArchiveClientProps) {
