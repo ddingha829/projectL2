@@ -571,8 +571,9 @@ export default function RichTextEditor({ content, onChange, placeholder = "" }: 
         category?: string
     }) => {
         const quill = quillRef.current?.getEditor();
+        if (quill) {
             const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-            const embedUrl = placeData.type === 'movie' 
+            const embedUrl = (placeData as any).type === 'movie' 
                 ? '' 
                 : `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=place_id:${placeData.placeId || encodeURIComponent(placeData.placeName)}&zoom=15&language=ko`;
             
