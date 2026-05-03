@@ -897,7 +897,10 @@ export default function RichTextEditor({ content, onChange, placeholder = "" }: 
                                 placeId: placeId || undefined,
                                 category: selectedCard.getAttribute('data-category') || '',
                                 lat: selectedCard.getAttribute('data-lat') ? parseFloat(selectedCard.getAttribute('data-lat')!) : undefined,
-                                lng: selectedCard.getAttribute('data-lng') ? parseFloat(selectedCard.getAttribute('data-lng')!) : undefined
+                                lng: selectedCard.getAttribute('data-lng') ? parseFloat(selectedCard.getAttribute('data-lng')!) : undefined,
+                                type: selectedCard.getAttribute('data-type') as any,
+                                imageUrl: selectedCard.getAttribute('data-image-url') || undefined,
+                                tmdbRating: selectedCard.getAttribute('data-tmdb-rating') || undefined
                             };
                         })() : undefined}
                         onSelect={handleMapSelect}

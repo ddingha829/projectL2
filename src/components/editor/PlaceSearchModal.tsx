@@ -13,7 +13,11 @@ interface PlaceSearchModalProps {
         comment: string,
         placeId?: string,
         lat?: number,
-        lng?: number
+        lng?: number,
+        category?: string,
+        type?: 'place' | 'movie' | 'manual',
+        imageUrl?: string,
+        tmdbRating?: string
     },
     onSelect: (data: { 
         placeName: string, 
@@ -50,9 +54,17 @@ const PlaceSearchModal: React.FC<PlaceSearchModalProps> = ({ onSelect, onCancel,
     const [manualCategory, setManualCategory] = useState(initialData?.placeId === 'manual' ? (initialData as any).category || '' : '');
     
     // Movie Search State
-    const [isMovie, setIsMovie] = useState(false);
+    const [isMovie, setIsMovie] = useState(initialData?.type === 'movie');
     const [movieResults, setMovieResults] = useState<TMDBMovie[]>([]);
-    const [selectedMovie, setSelectedMovie] = useState<TMDBMovie | null>(null);
+    const [selectedMovie, setSelectedMovie] = useState<TMDBMovie | null>(initialData?.type === 'movie' ? {
+        id: parseInt(initialData.placeId?.replace('movie-', '') || '0'),
+        title: initialData.placeName,
+        poster_path: initialData.imageUrl?.replace('https://image.tmdb.org/t/p/w500', '') || null,
+        release_date: '',
+        original_title: '',
+        overview: '',
+        vote_average: parseFloat(initialData.tmdbRating || '0')
+    } : null);
     
     // Services Refs
     const autocompleteService = useRef<google.maps.places.AutocompleteService | null>(null);
