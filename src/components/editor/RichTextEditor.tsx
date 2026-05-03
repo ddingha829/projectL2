@@ -98,6 +98,7 @@ const ReactQuill = dynamic(async () => {
                     node.setAttribute('data-lng', value.lng?.toString() || '');
                     node.setAttribute('data-type', value.type || 'place');
                     node.setAttribute('data-image-url', value.imageUrl || '');
+                    node.setAttribute('data-tmdb-rating', value.tmdbRating || '');
                     node.id = 'ticgle-place';
                     
                     const rating = Number(value.rating) || 0;
@@ -194,7 +195,8 @@ const ReactQuill = dynamic(async () => {
                         lat: node.getAttribute('data-lat') ? parseFloat(node.getAttribute('data-lat')!) : undefined,
                         lng: node.getAttribute('data-lng') ? parseFloat(node.getAttribute('data-lng')!) : undefined,
                         type: node.getAttribute('data-type') as any,
-                        imageUrl: node.getAttribute('data-image-url') || undefined
+                        imageUrl: node.getAttribute('data-image-url') || undefined,
+                        tmdbRating: node.getAttribute('data-tmdb-rating') || undefined
                     };
                 }
             }

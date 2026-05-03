@@ -369,35 +369,40 @@ export default function HomeContent({
                   noGrid
                   className={styles.magazineSection}
                   customTitle={
-                    <h2 className={styles.magSecTitleNew} style={{ margin: 0, display: 'flex', alignItems: 'center', flexWrap: 'nowrap' }}>
-                      <Link href="/magazine" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'inherit' }}>
-                        {magazineIssue ? (
-                          <>
-                            <span className={styles.issueBadge}>
-                              {(() => {
-                                const parts = magazineIssue.number.split('-');
-                                return parts.length === 2 ? `${parts[0]} ISSUE ${parts[1]}` : magazineIssue.number;
-                              })()}
-                            </span>
-                            <span style={{ color: '#ff4804' }}>티끌 매거진</span>
-                            <span style={{ color: 'var(--text-tertiary)', fontSize: '0.57em', fontWeight: 400, marginLeft: '8px' }}>
-                              ({(() => { 
-                                const d = new Date(magazineIssue.publishedAt); 
-                                const mm = String(d.getMonth() + 1).padStart(2, '0'); 
-                                const dd = String(d.getDate()).padStart(2, '0'); 
-                                return `${mm}.${dd}`; 
-                              })()})
-                            </span>
-                          </>
-                        ) : (
-                          <>
-                            <span className={styles.issueBadge}>2026 ISSUE 1</span>
-                            <span style={{ color: '#ff4804' }}>티끌 매거진</span>
-                            <span style={{ color: 'var(--text-tertiary)', fontSize: '0.57em', fontWeight: 400, marginLeft: '8px' }}>(준비 중)</span>
-                          </>
-                        )}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                      <h2 className={styles.magSecTitleNew} style={{ margin: 0, display: 'flex', alignItems: 'center', flexWrap: 'nowrap' }}>
+                        <Link href="/magazine" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'inherit' }}>
+                          {magazineIssue ? (
+                            <>
+                              <span className={styles.issueBadge}>
+                                {(() => {
+                                  const parts = magazineIssue.number.split('-');
+                                  return parts.length === 2 ? `${parts[0]} ISSUE ${parts[1]}` : magazineIssue.number;
+                                })()}
+                              </span>
+                              <span style={{ color: '#ff4804' }}>티끌 매거진</span>
+                              <span style={{ color: 'var(--text-tertiary)', fontSize: '0.57em', fontWeight: 400, marginLeft: '8px' }}>
+                                ({(() => { 
+                                  const d = new Date(magazineIssue.publishedAt); 
+                                  const mm = String(d.getMonth() + 1).padStart(2, '0'); 
+                                  const dd = String(d.getDate()).padStart(2, '0'); 
+                                  return `${mm}.${dd}`; 
+                                })()})
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              <span className={styles.issueBadge}>2026 ISSUE 1</span>
+                              <span style={{ color: '#ff4804' }}>티끌 매거진</span>
+                              <span style={{ color: 'var(--text-tertiary)', fontSize: '0.57em', fontWeight: 400, marginLeft: '8px' }}>(준비 중)</span>
+                            </>
+                          )}
+                        </Link>
+                      </h2>
+                      <Link href="/magazine" className={styles.viewMoreBtnInline} style={{ color: '#888', fontWeight: 700, fontSize: '0.85rem' }}>
+                        이전 매거진 보기 →
                       </Link>
-                    </h2>
+                    </div>
                   }
                 >
 

@@ -195,6 +195,9 @@ export default function TopNavbar({
                 <Link href="/reviews" className={styles.dropdownItem} onClick={() => setIsCollectionOpen(false)}>
                   <span className={styles.edName}>플레이스</span>
                 </Link>
+                <Link href="/library" className={styles.dropdownItem} onClick={() => setIsCollectionOpen(false)}>
+                  <span className={styles.edName}>라이브러리</span>
+                </Link>
                 <Link href="/gallery" className={styles.dropdownItem} onClick={() => setIsCollectionOpen(false)}>
                   <span className={styles.edName}>갤러리</span>
                 </Link>

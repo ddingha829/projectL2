@@ -136,7 +136,8 @@ const PlaceSearchModal: React.FC<PlaceSearchModalProps> = ({ onSelect, onCancel,
                 comment: comment.trim() || `${selectedMovie.title} 리뷰입니다!`,
                 placeId: `movie-${selectedMovie.id}`,
                 type: 'movie',
-                imageUrl: getTMDBImageUrl(selectedMovie.poster_path) || ''
+                imageUrl: getTMDBImageUrl(selectedMovie.poster_path) || '',
+                tmdbRating: selectedMovie.vote_average.toString()
             });
         } else if (isManual) {
             if (!manualName.trim()) {

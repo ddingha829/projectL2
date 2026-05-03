@@ -161,6 +161,9 @@ export async function updatePost(postId: string, formData: FormData): Promise<{ 
           const pId = getAttr(tag, 'data-place-id');
           const addr = getAttr(tag, 'data-address');
           const cat = getAttr(tag, 'data-category');
+          const type = getAttr(tag, 'data-type');
+          const img = getAttr(tag, 'data-image-url');
+          const tmdb = getAttr(tag, 'data-tmdb-rating');
           
           if (!subj) return null;
           return {
@@ -171,9 +174,10 @@ export async function updatePost(postId: string, formData: FormData): Promise<{ 
             lat: lat ? (parseFloat(lat) || null) : null,
             lng: lng ? (parseFloat(lng) || null) : null,
             embed_url: emb || null,
-            place_id: pId || null,
+            place_id: pId || (type === 'movie' ? tmdb : null),
             address: addr || null,
-            category: cat || null
+            category: type || cat || null,
+            embed_url: emb || (type === 'movie' ? img : null) // movie인 경우 img를 embed_url에 저장 (이미지 컬럼 부재 대비)
           };
         }).filter((entry): entry is any => entry !== null);
 
