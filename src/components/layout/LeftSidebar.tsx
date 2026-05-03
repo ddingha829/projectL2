@@ -221,7 +221,7 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
 
         {/* New Mobile-Optimized Navigation Menu */}
         <div className={styles.sidebarNav}>
-          <Link href="/magazine" className={styles.sidebarLink} style={{ fontWeight: '800' }} onClick={onClose}>
+          <Link href="/magazine" className={styles.sidebarLink} style={{ fontWeight: '800', color: '#ff4d00' }} onClick={onClose}>
             매거진
           </Link>
           <details className={styles.sidebarDisclosure}>
@@ -284,12 +284,22 @@ export default function LeftSidebar({ isOpen, onClose, user, role, displayName }
             </div>
           </details>
 
-          <Link href="/reviews" className={styles.sidebarLink} style={{ color: '#ff4d00', fontWeight: 'bold' }} onClick={onClose}>
-            플레이스
-          </Link>
-          <Link href="/gallery" className={styles.sidebarLink} style={{ color: '#ff4d00', fontWeight: 'bold' }} onClick={onClose}>
-            갤러리
-          </Link>
+          <details className={styles.sidebarDisclosure}>
+            <summary className={styles.sidebarSummary}>
+              <span style={{ cursor: 'pointer', color: '#ff4d00', fontWeight: 'bold' }}>
+                컬렉션
+              </span>
+              <span className={styles.disclosureArrow}>▼</span>
+            </summary>
+            <div className={styles.disclosureContent}>
+              <Link href="/reviews" className={styles.disclosureLink} onClick={onClose}>
+                플레이스
+              </Link>
+              <Link href="/gallery" className={styles.disclosureLink} onClick={onClose}>
+                갤러리
+              </Link>
+            </div>
+          </details>
         </div>
 
 

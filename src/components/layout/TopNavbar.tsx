@@ -25,6 +25,7 @@ export default function TopNavbar({
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isEditorsOpen, setIsEditorsOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const [isCollectionOpen, setIsCollectionOpen] = useState(false);
   const [editors, setEditors] = useState<any[]>([]);
   const [isMobile, setIsMobile] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -120,7 +121,7 @@ export default function TopNavbar({
         )}
 
         <nav className={styles.mainNav}>
-          <Link href="/magazine" className={styles.navLink} style={{ fontWeight: '800' }}>매거진</Link>
+          <Link href="/magazine" className={`${styles.navLink} ${styles.orangeNavLink}`} style={{ fontWeight: '800' }}>매거진</Link>
           <div 
             className={styles.dropdownContainer}
             onMouseEnter={() => setIsCategoryOpen(true)}
@@ -181,8 +182,25 @@ export default function TopNavbar({
             )}
           </div>
 
-          <Link href="/reviews" className={styles.navLink} style={{ color: '#ff4d00', fontWeight: 'bold' }}>플레이스</Link>
-          <Link href="/gallery" className={styles.navLink} style={{ color: '#ff4d00', fontWeight: 'bold' }}>갤러리</Link>
+          <div 
+            className={styles.dropdownContainer}
+            onMouseEnter={() => setIsCollectionOpen(true)}
+            onMouseLeave={() => setIsCollectionOpen(false)}
+          >
+            <span className={`${styles.navLink} ${styles.orangeNavLink}`} style={{ cursor: 'pointer', fontWeight: 'bold' }}>
+              컬렉션 <span className={styles.miniArrow}>▼</span>
+            </span>
+            {isCollectionOpen && (
+              <div className={styles.navDropdown}>
+                <Link href="/reviews" className={styles.dropdownItem} onClick={() => setIsCollectionOpen(false)}>
+                  <span className={styles.edName}>플레이스</span>
+                </Link>
+                <Link href="/gallery" className={styles.dropdownItem} onClick={() => setIsCollectionOpen(false)}>
+                  <span className={styles.edName}>갤러리</span>
+                </Link>
+              </div>
+            )}
+          </div>
         </nav>
 
         <div className={styles.rightGroup}>
