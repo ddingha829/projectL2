@@ -182,12 +182,10 @@ function LibraryContent() {
                     ) : (
                       <div className={styles.posterPlaceholder}>NO POSTER</div>
                     )}
-                    <div className={styles.ratingOverlay}>
-                      <div className={styles.mainRating}>{item.avgRating}</div>
-                    </div>
                   </div>
                   
                   <div className={styles.workInfo}>
+                    <div className={styles.userRatingBadge}>{item.avgRating}</div>
                     <h3 className={styles.workTitle}>{item.subject}</h3>
                     {item.comment && (
                       <p className={styles.representativeComment}>"{item.comment}"</p>

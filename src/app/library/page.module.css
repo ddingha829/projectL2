@@ -94,20 +94,20 @@
   transform: scale(1.05);
 }
 
-.ratingOverlay {
+.userRatingBadge {
   position: absolute;
   top: 16px;
-  right: 16px;
+  right: 20px;
   background: var(--brand-accent-line);
   color: #fff;
-  width: 48px;
-  height: 48px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 1000;
-  font-size: 1.2rem;
+  font-weight: 900;
+  font-size: 0.85rem;
   box-shadow: 0 4px 12px rgba(255, 72, 4, 0.3);
   z-index: 2;
 }
@@ -119,12 +119,13 @@
   flex-direction: column;
   justify-content: space-between;
   width: 77.8%;
+  position: relative; /* 평점 절대 위치용 */
 }
 
 .workTitle {
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: 850;
-  margin: 0 0 4px 0;
+  margin: 0 0 8px 0;
   color: var(--text-primary);
   line-height: 1.3;
   letter-spacing: -0.02em;
@@ -133,6 +134,7 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  padding-right: 60px; /* 평점 겹침 방지 */
 }
 
 .commentContainer {
@@ -143,7 +145,7 @@
 }
 
 .representativeComment {
-  font-size: 1rem;
+  font-size: 0.85rem;
   color: var(--text-secondary);
   font-style: italic;
   margin-bottom: 0 !important;
@@ -156,7 +158,7 @@
 }
 
 .authorBadge {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   font-weight: 800;
   color: var(--brand-accent-line);
   text-align: right;
@@ -177,7 +179,7 @@
 }
 
 .tmdbRating {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--brand-accent-line);
 }
@@ -329,8 +331,17 @@
     gap: 16px;
   }
   .workInfo { padding: 8px 16px !important; } /* 상하 여백 50% 축소 */
-  .workTitle { font-size: 0.85rem !important; height: auto !important; margin-bottom: 4px !important; } /* 제목 10% 추가 축소 */
-  .representativeComment { font-size: 0.7rem !important; line-height: 1.3 !important; } /* 내용 5% 추가 축소 */
-  .authorBadge { font-size: 0.6rem !important; }
-  .tmdbRating { font-size: 0.65rem !important; }
+  .workTitle { 
+    font-size: 0.85rem !important; 
+    height: auto !important; 
+    margin-bottom: 8px !important; /* PC처럼 제목-한줄평 사이 간격 확보 */
+    padding-right: 50px !important;
+  } 
+  .userRatingBadge {
+    top: 10px !important;
+    right: 16px !important;
+    width: 22px !important;
+    height: 22px !important;
+    font-size: 0.7rem !important;
+  }
 }
