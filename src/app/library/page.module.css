@@ -328,8 +328,9 @@
     grid-template-columns: 1fr;
     gap: 16px;
   }
-  .workTitle { font-size: 0.95rem !important; height: auto !important; } 
-  .representativeComment { font-size: 0.75rem !important; } 
-  .authorBadge { font-size: 0.65rem !important; }
-  .tmdbRating { font-size: 0.7rem !important; }
+  .workInfo { padding: 8px 16px !important; } /* 상하 여백 50% 축소 */
+  .workTitle { font-size: 0.85rem !important; height: auto !important; margin-bottom: 4px !important; } /* 제목 10% 추가 축소 */
+  .representativeComment { font-size: 0.7rem !important; line-height: 1.3 !important; } /* 내용 5% 추가 축소 */
+  .authorBadge { font-size: 0.6rem !important; }
+  .tmdbRating { font-size: 0.65rem !important; }
 }
