@@ -3089,6 +3089,6 @@
 
 @media (max-width: 768px) {
   .viewMoreBtnInline {
-    font-size: 0.68rem !important; /* 모바일에서 글자 크기 20% 축소 (0.85rem * 0.8) */
+    font-size: 1rem !important; 
   }
 }

@@ -399,8 +399,8 @@ export default function HomeContent({
                           )}
                         </Link>
                       </h2>
-                      <Link href="/magazine" className={styles.viewMoreBtnInline} style={{ color: '#888', fontWeight: 700, fontSize: '0.85rem' }}>
-                        이전 매거진 →
+                      <Link href="/magazine" className={styles.viewMoreBtnInline} style={{ color: '#888', fontWeight: 900, fontSize: '1.2rem', paddingLeft: '10px' }}>
+                        ❯
                       </Link>
                     </div>
                   }
