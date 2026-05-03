@@ -204,6 +204,7 @@ export default function TopNavbar({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               ref={(input) => { if (isSearchExpanded) input?.focus(); }}
+              suppressHydrationWarning
             />
             <button 
               type="button" 

@@ -60,92 +60,102 @@ export default function DynamicIssueCover({ posts, issueNumber }: DynamicIssueCo
     document.body.style.overflow = "auto";
   };
 
-  if (!isVisible) return null;
-
   return (
     <AnimatePresence>
-      <motion.div 
-        className={styles.fullScreenOverlay}
-        initial={{ opacity: 1 }}
-        exit={{ y: "-100%", opacity: 0 }}
-        transition={{ duration: 0.8, ease: [0.43, 0.13, 0.23, 0.96] }}
-      >
+      {isVisible && (
         <motion.div 
-          className={styles.bgWrapper}
-          animate={{ 
-            x: mousePos.x * -0.5, 
-            y: mousePos.y * -0.5,
-            scale: 1.1
-          }}
+          className={styles.fullScreenOverlay}
+          initial={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 1.05, filter: "blur(10px)" }}
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
         >
-          <Image
-            src={mainPost.imageUrl || mainPost.image_url}
-            alt={mainPost.title}
-            fill
-            priority
-            className={styles.bgImage}
-          />
-          <div className={styles.vignette} />
-        </motion.div>
-
-        <div className={styles.contentArea}>
           <motion.div 
-            className={styles.issueInfo}
-            animate={{ x: mousePos.x * 0.2, y: mousePos.y * 0.2 }}
-          >
-            <span className={styles.issueLabel}>NEW ISSUE</span>
-            <span className={styles.issueNumber}>VOL. {issueNumber}</span>
-          </motion.div>
-
-          <motion.h1 
-            className={styles.mainTitle}
-            initial={{ opacity: 0, y: 20 }}
+            className={styles.bgWrapper}
             animate={{ 
-              opacity: 1, 
-              x: mousePos.x * 0.8, 
-              y: mousePos.y * 0.8 
+              x: mousePos.x * -0.5, 
+              y: mousePos.y * -0.5,
+              scale: 1.1
             }}
-            transition={{ delay: 0.3, duration: 1 }}
           >
-            {mainPost.title}
-          </motion.h1>
+            <Image
+              src={mainPost.imageUrl || mainPost.image_url}
+              alt={mainPost.title}
+              fill
+              priority
+              className={styles.bgImage}
+            />
+            <div className={styles.vignette} />
+          </motion.div>
 
-          {/* Sub Stories (B-Cards) */}
-          <motion.div 
-            className={styles.subStories}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 1 }}
-          >
-            {subPosts.map((sp, idx) => (
-              <div key={sp.id} className={styles.subStoryItem}>
-                <span className={styles.subStoryNum}>0{idx + 1}</span>
-                <h3 className={styles.subStoryTitle}>{sp.title}</h3>
+          <div className={styles.contentArea}>
+            <motion.div 
+              className={styles.issueInfo}
+              animate={{ x: mousePos.x * 0.2, y: mousePos.y * 0.2 }}
+            >
+              <span className={styles.issueLabel}>NEW ISSUE</span>
+              <span className={styles.issueNumber}>VOL. {issueNumber}</span>
+            </motion.div>
+
+            <motion.h1 
+              className={styles.mainTitle}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ 
+                opacity: 1, 
+                x: mousePos.x * 0.8, 
+                y: mousePos.y * 0.8 
+              }}
+              transition={{ delay: 0.3, duration: 1 }}
+            >
+              {mainPost.title}
+            </motion.h1>
+
+            {/* Sub Stories (B-Cards) */}
+            <motion.div 
+              className={styles.subStories}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 1 }}
+            >
+              {subPosts.map((sp, idx) => (
+                <div key={sp.id} className={styles.subStoryItem}>
+                  <div className={styles.subStoryImageWrapper}>
+                    <Image
+                      src={sp.imageUrl || sp.image_url}
+                      alt={sp.title}
+                      fill
+                      className={styles.subStoryImage}
+                    />
+                  </div>
+                  <div className={styles.subStoryText}>
+                    <span className={styles.subStoryNum}>0{idx + 1}</span>
+                    <h3 className={styles.subStoryTitle}>{sp.title}</h3>
+                  </div>
+                </div>
+              ))}
+            </motion.div>
+
+            <motion.div 
+              className={styles.actionArea}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.2, duration: 1 }}
+            >
+              <button className={styles.exploreBtn} onClick={handleStart}>
+                START READING
+                <span className={styles.btnLine} />
+              </button>
+              <div className={styles.scrollIndicator}>
+                <div className={styles.mouseWheel} />
+                <span>SCROLL TO EXPLORE</span>
               </div>
-            ))}
-          </motion.div>
+            </motion.div>
+          </div>
 
-          <motion.div 
-            className={styles.actionArea}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.2, duration: 1 }}
-          >
-            <button className={styles.exploreBtn} onClick={handleStart}>
-              START READING
-              <span className={styles.btnLine} />
-            </button>
-            <div className={styles.scrollIndicator}>
-              <div className={styles.mouseWheel} />
-              <span>SCROLL TO EXPLORE</span>
-            </div>
-          </motion.div>
-        </div>
-
-        <div className={styles.brandLogo}>
-          TICGLE
-        </div>
-      </motion.div>
+          <div className={styles.brandLogo}>
+            TICGLE
+          </div>
+        </motion.div>
+      )}
     </AnimatePresence>
   );
 }
