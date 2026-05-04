@@ -62,7 +62,7 @@ export default async function Home({
       address,
       category,
       post:posts(id, serial_id, review_comment, created_at, author:profiles!author_id(display_name))
-    `).order('created_at', { foreignTable: 'posts', ascending: false }).limit(10),
+    `).order('created_at', { ascending: false }).limit(10),
     
     // Feature posts
     applyPrivacyFilter(supabase.from('posts').select('id, serial_id, title, category, content, image_url, is_editors_pick, is_hero, hero_at, is_feature, is_public, created_at, likes_count, views, author_id, author:profiles!author_id(id, name:display_name, avatar:avatar_url, bio, bullets), comments(count)')).or('is_feature.eq.true,category.eq.feature').order('created_at', { ascending: false }).limit(6),
@@ -210,7 +210,7 @@ export default async function Home({
       rating: p.rating,
       userRating: p.user_avg_rating || 0,
       comment: p.comment || p.post?.review_comment || "",
-      date: p.post?.created_at || p.created_at, // 원문 게시물 날짜 우선
+      date: p.created_at || p.post?.created_at, // 리뷰 작성일 우선
       authorName: p.post?.author?.display_name || '익명 티끌러',
       address: p.address,
       category: p.category

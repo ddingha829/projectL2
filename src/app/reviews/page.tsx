@@ -43,7 +43,7 @@ function ReviewArchiveContent() {
           lat, lng, embed_url,
           post:posts(id, title, author:profiles!author_id(display_name, avatar_url))
         `)
-        .order('created_at', { foreignTable: 'posts', ascending: false });
+        .order('created_at', { ascending: false });
 
       if (mainError) {
         console.warn('Coordinates missing, using fallback query:', mainError);
