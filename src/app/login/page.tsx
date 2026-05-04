@@ -15,12 +15,20 @@ export default function LoginPage() {
   const isSignupSuccess = message === 'signup_success'
   const isResetSent = message === 'reset_sent'
 
-  // [신규] 인앱 브라우저 체크 (구글 로그인 차단 대응)
+  // [신규] 인앱 브라우저 체크 및 자동 외부 브라우저 호출 (구글 로그인 차단 대응)
   const [isInAppBrowser, setIsInAppBrowser] = useState(false);
+  
   useEffect(() => {
     const ua = navigator.userAgent.toLowerCase();
     const isInApp = /kakaotalk|instagram|fban|fbav|line|naver|whale/.test(ua);
     setIsInAppBrowser(isInApp);
+
+    // [핵심] 안드로이드 카카오톡인 경우 자동 아웃링크 시도
+    if (ua.includes('kakaotalk') && ua.includes('android')) {
+      const currentUrl = window.location.href;
+      // 인앱 브라우저를 탈출하여 크롬 브라우저로 현재 페이지 열기
+      window.location.href = `intent://${currentUrl.replace(/https?:\/\//, '')}#Intent;scheme=https;package=com.android.chrome;end`;
+    }
   }, []);
 
   const handleAction = (action: Function) => async (formData: FormData) => {
@@ -30,6 +38,10 @@ export default function LoginPage() {
   }
 
   const handleGoogleLogin = () => {
+    if (isInAppBrowser) {
+      alert("카카오톡/인스타그램 등 인앱 브라우저에서는 구글 로그인이 차단됩니다.\n\n오른쪽 상단 메뉴(...)를 눌러 '브라우저에서 열기'를 선택해 주세요.");
+      return;
+    }
     startTransition(async () => {
       await signInWithGoogle()
     })
@@ -74,8 +86,18 @@ export default function LoginPage() {
         {isInAppBrowser && (
           <div className={styles.warningAlert}>
             ⚠️ <strong>인앱 브라우저 안내</strong><br />
-            카카오톡/인스타그램 등에서는 구글 로그인이 차단될 수 있습니다. <br />
-            <strong>오른쪽 상단 점 3개(⋮)</strong>를 눌러 <strong>'브라우저에서 열기'</strong> 또는 <strong>'기본 브라우저로 열기'</strong>를 선택해 주세요.
+            카카오톡/인스타그램 등에서는 구글 로그인이 차단됩니다. <br />
+            <strong>오른쪽 상단 점 3개(⋮)</strong>를 눌러 <strong>'브라우저에서 열기'</strong>를 선택해 주세요.
+            <br />
+            <button 
+              onClick={() => {
+                navigator.clipboard.writeText(window.location.href);
+                alert("주소가 복사되었습니다. 일반 브라우저(Chrome/Safari)의 주소창에 붙여넣어 주세요.");
+              }}
+              className={styles.copyBtn}
+            >
+              🔗 주소 복사하기
+            </button>
           </div>
         )}
 

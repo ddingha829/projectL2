@@ -66,6 +66,26 @@
   line-height: 1.6;
 }
 
+.copyBtn {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 6px 14px;
+  background-color: #ff9500;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.copyBtn:hover {
+  background-color: #e68600;
+  transform: translateY(-1px);
+}
+
 /* 소셜 로그인 */
 .socialSection {
   margin-bottom: 8px;
