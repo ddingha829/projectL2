@@ -213,7 +213,7 @@ export default async function Home({
       date: p.created_at || p.post?.created_at, // 리뷰 작성일 우선
       authorName: p.post?.author?.display_name || '익명 티끌러',
       address: p.address,
-      category: p.category
+      category: CATEGORY_MAP[p.category] || p.category
     };
   }) || [];
 
