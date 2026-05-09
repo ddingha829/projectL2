@@ -1,0 +1,361 @@
+/* ============================================================
+   MEDIA SECTION — YouTube + Instagram 통합 카드 스타일
+   C카드(.postCardC) 구조 기반, UI_GUIDE 규격 준수
+   ============================================================ */
+
+/* ─── 그리드 컨테이너 (C카드 editorsGrid와 동일: 5열) ─── */
+.mediaGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+  width: 100%;
+}
+
+/* ─── 카드 베이스 (.postCardC 와 동일 구조) ─── */
+.mediaCard {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1.5px solid var(--border-medium);
+  overflow: hidden;
+  box-sizing: border-box;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  height: 100%;
+  padding: 8px 8px 0 8px;
+  align-items: flex-start;
+  color: inherit;
+}
+
+/* ─── YouTube 카드 hover ─── */
+.mediaCardLong:hover,
+.mediaCardShort:hover {
+  transform: translateY(-4px);
+  border-color: #ff0000;
+  box-shadow: 0 16px 40px rgba(255, 0, 0, 0.1);
+}
+
+/* ─── Instagram 카드 hover ─── */
+.mediaCardInsta:hover {
+  transform: translateY(-4px);
+  border-color: #c13584;
+  box-shadow: 0 16px 40px rgba(193, 53, 132, 0.12);
+}
+
+/* ─── YouTube 썸네일 래퍼 ─── */
+.ytThumbWrap {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #000;
+  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+
+/* 롱폼: 16:9 */
+.ytThumbLong {
+  aspect-ratio: 16 / 9;
+}
+
+/* 숏츠: 9:16 */
+.ytThumbShort {
+  aspect-ratio: 9 / 16;
+}
+
+/* ─── Instagram 썸네일 래퍼 (1:1) ─── */
+.instaThumbWrap {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #1a1a2e;
+  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+
+/* ─── 공통 썸네일 이미지 ─── */
+.mediaThumb {
+  object-fit: cover !important;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.3s ease;
+}
+
+.mediaCard:hover .mediaThumb {
+  transform: scale(1.04);
+}
+
+/* ─── YouTube 플레이스홀더 ─── */
+.ytPlaceholder {
+  width: 100%;
+  height: 100%;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f5;
+}
+
+/* ─── Instagram 그라디언트 플레이스홀더 ─── */
+.instaPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(
+    135deg,
+    #f09433 0%,
+    #e6683c 25%,
+    #dc2743 50%,
+    #cc2366 75%,
+    #bc1888 100%
+  );
+}
+
+.instaPlaceholderText {
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+/* ─── 재생/열기 오버레이 ─── */
+.mediaPlayOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.2s ease;
+}
+
+.mediaCard:hover .mediaPlayOverlay {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.ytPlayBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ff0000;
+  opacity: 0;
+  transform: scale(0.7);
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.instaOpenBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #c13584;
+  opacity: 0;
+  transform: scale(0.7);
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.mediaCard:hover .ytPlayBtn,
+.mediaCard:hover .instaOpenBtn {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ─── 타입 뱃지 ─── */
+.typeBadge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  align-items: center;
+  font-size: 0.62rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+.typeBadgeShort {
+  background: #000000;
+  color: #ffffff;
+}
+
+.typeBadgeLong {
+  background: #ff0000;
+  color: #ffffff;
+}
+
+.typeBadgeInsta {
+  /* Instagram 브랜드 그라디언트 */
+  background: linear-gradient(135deg, #f09433, #dc2743, #bc1888);
+  color: #ffffff;
+}
+
+/* ─── 카드 바디 (.cCardBody와 동일) ─── */
+.mediaCardBody {
+  padding: 0 6px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+/* ─── 제목 (.cTitle과 동일) ─── */
+.mediaTitle {
+  font-size: 0.92rem;
+  font-weight: 800;
+  margin: 0 0 4px 0;
+  color: var(--text-primary);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: keep-all;
+  height: 2.7em;
+}
+
+/* ─── 인스타 캡션 ─── */
+.mediaCaption {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 0 0 6px 0;
+  word-break: keep-all;
+}
+
+/* ─── 카드 풋터 (.cCardFooter와 동일) ─── */
+.mediaCardFooter {
+  padding: 8px 0 12px 0;
+  width: 100%;
+  margin-top: auto;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+}
+
+.watchLabel {
+  display: flex;
+  align-items: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.watchLabelYt {
+  color: #ff0000;
+}
+
+.watchLabelInsta {
+  color: #c13584;
+}
+
+/* ============================================================
+   모바일 (가로 스크롤 — UI_GUIDE 55% 기준)
+   ============================================================ */
+@media (max-width: 768px) {
+  .mediaGrid {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 12px !important;
+    padding: 0 0 20px 0 !important;
+    margin: 0 !important;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .mediaGrid::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 숏츠: 더 좁게 (세로 비율) */
+  .mediaCardShort {
+    flex: 0 0 42% !important;
+    scroll-snap-align: start;
+    transition: none !important;
+  }
+
+  /* 롱폼 + 인스타: 55% (UI_GUIDE 표준) */
+  .mediaCardLong,
+  .mediaCardInsta {
+    flex: 0 0 55% !important;
+    scroll-snap-align: start;
+    transition: none !important;
+  }
+
+  /* 모바일 hover 완전 비활성화 (UI_GUIDE 규정) */
+  .mediaCard:hover {
+    transform: none !important;
+    box-shadow: none !important;
+    border-color: var(--border-medium) !important;
+  }
+
+  .mediaCard:hover .mediaThumb {
+    transform: none !important;
+  }
+
+  .mediaCard:hover .mediaPlayOverlay {
+    background: rgba(0, 0, 0, 0) !important;
+  }
+
+  .mediaCard:hover .ytPlayBtn,
+  .mediaCard:hover .instaOpenBtn {
+    opacity: 0 !important;
+    transform: scale(0.7) !important;
+  }
+
+  .mediaTitle {
+    font-size: 0.85rem;
+    height: 2.5em;
+  }
+
+  .typeBadge {
+    font-size: 0.55rem;
+    padding: 2px 6px;
+  }
+
+  .watchLabel {
+    font-size: 0.62rem;
+  }
+
+  .mediaCaption {
+    font-size: 0.7rem;
+  }
+}
+
+/* PC 반응형 (1200px 이하부터 단계적 열 축소) */
+@media (max-width: 1200px) and (min-width: 769px) {
+  .mediaGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 900px) and (min-width: 769px) {
+  .mediaGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

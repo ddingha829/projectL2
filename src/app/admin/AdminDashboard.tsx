@@ -7,6 +7,7 @@ import { toggleHeroPost } from '@/app/actions/hero'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import MagazineManager from './MagazineManager'
+import VideoManager from './VideoManager'
 import { CATEGORY_MAP, CATEGORY_LIST } from '@/lib/constants/categories'
 
 interface AdminDashboardProps {
@@ -26,7 +27,7 @@ export default function AdminDashboard({
   totalViews = 0,
   trendData = [] 
 }: AdminDashboardProps) {
-  const [activeTab, setActiveTab] = useState<'stats' | 'posts' | 'users' | 'categories' | 'magazine'>('stats')
+  const [activeTab, setActiveTab] = useState<'stats' | 'posts' | 'users' | 'categories' | 'magazine' | 'videos'>('stats')
   const [searchQuery, setSearchQuery] = useState('')
   const [timeRange, setTimeRange] = useState<'daily' | 'weekly' | 'monthly'>('weekly')
   const router = useRouter()
@@ -103,6 +104,13 @@ export default function AdminDashboard({
           style={{ background: activeTab === 'magazine' ? 'rgba(255, 72, 4, 0.1)' : '' }}
         >
           📙 티끌 매거진 발행
+        </button>
+        <button 
+          className={`${styles.tabBtn} ${activeTab === 'videos' ? styles.activeTab : ''}`}
+          onClick={() => { setActiveTab('videos'); setSearchQuery(''); }}
+          style={{ background: activeTab === 'videos' ? 'rgba(255, 0, 0, 0.08)' : '' }}
+        >
+          🎬 영상 관리
         </button>
       </div>
 
@@ -259,6 +267,12 @@ export default function AdminDashboard({
       {activeTab === 'magazine' && (
         <div className={styles.glassCard}>
           <MagazineManager posts={initialPosts} />
+        </div>
+      )}
+
+      {activeTab === 'videos' && (
+        <div className={styles.glassCard}>
+          <VideoManager />
         </div>
       )}
     </div>

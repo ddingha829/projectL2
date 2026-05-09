@@ -28,6 +28,10 @@ const EditorsSection = dynamic(() => import("@/components/sections/EditorsSectio
   loading: () => <div style={{ height: '250px', background: '#f5f5f5', borderRadius: '12px', margin: '20px 0' }} />,
   ssr: true 
 });
+const YouTubeSection = dynamic(() => import("@/components/sections/YouTubeSection").then(mod => mod.YouTubeSection), { 
+  loading: () => <div style={{ height: '220px', background: '#f5f5f5', borderRadius: '12px', margin: '20px 0' }} />,
+  ssr: true 
+});
 
 const MOCK_REVIEWS = [
   { id: 'm1', subject: '크라임 101', rating: 6, comment: '반전은 보이나 몰입감 부족', authorName: '황수정 티끌러' },
@@ -93,6 +97,7 @@ interface HomeContentProps {
     number: string;
     publishedAt: string;
   } | null;
+  featuredVideos?: any[];
 }
 
 function LazySection({ children, threshold = 0.1 }: { children: React.ReactNode, threshold?: number }) {
@@ -136,7 +141,8 @@ export default function HomeContent({
   isMobileServer = false,
   initialViewType,
   editors = [],
-  magazineIssue
+  magazineIssue,
+  featuredVideos = [],
 }: HomeContentProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -538,6 +544,12 @@ export default function HomeContent({
                       />
                     </LazySection>
 
+                    {featuredVideos.length > 0 && (
+                      <LazySection threshold={0.05}>
+                        <YouTubeSection videos={featuredVideos} isMobile={isMobile} />
+                      </LazySection>
+                    )}
+
                     <LazySection threshold={0.05}>
                       <EditorsSection editors={editors} isMobile={isMobile} allPosts={allPosts} moreHref="/?view=editors" />
                     </LazySection>
@@ -553,6 +565,9 @@ export default function HomeContent({
                       MOCK_REVIEWS={MOCK_REVIEWS} 
                       moreHref="/reviews"
                     />
+                    {featuredVideos.length > 0 && (
+                      <YouTubeSection videos={featuredVideos} isMobile={isMobile} />
+                    )}
                     <EditorsSection editors={editors} isMobile={isMobile} allPosts={allPosts} moreHref="/?view=editors" />
                   </>
                 )}

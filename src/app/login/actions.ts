@@ -137,3 +137,24 @@ export async function signInWithKakao() {
     redirect(data.url)
   }
 }
+
+export async function signInWithInstagram() {
+  const supabase = await createClient()
+  const origin = (await headers()).get('origin')
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'facebook',
+    options: {
+      redirectTo: `${origin}/auth/callback`,
+      scopes: 'public_profile,email',
+    },
+  })
+
+  if (error) {
+    redirect('/login?error=' + encodeURIComponent('Instagram(Facebook) 로그인에 실패했습니다.'))
+  }
+
+  if (data.url) {
+    redirect(data.url)
+  }
+}

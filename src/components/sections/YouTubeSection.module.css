@@ -1,0 +1,262 @@
+/* ============================================================
+   YOUTUBE SECTION CARD — C카드 베이스, 숏츠/롱폼 비율 구분
+   ============================================================ */
+
+/* 그리드 컨테이너 — C카드(.editorsGrid)와 동일한 5열 */
+.ytGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+  width: 100%;
+}
+
+/* ---- 카드 베이스 (C카드 .postCardC와 동일 구조) ---- */
+.ytCard {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1.5px solid var(--border-medium);
+  overflow: hidden;
+  box-sizing: border-box;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  height: 100%;
+  padding: 8px 8px 0 8px;
+  align-items: flex-start;
+  color: inherit;
+}
+
+.ytCard:hover {
+  transform: translateY(-4px);
+  border-color: #ff0000;
+  box-shadow: 0 16px 40px rgba(255, 0, 0, 0.1);
+}
+
+/* ---- 썸네일 래퍼 ---- */
+.ytThumbWrap {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #000;
+  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+
+/* 롱폼: 16:9 비율 */
+.ytThumbLong {
+  aspect-ratio: 16 / 9;
+}
+
+/* 숏츠: 9:16 비율 */
+.ytThumbShort {
+  aspect-ratio: 9 / 16;
+}
+
+.ytThumb {
+  object-fit: cover !important;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.3s ease;
+}
+
+.ytCard:hover .ytThumb {
+  transform: scale(1.04);
+}
+
+.ytThumbPlaceholder {
+  width: 100%;
+  height: 100%;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f5;
+}
+
+/* ---- 재생 오버레이 ---- */
+.ytPlayOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.2s ease;
+}
+
+.ytCard:hover .ytPlayOverlay {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.ytPlayBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ff0000;
+  opacity: 0;
+  transform: scale(0.7);
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.ytCard:hover .ytPlayBtn {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ---- 타입 뱃지 ---- */
+.ytTypeBadge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  align-items: center;
+  font-size: 0.62rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+.ytTypeBadgeShort {
+  background: #000000;
+  color: #ffffff;
+}
+
+.ytTypeBadgeLong {
+  background: #ff0000;
+  color: #ffffff;
+}
+
+/* ---- 카드 바디 ---- */
+.ytCardBody {
+  padding: 0 6px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.ytTitle {
+  font-size: 0.92rem;
+  font-weight: 800;
+  margin: 0 0 4px 0;
+  color: var(--text-primary);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: keep-all;
+  height: 2.7em;
+}
+
+/* ---- 카드 풋터 ---- */
+.ytCardFooter {
+  padding: 8px 0 12px 0;
+  width: 100%;
+  margin-top: auto;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+}
+
+.ytWatchLabel {
+  display: flex;
+  align-items: center;
+  font-size: 0.72rem;
+  color: #ff0000;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* ============================================================
+   모바일 (가로 스크롤 동기화 — C카드와 동일)
+   ============================================================ */
+@media (max-width: 768px) {
+  .ytGrid {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 12px !important;
+    padding: 0 0 20px 0 !important;
+    margin: 0 !important;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .ytGrid::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 숏츠 카드: 더 좁게 (세로 비율이 높으므로) */
+  .ytCardShort {
+    flex: 0 0 42% !important;
+    scroll-snap-align: start;
+    transition: none !important;
+  }
+
+  /* 롱폼 카드: C카드와 동일 55% */
+  .ytCardLong {
+    flex: 0 0 55% !important;
+    scroll-snap-align: start;
+    transition: none !important;
+  }
+
+  /* 모바일 hover 효과 제거 */
+  .ytCard:hover {
+    transform: none !important;
+    box-shadow: none !important;
+    border-color: var(--border-medium) !important;
+  }
+
+  .ytCard:hover .ytThumb {
+    transform: none !important;
+  }
+
+  .ytCard:hover .ytPlayOverlay {
+    background: rgba(0, 0, 0, 0) !important;
+  }
+
+  .ytCard:hover .ytPlayBtn {
+    opacity: 0 !important;
+    transform: scale(0.7) !important;
+  }
+
+  .ytTitle {
+    font-size: 0.85rem;
+    height: 2.5em;
+  }
+
+  .ytTypeBadge {
+    font-size: 0.55rem;
+    padding: 2px 6px;
+  }
+
+  .ytWatchLabel {
+    font-size: 0.62rem;
+  }
+}
+
+/* PC 4열 이하에서도 레이아웃 유지 */
+@media (max-width: 1200px) and (min-width: 769px) {
+  .ytGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 900px) and (min-width: 769px) {
+  .ytGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

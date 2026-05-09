@@ -1,7 +1,7 @@
 "use client"
 
 import { useTransition, useState, useEffect } from 'react'
-import { login, resetPassword, signInWithGoogle, signInWithKakao } from './actions'
+import { login, resetPassword, signInWithGoogle, signInWithKakao, signInWithInstagram } from './actions'
 import styles from './page.module.css'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
@@ -50,6 +50,12 @@ export default function LoginPage() {
   const handleKakaoLogin = () => {
     startTransition(async () => {
       await signInWithKakao()
+    })
+  }
+
+  const handleInstagramLogin = () => {
+    startTransition(async () => {
+      await signInWithInstagram()
     })
   }
 
@@ -118,19 +124,20 @@ export default function LoginPage() {
             {isPending ? "연결 중..." : "Google 계정으로 로그인"}
           </button>
 
-          {/* 카카오톡 로그인 잠시 비활성화
           <button 
             type="button"
-            className={styles.kakaoBtn}
-            onClick={handleKakaoLogin}
+            className={`${styles.googleBtn} ${styles.instaBtn}`}
+            onClick={handleInstagramLogin}
             disabled={isPending}
+            style={{ background: 'linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)', color: 'white', borderColor: 'transparent' }}
           >
-            <svg className={styles.kakaoIcon} viewBox="0 0 24 24" width="20" height="20">
-              <path d="M12 3c-4.97 0-9 3.18-9 7.11 0 2.55 1.7 4.79 4.26 6.07l-.82 3.03c-.04.14.04.29.17.34.05.02.1.02.15 0l3.56-2.37c.54.08 1.1.12 1.68.12 4.97 0 9-3.18 9-7.11S16.97 3 12 3z" fill="#3C1E1E"/>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" style={{ marginRight: '8px' }}>
+              <rect x="2" y="2" width="20" height="20" rx="5.5" stroke="currentColor" strokeWidth="2" fill="none" />
+              <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="2" fill="none" />
+              <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" />
             </svg>
-            {isPending ? "연결 중..." : "카카오톡으로 로그인"}
+            {isPending ? "연결 중..." : "Instagram으로 로그인"}
           </button>
-          */}
         </div>
 
         <div className={styles.divider}>
